@@ -1,0 +1,52 @@
+import { ReactElement, useEffect } from 'react'
+import styled from 'styled-components'
+import { useRecoilValue } from 'recoil'
+
+import { Text } from 'components'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
+
+import DefaultModal, { ModalProps } from '../'
+import ConfirmStep from './ConfirmStep'
+import SubmitStep from './SubmitStep'
+import AuthStore from 'store/AuthStore'
+
+const StyledContainer = styled.div`
+  padding: 24px;
+`
+
+const SendProcessModal = (modal: ModalProps): ReactElement => {
+  const status = useRecoilValue(SendProcessStore.sendProcessStatus)
+  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+
+  useEffect(() => {
+    if (isLoggedIn === false) {
+      modal.close()
+    }
+  }, [isLoggedIn])
+
+  return (
+    <DefaultModal
+      {...modal}
+      header={
+        <>
+          {status === ProcessStatus.Confirm && <Text>Confirm</Text>}
+          {(status === ProcessStatus.Submit ||
+            status === ProcessStatus.Pending) && (
+            <Text>Sumbit Transaction</Text>
+          )}
+          {status === ProcessStatus.Done && <Text>Complete</Text>}
+        </>
+      }
+    >
+      <StyledContainer>
+        {status === ProcessStatus.Confirm ? (
+          <ConfirmStep />
+        ) : (
+          <SubmitStep modal={modal} />
+        )}
+      </StyledContainer>
+    </DefaultModal>
+  )
+}
+
+export default SendProcessModal

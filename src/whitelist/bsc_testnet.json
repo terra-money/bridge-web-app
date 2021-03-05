@@ -1,0 +1,144 @@
+{
+  "0xA1B4Aa780713df91e9Fa0FAa415ce49756D81E3b": {
+    "symbol": "LUNA",
+    "name": "Luna",
+    "token": "0xA1B4Aa780713df91e9Fa0FAa415ce49756D81E3b",
+    "status": "LISTED"
+  },
+  "0x66BDf3Bd407A63eAB5eAF5eCE69f2D7bb403EfC9": {
+    "symbol": "UST",
+    "name": "Terra USD",
+    "token": "0x66BDf3Bd407A63eAB5eAF5eCE69f2D7bb403EfC9",
+    "status": "LISTED"
+  },
+  "0x59a870b16adE2A152815Ba0d4Fa074fc3F71A828": {
+    "symbol": "KRT",
+    "name": "Terra KRW",
+    "token": "0x59a870b16adE2A152815Ba0d4Fa074fc3F71A828",
+    "status": "LISTED"
+  },
+  "0x5e2c2088d3fB10aAb25a0D323CdBEc5147232B1a": {
+    "symbol": "SDT",
+    "name": "Terra SDR",
+    "token": "0x5e2c2088d3fB10aAb25a0D323CdBEc5147232B1a",
+    "status": "LISTED"
+  },
+  "0x1449D1Ba8FB922E74F7761F077e77EAe66A0f8DA": {
+    "symbol": "MNT",
+    "name": "Terra MNT",
+    "token": "0x1449D1Ba8FB922E74F7761F077e77EAe66A0f8DA",
+    "status": "LISTED"
+  },
+  "0x320106A19C934ab8dbdde8056Ebae5A6f340720e": {
+    "symbol": "MIR",
+    "name": "Mirror",
+    "token": "0x320106A19C934ab8dbdde8056Ebae5A6f340720e",
+    "lp": "0xcf5f4a1c0255528017399201FFC77d425bE659ef",
+    "pool": "0x5c06933537A9c339C64351782a66B0ecb37fBa3c",
+    "status": "LISTED"
+  },
+  "0x0dFa0F08136DA5d28618E7E31A7e24b01a95bB69": {
+    "symbol": "mAAPL",
+    "name": "Apple",
+    "token": "0x0dFa0F08136DA5d28618E7E31A7e24b01a95bB69",
+    "lp": "0x2f4C3eB31611D19f7dBbcd2d526A0c0e6490dfAd",
+    "pool": "0xAf76E1df3B371ebc24812d0eFBfeD5A86E752aE7",
+    "status": "LISTED"
+  },
+  "0x56a31ea21862447E3Af9bfe76A45679E44103274": {
+    "symbol": "mGOOGL",
+    "name": "Google",
+    "token": "0x56a31ea21862447E3Af9bfe76A45679E44103274",
+    "lp": "0x5d191C784F1e52B07c17101c7D6A514Fc7DFd64a",
+    "pool": "0x77f64a6789F35442BB7CD5655da12B227AAb5d15",
+    "status": "LISTED"
+  },
+  "0xA2a42F0deB45ca7310a3C02A70fb569d5d5248FA": {
+    "symbol": "mTSLA",
+    "name": "Tesla",
+    "token": "0xA2a42F0deB45ca7310a3C02A70fb569d5d5248FA",
+    "lp": "0xc74192A96a0733656FADd509acE9f4Efeae6051D",
+    "pool": "0x1beCa8773CFA694561F16455b948E4F6244b9846",
+    "status": "LISTED"
+  },
+  "0xc6F5e6476958cA81eC8FC68A1ea7c68206b0e501": {
+    "symbol": "mNFLX",
+    "name": "Netflix",
+    "token": "0xc6F5e6476958cA81eC8FC68A1ea7c68206b0e501",
+    "lp": "0xC8BbD0d02F26D2f05b4756aC625C30c51e19A49F",
+    "pool": "0x2D92ddB441DDEaFfE3F98d56A95dE66F6B1485c2",
+    "status": "LISTED"
+  },
+  "0x1Ad3354B2E7C0F7D5A370a03CAf439DD345437a9": {
+    "symbol": "mQQQ",
+    "name": "Invesco QQQ Trust",
+    "token": "0x1Ad3354B2E7C0F7D5A370a03CAf439DD345437a9",
+    "lp": "0x9779b4082Ab88Cb90e159D5D7f5BaA2BE1Ff6b4c",
+    "pool": "0xcdEb3b31159D2F5E06Dd8965d3d6776cE7797868",
+    "status": "LISTED"
+  },
+  "0x5C4273b1B20112321f0951D0bC2d5eD40c800226": {
+    "symbol": "mTWTR",
+    "name": "Twitter",
+    "token": "0x5C4273b1B20112321f0951D0bC2d5eD40c800226",
+    "lp": "0xB88f37A2e0b68171328d7A4875b256b3Fb642D19",
+    "pool": "0xff1f87ae0AB6329736aFFe7d84197DF40bcb31B1",
+    "status": "LISTED"
+  },
+  "0xE4f2C30E938c24ee874dfDFAb20fFFBA81323457": {
+    "symbol": "mMSFT",
+    "name": "Microsoft Corporation",
+    "token": "0xE4f2C30E938c24ee874dfDFAb20fFFBA81323457",
+    "lp": "0x9268285b247e7a253946DA24b318D190D07A5Bff",
+    "pool": "0xB276dB3AEEF023cA7bdCA12f5Fd5daf460f57675",
+    "status": "LISTED"
+  },
+  "0xfBC94545AD2ff3F7B009258FB43F2EAb46744767": {
+    "symbol": "mAMZN",
+    "name": "Amazon.com",
+    "token": "0xfBC94545AD2ff3F7B009258FB43F2EAb46744767",
+    "lp": "0xf88f62C84e8bc2a21244Ed037e0044552c2B1E10",
+    "pool": "0x71f36575394B3672A38513a52cd0EF2de11c4509",
+    "status": "LISTED"
+  },
+  "0xFc78bf14Dc997e681dAc4b4D811B45026d04123F": {
+    "symbol": "mBABA",
+    "name": "Alibaba Group Holdings Ltd ADR",
+    "token": "0xFc78bf14Dc997e681dAc4b4D811B45026d04123F",
+    "lp": "0x33Ee6888bdDA79971A89CC290fDB6A971c816b18",
+    "pool": "0xA4500830541D67093401b3B2F538d1E6a6FA4340",
+    "status": "LISTED"
+  },
+  "0xeff3b95faC30230D30F8c8222670A3812D79857B": {
+    "symbol": "mIAU",
+    "name": "iShares Gold Trust",
+    "token": "0xeff3b95faC30230D30F8c8222670A3812D79857B",
+    "lp": "0xa6632fa79c893B1Ba438671c7Dd082bc8C972b4d",
+    "pool": "0x2109E90c7564d400306BE3097CbA8843c5517DEC",
+    "status": "LISTED"
+  },
+  "0x662DDF725F5BDE9b31BBD16793Fd0c234F67979B": {
+    "symbol": "mSLV",
+    "name": "iShares Silver Trust",
+    "token": "0x662DDF725F5BDE9b31BBD16793Fd0c234F67979B",
+    "lp": "0x8D8B9e7E4f259CdBAf95175396797C3b2abf5336",
+    "pool": "0x0b9C418DA8b6000f245ef02561136382f9BeA058",
+    "status": "LISTED"
+  },
+  "0x5D428492846bd05D8137e56Fe806D28606453cbf": {
+    "symbol": "mUSO",
+    "name": "United States Oil Fund, LP",
+    "token": "0x5D428492846bd05D8137e56Fe806D28606453cbf",
+    "lp": "0xE6E87205fC00D0085dB5AbEc2A65600fC0dB9E19",
+    "pool": "0xef303aE1A7EBc1414A596139fE9E95042f30cE46",
+    "status": "LISTED"
+  },
+  "0x57986628daaDC418E09A2917D6c8b793B7dC1ACD": {
+    "symbol": "mVIXY",
+    "name": "ProShares VIX",
+    "token": "0x57986628daaDC418E09A2917D6c8b793B7dC1ACD",
+    "lp": "0x1FEf9cAcCD50f8C85341d56f77aD853586E41a33",
+    "pool": "0xB20AE9A0Bc6E6d7498a1DdaBDf8B7a20507C2E1c",
+    "status": "LISTED"
+  }
+}
