@@ -27,6 +27,12 @@ const StyledContainer = styled.div`
   padding: 0;
 `
 
+const StyledInfoText = styled(Text)`
+  white-space: pre-wrap;
+  text-align: center;
+  display: block;
+  margin-bottom: 10px;
+`
 const StyledToAddress = styled.div`
   padding: 20px;
   border: 1px solid ${COLOR.skyGray};
@@ -100,15 +106,9 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   return (
     <StyledContainer>
       <div>
-        <Text>
-          {`Transfer ${asset?.symbol} from ${
-            NETWORK.blockChainName[loginUser.blockChain]
-          } Network to ${
-            NETWORK.blockChainName[toBlockChain]
-          } Network. submit a transaction to the ${
-            NETWORK.blockChainName[loginUser.blockChain]
-          } via ${loginUser.walletType}`}
-        </Text>
+        <StyledInfoText>
+          {`Transferring ${asset?.symbol} from ${NETWORK.blockChainName[fromBlockChain]} Network to ${NETWORK.blockChainName[toBlockChain]} Network.\nTransaction will be submitted via ${loginUser.walletType}`}
+        </StyledInfoText>
         {loginUser.walletType === WalletEnum.WalletConnect && (
           <FormErrorMessage
             errorMessage={
