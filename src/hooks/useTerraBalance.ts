@@ -2,7 +2,9 @@ import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
 import { UTIL } from 'consts'
+
 import AuthStore from 'store/AuthStore'
+
 import useMantle from './useMantle'
 import { BalanceListType } from 'types/asset'
 

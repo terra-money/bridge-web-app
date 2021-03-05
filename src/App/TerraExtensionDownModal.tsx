@@ -1,14 +1,15 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-bootstrap-icons'
+import { useRecoilState } from 'recoil'
 
 import { NETWORK } from 'consts'
+
 import { Text } from 'components'
 import Button from 'components/Button'
 import DefaultModal from 'components/Modal'
+import ExtLink from 'components/ExtLink'
 
-import ExtLink from '../components/ExtLink'
-import { useRecoilState } from 'recoil'
 import SelectWalletStore, {
   SelectWalletModalType,
 } from 'store/SelectWalletStore'

@@ -3,11 +3,13 @@ import { Network } from '@ethersproject/networks'
 
 import { NETWORK } from 'consts'
 
+import SendStore from 'store/SendStore'
 import AuthStore, { initLoginUser } from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
+
 import terraService from 'services/terraService'
+
 import { User } from 'types/auth'
-import SendStore from 'store/SendStore'
 import { BlockChainType } from 'types/network'
 
 const useAuth = (): {

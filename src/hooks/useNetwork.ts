@@ -2,6 +2,7 @@ import { useRecoilValue } from 'recoil'
 
 import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
+
 import { BlockChainType } from 'types/network'
 
 const useNetwork = (): {

@@ -17,13 +17,14 @@ import { UTIL } from 'consts'
 import terraService from 'services/terraService'
 import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
+import SendStore from 'store/SendStore'
 
 import { BlockChainType } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
-import SendStore from 'store/SendStore'
-import useEtherBaseContract from './useEtherBaseContract'
 import { WalletEnum } from 'types/wallet'
+
+import useEtherBaseContract from './useEtherBaseContract'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>

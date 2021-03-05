@@ -2,8 +2,10 @@ import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
 import AuthStore from 'store/AuthStore'
-import useEtherBaseContract from './useEtherBaseContract'
+
 import { WhiteListType, BalanceListType } from 'types/asset'
+
+import useEtherBaseContract from './useEtherBaseContract'
 
 const useEtherBaseBalance = (): {
   getEtherBalances: ({

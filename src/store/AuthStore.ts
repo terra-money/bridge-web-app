@@ -1,8 +1,10 @@
 import { atom, selector } from 'recoil'
 import _ from 'lodash'
-import { User } from '../types/auth'
-import NetworkStore from './NetworkStore'
+
+import { User } from 'types/auth'
 import { WalletEnum } from 'types/wallet'
+
+import NetworkStore from './NetworkStore'
 
 export const initLoginUser: User = {
   address: '',

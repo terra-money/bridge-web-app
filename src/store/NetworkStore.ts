@@ -1,12 +1,13 @@
 import { atom, selector } from 'recoil'
 import { Network as EtherNetwork } from '@ethersproject/networks'
-import AuthStore from './AuthStore'
+
+import { NETWORK } from 'consts'
 import {
   BlockChainType,
   ExtTerraNetwork,
   LocalTerraNetwork,
 } from 'types/network'
-import { NETWORK } from 'consts'
+import AuthStore from './AuthStore'
 import SendStore from './SendStore'
 
 const terraExt = atom<ExtTerraNetwork | undefined>({

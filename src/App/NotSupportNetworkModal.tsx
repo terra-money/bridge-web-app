@@ -1,13 +1,12 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
+import { COLOR } from 'consts'
 import { Text } from 'components'
 import DefaultModal from 'components/Modal'
 
-import { useRecoilState, useRecoilValue } from 'recoil'
-
 import NetworkStore from 'store/NetworkStore'
-import { COLOR } from 'consts'
 
 const StyledContainer = styled.div`
   padding: 20px;

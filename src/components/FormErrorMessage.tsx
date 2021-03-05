@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
-import { Text } from 'components'
 import styled from 'styled-components'
+
+import Text from './Text'
 
 const StyledText = styled(Text)`
   color: red;

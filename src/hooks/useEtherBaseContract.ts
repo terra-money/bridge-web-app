@@ -1,8 +1,11 @@
 import { useRecoilValue } from 'recoil'
-import AuthStore from 'store/AuthStore'
 import { ethers } from 'ethers'
+
 import abi from 'consts/abi.json'
+
 import { BlockChainType } from 'types/network'
+
+import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 const useEtherBaseContract = (): {

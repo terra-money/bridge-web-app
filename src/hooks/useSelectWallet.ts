@@ -1,13 +1,16 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+
 import SelectWalletStore, {
   SelectWalletModalType,
 } from 'store/SelectWalletStore'
 import SendStore from 'store/SendStore'
+
 import { BlockChainType } from 'types/network'
-import useAuth from './useAuth'
+import { WalletEnum } from 'types/wallet'
 
 import terraService from 'services/terraService'
-import { WalletEnum } from 'types/wallet'
+
+import useAuth from './useAuth'
 
 const useSelectWallet = (): {
   open: () => void

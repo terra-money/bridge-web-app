@@ -6,6 +6,7 @@ import { Col, Dropdown, Row } from 'react-bootstrap'
 import { COLOR, WALLET, UTIL } from 'consts'
 
 import { Button, Text } from 'components'
+
 import useSelectWallet from 'hooks/useSelectWallet'
 import useAuth from 'hooks/useAuth'
 

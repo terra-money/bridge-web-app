@@ -4,11 +4,11 @@ import { useRecoilValue } from 'recoil'
 
 import { Text } from 'components'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
+import AuthStore from 'store/AuthStore'
 
 import DefaultModal, { ModalProps } from '../'
 import ConfirmStep from './ConfirmStep'
 import SubmitStep from './SubmitStep'
-import AuthStore from 'store/AuthStore'
 
 const StyledContainer = styled.div`
   padding: 24px;

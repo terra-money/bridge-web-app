@@ -8,19 +8,19 @@ import { COLOR, WALLET } from 'consts'
 import useAuth from 'hooks/useAuth'
 import Button from 'components/Button'
 import Text from 'components/Text'
+import DefaultModal from 'components/Modal'
 
 import walletConnectService from 'services/walletConnectService'
 import coinBaseService from 'services/coinBaseService'
 import metaMaskService from 'services/metaMaskService'
 import bscService from 'services/bscService'
+
 import SelectWalletStore, {
   SelectWalletModalType,
 } from 'store/SelectWalletStore'
+import SendStore from 'store/SendStore'
 
 import { WalletEnum } from 'types/wallet'
-
-import DefaultModal from '../components/Modal'
-import SendStore from 'store/SendStore'
 import { BlockChainType } from 'types/network'
 
 const { walletLogo } = WALLET
