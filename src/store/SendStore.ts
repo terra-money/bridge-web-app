@@ -21,6 +21,10 @@ const memo = atom<string>({
   key: 'sendMemo',
   default: '',
 })
+const fromBlockChain = atom<BlockChainType>({
+  key: 'sendFromBlockChain',
+  default: BlockChainType.terra,
+})
 const toBlockChain = atom<BlockChainType>({
   key: 'sendToBlockChain',
   default: BlockChainType.terra,
@@ -68,6 +72,7 @@ export default {
   toAddress,
   amount,
   memo,
+  fromBlockChain,
   toBlockChain,
   fee,
   gasPrices,

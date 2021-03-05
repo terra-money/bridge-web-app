@@ -1,8 +1,13 @@
 import { atom } from 'recoil'
 
-const isVisibleModal = atom<boolean>({
-  key: 'isVisibleModal',
-  default: false,
+export enum SelectWalletModalType {
+  etherBaseModal,
+  terraExtInstall,
+}
+
+const isVisibleModalType = atom<SelectWalletModalType | undefined>({
+  key: 'isVisibleModalType',
+  default: undefined,
 })
 
-export default { isVisibleModal }
+export default { isVisibleModalType }

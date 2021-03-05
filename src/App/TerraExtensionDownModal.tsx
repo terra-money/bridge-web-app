@@ -4,22 +4,36 @@ import { Link } from 'react-bootstrap-icons'
 
 import { NETWORK } from 'consts'
 import { Text } from 'components'
-import DefaultModal, { ModalProps } from 'components/Modal'
-
-import ExtLink from '../ExtLink'
 import Button from 'components/Button'
+import DefaultModal from 'components/Modal'
+
+import ExtLink from '../components/ExtLink'
+import { useRecoilState } from 'recoil'
+import SelectWalletStore, {
+  SelectWalletModalType,
+} from 'store/SelectWalletStore'
 
 const StyledContainer = styled.div`
   padding: 0 10px 10px 10px;
 `
 
-const TerraExtensionDownModal = (modal: ModalProps): ReactElement => {
+const TerraExtensionDownModal = (): ReactElement => {
   const handleInstalled = (): void => {
     window.location.reload()
   }
 
+  const [isVisibleModalType, setIsVisibleModalType] = useRecoilState(
+    SelectWalletStore.isVisibleModalType
+  )
   return (
-    <DefaultModal {...modal}>
+    <DefaultModal
+      {...{
+        isOpen: isVisibleModalType === SelectWalletModalType.terraExtInstall,
+        close: (): void => {
+          setIsVisibleModalType(undefined)
+        },
+      }}
+    >
       <StyledContainer>
         {!navigator.userAgent.includes('Chrome') ? (
           <div>

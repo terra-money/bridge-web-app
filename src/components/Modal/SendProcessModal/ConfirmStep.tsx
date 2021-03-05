@@ -10,7 +10,6 @@ import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import { Col, Row } from 'react-bootstrap'
 import { ASSET, COLOR, NETWORK } from 'consts'
 import useAsset from 'hooks/useAsset'
-import AuthStore from 'store/AuthStore'
 import FormImage from 'components/FormImage'
 import { BlockChainType } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
@@ -46,7 +45,6 @@ const StyledSecD = styled.div`
 `
 
 const ConfirmScreen = (): ReactElement => {
-  const loginUser = useRecoilValue(AuthStore.loginUser)
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
   const { formatBalace } = useAsset()
 
@@ -56,6 +54,7 @@ const ConfirmScreen = (): ReactElement => {
   const amount = useRecoilValue(SendStore.amount)
   const memo = useRecoilValue(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   // Computed data from Send data
   const feeOfGas = useRecoilValue(SendStore.feeOfGas)
@@ -79,12 +78,12 @@ const ConfirmScreen = (): ReactElement => {
             </div>
 
             <FormImage
-              src={NETWORK.blockChainImage[loginUser.blockChain]}
+              src={NETWORK.blockChainImage[fromBlockChain]}
               size={40}
             />
 
             <div style={{ paddingTop: 10 }}>
-              <Text>{NETWORK.blockChainName[loginUser.blockChain]}</Text>
+              <Text>{NETWORK.blockChainName[fromBlockChain]}</Text>
             </div>
           </Col>
           <Col
@@ -124,7 +123,7 @@ const ConfirmScreen = (): ReactElement => {
         </StyledSecD>
       </StyledSection>
 
-      {loginUser.blockChain === BlockChainType.terra &&
+      {fromBlockChain === BlockChainType.terra &&
         toBlockChain === BlockChainType.terra && (
           <StyledSection>
             <StyledSecH>Memo :</StyledSecH>
@@ -143,7 +142,7 @@ const ConfirmScreen = (): ReactElement => {
         </StyledSecD>
       </StyledSection>
 
-      {loginUser.blockChain === BlockChainType.terra ? (
+      {fromBlockChain === BlockChainType.terra ? (
         <>
           <StyledSection>
             <StyledSecH>NetworkFee :</StyledSecH>

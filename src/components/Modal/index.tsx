@@ -1,6 +1,7 @@
 import { ReactElement, useState } from 'react'
 import Modal from 'react-modal'
 import styled from 'styled-components'
+
 import { COLOR } from 'consts'
 
 const StyledModal = styled(Modal)`

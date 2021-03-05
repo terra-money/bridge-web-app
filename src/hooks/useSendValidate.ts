@@ -7,14 +7,12 @@ import BigNumber from 'bignumber.js'
 import SendStore from 'store/SendStore'
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
-import AuthStore from 'store/AuthStore'
 import useAsset from './useAsset'
 
 const useSendValidate = (): {
   validateGasFee: () => ValidateItemResultType
   validateSendData: () => ValidateResultType
 } => {
-  const loginUser = useRecoilValue(AuthStore.loginUser)
   const { formatBalace } = useAsset()
 
   // Send Data
@@ -23,6 +21,8 @@ const useSendValidate = (): {
   const amount = useRecoilValue(SendStore.amount)
   const memo = useRecoilValue(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+
   //   const setGasPrices = useRecoilValue(SendStore.gasPrices)
   //   const setFee = useRecoilValue(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
@@ -30,7 +30,7 @@ const useSendValidate = (): {
 
   const feeOfGas = useRecoilValue(SendStore.feeOfGas)
   const validateGasFee = (): ValidateItemResultType => {
-    if (loginUser.blockChain === BlockChainType.terra) {
+    if (fromBlockChain === BlockChainType.terra) {
       if (_.isEmpty(feeOfGas)) {
         return {
           isValid: false,
@@ -95,8 +95,7 @@ const useSendValidate = (): {
       return { isValid: false, errorMessage: 'Amount must be greater than 0' }
     }
 
-    const rebalanceDecimal =
-      loginUser.blockChain === BlockChainType.terra ? 1 : 1e12
+    const rebalanceDecimal = fromBlockChain === BlockChainType.terra ? 1 : 1e12
 
     if (false === bnAmount.div(rebalanceDecimal).isInteger()) {
       return {

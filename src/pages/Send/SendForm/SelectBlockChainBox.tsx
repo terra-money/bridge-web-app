@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { useRecoilValue } from 'recoil'
 import { Col, Row } from 'react-bootstrap'
 
 import { COLOR, NETWORK } from 'consts'
@@ -9,8 +8,6 @@ import { BlockChainType } from 'types/network'
 
 import { Text } from 'components'
 import FormSelect from 'components/FormSelect'
-
-import AuthStore from 'store/AuthStore'
 import FormImage from 'components/FormImage'
 
 const StyledContainer = styled.div`
@@ -23,12 +20,16 @@ const StyledContainer = styled.div`
 const SelectBlockChainBox = ({
   blockChain,
   setBlockChain,
+  optionList,
 }: {
   blockChain: BlockChainType
-  setBlockChain?: (value: BlockChainType) => void
+  setBlockChain: (value: BlockChainType) => void
+  optionList: {
+    value: BlockChainType
+    label: string
+    isDisabled?: boolean | undefined
+  }[]
 }): ReactElement => {
-  const loginUser = useRecoilValue(AuthStore.loginUser)
-
   return (
     <StyledContainer>
       <Row>
@@ -43,22 +44,7 @@ const SelectBlockChainBox = ({
             <FormSelect
               buttonStyle={{ width: '100%' }}
               defaultValue={blockChain}
-              optionList={[
-                {
-                  label: NETWORK.blockChainName[BlockChainType.terra],
-                  value: BlockChainType.terra,
-                },
-                {
-                  label: NETWORK.blockChainName[BlockChainType.ethereum],
-                  value: BlockChainType.ethereum,
-                  isDisabled: loginUser.blockChain === BlockChainType.bsc,
-                },
-                {
-                  label: NETWORK.blockChainName[BlockChainType.bsc],
-                  value: BlockChainType.bsc,
-                  isDisabled: loginUser.blockChain === BlockChainType.ethereum,
-                },
-              ]}
+              optionList={optionList}
               onSelect={setBlockChain}
               hideSelected
             />

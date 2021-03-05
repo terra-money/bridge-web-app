@@ -1,8 +1,13 @@
 import { atom, selector } from 'recoil'
 import { Network as EtherNetwork } from '@ethersproject/networks'
 import AuthStore from './AuthStore'
-import { ExtTerraNetwork, LocalTerraNetwork } from 'types/network'
+import {
+  BlockChainType,
+  ExtTerraNetwork,
+  LocalTerraNetwork,
+} from 'types/network'
 import { NETWORK } from 'consts'
+import SendStore from './SendStore'
 
 const terraExt = atom<ExtTerraNetwork | undefined>({
   key: 'terraExt',
@@ -23,22 +28,32 @@ const isTestnet = selector<boolean>({
   key: 'isTestnet',
   get: ({ get }) => {
     const isLoggedIn = get(AuthStore.isLoggedIn)
+    const fromBlockChain = get(SendStore.fromBlockChain)
     if (isLoggedIn) {
-      const loginUser = get(AuthStore.loginUser)
-      if (loginUser.blockChain === 'terra') {
+      if (fromBlockChain === BlockChainType.terra) {
         const _terraExt = get(terraExt)
         return _terraExt?.name !== 'mainnet'
       }
       const _etherBaseExt = get(etherBaseExt)
 
-      if (loginUser.blockChain === 'ethereum') {
+      if (fromBlockChain === BlockChainType.ethereum) {
         return _etherBaseExt?.name !== 'homestead'
       } else {
-        return _etherBaseExt?.chainId !== 56
+        return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.BSC_MAIN
       }
     }
     return false
   },
+})
+
+const isVisibleNotSupportNetworkModal = atom<boolean>({
+  key: 'isVisibleNotSupportNetworkModal',
+  default: false,
+})
+
+const triedNotSupportNetwork = atom<EtherNetwork | undefined>({
+  key: 'triedNotSupportNetwork',
+  default: undefined,
 })
 
 export default {
@@ -46,4 +61,6 @@ export default {
   terraLocal,
   etherBaseExt,
   isTestnet,
+  isVisibleNotSupportNetworkModal,
+  triedNotSupportNetwork,
 }

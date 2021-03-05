@@ -1,7 +1,7 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
-import { ASSET } from 'consts'
+import { ASSET, NETWORK } from 'consts'
 import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
 
@@ -22,7 +22,8 @@ const useAsset = (): {
   formatBalace: (balance: string | BigNumber) => string
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-  const loginUser = useRecoilValue(AuthStore.loginUser)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
   const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
   const setTerraPair = useSetRecoilState(
@@ -77,7 +78,9 @@ const useAsset = (): {
   }: {
     chainId: number
   }): Promise<WhiteListType> =>
-    jsonWhiteListParser(chainId === 56 ? bsc_mainnet : bsc_testnet)
+    jsonWhiteListParser(
+      chainId === NETWORK.ETH_CHAINID.BSC_MAIN ? bsc_mainnet : bsc_testnet
+    )
 
   const setBalanceToAssetList = ({
     assetList,
@@ -106,17 +109,17 @@ const useAsset = (): {
     let whiteList: WhiteListType = {}
     let balanceList: BalanceListType = {}
     if (isLoggedIn) {
-      if (loginUser.blockChain === 'terra' && terraLocal) {
+      if (fromBlockChain === 'terra' && terraLocal) {
         whiteList = await getTerraWhiteList({
           contract: terraLocal.contract,
         })
         balanceList = await getTerraBalances({
           terraWhiteList: _.map(whiteList, (token) => ({ token })),
         })
-      } else if (loginUser.blockChain === 'ethereum' && etherBaseExt) {
+      } else if (fromBlockChain === 'ethereum' && etherBaseExt) {
         whiteList = await getEtherWhiteList(etherBaseExt)
         balanceList = await getEtherBalances({ whiteList })
-      } else if (loginUser.blockChain === 'bsc' && etherBaseExt) {
+      } else if (fromBlockChain === 'bsc' && etherBaseExt) {
         whiteList = await getBscWhiteList(etherBaseExt)
         balanceList = await getEtherBalances({ whiteList })
       }
@@ -131,7 +134,7 @@ const useAsset = (): {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
-      return loginUser.blockChain === BlockChainType.terra
+      return fromBlockChain === BlockChainType.terra
         ? bnBalance.div(ASSET.TERRA_DECIMAL).toString()
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)

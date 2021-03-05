@@ -15,6 +15,15 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.terra]: 'Terra',
 }
 
+// what terra shuttle supply, https://github.com/terra-project/shuttle
+// https://chainid.network/
+const ETH_CHAINID = {
+  ETH_MAIN: 1,
+  ETH_ROPSTEN: 3,
+  BSC_MAIN: 56,
+  BSC_TEST: 97,
+}
+
 const INFURAID = '87ae9df0054a4467b5de8501e80bc07c'
 
 const TERRA_EXTENSION = 'https://terra.money/extension'
@@ -46,4 +55,5 @@ export default {
   INFURAID,
   TERRA_EXTENSION,
   CHROME,
+  ETH_CHAINID,
 }

@@ -1,27 +1,31 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core'
 import _ from 'lodash'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
-import useSend from 'hooks/useSend'
+import { COLOR, NETWORK, UTIL } from 'consts'
+
+import AuthStore from 'store/AuthStore'
+import SendStore from 'store/SendStore'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
 import { Text } from 'components'
-import { useRecoilState, useRecoilValue } from 'recoil'
 import Button from 'components/Button'
-import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
-import AuthStore from 'store/AuthStore'
-import { COLOR, NETWORK, UTIL } from 'consts'
-import { RequestTxResultType } from 'types/send'
-import SendStore from 'store/SendStore'
-import FormImage from 'components/FormImage'
-import useAsset from 'hooks/useAsset'
 import FormErrorMessage from 'components/FormErrorMessage'
-import { BlockChainType } from 'types/network'
-import useNetwork from 'hooks/useNetwork'
+import FormImage from 'components/FormImage'
 import ExtLink from 'components/ExtLink'
-import { ModalProps } from '..'
-import useTerraTxInfo from 'hooks/useTerraTxInfo'
+
+import { RequestTxResultType } from 'types/send'
 import { WalletEnum } from 'types/wallet'
+import { BlockChainType } from 'types/network'
+
+import useAsset from 'hooks/useAsset'
+import useSend from 'hooks/useSend'
+import useNetwork from 'hooks/useNetwork'
+import useTerraTxInfo from 'hooks/useTerraTxInfo'
+
+import { ModalProps } from '..'
 
 const StyledContainer = styled.div`
   padding: 0;
@@ -33,6 +37,7 @@ const StyledInfoText = styled(Text)`
   display: block;
   margin-bottom: 10px;
 `
+
 const StyledToAddress = styled.div`
   padding: 20px;
   border: 1px solid ${COLOR.skyGray};
@@ -49,6 +54,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const amount = useRecoilValue(SendStore.amount)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const toAddress = useRecoilValue(SendStore.toAddress)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
   const loginUser = useRecoilValue(AuthStore.loginUser)
@@ -71,7 +77,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
       setloading(true)
       setStatus(ProcessStatus.Pending)
 
-      if (loginUser.blockChain === BlockChainType.terra) {
+      if (fromBlockChain === BlockChainType.terra) {
         try {
           const waitReceipt = setInterval(async () => {
             const txInfos = await getTxInfos({ hash: submitResult.hash })
@@ -102,6 +108,11 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
       setErrorMessage(submitResult.errorMessage || '')
     }
   }
+
+  // try confirm immediately
+  useEffect(() => {
+    onClickSubmitButton()
+  }, [])
 
   return (
     <StyledContainer>

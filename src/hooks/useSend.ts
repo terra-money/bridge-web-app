@@ -73,6 +73,8 @@ const useSend = (): UseSendType => {
   const [amount, setAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+
   const [gasPrices, setGasPrices] = useRecoilState(SendStore.gasPrices)
   const [fee, setFee] = useRecoilState(SendStore.fee)
 
@@ -95,6 +97,7 @@ const useSend = (): UseSendType => {
     setAmount('')
     setMemo('')
     setToBlockChain(BlockChainType.terra)
+
     setGasPrices({})
     setFee(undefined)
   }
@@ -193,10 +196,10 @@ const useSend = (): UseSendType => {
 
   // Can't send tx between Ethereum <-> BSC
   const submitRequestTxFromEtherBase = async (): Promise<RequestTxResultType> => {
-    if (loginUser.blockChain !== BlockChainType.terra && asset?.tokenAddress) {
+    if (fromBlockChain !== BlockChainType.terra && asset?.tokenAddress) {
       const contract = getEtherBaseContract({ token: asset.tokenAddress })
 
-      if (contract) {
+      if (contract && loginUser.provider) {
         const signer = loginUser.provider.getSigner()
         const withSigner = contract.connect(signer)
 
@@ -236,7 +239,7 @@ const useSend = (): UseSendType => {
   }
 
   const submitRequestTx = async (): Promise<RequestTxResultType> => {
-    if (loginUser.blockChain === BlockChainType.terra) {
+    if (fromBlockChain === BlockChainType.terra) {
       return submitRequestTxFromTerra()
     }
 
@@ -248,8 +251,8 @@ const useSend = (): UseSendType => {
   }: {
     hash: string
   }): Promise<EtherBaseReceiptResultType | undefined> => {
-    if (loginUser.blockChain !== BlockChainType.terra && asset?.tokenAddress) {
-      return await loginUser.provider.waitForTransaction(hash)
+    if (fromBlockChain !== BlockChainType.terra && asset?.tokenAddress) {
+      return await loginUser.provider?.waitForTransaction(hash)
     }
   }
 
