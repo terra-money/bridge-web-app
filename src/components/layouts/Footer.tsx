@@ -1,6 +1,8 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
+import { Style, COLOR } from 'consts'
+
 import mediumPng from 'images/medium.png'
 import discordPng from 'images/discord.png'
 import telegramPng from 'images/telegram.png'
@@ -8,7 +10,6 @@ import twitterPng from 'images/twitter.png'
 import githubPng from 'images/github.png'
 
 import { ExtLink } from 'components'
-import { Style, COLOR } from 'consts'
 
 const StyledContainer = styled.footer`
   padding: 20px;

@@ -1,14 +1,18 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
+import { Col, Dropdown, Row } from 'react-bootstrap'
+
+import { COLOR, WALLET, UTIL } from 'consts'
 
 import { Button, Text } from 'components'
+
 import useSelectWallet from 'hooks/useSelectWallet'
-import AuthStore from 'store/AuthStore'
-import { COLOR, WALLET, UTIL } from 'consts'
-import { Col, Dropdown, Row } from 'react-bootstrap'
 import useAuth from 'hooks/useAuth'
+
+import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
+import SendStore from 'store/SendStore'
 
 const { walletLogo } = WALLET
 const StyledContainer = styled.div`
@@ -57,6 +61,8 @@ const StyledDropdownMenu = styled(Dropdown.Menu)`
 `
 const LoginUserInfo = (): ReactElement => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+
   const { logout } = useAuth()
   const CustomToggle = React.forwardRef((props: any, ref: any) => {
     const { children, onClick } = props
@@ -92,9 +98,9 @@ const LoginUserInfo = (): ReactElement => {
           </Row>
           <div>
             <Text>
-              {loginUser.blockChain === 'bsc' && 'Binance Chain Network'}
-              {loginUser.blockChain === 'ethereum' && 'Ethereum Network'}
-              {loginUser.blockChain === 'terra' && 'Terra Network'}
+              {fromBlockChain === 'bsc' && 'Binance Chain Network'}
+              {fromBlockChain === 'ethereum' && 'Ethereum Network'}
+              {fromBlockChain === 'terra' && 'Terra Network'}
             </Text>
           </div>
         </StyledLoginUserInfoBox>
@@ -147,12 +153,15 @@ const Header = (): ReactElement => {
           </Col>
         </Row>
         <Row>
-          {isLoggedIn && <LoginUserInfo />}
-          <div>
-            <Button style={{ width: 140 }} onClick={selectWallet.openModal}>
-              {isLoggedIn ? 'Change Wallet' : 'Connect Wallet'}
-            </Button>
-          </div>
+          {isLoggedIn ? (
+            <LoginUserInfo />
+          ) : (
+            <div>
+              <Button style={{ width: 140 }} onClick={selectWallet.open}>
+                Connect Wallet
+              </Button>
+            </div>
+          )}
         </Row>
       </StyledNav>
     </StyledContainer>

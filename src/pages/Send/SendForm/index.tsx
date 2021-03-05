@@ -7,29 +7,30 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowRight } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR } from 'consts'
-import { BlockChainType } from 'types/network'
-import { AssetNativeDenomEnum } from 'types/asset'
+import { ASSET, COLOR, NETWORK } from 'consts'
 
-import AuthStore from 'store/AuthStore'
+import { BlockChainType } from 'types/network'
+import { ValidateResultType } from 'types/send'
+import { AssetNativeDenomEnum } from 'types/asset'
 
 import { Button, Text } from 'components'
 import FormInput from 'components/FormInput'
 import FormLabel from 'components/FormLabel'
+import FormSelect from 'components/FormSelect'
 import FormErrorMessage from 'components/FormErrorMessage'
 
 import useSend, { TerraSendFeeInfo } from 'hooks/useSend'
 import useSelectWallet from 'hooks/useSelectWallet'
-
-import FormSelect from 'components/FormSelect'
-import useAsset from 'hooks/useAsset'
+import useAuth from 'hooks/useAuth'
 import useShuttle from 'hooks/useShuttle'
+import useSendValidate from 'hooks/useSendValidate'
+import useAsset from 'hooks/useAsset'
+
+import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
-import useSendValidate from 'hooks/useSendValidate'
-import { ValidateResultType } from 'types/send'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -66,6 +67,7 @@ const SendForm = ({
   const selectWallet = useSelectWallet()
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+  const { logout } = useAuth()
 
   // Send Data
   const [asset, setAsset] = useRecoilState(SendStore.asset)
@@ -85,6 +87,9 @@ const SendForm = ({
   const [shuttleFee, setShuttleFee] = useRecoilState(SendStore.shuttleFee)
   const [amountAfterShuttleFee, setAmountAfterShuttleFee] = useRecoilState(
     SendStore.amountAfterShuttleFee
+  )
+  const [fromBlockChain, setFromBlockChain] = useRecoilState(
+    SendStore.fromBlockChain
   )
 
   const [validationResult, setValidationResult] = useState<ValidateResultType>({
@@ -115,7 +120,7 @@ const SendForm = ({
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
       const decimalSize = new BigNumber(
-        loginUser.blockChain === 'terra'
+        fromBlockChain === 'terra'
           ? ASSET.TERRA_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
       )
@@ -142,7 +147,7 @@ const SendForm = ({
   const dbcGetTerraShuttleFee = useDebouncedCallback(() => {
     if (
       asset?.tokenAddress &&
-      loginUser.blockChain === BlockChainType.terra &&
+      fromBlockChain === BlockChainType.terra &&
       (toBlockChain === BlockChainType.ethereum ||
         toBlockChain === BlockChainType.bsc)
     ) {
@@ -175,7 +180,7 @@ const SendForm = ({
   const dbcValidateAndGetFeeInfo = useDebouncedCallback(() => {
     const validationResult = validateSendData()
     setValidationResult(validationResult)
-    if (isLoggedIn && loginUser.blockChain === 'terra') {
+    if (isLoggedIn && fromBlockChain === 'terra') {
       if (
         validationResult.isValid &&
         asset?.tokenAddress &&
@@ -232,7 +237,30 @@ const SendForm = ({
                   <FormLabel title={'From'} />
                   <SelectBlockChainBox
                     {...{
-                      blockChain: loginUser.blockChain,
+                      blockChain: fromBlockChain,
+                      setBlockChain: (value): void => {
+                        logout()
+                        setFromBlockChain(value)
+                      },
+                      optionList: [
+                        {
+                          label: NETWORK.blockChainName[BlockChainType.terra],
+                          value: BlockChainType.terra,
+                          isDisabled: fromBlockChain === BlockChainType.terra,
+                        },
+                        {
+                          label:
+                            NETWORK.blockChainName[BlockChainType.ethereum],
+                          value: BlockChainType.ethereum,
+                          isDisabled:
+                            fromBlockChain === BlockChainType.ethereum,
+                        },
+                        {
+                          label: NETWORK.blockChainName[BlockChainType.bsc],
+                          value: BlockChainType.bsc,
+                          isDisabled: fromBlockChain === BlockChainType.bsc,
+                        },
+                      ],
                     }}
                   />
                 </Col>
@@ -253,6 +281,24 @@ const SendForm = ({
                     {...{
                       blockChain: toBlockChain,
                       setBlockChain: setToBlockChain,
+                      optionList: [
+                        {
+                          label: NETWORK.blockChainName[BlockChainType.terra],
+                          value: BlockChainType.terra,
+                        },
+                        {
+                          label:
+                            NETWORK.blockChainName[BlockChainType.ethereum],
+                          value: BlockChainType.ethereum,
+                          isDisabled: fromBlockChain === BlockChainType.bsc,
+                        },
+                        {
+                          label: NETWORK.blockChainName[BlockChainType.bsc],
+                          value: BlockChainType.bsc,
+                          isDisabled:
+                            fromBlockChain === BlockChainType.ethereum,
+                        },
+                      ],
                     }}
                   />
                 </Col>
@@ -282,7 +328,7 @@ const SendForm = ({
               )}
             </StyledFormSection>
 
-            {loginUser.blockChain === BlockChainType.terra &&
+            {fromBlockChain === BlockChainType.terra &&
               toBlockChain === BlockChainType.terra && (
                 <StyledFormSection>
                   <FormLabel title={'Memo'} />
@@ -302,7 +348,7 @@ const SendForm = ({
             </StyledFormSection>
 
             {isLoggedIn &&
-              loginUser.blockChain === BlockChainType.terra &&
+              fromBlockChain === BlockChainType.terra &&
               validationResult.isValid && (
                 <StyledFormSection>
                   <FormLabel title={'TxFee'} />
@@ -345,6 +391,7 @@ const SendForm = ({
                           shuttleFee
                         )} ${asset?.symbol}`}
                       </Text>
+                      <br />
                       <Text
                         style={
                           amountAfterShuttleFee.isLessThanOrEqualTo(0)
@@ -367,14 +414,14 @@ const SendForm = ({
                 onClick={onClickSendButton}
                 disabled={
                   false === validationResult.isValid ||
-                  (loginUser.blockChain === BlockChainType.terra &&
+                  (fromBlockChain === BlockChainType.terra &&
                     false === isValidGasFee.isValid)
                 }
               >
                 Next
               </Button>
             ) : (
-              <Button onClick={selectWallet.openModal}>Connect Wallet</Button>
+              <Button onClick={selectWallet.open}>Connect Wallet</Button>
             )}
           </StyledForm>
         </Col>
