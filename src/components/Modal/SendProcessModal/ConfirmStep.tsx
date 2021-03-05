@@ -178,25 +178,23 @@ const ConfirmScreen = (): ReactElement => {
           <StyledSection>
             <StyledSecH>You will receive :</StyledSecH>
             <StyledSecD>
-              {shuttleFee ? (
-                (toBlockChain === BlockChainType.ethereum ||
-                  toBlockChain === BlockChainType.bsc) && (
-                  <div>
-                    <Text
-                      style={
-                        amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                          ? {
-                              color: 'red',
-                            }
-                          : {}
-                      }
-                    >
-                      {` (estimated) ${formatBalace(amountAfterShuttleFee)} ${
-                        asset?.symbol
-                      }`}
-                    </Text>
-                  </div>
-                )
+              {toBlockChain === BlockChainType.ethereum ||
+              toBlockChain === BlockChainType.bsc ? (
+                <div>
+                  <Text
+                    style={
+                      amountAfterShuttleFee.isLessThanOrEqualTo(0)
+                        ? {
+                            color: 'red',
+                          }
+                        : {}
+                    }
+                  >
+                    {` (estimated) ${formatBalace(amountAfterShuttleFee)} ${
+                      asset?.symbol
+                    }`}
+                  </Text>
+                </div>
               ) : (
                 <Text>{`${formatBalace(amount)} ${asset?.symbol}`}</Text>
               )}
