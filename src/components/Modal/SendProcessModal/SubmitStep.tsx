@@ -112,7 +112,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         {loginUser.walletType === WalletEnum.WalletConnect && (
           <FormErrorMessage
             errorMessage={
-              'You are using WalletConnect, Please close this window yourself after you confirm send transaction'
+              'Please manually close this window after confirming the transaction is sent on your WalletConnect app.'
             }
           />
         )}
