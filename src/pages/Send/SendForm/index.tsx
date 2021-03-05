@@ -391,6 +391,7 @@ const SendForm = ({
                           shuttleFee
                         )} ${asset?.symbol}`}
                       </Text>
+                      <br />
                       <Text
                         style={
                           amountAfterShuttleFee.isLessThanOrEqualTo(0)
