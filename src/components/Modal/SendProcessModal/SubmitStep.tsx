@@ -120,10 +120,15 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         <StyledInfoText>
           {`Transferring ${asset?.symbol} from ${NETWORK.blockChainName[fromBlockChain]} Network to ${NETWORK.blockChainName[toBlockChain]} Network.\nTransaction will be submitted via ${loginUser.walletType}`}
         </StyledInfoText>
-        {loginUser.walletType === WalletEnum.WalletConnect && (
+        {loginUser.walletType === WalletEnum.WalletConnect && loading && (
           <FormErrorMessage
+            style={{
+              whiteSpace: 'pre-wrap',
+              textAlign: 'center',
+              display: 'block',
+            }}
             errorMessage={
-              'Please manually close this window after confirming the transaction is sent on your WalletConnect app.'
+              'If loading takes too long after sending transaction on your WalletConnect, \nplease check if your application is up to date.'
             }
           />
         )}
