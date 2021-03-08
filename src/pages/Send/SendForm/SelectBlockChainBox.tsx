@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { Col, Row } from 'react-bootstrap'
 
-import { COLOR, NETWORK } from 'consts'
+import { COLOR, NETWORK, STYLE } from 'consts'
 
 import { BlockChainType } from 'types/network'
 
@@ -11,7 +11,7 @@ import FormSelect from 'components/FormSelect'
 import FormImage from 'components/FormImage'
 
 const StyledContainer = styled.div`
-  border-radius: 5px;
+  border-radius: ${STYLE.css.borderRadius};
   border-style: solid;
   border-color: ${COLOR.darkGray2};
   padding: 15px;

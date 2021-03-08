@@ -1,7 +1,7 @@
 import { InputHTMLAttributes, ReactElement } from 'react'
 import styled from 'styled-components'
 
-import { COLOR } from 'consts'
+import { COLOR, STYLE } from 'consts'
 
 const StyledContainer = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ const StyledInput = styled.input`
   flex: 1;
   padding: 15px 10px;
   border: none;
-  border-radius: 15px;
+  border-radius: ${STYLE.css.borderRadius};
   color: ${COLOR.text};
   background-color: ${COLOR.darkGray2};
   :focus {

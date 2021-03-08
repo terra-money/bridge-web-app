@@ -13,4 +13,6 @@ const media = {
   desktop: `(min-width: ${deviceWidth.desktop})`,
 }
 
-export default { media }
+const css = { borderRadius: '10px' }
+
+export default { media, css }

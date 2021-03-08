@@ -4,7 +4,7 @@ import { ArrowRight } from 'react-bootstrap-icons'
 import { Col, Row } from 'react-bootstrap'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { ASSET, COLOR, NETWORK } from 'consts'
+import { ASSET, COLOR, NETWORK, STYLE } from 'consts'
 
 import { Text } from 'components'
 import Button from 'components/Button'
@@ -23,7 +23,7 @@ const StyledContainer = styled.div`
 `
 
 const StyledFromToBlockChainBox = styled.div`
-  border-radius: 0.5em;
+  border-radius: ${STYLE.css.borderRadius};
   box-shadow: rgb(11 14 17) 0px 2px 8px;
   background: rgb(30, 32, 38);
   padding: 12px 32px;

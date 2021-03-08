@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ethers } from 'ethers'
 
-import { COLOR, WALLET } from 'consts'
+import { COLOR, WALLET, STYLE } from 'consts'
 
 import useAuth from 'hooks/useAuth'
 import Button from 'components/Button'
@@ -30,7 +30,7 @@ const StyledContainer = styled.div`
 `
 
 const StyledWalletButton = styled(Button)`
-  border-radius: 0.5em;
+  border-radius: ${STYLE.css.borderRadius};
   padding: 16px;
   margin: 12px 0px;
   border: 1px solid #1e2026;

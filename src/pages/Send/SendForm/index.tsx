@@ -7,7 +7,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowRight } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR, NETWORK } from 'consts'
+import { ASSET, COLOR, NETWORK, STYLE } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateResultType } from 'types/send'
@@ -51,7 +51,7 @@ const StyledMaxButton = styled.div`
   top: 8px;
   right: 20px;
   border: 2px solid ${COLOR.skyGray};
-  border-radius: 15px;
+  border-radius: ${STYLE.css.borderRadius};
   padding: 5px 10px;
   cursor: pointer;
   :hover {
