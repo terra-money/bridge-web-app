@@ -138,6 +138,12 @@ const assetList: AssetType[] = [
     loguURI: 'https://whitelist.mirror.finance/icon/VIXY.png',
     tokenAddress: '',
   },
+  {
+    symbol: AssetSymbolEnum.mFB,
+    name: 'Facebook Inc.',
+    loguURI: 'https://whitelist.mirror.finance/icon/FB.png',
+    tokenAddress: '',
+  },
 ]
 export default {
   assetList,

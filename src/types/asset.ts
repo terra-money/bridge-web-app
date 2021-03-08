@@ -26,6 +26,7 @@ export enum AssetSymbolEnum {
   mSLV = 'mSLV',
   mUSO = 'mUSO',
   mVIXY = 'mVIXY',
+  mFB = 'mFB',
 }
 
 export type AssetType = {
