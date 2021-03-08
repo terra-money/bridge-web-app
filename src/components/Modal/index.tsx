@@ -2,14 +2,14 @@ import { ReactElement, useState } from 'react'
 import Modal from 'react-modal'
 import styled from 'styled-components'
 
-import { COLOR } from 'consts'
+import { COLOR, STYLE } from 'consts'
 
 const StyledModal = styled(Modal)`
   width: 620px;
   outline: 0;
   margin: auto;
   background-color: #1e2026;
-  border-radius: 5px;
+  border-radius: ${STYLE.css.borderRadius};
 `
 
 const StyledModalHeader = styled.div`

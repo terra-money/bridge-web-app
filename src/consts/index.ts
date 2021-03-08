@@ -1,6 +1,6 @@
 export { default as ASSET } from './asset'
 export { default as COLOR } from './color'
-export { default as Style } from './style'
+export { default as STYLE } from './style'
 export { default as NETWORK } from './network'
 export { default as WALLET } from './wallet'
 export { default as UTIL } from './util'

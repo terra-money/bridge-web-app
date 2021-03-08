@@ -1,4 +1,4 @@
-import { COLOR } from 'consts'
+import { COLOR, STYLE } from 'consts'
 import { ButtonHTMLAttributes, ReactElement } from 'react'
 import styled from 'styled-components'
 
@@ -12,7 +12,7 @@ const StyledDefaultButton = styled.button<ButtonProps>`
   background-color: ${COLOR.orange};
   color: #1e2026;
   text-align: center;
-  border-radius: 10px;
+  border-radius: ${STYLE.css.borderRadius};
   border-style: none;
 
   cursor: pointer;

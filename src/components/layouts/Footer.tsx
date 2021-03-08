@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
-import { Style, COLOR } from 'consts'
+import { STYLE, COLOR } from 'consts'
 
 import mediumPng from 'images/medium.png'
 import discordPng from 'images/discord.png'
@@ -15,7 +15,7 @@ const StyledContainer = styled.footer`
   padding: 20px;
   background-color: ${COLOR.footerBg};
 
-  @media ${Style.media.mobile} {
+  @media ${STYLE.media.mobile} {
     min-height: 100px;
   }
 `

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { Col, Dropdown, Row } from 'react-bootstrap'
 
-import { COLOR, WALLET, UTIL } from 'consts'
+import { COLOR, WALLET, UTIL, STYLE } from 'consts'
 
 import { Button, Text } from 'components'
 
@@ -38,7 +38,7 @@ const Address = styled(Text)`
 `
 
 const StyledLoginUserInfoBox = styled.div`
-  border-radius: 5px;
+  border-radius: ${STYLE.css.borderRadius};
   background-color: ${COLOR.darkGray2};
   margin-right: 10px;
   font-size: 14px;

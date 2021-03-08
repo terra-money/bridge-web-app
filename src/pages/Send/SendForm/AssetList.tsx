@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Col, Row } from 'react-bootstrap'
 import { Check, ChevronRight } from 'react-bootstrap-icons'
 
-import { COLOR } from 'consts'
+import { COLOR, STYLE } from 'consts'
 
 import { AssetType } from 'types/asset'
 
@@ -27,7 +27,7 @@ const StyledAssetItemBox = styled.div`
   height: 500px;
   overflow-y: scroll;
   background-color: ${COLOR.darkGray};
-  border-radius: 15px;
+  border-radius: ${STYLE.css.borderRadius};
 `
 
 const StyledAssetItem = styled.div`
@@ -44,6 +44,7 @@ const StyledSelectAssetButton = styled.div`
   cursor: pointer;
   border-width: 1px;
   border-color: red;
+  border-radius: ${STYLE.css.borderRadius};
   padding: 10px;
   background-color: ${COLOR.darkGray2};
   :hover {

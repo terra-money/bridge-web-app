@@ -4,7 +4,7 @@ import { CircularProgress } from '@material-ui/core'
 import _ from 'lodash'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
-import { COLOR, NETWORK, UTIL } from 'consts'
+import { COLOR, NETWORK, UTIL, STYLE } from 'consts'
 
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
@@ -41,7 +41,7 @@ const StyledInfoText = styled(Text)`
 const StyledToAddress = styled.div`
   padding: 20px;
   border: 1px solid ${COLOR.skyGray};
-  border-radius: 5px;
+  border-radius: ${STYLE.css.borderRadius};
   margin-bottom: 20px;
 `
 
