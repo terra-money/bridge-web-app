@@ -15,6 +15,8 @@ import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
 import FormImage from 'components/FormImage'
 
+import bridgeLogo from 'images/bridge_logo.png'
+
 const { walletLogo } = WALLET
 const StyledContainer = styled.div`
   height: 70px;
@@ -141,7 +143,9 @@ const Header = (): ReactElement => {
       <StyledNav>
         <Row>
           <Col>
-            <StyledLogo>Bridge</StyledLogo>
+            <StyledLogo>
+              <img src={bridgeLogo} width={200} height={50} alt="" />
+            </StyledLogo>
           </Col>
           <Col style={{ alignSelf: 'center' }}>
             <TestnetTitle />
