@@ -13,6 +13,7 @@ import useAuth from 'hooks/useAuth'
 import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
+import FormImage from 'components/FormImage'
 
 const { walletLogo } = WALLET
 const StyledContainer = styled.div`
@@ -52,10 +53,10 @@ const StyledDropdownMenu = styled(Dropdown.Menu)`
   transition-duration: 300ms;
   background-color: ${COLOR.darkGray2};
   a {
-    color: white;
+    color: ${COLOR.white};
     :hover {
-      color: rgb(208, 152, 11);
-      background-color: ${COLOR.darkGray2};
+      color: ${COLOR.white};
+      background-color: ${COLOR.blueGray};
     }
   }
 `
@@ -83,14 +84,8 @@ const LoginUserInfo = (): ReactElement => {
       <Dropdown.Toggle as={CustomToggle}>
         <StyledLoginUserInfoBox>
           <Row style={{ width: 180, overflow: 'hidden' }}>
-            <Col sm={1} style={{ paddingRight: 5 }}>
-              <img
-                src={walletLogo[loginUser.walletType]}
-                width={20}
-                height={16}
-                alt=""
-                style={{ paddingRight: 5 }}
-              />
+            <Col sm={1} style={{ paddingRight: 5, alignSelf: 'center' }}>
+              <FormImage src={walletLogo[loginUser.walletType]} size={16} />
             </Col>
             <Col>
               <Address>{UTIL.truncate(loginUser.address)}</Address>

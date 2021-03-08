@@ -16,6 +16,7 @@ import FormInput from 'components/FormInput'
 import useAsset from 'hooks/useAsset'
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
+import FormImage from 'components/FormImage'
 
 const StyledContainer = styled.div`
   padding: 20px 30px;
@@ -75,12 +76,12 @@ const AssetItem = ({
     >
       {selected && (
         <div style={{ position: 'absolute', top: -5, left: 5 }}>
-          <Check color={COLOR.orange} width={30} height={30} />
+          <Check color={COLOR.primary} width={30} height={30} />
         </div>
       )}
       <Row>
         <Col sm={1} style={{ alignSelf: 'center' }}>
-          <img src={asset.loguURI} alt="" width={24} height={24} />
+          <FormImage src={asset.loguURI} size={24} />
         </Col>
         <Col>
           <Row>
@@ -125,7 +126,7 @@ const SelectAssetButton = ({
       {asset && (
         <Row>
           <Col sm={1}>
-            <img src={asset.loguURI} alt="" width={24} height={24} />
+            <FormImage src={asset.loguURI} size={24} />
           </Col>
           <Col>
             <Text>{asset.symbol}</Text>

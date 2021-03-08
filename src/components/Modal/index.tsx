@@ -29,7 +29,7 @@ const StyledModalHeaderClose = styled.a`
   cursor: pointer;
   color: ${COLOR.text};
   :hover {
-    color: ${COLOR.orange};
+    color: ${COLOR.primary};
     text-decoration: none;
   }
 `
