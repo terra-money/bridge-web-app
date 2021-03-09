@@ -47,7 +47,7 @@ const StyledToAddress = styled.div`
 
 const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const { submitRequestTx, waitForEtherBaseTransaction } = useSend()
-  const { formatBalace, getAssetList } = useAsset()
+  const { formatBalace } = useAsset()
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
@@ -84,7 +84,6 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             if (_.some(txInfos)) {
               setloading(false)
               setStatus(ProcessStatus.Done)
-              getAssetList()
               clearInterval(waitReceipt)
             }
           }, 500)
@@ -101,7 +100,6 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         } finally {
           setloading(false)
           setStatus(ProcessStatus.Done)
-          getAssetList()
         }
       }
     } else {
