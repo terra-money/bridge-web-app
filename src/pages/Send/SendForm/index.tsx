@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
-import { ArrowRight } from 'react-bootstrap-icons'
+import { ArrowRight, ArrowClockwise } from 'react-bootstrap-icons'
 
 import { ASSET, COLOR, NETWORK, STYLE } from 'consts'
 
@@ -54,6 +54,17 @@ const StyledMaxButton = styled.div`
   border: 2px solid ${COLOR.skyGray};
   border-radius: ${STYLE.css.borderRadius};
   padding: 5px 10px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.8;
+  }
+`
+
+const StyledRefreshButton = styled.div`
+  display: inline-block;
+  color: ${COLOR.primary};
+  font-size: 12px;
+  font-weight: bold;
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -236,7 +247,19 @@ const SendForm = ({
         <Col md={8}>
           <StyledForm>
             <StyledFormSection>
-              <FormLabel title={'Asset'} />
+              <Row>
+                <Col>
+                  <FormLabel title={'Asset'} />
+                </Col>
+                {isLoggedIn && (
+                  <Col style={{ textAlign: 'right' }}>
+                    <StyledRefreshButton onClick={getAssetList}>
+                      <ArrowClockwise style={{ marginRight: 5 }} size={14} />
+                      refresh
+                    </StyledRefreshButton>
+                  </Col>
+                )}
+              </Row>
               <AssetList
                 {...{ selectedAsset: asset, setSelectedAsset: setAsset }}
               />
