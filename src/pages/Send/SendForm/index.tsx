@@ -31,6 +31,7 @@ import SendStore from 'store/SendStore'
 
 import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -68,6 +69,8 @@ const SendForm = ({
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const { logout } = useAuth()
+
+  const status = useRecoilValue(SendProcessStore.sendProcessStatus)
 
   // Send Data
   const [asset, setAsset] = useRecoilState(SendStore.asset)
@@ -138,10 +141,17 @@ const SendForm = ({
     onChangeAmount({ value: formatBalace(asset?.balance || '0') })
   }
 
+  // after confirm send
   useEffect(() => {
-    getAssetList().then((): void => {
-      onChangeAmount({ value: inputAmount })
-    })
+    if (status === ProcessStatus.Done) {
+      getAssetList().then((): void => {
+        dbcValidateAndGetFeeInfo.callback()
+      })
+    }
+  }, [status])
+
+  useEffect(() => {
+    getAssetList()
   }, [loginUser])
 
   const dbcGetTerraShuttleFee = useDebouncedCallback(() => {
