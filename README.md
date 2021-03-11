@@ -1,12 +1,14 @@
 # Terra Bridge Web App
 
-**_Terra Bridge Web App_** helps users can easily send Terra tokens between Terra to Ethereum or Terra to BSC
+The **Terra Bridge** is a web frontend that allows users to easily send Terra assets across supported blockchains via their respective bridges.
 
-The Bridge Web App is intended to be used with plugins, wallet capable of signing contract transactions, for Chromium browsers as bellow :
+Users can connect their wallets to the Terra Bridge web app through a browser plugin for Chromium-based web browsers, as shown below:
 
-- [Terra Station Extension](https://terra.money/extension)
-- Ethereum browser-extensions such as [MetaMask](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en), [CoinBase](https://wallet.coinbase.com/) or [WalletConnect](https://trustwallet.com/)
-- BSC browser-extensions such as [Binance Chain Wallet](https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?hl=en) or [MetaMask](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en)
+| Blockchain | Supported Wallets                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Terra      | [Terra Station Extension](https://terra.money/extension)                                                                                                                                                                                   |
+| Ethereum   | [MetaMask](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en), [CoinBase](https://wallet.coinbase.com/) or [Trustwallet](https://trustwallet.com/) for [WalletConnect](https://walletconnect.org/) |
+| BSC        | [Binance Chain Wallet](https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?hl=en) or [MetaMask](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en)     |
 
 ## Instructions
 
