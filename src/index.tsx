@@ -5,6 +5,22 @@ import App from './App'
 import { RecoilRoot } from 'recoil'
 import reportWebVitals from './reportWebVitals'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import * as Sentry from '@sentry/react'
+import { Integrations } from '@sentry/tracing'
+
+const sentryDsn = process.env.REACT_APP_SENTRY_DSN
+const sentryEnv = process.env.REACT_APP_SENTRY_ENV
+
+if (sentryDsn && sentryEnv) {
+  Sentry.init({
+    dsn: sentryDsn,
+    integrations: [new Integrations.BrowserTracing()],
+    environment: sentryEnv,
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+  })
+}
 
 ReactDOM.render(
   <React.StrictMode>

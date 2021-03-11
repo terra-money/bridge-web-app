@@ -106,14 +106,19 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
   }
 
   const onClickCoinbase = async (): Promise<void> => {
-    const { address, provider } = await coinBaseService.connect()
-    await login({
-      user: {
-        address,
-        provider: new ethers.providers.Web3Provider(provider),
-        walletType: WalletEnum.CoinbaseWallet,
-      },
-    })
+    try {
+      const { address, provider } = await coinBaseService.connect()
+      await login({
+        user: {
+          address,
+          provider: new ethers.providers.Web3Provider(provider),
+          walletType: WalletEnum.CoinbaseWallet,
+        },
+      })
+    } catch (e) {
+      // if user close connect modal then error
+      console.log(e)
+    }
   }
 
   const buttons =
