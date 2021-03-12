@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core'
 import _ from 'lodash'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { COLOR, NETWORK, UTIL, STYLE } from 'consts'
 
@@ -45,6 +45,60 @@ const StyledToAddress = styled.div`
   margin-bottom: 20px;
 `
 
+const TxLink = ({
+  requestTxResult,
+}: {
+  requestTxResult?: RequestTxResultType
+}): ReactElement => {
+  const { getScannerLink } = useNetwork()
+  return (
+    <>
+      {requestTxResult?.success && (
+        <div style={{ marginBottom: 20 }}>
+          <ExtLink
+            href={getScannerLink({
+              address: requestTxResult.hash,
+              type: 'tx',
+            })}
+          >
+            TX : {UTIL.truncate(requestTxResult.hash, [15, 15])}
+          </ExtLink>
+        </div>
+      )}
+    </>
+  )
+}
+
+const SubmitButton = ({
+  modal,
+  loading,
+  onClickSubmitButton,
+}: {
+  modal: ModalProps
+  loading: boolean
+  onClickSubmitButton: () => Promise<void>
+}): ReactElement => {
+  const status = useRecoilValue(SendProcessStore.sendProcessStatus)
+
+  const loginUser = useRecoilValue(AuthStore.loginUser)
+
+  const SubmitButtonText = (): ReactElement => {
+    return loading ? (
+      <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
+    ) : (
+      <>Sumbit transaction via {loginUser.walletType}</>
+    )
+  }
+
+  return status === ProcessStatus.Done ? (
+    <Button onClick={modal.close}>Complete</Button>
+  ) : (
+    <Button disabled={loading} onClick={onClickSubmitButton}>
+      <SubmitButtonText />
+    </Button>
+  )
+}
+
 const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const { submitRequestTx, waitForEtherBaseTransaction } = useSend()
   const { formatBalace } = useAsset()
@@ -56,14 +110,47 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const toAddress = useRecoilValue(SendStore.toAddress)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
-  const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
+  const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const [requestTxResult, setrequestTxResult] = useState<RequestTxResultType>()
   const [errorMessage, setErrorMessage] = useState('')
   const [sumbitError, setSumbitError] = useState('')
-  const { getScannerLink } = useNetwork()
   const { getTxInfos } = useTerraTxInfo()
   const [loading, setloading] = useState(false)
+
+  const waitForReceipt = async (
+    submitResult: RequestTxResultType
+  ): Promise<void> => {
+    if (submitResult.success) {
+      setloading(true)
+      setStatus(ProcessStatus.Pending)
+
+      try {
+        if (fromBlockChain === BlockChainType.terra) {
+          const waitReceipt = setInterval(async () => {
+            const txInfos = await getTxInfos({ hash: submitResult.hash })
+            if (_.some(txInfos)) {
+              setloading(false)
+              setStatus(ProcessStatus.Done)
+              clearInterval(waitReceipt)
+            }
+          }, 500)
+        } else {
+          await waitForEtherBaseTransaction({
+            hash: submitResult.hash,
+          })
+          setloading(false)
+          setStatus(ProcessStatus.Done)
+        }
+      } catch (error) {
+        setSumbitError(_.toString(error))
+        setloading(false)
+        setStatus(ProcessStatus.Done)
+      }
+    } else {
+      setErrorMessage(submitResult.errorMessage || '')
+    }
+  }
 
   const onClickSubmitButton = async (): Promise<void> => {
     setErrorMessage('')
@@ -73,38 +160,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
     setloading(false)
     setrequestTxResult(submitResult)
 
-    if (submitResult.success) {
-      setloading(true)
-      setStatus(ProcessStatus.Pending)
-
-      if (fromBlockChain === BlockChainType.terra) {
-        try {
-          const waitReceipt = setInterval(async () => {
-            const txInfos = await getTxInfos({ hash: submitResult.hash })
-            if (_.some(txInfos)) {
-              setloading(false)
-              setStatus(ProcessStatus.Done)
-              clearInterval(waitReceipt)
-            }
-          }, 500)
-        } catch (error) {
-          setSumbitError(_.toString(error))
-        }
-      } else {
-        try {
-          await waitForEtherBaseTransaction({
-            hash: submitResult.hash,
-          })
-        } catch (error) {
-          setSumbitError(_.toString(error))
-        } finally {
-          setloading(false)
-          setStatus(ProcessStatus.Done)
-        }
-      }
-    } else {
-      setErrorMessage(submitResult.errorMessage || '')
-    }
+    waitForReceipt(submitResult)
   }
 
   // try confirm immediately
@@ -163,30 +219,13 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         <Text>{toAddress}</Text>
       </StyledToAddress>
 
-      {requestTxResult?.success && (
-        <div style={{ marginBottom: 20 }}>
-          <ExtLink
-            href={getScannerLink({
-              address: requestTxResult.hash,
-              type: 'tx',
-            })}
-          >
-            TX : {UTIL.truncate(requestTxResult.hash, [15, 15])}
-          </ExtLink>
-        </div>
-      )}
+      <TxLink requestTxResult={requestTxResult} />
 
-      {status === ProcessStatus.Done ? (
-        <Button onClick={modal.close}>Complete</Button>
-      ) : (
-        <Button disabled={loading} onClick={onClickSubmitButton}>
-          {loading ? (
-            <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
-          ) : (
-            <>Sumbit transaction via {loginUser.walletType}</>
-          )}
-        </Button>
-      )}
+      <SubmitButton
+        modal={modal}
+        loading={loading}
+        onClickSubmitButton={onClickSubmitButton}
+      />
 
       <FormErrorMessage errorMessage={errorMessage} />
       {sumbitError && (

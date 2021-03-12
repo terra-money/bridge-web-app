@@ -23,7 +23,7 @@ const StyledInfoText = styled(Text)`
   display: block;
 `
 
-const NotSupportNetwork = (): ReactElement => {
+const NotSupportNetworkModal = (): ReactElement => {
   const [isVisibleModal, setIsVisibleModal] = useRecoilState(
     NetworkStore.isVisibleNotSupportNetworkModal
   )
@@ -65,4 +65,4 @@ const NotSupportNetwork = (): ReactElement => {
   )
 }
 
-export default NotSupportNetwork
+export default NotSupportNetworkModal

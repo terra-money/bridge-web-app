@@ -26,21 +26,25 @@ query {
 
 const getTerraMAssetPairContract = (
   addressList: MAssetTerraPairContractAddressType[]
-): string => `
-query {
-    ${_.map(
-      addressList,
-      (item) =>
-        `${item.tokenAddress}: WasmContractsContractAddressStore(
+): string => {
+  const mapped = _.map(
+    addressList,
+    (item) =>
+      `${item.tokenAddress}: WasmContractsContractAddressStore(
             ContractAddress: "${item.pairContractAddress}"
             QueryMsg: "{\\"pool\\":{}}"
         ) {
             Height
             Result
         }`
-    )}
-}
+  )
+
+  return `
+  query {
+    ${mapped}
+  }
 `
+}
 
 interface AssetToken {
   amount: string

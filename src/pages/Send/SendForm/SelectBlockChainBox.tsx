@@ -27,7 +27,7 @@ const SelectBlockChainBox = ({
   optionList: {
     value: BlockChainType
     label: string
-    isDisabled?: boolean | undefined
+    isDisabled?: boolean
   }[]
 }): ReactElement => {
   return (

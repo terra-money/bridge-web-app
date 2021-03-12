@@ -71,7 +71,7 @@ const useSend = (): UseSendType => {
   // Send Data
   const [asset, setAsset] = useRecoilState(SendStore.asset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
-  const [amount, setAmount] = useRecoilState(SendStore.amount)
+  const [sendAmount, setSendAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
@@ -81,21 +81,23 @@ const useSend = (): UseSendType => {
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
-  useEffect(() => {
+  const getGasPricesFromServer = async (): Promise<void> => {
     if (terraExt) {
-      ;(async (): Promise<void> => {
-        const { data } = await axios.get('/v1/txs/gas_prices', {
-          baseURL: terraExt.fcd,
-        })
-        setGasPricesFromServer(data)
-      })()
+      const { data } = await axios.get('/v1/txs/gas_prices', {
+        baseURL: terraExt.fcd,
+      })
+      setGasPricesFromServer(data)
     }
+  }
+
+  useEffect(() => {
+    getGasPricesFromServer()
   }, [terraExt])
 
   const initSendData = (): void => {
     setAsset(undefined)
     setToAddress('')
-    setAmount('')
+    setSendAmount('')
     setMemo('')
     setToBlockChain(BlockChainType.terra)
 
@@ -131,10 +133,14 @@ const useSend = (): UseSendType => {
         msgs,
         feeDenoms: [feeDenom],
       })
-      const fee = new StdFee(unsignedTx.fee.gas, unsignedTx.fee.amount.add(tax))
+      const stdFee = new StdFee(
+        unsignedTx.fee.gas,
+        unsignedTx.fee.amount.add(tax)
+      )
+
       return {
         gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
-        fee,
+        fee: stdFee,
         tax,
         feeOfGas: unsignedTx.fee.amount.toArray()[0],
       }
@@ -151,14 +157,14 @@ const useSend = (): UseSendType => {
       return UTIL.isNativeDenom(asset.tokenAddress)
         ? [
             new MsgSend(loginUser.address, recipient, [
-              new Coin(asset.tokenAddress, amount),
+              new Coin(asset.tokenAddress, sendAmount),
             ]),
           ]
         : [
             new MsgExecuteContract(
               loginUser.address,
               asset.tokenAddress,
-              { transfer: { recipient, amount } },
+              { transfer: { recipient, amount: sendAmount } },
               new Coins([])
             ),
           ]
@@ -195,6 +201,26 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // function for 'submitRequestTxFromEtherBase'
+  const handleTxErrorFromEtherBase = (error: any): RequestTxResultType => {
+    if (loginUser.walletType === WalletEnum.Binance) {
+      return {
+        success: false,
+        errorMessage: _.toString(error.error),
+      }
+    } else if (loginUser.walletType === WalletEnum.MetaMask) {
+      return {
+        success: false,
+        errorMessage: error?.message,
+      }
+    }
+
+    return {
+      success: false,
+      errorMessage: _.toString(error),
+    }
+  }
+
   // Can't send tx between Ethereum <-> BSC
   const submitRequestTxFromEtherBase = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain !== BlockChainType.terra && asset?.tokenAddress) {
@@ -208,28 +234,13 @@ const useSend = (): UseSendType => {
         const decoded = decodeTerraAddressOnEtherBase(toAddress)
         try {
           const tx = isTerra
-            ? withSigner.burn(amount, decoded.padEnd(66, '0'))
-            : withSigner.transfer(toAddress, amount)
+            ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
+            : withSigner.transfer(toAddress, sendAmount)
 
           const { hash } = await tx
           return { success: true, hash }
         } catch (error) {
-          if (loginUser.walletType === WalletEnum.Binance) {
-            return {
-              success: false,
-              errorMessage: _.toString(error.error),
-            }
-          } else if (loginUser.walletType === WalletEnum.MetaMask) {
-            return {
-              success: false,
-              errorMessage: error?.message,
-            }
-          }
-
-          return {
-            success: false,
-            errorMessage: _.toString(error),
-          }
+          return handleTxErrorFromEtherBase(error)
         }
       }
     }
@@ -253,7 +264,7 @@ const useSend = (): UseSendType => {
     hash: string
   }): Promise<EtherBaseReceiptResultType | undefined> => {
     if (fromBlockChain !== BlockChainType.terra && asset?.tokenAddress) {
-      return await loginUser.provider?.waitForTransaction(hash)
+      return loginUser.provider?.waitForTransaction(hash)
     }
   }
 
