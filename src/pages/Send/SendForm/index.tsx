@@ -7,7 +7,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowRight, ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR, NETWORK, STYLE } from 'consts'
+import { ASSET, COLOR, NETWORK } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateResultType } from 'types/send'
@@ -36,11 +36,24 @@ import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 const StyledContainer = styled(Container)`
   padding: 40px 0;
   height: 100%;
+  @media (max-width: 575px) {
+    padding: 20px 0;
+    width: 100vw;
+    overflow-x: hidden;
+  }
 `
 
 const StyledForm = styled.div`
   background-color: ${COLOR.darkGray};
-  padding: 40px 10%;
+  padding: 40px 80px;
+  border-radius: 1em;
+  @media (max-width: 1199px) {
+    padding: 40px;
+  }
+  @media (max-width: 575px) {
+    border-radius: 0;
+    padding: 20px;
+  }
 `
 
 const StyledFormSection = styled.div`
@@ -49,11 +62,15 @@ const StyledFormSection = styled.div`
 
 const StyledMaxButton = styled.div`
   position: absolute;
-  top: 8px;
+  top: 50%;
+  margin-top: -13px;
   right: 20px;
-  border: 2px solid ${COLOR.skyGray};
-  border-radius: ${STYLE.css.borderRadius};
-  padding: 5px 10px;
+  border: 1px solid ${COLOR.skyGray};
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 0 10px;
+  line-height: 24px;
+  height: 26px;
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -255,7 +272,15 @@ const SendForm = ({
                   <Col style={{ textAlign: 'right' }}>
                     <StyledRefreshButton onClick={getAssetList}>
                       <ArrowClockwise style={{ marginRight: 5 }} size={14} />
-                      refresh
+                      <Text
+                        style={{
+                          fontWeight: 500,
+                          fontSize: 10,
+                          color: COLOR.terraSky,
+                        }}
+                      >
+                        REFRESH
+                      </Text>
                     </StyledRefreshButton>
                   </Col>
                 )}
@@ -304,9 +329,10 @@ const SendForm = ({
                     alignSelf: 'center',
                     paddingLeft: 0,
                     paddingRight: 0,
+                    paddingTop: 18,
                   }}
                 >
-                  <ArrowRight color={COLOR.white} />
+                  <ArrowRight color={COLOR.white} size={20} />
                 </Col>
                 <Col>
                   <FormLabel title={'To'} />
@@ -386,9 +412,17 @@ const SendForm = ({
                 <StyledFormSection>
                   <FormLabel title={'TxFee'} />
 
-                  <div>
-                    <Text style={{ paddingRight: 10 }}>GAS Fee :</Text>
-                    <Text style={{ paddingRight: 10 }}>
+                  <div
+                    style={{
+                      borderTop: 'dashed 1px #444',
+                      paddingTop: 10,
+                      fontSize: 13,
+                    }}
+                  >
+                    <Text style={{ paddingRight: 5, opacity: '0.8' }}>
+                      GAS Fee:
+                    </Text>
+                    <Text style={{ paddingRight: 10, opacity: '0.8' }}>
                       {feeOfGas ? formatBalace(feeOfGas) : '0'}
                     </Text>
                     <div className={'d-inline-block'}>
@@ -408,10 +442,17 @@ const SendForm = ({
                     </div>
                   </div>
                   <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
-                  <div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      borderBottom: 'dashed 1px #444',
+                      paddingTop: 5,
+                      paddingBottom: 10,
+                    }}
+                  >
                     {tax && (
-                      <Text>
-                        Tax : {formatBalace(tax)} {asset?.symbol}
+                      <Text style={{ opacity: '0.8' }}>
+                        Tax: {formatBalace(tax)} {asset?.symbol}
                       </Text>
                     )}
                   </div>

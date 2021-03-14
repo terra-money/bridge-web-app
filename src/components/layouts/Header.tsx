@@ -18,7 +18,7 @@ import bridgeLogo from 'images/bridge_logo.png'
 
 const { walletLogo } = WALLET
 const StyledContainer = styled.div`
-  height: 70px;
+  background-color: ${COLOR.headerBg};
 `
 
 const StyledNav = styled.div`
@@ -26,13 +26,12 @@ const StyledNav = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  height: 100%;
-  padding: 0 1.5rem;
-  background-color: ${COLOR.headerBg};
+  min-height: 79px;
+  padding: 10px 1.5rem;
 `
 
 const StyledLogo = styled(Text)`
-  font-size: 22px;
+  font-size: 0;
 `
 
 const Address = styled(Text)`
@@ -42,9 +41,8 @@ const Address = styled(Text)`
 const StyledLoginUserInfoBox = styled.div`
   border-radius: ${STYLE.css.borderRadius};
   background-color: ${COLOR.darkGray2};
-  margin-right: 10px;
-  font-size: 14px;
-  padding: 0 10px;
+  font-size: 11px;
+  padding: 8px 12px;
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -53,11 +51,18 @@ const StyledLoginUserInfoBox = styled.div`
 const StyledDropdownMenu = styled(Dropdown.Menu)`
   transition-duration: 300ms;
   background-color: ${COLOR.darkGray2};
+  border-radius: ${STYLE.css.borderRadius};
+  font-size: 12px;
+  width: 100%;
+  padding: 0;
+  text-align: center;
   a {
     color: ${COLOR.white};
+    padding: 12px;
+    border-radius: ${STYLE.css.borderRadius};
     :hover {
-      color: ${COLOR.white};
-      background-color: ${COLOR.blueGray};
+      color: ${COLOR.terraSky};
+      background-color: ${COLOR.darkGray2};
     }
   }
 `
@@ -84,15 +89,31 @@ const LoginUserInfo = (): ReactElement => {
     <Dropdown>
       <Dropdown.Toggle as={CustomToggle}>
         <StyledLoginUserInfoBox>
-          <Row style={{ width: 180, overflow: 'hidden' }}>
-            <Col sm={1} style={{ paddingRight: 5, alignSelf: 'center' }}>
+          <Row style={{ width: 170, overflow: 'hidden', flexWrap: 'nowrap' }}>
+            <Col
+              style={{
+                width: 40,
+                paddingRight: 10,
+                alignSelf: 'center',
+                flex: '0 0 23%',
+                maxWidth: '23%',
+              }}
+            >
               <FormImage src={walletLogo[loginUser.walletType]} size={16} />
             </Col>
-            <Col>
+            <Col style={{ padding: 0 }}>
               <Address>{UTIL.truncate(loginUser.address)}</Address>
             </Col>
           </Row>
-          <div>
+          <div
+            style={{
+              textAlign: 'left',
+              opacity: '0.5',
+              borderTop: 'solid 1px #555',
+              marginTop: 3,
+              paddingTop: 3,
+            }}
+          >
             <Text>
               {fromBlockChain === 'bsc' && 'Binance Chain Network'}
               {fromBlockChain === 'ethereum' && 'Ethereum Network'}
@@ -117,16 +138,19 @@ const TestnetTitle = (): ReactElement => {
       {isTestnet && (
         <Text
           style={{
-            borderRadius: 15,
-            borderWidth: 2,
-            borderColor: COLOR.blueGray,
-            borderStyle: 'solid',
-            width: 100,
-            textAlign: 'center',
-            backgroundColor: COLOR.darkGray2,
+            borderRadius: 12,
+            backgroundColor: COLOR.terraSky,
+            fontSize: 10,
+            paddingTop: 4,
+            paddingBottom: 4,
+            paddingLeft: 12,
+            paddingRight: 12,
+            fontWeight: 500,
+            marginTop: 5,
+            marginBottom: 5,
           }}
         >
-          TEST NET
+          TESTNET
         </Text>
       )}
     </>
@@ -140,9 +164,11 @@ const Header = (): ReactElement => {
     <StyledContainer>
       <StyledNav>
         <Row>
-          <Col>
+          <Col
+            style={{ display: 'flex', alignItems: 'center', paddingRight: 0 }}
+          >
             <StyledLogo>
-              <img src={bridgeLogo} width={200} height={50} alt="" />
+              <img src={bridgeLogo} width={120} height={30} alt="" />
             </StyledLogo>
           </Col>
           <Col style={{ alignSelf: 'center' }}>

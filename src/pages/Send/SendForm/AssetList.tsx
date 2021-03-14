@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { useRecoilValue } from 'recoil'
 import styled from 'styled-components'
 import { Col, Row } from 'react-bootstrap'
-import { Check, ChevronRight } from 'react-bootstrap-icons'
+import { ChevronRight } from 'react-bootstrap-icons'
 
 import { COLOR, STYLE } from 'consts'
 
@@ -24,8 +24,9 @@ const StyledContainer = styled.div`
 `
 
 const StyledAssetItemBox = styled.div`
-  padding: 10px 0;
+  padding: 5px 0;
   height: 500px;
+  max-height: 60vh;
   overflow-y: scroll;
   background-color: ${COLOR.darkGray};
   border-radius: ${STYLE.css.borderRadius};
@@ -33,11 +34,15 @@ const StyledAssetItemBox = styled.div`
 
 const StyledAssetItem = styled.div`
   position: relative;
-  border-bottom: 1px solid ${COLOR.blueGray};
-  padding: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 20px;
+  line-height: 16px;
   cursor: pointer;
   :hover {
     opacity: 0.8;
+  }
+  :last-child {
+    border-bottom: 0;
   }
 `
 
@@ -46,7 +51,8 @@ const StyledSelectAssetButton = styled.div`
   border-width: 1px;
   border-color: red;
   border-radius: ${STYLE.css.borderRadius};
-  padding: 10px;
+  padding: 10px 15px;
+  font-size: 14px;
   background-color: ${COLOR.darkGray2};
   :hover {
     opacity: 0.8;
@@ -74,24 +80,28 @@ const AssetItem = ({
         setShowModal(false)
       }}
     >
-      {selected && (
+      {/* {selected && (
         <div style={{ position: 'absolute', top: -5, left: 5 }}>
           <Check color={COLOR.primary} width={30} height={30} />
         </div>
-      )}
+      )} */}
       <Row>
-        <Col sm={1} style={{ alignSelf: 'center' }}>
-          <FormImage src={asset.loguURI} size={24} />
+        <Col
+          sm={1}
+          style={{ alignSelf: 'center', marginTop: 3, marginBottom: 3 }}
+        >
+          <FormImage src={asset.loguURI} size={20} />
         </Col>
         <Col>
           <Row>
             <Col>
-              <Text>{asset.symbol}</Text>
+              <Text style={{ fontSize: 14 }}>{asset.symbol}</Text>
+              <br />
             </Col>
           </Row>
           <Row>
             <Col>
-              <Text style={{ color: COLOR.blueGray, fontSize: 14 }}>
+              <Text style={{ color: COLOR.blueGray, fontSize: 12 }}>
                 {asset.name}
               </Text>
             </Col>
@@ -99,7 +109,9 @@ const AssetItem = ({
         </Col>
         {isLoggedIn && (
           <Col style={{ textAlign: 'right', alignSelf: 'center' }}>
-            <Text>{asset.balance ? formatBalace(asset.balance) : '0'} </Text>
+            <Text style={{ fontSize: 14 }}>
+              {asset.balance ? formatBalace(asset.balance) : '0'}{' '}
+            </Text>
           </Col>
         )}
       </Row>
@@ -125,19 +137,17 @@ const SelectAssetButton = ({
     >
       {asset && (
         <Row>
-          <Col sm={1}>
-            <FormImage src={asset.loguURI} size={24} />
+          <Col style={{ display: 'flex', alignItems: 'center' }}>
+            <FormImage src={asset.loguURI} size={16} />
+            <Text style={{ marginLeft: 10 }}>{asset.symbol}</Text>
           </Col>
-          <Col>
-            <Text>{asset.symbol}</Text>
-          </Col>
-          {isLoggedIn && (
-            <Col style={{ textAlign: 'right' }}>
-              <Text>{asset.balance ? formatBalace(asset.balance) : '0'}</Text>
-            </Col>
-          )}
-          <Col xs={1} style={{ marginRight: 10 }}>
-            <ChevronRight />
+          <Col style={{ textAlign: 'right' }}>
+            {isLoggedIn && (
+              <Text style={{ marginRight: 10 }}>
+                {asset.balance ? formatBalace(asset.balance) : '0'}
+              </Text>
+            )}
+            <ChevronRight style={{ fontSize: 12, marginTop: -2 }} />
           </Col>
         </Row>
       )}
@@ -199,10 +209,10 @@ const AssetList = ({
         <StyledContainer>
           <div
             style={{
-              padding: 20,
               marginBottom: 20,
-              backgroundColor: COLOR.darkGray,
-              borderRadius: 15,
+              border: 'solid 1px rgba(255,255,255,.15)',
+              borderRadius: 10,
+              overflow: 'hidden',
             }}
           >
             <FormInput
@@ -237,7 +247,7 @@ const AssetList = ({
                 />
               ))
             ) : (
-              <Text style={{ padding: 20 }}>
+              <Text style={{ padding: 20, fontSize: 14 }}>
                 {`"${inputFilter}" does not exist`}{' '}
               </Text>
             )}

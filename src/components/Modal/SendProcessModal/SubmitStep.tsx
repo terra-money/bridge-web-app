@@ -36,13 +36,16 @@ const StyledInfoText = styled(Text)`
   text-align: center;
   display: block;
   margin-bottom: 10px;
+  font-size: 12px;
+  color: ${COLOR.skyGray};
 `
 
 const StyledToAddress = styled.div`
-  padding: 20px;
-  border: 1px solid ${COLOR.skyGray};
   border-radius: ${STYLE.css.borderRadius};
   margin-bottom: 20px;
+  font-size: 12px;
+  word-break: break-all;
+  text-align: center;
 `
 
 const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
@@ -130,14 +133,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             }
           />
         )}
-        <div style={{ textAlign: 'center' }}>
-          <div>
-            <Text
-              style={{ fontSize: 16, color: COLOR.skyGray, marginBottom: 5 }}
-            >
-              Amount
-            </Text>
-          </div>
+        <div style={{ textAlign: 'center', marginTop: 40 }}>
           <div
             style={{
               display: 'flex',
@@ -146,8 +142,15 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
               marginBottom: 20,
             }}
           >
-            <FormImage src={asset?.loguURI || ''} size={30} />
-            <Text style={{ fontSize: 30, paddingLeft: 10 }}>
+            <FormImage src={asset?.loguURI || ''} size={24} />
+            <Text
+              style={{
+                fontSize: 22,
+                paddingLeft: 10,
+                letterSpacing: -0.5,
+                wordBreak: 'break-all',
+              }}
+            >
               {formatBalace(amount)} {asset?.symbol}
             </Text>
           </div>
@@ -156,7 +159,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
 
       <StyledToAddress>
         <div>
-          <Text style={{ fontSize: 16, color: COLOR.skyGray, marginBottom: 5 }}>
+          <Text style={{ color: COLOR.skyGray, marginBottom: 5 }}>
             To Address
           </Text>
         </div>
@@ -164,7 +167,13 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
       </StyledToAddress>
 
       {requestTxResult?.success && (
-        <div style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            textAlign: 'center',
+            fontSize: 12,
+            marginBottom: 20,
+          }}
+        >
           <ExtLink
             href={getScannerLink({
               address: requestTxResult.hash,

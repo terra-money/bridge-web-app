@@ -1,4 +1,4 @@
-import { COLOR, STYLE } from 'consts'
+import { COLOR } from 'consts'
 import { ButtonHTMLAttributes, ReactElement } from 'react'
 import styled from 'styled-components'
 
@@ -7,13 +7,16 @@ const StyledContainer = styled.div`
 `
 
 const StyledDefaultButton = styled.button<ButtonProps>`
-  padding: 8px;
+  padding: 16px 8px;
   width: 100%;
   background-color: ${COLOR.primary};
   color: ${COLOR.white};
+  font-size: 15px;
   text-align: center;
-  border-radius: ${STYLE.css.borderRadius};
+  border-radius: 27px;
+  margin-top: 20px;
   border-style: none;
+  box-sizing: border-box;
 
   cursor: pointer;
   :hover {

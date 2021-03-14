@@ -6,6 +6,7 @@ body,
 
 body {
   margin: 0;
+  font-family: "Gotham A", "Gotham B", sans-serif !important;
 }
 
 [type='number']::-webkit-inner-spin-button,

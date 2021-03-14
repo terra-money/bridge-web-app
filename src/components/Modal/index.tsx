@@ -1,6 +1,7 @@
 import { ReactElement, useState } from 'react'
 import Modal from 'react-modal'
 import styled from 'styled-components'
+import { X } from 'react-bootstrap-icons'
 
 import { COLOR, STYLE } from 'consts'
 
@@ -10,14 +11,14 @@ const StyledModal = styled(Modal)`
   margin: auto;
   background-color: #1e2026;
   border-radius: ${STYLE.css.borderRadius};
+  overflow: hidden;
 `
 
 const StyledModalHeader = styled.div`
   position: relative;
   text-align: center;
   padding: 16px;
-  border-bottom: 1px solid ${COLOR.blueGray};
-  min-height: 57px;
+  font-size: 14px;
 `
 
 const StyledModalHeaderClose = styled.a`
@@ -55,7 +56,7 @@ const DefaultModal = ({
       onRequestClose={onRequestClose}
       style={{
         overlay: {
-          backgroundColor: '#0b0e11cc',
+          backgroundColor: 'rgba(0,0,0,.9)',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -64,7 +65,9 @@ const DefaultModal = ({
     >
       <StyledModalHeader>
         {header}
-        <StyledModalHeaderClose onClick={close}> X</StyledModalHeaderClose>
+        <StyledModalHeaderClose onClick={close}>
+          <X size={24} />
+        </StyledModalHeaderClose>
       </StyledModalHeader>
       {children}
     </StyledModal>
