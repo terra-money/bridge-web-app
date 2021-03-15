@@ -80,11 +80,6 @@ const AssetItem = ({
         setShowModal(false)
       }}
     >
-      {/* {selected && (
-        <div style={{ position: 'absolute', top: -5, left: 5 }}>
-          <Check color={COLOR.primary} width={30} height={30} />
-        </div>
-      )} */}
       <Row>
         <Col
           sm={1}

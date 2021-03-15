@@ -50,7 +50,11 @@ const StyledSecD = styled.div`
   padding-left: 10px;
 `
 
-const ConfirmScreen = (): ReactElement => {
+const StyledSecDText = styled(Text)<{ isError?: boolean }>`
+  color: ${(props): string => (props.isError ? 'red' : COLOR.text)};
+`
+
+const ConfirmStep = (): ReactElement => {
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
   const { formatBalace } = useAsset()
 
@@ -126,7 +130,7 @@ const ConfirmScreen = (): ReactElement => {
             <span style={{ marginRight: 8, verticalAlign: 'middle' }}>
               <FormImage src={asset?.loguURI || ''} size={16} />
             </span>
-            <Text>{asset?.symbol}</Text>
+            <StyledSecDText>{asset?.symbol}</StyledSecDText>
           </div>
         </StyledSecD>
       </StyledSection>
@@ -143,76 +147,66 @@ const ConfirmScreen = (): ReactElement => {
       <StyledSection>
         <StyledSecH>Destination</StyledSecH>
         <StyledSecD>
-          <Text>{toAddress}</Text>
+          <StyledSecDText>{toAddress}</StyledSecDText>
         </StyledSecD>
       </StyledSection>
 
-      {fromBlockChain === BlockChainType.terra ? (
-        <>
-          <StyledSection>
-            <StyledSecH>NetworkFee</StyledSecH>
-            <StyledSecD>
-              <div>
-                <Text style={{ paddingRight: 5 }}>GAS Fee:</Text>
-                <Text style={{ paddingRight: 5 }}>
-                  {feeOfGas ? formatBalace(feeOfGas) : '0'}
-                </Text>
-                <Text>{ASSET.symbolOfDenom[feeDenom]}</Text>
-              </div>
+      {fromBlockChain === BlockChainType.terra && (
+        <StyledSection>
+          <StyledSecH>NetworkFee</StyledSecH>
+          <StyledSecD>
+            <div>
+              <StyledSecDText style={{ paddingRight: 5 }}>
+                GAS Fee:
+              </StyledSecDText>
+              <StyledSecDText style={{ paddingRight: 5 }}>
+                {formatBalace(feeOfGas || '0')}
+              </StyledSecDText>
+              <StyledSecDText>{ASSET.symbolOfDenom[feeDenom]}</StyledSecDText>
+            </div>
 
-              {tax && (
-                <Text>
-                  Tax: {formatBalace(tax)} {asset?.symbol}
-                </Text>
-              )}
-              {shuttleFee &&
-                (toBlockChain === BlockChainType.ethereum ||
-                  toBlockChain === BlockChainType.bsc) && (
-                  <div>
-                    <Text>
-                      {`Shuttle fee (estimated) : ${formatBalace(shuttleFee)} ${
-                        asset?.symbol
-                      }`}
-                    </Text>
-                  </div>
-                )}
-            </StyledSecD>
-          </StyledSection>
-
-          <StyledSection>
-            <StyledSecH>You will receive</StyledSecH>
-            <StyledSecD>
-              {toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc ? (
+            {tax && (
+              <StyledSecDText>
+                Tax: {formatBalace(tax)} {asset?.symbol}
+              </StyledSecDText>
+            )}
+            {shuttleFee &&
+              (toBlockChain === BlockChainType.ethereum ||
+                toBlockChain === BlockChainType.bsc) && (
                 <div>
-                  <Text
-                    style={
-                      amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                        ? {
-                            color: 'red',
-                          }
-                        : {}
-                    }
-                  >
-                    {` (estimated) ${formatBalace(amountAfterShuttleFee)} ${
+                  <StyledSecDText>
+                    {`Shuttle fee (estimated) : ${formatBalace(shuttleFee)} ${
                       asset?.symbol
                     }`}
-                  </Text>
+                  </StyledSecDText>
                 </div>
-              ) : (
-                <Text>{`${formatBalace(amount)} ${asset?.symbol}`}</Text>
               )}
-            </StyledSecD>
-          </StyledSection>
-        </>
-      ) : (
-        <StyledSection>
-          <StyledSecH>You will receive :</StyledSecH>
-          <StyledSecD>
-            <Text>{`${formatBalace(amount)} ${asset?.symbol}`}</Text>
           </StyledSecD>
         </StyledSection>
       )}
+
+      <StyledSection>
+        <StyledSecH>You will receive :</StyledSecH>
+        <StyledSecD>
+          {fromBlockChain === BlockChainType.terra &&
+          (toBlockChain === BlockChainType.ethereum ||
+            toBlockChain === BlockChainType.bsc) ? (
+            <div>
+              <StyledSecDText
+                isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
+              >
+                {` (estimated) ${formatBalace(amountAfterShuttleFee)} ${
+                  asset?.symbol
+                }`}
+              </StyledSecDText>
+            </div>
+          ) : (
+            <StyledSecDText>{`${formatBalace(amount)} ${
+              asset?.symbol
+            }`}</StyledSecDText>
+          )}
+        </StyledSecD>
+      </StyledSection>
       <br />
       <Button
         onClick={(): void => {
@@ -225,4 +219,4 @@ const ConfirmScreen = (): ReactElement => {
   )
 }
 
-export default ConfirmScreen
+export default ConfirmStep

@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core'
 import _ from 'lodash'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { COLOR, NETWORK, UTIL, STYLE } from 'consts'
 
@@ -48,6 +48,39 @@ const StyledToAddress = styled.div`
   text-align: center;
 `
 
+const StyledAmountText = styled(Text)<{ isError?: boolean }>`
+  color: ${(props): string => (props.isError ? 'red' : COLOR.text)};
+`
+
+const SubmitStepButton = ({
+  modal,
+  loading,
+  onClickSubmitButton,
+}: {
+  modal: ModalProps
+  loading: boolean
+  onClickSubmitButton: () => Promise<void>
+}): ReactElement => {
+  const status = useRecoilValue(SendProcessStore.sendProcessStatus)
+  const loginUser = useRecoilValue(AuthStore.loginUser)
+
+  const IfLoadingText = (): ReactElement => {
+    return loading ? (
+      <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
+    ) : (
+      <>Sumbit transaction via {loginUser.walletType}</>
+    )
+  }
+
+  return status === ProcessStatus.Done ? (
+    <Button onClick={modal.close}>Complete</Button>
+  ) : (
+    <Button disabled={loading} onClick={onClickSubmitButton}>
+      <IfLoadingText />
+    </Button>
+  )
+}
+
 const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const { submitRequestTx, waitForEtherBaseTransaction } = useSend()
   const { formatBalace } = useAsset()
@@ -58,8 +91,9 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const toAddress = useRecoilValue(SendStore.toAddress)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
 
-  const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
+  const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const [requestTxResult, setrequestTxResult] = useState<RequestTxResultType>()
   const [errorMessage, setErrorMessage] = useState('')
@@ -67,6 +101,40 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const { getScannerLink } = useNetwork()
   const { getTxInfos } = useTerraTxInfo()
   const [loading, setloading] = useState(false)
+
+  const waitForReceipt = async ({
+    submitResult,
+  }: {
+    submitResult: RequestTxResultType
+  }): Promise<void> => {
+    if (submitResult.success) {
+      setloading(true)
+      setStatus(ProcessStatus.Pending)
+
+      try {
+        if (fromBlockChain === BlockChainType.terra) {
+          const waitReceipt = setInterval(async () => {
+            const txInfos = await getTxInfos({ hash: submitResult.hash })
+            if (_.some(txInfos)) {
+              setloading(false)
+              setStatus(ProcessStatus.Done)
+              clearInterval(waitReceipt)
+            }
+          }, 500)
+        } else {
+          await waitForEtherBaseTransaction({
+            hash: submitResult.hash,
+          })
+          setloading(false)
+          setStatus(ProcessStatus.Done)
+        }
+      } catch (error) {
+        setSumbitError(_.toString(error))
+      }
+    } else {
+      setErrorMessage(submitResult.errorMessage || '')
+    }
+  }
 
   const onClickSubmitButton = async (): Promise<void> => {
     setErrorMessage('')
@@ -76,38 +144,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
     setloading(false)
     setrequestTxResult(submitResult)
 
-    if (submitResult.success) {
-      setloading(true)
-      setStatus(ProcessStatus.Pending)
-
-      if (fromBlockChain === BlockChainType.terra) {
-        try {
-          const waitReceipt = setInterval(async () => {
-            const txInfos = await getTxInfos({ hash: submitResult.hash })
-            if (_.some(txInfos)) {
-              setloading(false)
-              setStatus(ProcessStatus.Done)
-              clearInterval(waitReceipt)
-            }
-          }, 500)
-        } catch (error) {
-          setSumbitError(_.toString(error))
-        }
-      } else {
-        try {
-          await waitForEtherBaseTransaction({
-            hash: submitResult.hash,
-          })
-        } catch (error) {
-          setSumbitError(_.toString(error))
-        } finally {
-          setloading(false)
-          setStatus(ProcessStatus.Done)
-        }
-      }
-    } else {
-      setErrorMessage(submitResult.errorMessage || '')
-    }
+    waitForReceipt({ submitResult })
   }
 
   // try confirm immediately
@@ -133,13 +170,12 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             }
           />
         )}
-        <div style={{ textAlign: 'center', marginTop: 40 }}>
+        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 20 }}>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 20,
             }}
           >
             <FormImage src={asset?.loguURI || ''} size={24} />
@@ -154,6 +190,19 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
               {formatBalace(amount)} {asset?.symbol}
             </Text>
           </div>
+          {fromBlockChain === BlockChainType.terra &&
+            (toBlockChain === BlockChainType.ethereum ||
+              toBlockChain === BlockChainType.bsc) && (
+              <div>
+                <StyledAmountText
+                  isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
+                >
+                  {`After SuttleFee : (estimated) ${formatBalace(
+                    amountAfterShuttleFee
+                  )} ${asset?.symbol}`}
+                </StyledAmountText>
+              </div>
+            )}
         </div>
       </div>
 
@@ -185,17 +234,11 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         </div>
       )}
 
-      {status === ProcessStatus.Done ? (
-        <Button onClick={modal.close}>Complete</Button>
-      ) : (
-        <Button disabled={loading} onClick={onClickSubmitButton}>
-          {loading ? (
-            <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
-          ) : (
-            <>Sumbit transaction via {loginUser.walletType}</>
-          )}
-        </Button>
-      )}
+      <SubmitStepButton
+        modal={modal}
+        onClickSubmitButton={onClickSubmitButton}
+        loading={loading}
+      />
 
       <FormErrorMessage errorMessage={errorMessage} />
       {sumbitError && (
