@@ -30,7 +30,6 @@ const useEtherBaseContract = (): {
           ? new ethers.Contract(token, abi, loginUser.provider)
           : undefined
       } catch {}
-      return
     }
   }
   return {

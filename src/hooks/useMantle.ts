@@ -8,7 +8,7 @@ const useMantle = (): {
     variables,
   }: {
     query: string
-    variables?: string | undefined
+    variables?: string
   }) => Promise<any> | undefined
 } => {
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)

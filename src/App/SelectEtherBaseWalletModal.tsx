@@ -32,14 +32,15 @@ const StyledContainer = styled.div`
 const StyledWalletButton = styled(Button)`
   border-radius: ${STYLE.css.borderRadius};
   padding: 16px;
-  margin: 12px 0px;
+  margin: 8px 0px;
   border: 1px solid #1e2026;
   transition: all 0.3s ease 0s;
   background: #2b2f36;
   color: ${COLOR.white};
+  overflow: hidden;
 
   :hover {
-    border-color: #f8d12f;
+    border-color: ${COLOR.terraSky};
     background: #2b2f36;
   }
 `

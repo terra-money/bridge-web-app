@@ -16,8 +16,14 @@ type FormSelectProps<T> = {
 }
 
 const StyledDropdownItem = styled(Dropdown.Item)`
+  border-top: solid 1px #292929;
+  padding: 8px 10px;
+  font-size: 13px;
   :hover {
-    background-color: ${COLOR.blueGray};
+    background-color: ${COLOR.darkGray2};
+  }
+  :first-child {
+    border-top: 0;
   }
 `
 
@@ -39,14 +45,42 @@ const FormSelect = <T,>({
           split
           variant="secondary"
           size={size}
-          style={buttonStyle}
+          style={{
+            fontSize: 14,
+            backgroundColor: COLOR.darkGray2,
+            border: 0,
+            outline: 0,
+            width: '30px',
+            height: '30px',
+            marginTop: 5,
+            marginBottom: 5,
+          }}
         />
       ) : (
-        <Dropdown.Toggle variant="secondary" size={size} style={buttonStyle}>
+        <Dropdown.Toggle
+          variant="secondary"
+          size={size}
+          style={{
+            fontSize: 12,
+            backgroundColor: COLOR.darkGray2,
+            border: 0,
+            outline: 0,
+            marginTop: -2,
+          }}
+        >
           {selected.label}
         </Dropdown.Toggle>
       )}
-      <Dropdown.Menu style={{ backgroundColor: COLOR.darkGray2 }}>
+      <Dropdown.Menu
+        style={{
+          backgroundColor: COLOR.darkGray,
+          marginTop: 5,
+          border: 0,
+          boxShadow: 'rgba(0, 0, 0, 0.5) 0px 5px 10px',
+          padding: 0,
+          overflow: 'hidden',
+        }}
+      >
         {_.map(optionList, (option, i) => {
           return (
             <StyledDropdownItem

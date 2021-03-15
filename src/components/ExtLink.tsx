@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const StyledA = styled.a`
   padding: 10px;
-  color: #4b72e4;
+  color: #5493f7;
   :hover {
     opacity: 1;
   }

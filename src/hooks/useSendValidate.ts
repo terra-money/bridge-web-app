@@ -25,8 +25,6 @@ const useSendValidate = (): {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
-  //   const setGasPrices = useRecoilValue(SendStore.gasPrices)
-  //   const setFee = useRecoilValue(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
   const feeDenom = useRecoilValue(SendStore.feeDenom)
 
@@ -130,15 +128,18 @@ const useSendValidate = (): {
   }
 
   const validateSendData = (): ValidateResultType => {
-    const toAddress = validateToAddress()
-    const amount = validateAmount()
-    const memo = validateMemo()
+    const toAddressValidResult = validateToAddress()
+    const amountValidResult = validateAmount()
+    const memoValidResult = validateMemo()
     return {
-      isValid: _.every([toAddress, amount, memo], (x) => x.isValid),
+      isValid: _.every(
+        [toAddressValidResult, amountValidResult, memoValidResult],
+        (x) => x.isValid
+      ),
       errorMessage: {
-        toAddress: toAddress.errorMessage,
-        amount: amount.errorMessage,
-        memo: memo.errorMessage,
+        toAddress: toAddressValidResult.errorMessage,
+        amount: amountValidResult.errorMessage,
+        memo: memoValidResult.errorMessage,
       },
     }
   }

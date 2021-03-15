@@ -80,7 +80,6 @@ const useAuth = (): {
     // DON'T MOVE
     // set user have to be after set network info
     setLoginUser(user)
-    return
   }
 
   const logout = (): void => {

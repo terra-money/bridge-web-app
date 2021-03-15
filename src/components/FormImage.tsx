@@ -14,6 +14,7 @@ const StyledFormImage = styled.div<FormImageProps>`
   background-repeat: no-repeat;
   height: ${(props): number => props.size}px;
   width: ${(props): number => props.size}px;
+  margin-top: -2px;
 `
 
 const FormImage = (props: FormImageProps): ReactElement => {

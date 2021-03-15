@@ -12,6 +12,9 @@ import SubmitStep from './SubmitStep'
 
 const StyledContainer = styled.div`
   padding: 24px;
+  max-height: 80vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 `
 
 const SendProcessModal = (modal: ModalProps): ReactElement => {
@@ -32,7 +35,7 @@ const SendProcessModal = (modal: ModalProps): ReactElement => {
           {status === ProcessStatus.Confirm && <Text>Confirm</Text>}
           {(status === ProcessStatus.Submit ||
             status === ProcessStatus.Pending) && (
-            <Text>Sumbit Transaction</Text>
+            <Text>Submit Transaction</Text>
           )}
           {status === ProcessStatus.Done && <Text>Complete</Text>}
         </>

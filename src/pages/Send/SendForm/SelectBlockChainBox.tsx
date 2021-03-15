@@ -12,9 +12,9 @@ import FormImage from 'components/FormImage'
 
 const StyledContainer = styled.div`
   border-radius: ${STYLE.css.borderRadius};
-  border-style: solid;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 9px;
   border-color: ${COLOR.darkGray2};
-  padding: 15px;
+  padding: 20px 15px 15px;
 `
 
 const SelectBlockChainBox = ({
@@ -27,19 +27,25 @@ const SelectBlockChainBox = ({
   optionList: {
     value: BlockChainType
     label: string
-    isDisabled?: boolean | undefined
+    isDisabled?: boolean
   }[]
 }): ReactElement => {
   return (
     <StyledContainer>
       <Row>
+        <Col lg={2}></Col>
         <Col style={{ textAlign: 'center' }}>
           <FormImage src={NETWORK.blockChainImage[blockChain]} size={40} />
           <div>
-            <Text>{NETWORK.blockChainName[blockChain]}</Text>
+            <Text style={{ fontSize: 14 }}>
+              {NETWORK.blockChainName[blockChain]}
+            </Text>
           </div>
         </Col>
-        <Col sm={'auto'}>
+        <Col
+          lg={3}
+          style={{ alignSelf: 'center', paddingBottom: 5, textAlign: 'center' }}
+        >
           {setBlockChain && (
             <FormSelect
               buttonStyle={{ width: '100%' }}

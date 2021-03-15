@@ -24,14 +24,15 @@ const useNetwork = (): {
     if (fromBlockChain === BlockChainType.terra && terraExt) {
       return `${FINDER}/${terraExt.chainID}/${type}/${address}`
     } else if (etherBaseExt) {
+      let subdomain = ''
+
       if (fromBlockChain === BlockChainType.bsc) {
-        return `https://${
-          isTestnet ? 'testnet.' : ''
-        }bscscan.com/${type}/${address}`
+        subdomain = isTestnet ? 'testnet.' : ''
+        return `https://${subdomain}bscscan.com/${type}/${address}`
       }
-      return `https://${
-        isTestnet ? `${etherBaseExt.name}.` : ''
-      }etherscan.io/${type}/${address}`
+
+      subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
+      return `https://${subdomain}etherscan.io/${type}/${address}`
     }
     return ''
   }
