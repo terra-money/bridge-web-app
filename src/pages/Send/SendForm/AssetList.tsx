@@ -49,7 +49,7 @@ const StyledAssetItem = styled.div`
 const StyledSelectAssetButton = styled.div`
   cursor: pointer;
   border-width: 1px;
-  border-color: red;
+  border-color: ${COLOR.red};
   border-radius: ${STYLE.css.borderRadius};
   padding: 10px 15px;
   font-size: 14px;

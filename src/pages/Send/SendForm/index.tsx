@@ -293,7 +293,7 @@ const FormFeeInfo = ({
                         style={{
                           opacity: '0.8',
                           color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                            ? 'red'
+                            ? COLOR.red
                             : COLOR.text,
                         }}
                       >

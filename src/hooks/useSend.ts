@@ -197,7 +197,7 @@ const useSend = (): UseSendType => {
     return {
       success: false,
       errorMessage:
-        result.error?.code === 1 ? 'Denied by the use' : result.error?.message,
+        result.error?.code === 1 ? 'Denied by the user' : result.error?.message,
     }
   }
 

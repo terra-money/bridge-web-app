@@ -8,6 +8,7 @@ const blueGray = '#474d57'
 const black = '#14151a'
 const orange = '#f0b90b'
 const lightOrange = '#f8d12f'
+const red ="#FF5561"
 
 const primary = terraSky
 const text = white
@@ -26,6 +27,7 @@ export default {
   black,
   orange,
   lightOrange,
+  red,
 
   primary,
   text,

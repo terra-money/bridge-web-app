@@ -234,11 +234,13 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         </div>
       )}
 
-      <SubmitStepButton
-        modal={modal}
-        onClickSubmitButton={onClickSubmitButton}
-        loading={loading}
-      />
+      <div style={{ marginBottom: 20 }}>
+        <SubmitStepButton
+          modal={modal}
+          onClickSubmitButton={onClickSubmitButton}
+          loading={loading}
+        />
+      </div>
 
       <FormErrorMessage errorMessage={errorMessage} />
       {sumbitError && (
