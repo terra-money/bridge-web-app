@@ -6,6 +6,7 @@ import Text from './Text'
 const StyledText = styled(Text)`
   color: red;
   word-break: break-all;
+  font-size: 13px;
 `
 
 const FormErrorMessage = ({

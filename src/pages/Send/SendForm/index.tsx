@@ -7,10 +7,10 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowRight, ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR, NETWORK, STYLE } from 'consts'
+import { ASSET, COLOR, NETWORK } from 'consts'
 
 import { BlockChainType } from 'types/network'
-import { ValidateItemResultType, ValidateResultType } from 'types/send'
+import { ValidateResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 
 import { Button, Text } from 'components'
@@ -36,11 +36,24 @@ import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 const StyledContainer = styled(Container)`
   padding: 40px 0;
   height: 100%;
+  @media (max-width: 575px) {
+    padding: 20px 0;
+    width: 100vw;
+    overflow-x: hidden;
+  }
 `
 
 const StyledForm = styled.div`
   background-color: ${COLOR.darkGray};
-  padding: 40px 10%;
+  padding: 40px 80px;
+  border-radius: 1em;
+  @media (max-width: 1199px) {
+    padding: 40px;
+  }
+  @media (max-width: 575px) {
+    border-radius: 0;
+    padding: 20px;
+  }
 `
 
 const StyledFormSection = styled.div`
@@ -49,11 +62,15 @@ const StyledFormSection = styled.div`
 
 const StyledMaxButton = styled.div`
   position: absolute;
-  top: 8px;
+  top: 50%;
+  margin-top: -13px;
   right: 20px;
-  border: 2px solid ${COLOR.skyGray};
-  border-radius: ${STYLE.css.borderRadius};
-  padding: 5px 10px;
+  border: 1px solid ${COLOR.skyGray};
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 0 10px;
+  line-height: 24px;
+  height: 26px;
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -71,134 +88,12 @@ const StyledRefreshButton = styled.div`
   }
 `
 
-const SendFormButton = ({
-  validationResult,
-  onClickSendButton,
-  isValidGasFee,
-}: {
-  validationResult: ValidateResultType
-  onClickSendButton: () => Promise<void>
-  isValidGasFee: ValidateItemResultType
-}): ReactElement => {
-  const selectWallet = useSelectWallet()
-  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-
-  return isLoggedIn ? (
-    <Button
-      onClick={onClickSendButton}
-      disabled={
-        false === validationResult.isValid ||
-        (fromBlockChain === BlockChainType.terra &&
-          false === isValidGasFee.isValid)
-      }
-    >
-      Next
-    </Button>
-  ) : (
-    <Button onClick={selectWallet.open}>Connect Wallet</Button>
-  )
-}
-
-const FormFeeInfo = ({
-  validationResult,
-  isValidGasFee,
-}: {
-  validationResult: ValidateResultType
-  isValidGasFee: ValidateItemResultType
-}): ReactElement => {
-  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-
-  // Send Data
-  const asset = useRecoilValue(SendStore.asset)
-  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
-
-  // Computed data from Send data
-  const feeOfGas = useRecoilValue(SendStore.feeOfGas)
-  const tax = useRecoilValue(SendStore.tax)
-  const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
-    SendStore.feeDenom
-  )
-  const shuttleFee = useRecoilValue(SendStore.shuttleFee)
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-
-  const { formatBalace } = useAsset()
-
-  return (
-    <>
-      {isLoggedIn &&
-        fromBlockChain === BlockChainType.terra &&
-        validationResult.isValid && (
-          <StyledFormSection>
-            <FormLabel title={'TxFee'} />
-
-            <div>
-              <Text style={{ paddingRight: 10 }}>GAS Fee :</Text>
-              <Text style={{ paddingRight: 10 }}>
-                {feeOfGas ? formatBalace(feeOfGas) : '0'}
-              </Text>
-              <div className={'d-inline-block'}>
-                <FormSelect
-                  defaultValue={feeDenom}
-                  size={'sm'}
-                  optionList={_.map(AssetNativeDenomEnum, (denom) => {
-                    return {
-                      label: ASSET.symbolOfDenom[denom],
-                      value: denom,
-                    }
-                  })}
-                  onSelect={(value: AssetNativeDenomEnum): void => {
-                    setFeeDenom(value)
-                  }}
-                />
-              </div>
-            </div>
-            <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
-            <div>
-              {tax && (
-                <Text>
-                  Tax : {formatBalace(tax)} {asset?.symbol}
-                </Text>
-              )}
-            </div>
-
-            {(toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc) && (
-              <div>
-                <Text>
-                  {`Shuttle fee (estimated) : ${formatBalace(shuttleFee)} ${
-                    asset?.symbol
-                  }`}
-                </Text>
-                <br />
-                <Text
-                  style={
-                    amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                      ? {
-                          color: 'red',
-                        }
-                      : {}
-                  }
-                >
-                  {`Amount after Shuttle fee (estimated) : ${formatBalace(
-                    amountAfterShuttleFee
-                  )} ${asset?.symbol}`}
-                </Text>
-              </div>
-            )}
-          </StyledFormSection>
-        )}
-    </>
-  )
-}
-
 const SendForm = ({
   onClickSendButton,
 }: {
   onClickSendButton: () => Promise<void>
 }): ReactElement => {
+  const selectWallet = useSelectWallet()
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const { logout } = useAuth()
@@ -215,11 +110,13 @@ const SendForm = ({
   const setFee = useSetRecoilState(SendStore.fee)
 
   // Computed data from Send data
-  const setFeeOfGas = useSetRecoilState(SendStore.feeOfGas)
-  const setTax = useSetRecoilState(SendStore.tax)
-  const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
-  const setShuttleFee = useSetRecoilState(SendStore.shuttleFee)
-  const setAmountAfterShuttleFee = useSetRecoilState(
+  const [feeOfGas, setFeeOfGas] = useRecoilState(SendStore.feeOfGas)
+  const [tax, setTax] = useRecoilState(SendStore.tax)
+  const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
+    SendStore.feeDenom
+  )
+  const [shuttleFee, setShuttleFee] = useRecoilState(SendStore.shuttleFee)
+  const [amountAfterShuttleFee, setAmountAfterShuttleFee] = useRecoilState(
     SendStore.amountAfterShuttleFee
   )
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
@@ -299,9 +196,11 @@ const SendForm = ({
           amount: sendAmount,
         }).then((shuttleFee) => {
           setShuttleFee(shuttleFee)
-          const computedAmount = sendAmount.minus(shuttleFee)
+          const amountAfterShuttleFee = sendAmount.minus(shuttleFee)
           setAmountAfterShuttleFee(
-            computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
+            amountAfterShuttleFee.isGreaterThan(0)
+              ? amountAfterShuttleFee
+              : new BigNumber(0)
           )
         })
       } else {
@@ -317,11 +216,11 @@ const SendForm = ({
   }, [asset?.tokenAddress, amount, toBlockChain])
 
   const dbcValidateAndGetFeeInfo = useDebouncedCallback(() => {
-    const vResult = validateSendData()
-    setValidationResult(vResult)
+    const validationResult = validateSendData()
+    setValidationResult(validationResult)
     if (isLoggedIn && fromBlockChain === 'terra') {
       if (
-        vResult.isValid &&
+        validationResult.isValid &&
         asset?.tokenAddress &&
         amount &&
         feeDenom &&
@@ -373,7 +272,15 @@ const SendForm = ({
                   <Col style={{ textAlign: 'right' }}>
                     <StyledRefreshButton onClick={getAssetList}>
                       <ArrowClockwise style={{ marginRight: 5 }} size={14} />
-                      refresh
+                      <Text
+                        style={{
+                          fontWeight: 500,
+                          fontSize: 10,
+                          color: COLOR.terraSky,
+                        }}
+                      >
+                        REFRESH
+                      </Text>
                     </StyledRefreshButton>
                   </Col>
                 )}
@@ -422,9 +329,10 @@ const SendForm = ({
                     alignSelf: 'center',
                     paddingLeft: 0,
                     paddingRight: 0,
+                    paddingTop: 18,
                   }}
                 >
-                  <ArrowRight color={COLOR.white} />
+                  <ArrowRight color={COLOR.white} size={20} />
                 </Col>
                 <Col>
                   <FormLabel title={'To'} />
@@ -498,17 +406,97 @@ const SendForm = ({
               />
             </StyledFormSection>
 
-            {/* only if from terra */}
-            <FormFeeInfo
-              validationResult={validationResult}
-              isValidGasFee={isValidGasFee}
-            />
+            {isLoggedIn &&
+              fromBlockChain === BlockChainType.terra &&
+              validationResult.isValid && (
+                <StyledFormSection>
+                  <FormLabel title={'TxFee'} />
 
-            <SendFormButton
-              onClickSendButton={onClickSendButton}
-              validationResult={validationResult}
-              isValidGasFee={isValidGasFee}
-            />
+                  <div
+                    style={{
+                      borderTop: 'dashed 1px #444',
+                      paddingTop: 10,
+                      fontSize: 13,
+                    }}
+                  >
+                    <Text style={{ paddingRight: 5, opacity: '0.8' }}>
+                      GAS Fee:
+                    </Text>
+                    <Text style={{ paddingRight: 10, opacity: '0.8' }}>
+                      {feeOfGas ? formatBalace(feeOfGas) : '0'}
+                    </Text>
+                    <div className={'d-inline-block'}>
+                      <FormSelect
+                        defaultValue={feeDenom}
+                        size={'sm'}
+                        optionList={_.map(AssetNativeDenomEnum, (denom) => {
+                          return {
+                            label: ASSET.symbolOfDenom[denom],
+                            value: denom,
+                          }
+                        })}
+                        onSelect={(value: AssetNativeDenomEnum): void => {
+                          setFeeDenom(value)
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
+                  <div
+                    style={{
+                      fontSize: 13,
+                      borderBottom: 'dashed 1px #444',
+                      paddingTop: 5,
+                      paddingBottom: 10,
+                    }}
+                  >
+                    {tax && (
+                      <Text style={{ opacity: '0.8' }}>
+                        Tax: {formatBalace(tax)} {asset?.symbol}
+                      </Text>
+                    )}
+                  </div>
+
+                  {(toBlockChain === BlockChainType.ethereum ||
+                    toBlockChain === BlockChainType.bsc) && (
+                    <div>
+                      <Text>
+                        {`Shuttle fee (estimated) : ${formatBalace(
+                          shuttleFee
+                        )} ${asset?.symbol}`}
+                      </Text>
+                      <br />
+                      <Text
+                        style={
+                          amountAfterShuttleFee.isLessThanOrEqualTo(0)
+                            ? {
+                                color: 'red',
+                              }
+                            : {}
+                        }
+                      >
+                        {`Amount after Shuttle fee (estimated) : ${formatBalace(
+                          amountAfterShuttleFee
+                        )} ${asset?.symbol}`}
+                      </Text>
+                    </div>
+                  )}
+                </StyledFormSection>
+              )}
+            {isLoggedIn ? (
+              <Button
+                onClick={onClickSendButton}
+                disabled={
+                  false === validationResult.isValid ||
+                  (fromBlockChain === BlockChainType.terra &&
+                    false === isValidGasFee.isValid)
+                }
+              >
+                Next
+              </Button>
+            ) : (
+              <Button onClick={selectWallet.open}>Connect Wallet</Button>
+            )}
           </StyledForm>
         </Col>
       </Row>

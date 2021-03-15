@@ -13,8 +13,9 @@ import { ExtLink } from 'components'
 
 const StyledContainer = styled.footer`
   padding: 20px;
-  background-color: ${COLOR.footerBg};
-
+  background-color: ${COLOR.black};
+  text-align: center;
+  opacity: 0.5;
   @media ${STYLE.media.mobile} {
     min-height: 100px;
   }
@@ -54,7 +55,7 @@ const Footer = (): ReactElement => {
         ({ href, src, alt }) =>
           href && (
             <ExtLink href={href} key={alt}>
-              <img src={src} alt={alt} width={20} height={20} />
+              <img src={src} alt={alt} width={16} height={16} />
             </ExtLink>
           )
       )}
