@@ -78,15 +78,13 @@ const StyledMaxButton = styled.div`
   }
 `
 
-const StyledRefreshButton = styled.div`
+const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
   display: inline-block;
   color: ${COLOR.primary};
   font-size: 12px;
   font-weight: bold;
-  cursor: pointer;
-  :hover {
-    opacity: 0.8;
-  }
+  opacity: ${({ refreshing }): number => (refreshing ? 0.5 : 1)};
+  cursor: ${({ refreshing }): string => (refreshing ? 'default' : 'pointer')};
 `
 
 const SendFormButton = ({
@@ -227,6 +225,46 @@ const FormFeeInfo = ({
             )}
           </StyledFormSection>
         )}
+    </>
+  )
+}
+
+const RefreshButton = (): ReactElement => {
+  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+  const { getAssetList } = useAsset()
+  const [refreshing, setRefreshing] = useState(false)
+  const dbcRefresh = useDebouncedCallback(() => {
+    setRefreshing(true)
+    getAssetList().finally((): void => {
+      setTimeout(() => {
+        setRefreshing(false)
+      }, 500)
+    })
+  }, 300)
+
+  return (
+    <>
+      {isLoggedIn && (
+        <Col style={{ textAlign: 'right' }}>
+          <StyledRefreshButton
+            onClick={(): void => {
+              dbcRefresh.callback()
+            }}
+            refreshing={refreshing}
+          >
+            <ArrowClockwise style={{ marginRight: 5 }} size={14} />
+            <Text
+              style={{
+                fontWeight: 500,
+                fontSize: 10,
+                color: COLOR.terraSky,
+              }}
+            >
+              {refreshing ? 'REFRESHING...' : 'REFRESH'}
+            </Text>
+          </StyledRefreshButton>
+        </Col>
+      )}
     </>
   )
 }
@@ -406,22 +444,7 @@ const SendForm = ({
                 <Col>
                   <FormLabel title={'Asset'} />
                 </Col>
-                {isLoggedIn && (
-                  <Col style={{ textAlign: 'right' }}>
-                    <StyledRefreshButton onClick={getAssetList}>
-                      <ArrowClockwise style={{ marginRight: 5 }} size={14} />
-                      <Text
-                        style={{
-                          fontWeight: 500,
-                          fontSize: 10,
-                          color: COLOR.terraSky,
-                        }}
-                      >
-                        REFRESH
-                      </Text>
-                    </StyledRefreshButton>
-                  </Col>
-                )}
+                <RefreshButton />
               </Row>
               <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
             </StyledFormSection>
