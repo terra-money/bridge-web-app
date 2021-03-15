@@ -48,7 +48,6 @@ const SelectBlockChainBox = ({
         >
           {setBlockChain && (
             <FormSelect
-              buttonStyle={{ width: '100%' }}
               defaultValue={blockChain}
               optionList={optionList}
               onSelect={setBlockChain}

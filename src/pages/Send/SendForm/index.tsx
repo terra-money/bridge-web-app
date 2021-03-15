@@ -6,12 +6,13 @@ import _ from 'lodash'
 import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowRight, ArrowClockwise } from 'react-bootstrap-icons'
+import { isMobile, MobileView } from 'react-device-detect'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
-import { AssetNativeDenomEnum } from 'types/asset'
+import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
 import { Button, Text } from 'components'
 import FormInput from 'components/FormInput'
@@ -41,6 +42,16 @@ const StyledContainer = styled(Container)`
     width: 100vw;
     overflow-x: hidden;
   }
+`
+
+const StyledMoblieInfoBox = styled.div`
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  background-color: ${COLOR.darkGray};
+  border-radius: 1em;
+  padding: 20px;
+  border: 1px solid ${COLOR.blueGray};
 `
 
 const StyledForm = styled.div`
@@ -114,7 +125,9 @@ const SendFormButton = ({
       Next
     </Button>
   ) : (
-    <Button onClick={selectWallet.open}>Connect Wallet</Button>
+    <Button disabled={isMobile} onClick={selectWallet.open}>
+      Connect Wallet
+    </Button>
   )
 }
 
@@ -141,7 +154,37 @@ const FormFeeInfo = ({
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
+  const assetList = useRecoilValue(SendStore.loginUserAssetList)
+
   const { formatBalance } = useAsset()
+
+  const [optionList, setOptionList] = useState<
+    {
+      label: AssetSymbolEnum
+      value: AssetNativeDenomEnum
+      isDisabled?: boolean
+    }[]
+  >([])
+
+  // disable feeDenom what has no balance
+  useEffect(() => {
+    if (assetList.length > 0) {
+      const defaultOptionList = _.map(AssetNativeDenomEnum, (denom) => {
+        const ownedAmount = new BigNumber(
+          assetList.find((x) => x.tokenAddress === denom)?.balance || '0'
+        )
+        const isDisabled = ownedAmount.isLessThanOrEqualTo(0)
+
+        return {
+          label: ASSET.symbolOfDenom[denom],
+          value: denom,
+          isDisabled,
+        }
+      })
+
+      setOptionList(defaultOptionList)
+    }
+  }, [assetList])
 
   return (
     <>
@@ -166,12 +209,7 @@ const FormFeeInfo = ({
                 <FormSelect
                   defaultValue={feeDenom}
                   size={'sm'}
-                  optionList={_.map(AssetNativeDenomEnum, (denom) => {
-                    return {
-                      label: ASSET.symbolOfDenom[denom],
-                      value: denom,
-                    }
-                  })}
+                  optionList={optionList}
                   onSelect={(value: AssetNativeDenomEnum): void => {
                     setFeeDenom(value)
                   }}
@@ -437,6 +475,16 @@ const SendForm = ({
 
   return (
     <StyledContainer>
+      <MobileView>
+        <Row className={'justify-content-md-center'}>
+          <Col md={8}>
+            <StyledMoblieInfoBox>
+              Bridge only supports desktop Chrome
+            </StyledMoblieInfoBox>
+          </Col>
+        </Row>
+      </MobileView>
+
       <Row className={'justify-content-md-center'}>
         <Col md={8}>
           <StyledForm>

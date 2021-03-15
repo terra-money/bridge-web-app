@@ -1,4 +1,4 @@
-import { CSSProperties, ReactElement, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
 import { Dropdown } from 'react-bootstrap'
@@ -12,7 +12,6 @@ type FormSelectProps<T> = {
   hideSelected?: boolean
   onSelect: (value: T) => void
   size?: 'sm' | 'lg'
-  buttonStyle?: CSSProperties
 }
 
 const StyledDropdownItem = styled(Dropdown.Item)`
@@ -33,7 +32,6 @@ const FormSelect = <T,>({
   hideSelected,
   onSelect,
   size,
-  buttonStyle,
 }: FormSelectProps<T>): ReactElement => {
   const defaultOption =
     optionList.find((x) => x.value === defaultValue) || optionList[0]
