@@ -441,10 +441,6 @@ const SendForm = ({
     }
   }, [status])
 
-  useEffect(() => {
-    getAssetList()
-  }, [loginUser])
-
   const dbcGetTerraShuttleFee = useDebouncedCallback(() => {
     if (
       asset?.tokenAddress &&
@@ -512,6 +508,12 @@ const SendForm = ({
       }
     }
   }, 300)
+
+  useEffect(() => {
+    getAssetList().then((): void => {
+      dbcValidateAndGetFeeInfo.callback()
+    })
+  }, [loginUser])
 
   //get terra send fee info
   useEffect(() => {
