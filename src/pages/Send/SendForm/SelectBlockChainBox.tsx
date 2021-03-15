@@ -37,7 +37,7 @@ const SelectBlockChainBox = ({
         <Col style={{ textAlign: 'center' }}>
           <FormImage src={NETWORK.blockChainImage[blockChain]} size={40} />
           <div>
-            <Text style={{ fontSize: 14 }}>
+            <Text style={{ fontSize: 13, fontWeight: 500 }}>
               {NETWORK.blockChainName[blockChain]}
             </Text>
           </div>

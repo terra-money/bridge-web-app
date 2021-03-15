@@ -94,7 +94,7 @@ const ConfirmStep = (): ReactElement => {
               size={36}
             />
 
-            <div style={{ fontSize: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 500 }}>
               <Text>{NETWORK.blockChainName[fromBlockChain]}</Text>
             </div>
           </Col>
@@ -116,7 +116,7 @@ const ConfirmStep = (): ReactElement => {
 
             <FormImage src={NETWORK.blockChainImage[toBlockChain]} size={36} />
 
-            <div style={{ fontSize: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 500 }}>
               <Text>{NETWORK.blockChainName[toBlockChain]}</Text>
             </div>
           </Col>

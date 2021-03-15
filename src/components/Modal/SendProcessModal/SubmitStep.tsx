@@ -170,7 +170,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             }
           />
         )}
-        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 30 }}>
+        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 40 }}>
           <div
             style={{
               display: 'flex',

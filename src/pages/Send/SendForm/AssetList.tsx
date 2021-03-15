@@ -53,6 +53,7 @@ const StyledSelectAssetButton = styled.div`
   border-radius: ${STYLE.css.borderRadius};
   padding: 10px 15px;
   font-size: 14px;
+  font-weight: 500;
   background-color: ${COLOR.darkGray2};
   :hover {
     opacity: 0.8;
@@ -93,7 +94,9 @@ const AssetItem = ({
         <Col>
           <Row>
             <Col>
-              <Text style={{ fontSize: 14 }}>{asset.symbol}</Text>
+              <Text style={{ fontSize: 14, fontWeight: 500 }}>
+                {asset.symbol}
+              </Text>
               <br />
             </Col>
           </Row>
@@ -141,7 +144,7 @@ const SelectAssetButton = ({
           </Col>
           <Col style={{ textAlign: 'right' }}>
             {isLoggedIn && (
-              <Text style={{ marginRight: 10 }}>
+              <Text style={{ marginRight: 10, fontWeight: 400 }}>
                 {asset.balance ? formatBalance(asset.balance) : '0'}
               </Text>
             )}

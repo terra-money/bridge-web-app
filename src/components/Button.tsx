@@ -11,13 +11,14 @@ const StyledDefaultButton = styled.button<ButtonProps>`
   width: 100%;
   background-color: ${COLOR.primary};
   color: ${COLOR.white};
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
   border-radius: 27px;
   margin-top: 20px;
   border-style: none;
   box-sizing: border-box;
   user-select: none;
+  font-weight: 500;
 
   cursor: pointer;
   :hover {
