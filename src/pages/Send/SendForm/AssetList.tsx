@@ -70,7 +70,7 @@ const AssetItem = ({
   setSelectedAsset: (asset: AssetType) => void
   setShowModal: (value: boolean) => void
 }): ReactElement => {
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   return (
@@ -105,7 +105,7 @@ const AssetItem = ({
         {isLoggedIn && (
           <Col style={{ textAlign: 'right', alignSelf: 'center' }}>
             <Text style={{ fontSize: 14 }}>
-              {asset.balance ? formatBalace(asset.balance) : '0'}{' '}
+              {asset.balance ? formatBalance(asset.balance) : '0'}{' '}
             </Text>
           </Col>
         )}
@@ -121,7 +121,7 @@ const SelectAssetButton = ({
   asset?: AssetType
   setShowModal: (value: boolean) => void
 }): ReactElement => {
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   return (
@@ -139,7 +139,7 @@ const SelectAssetButton = ({
           <Col style={{ textAlign: 'right' }}>
             {isLoggedIn && (
               <Text style={{ marginRight: 10 }}>
-                {asset.balance ? formatBalace(asset.balance) : '0'}
+                {asset.balance ? formatBalance(asset.balance) : '0'}
               </Text>
             )}
             <ChevronRight style={{ fontSize: 12, marginTop: -2 }} />

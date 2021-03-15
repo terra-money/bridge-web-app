@@ -83,7 +83,7 @@ const SubmitStepButton = ({
 
 const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const { submitRequestTx, waitForEtherBaseTransaction } = useSend()
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
@@ -187,7 +187,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
                 wordBreak: 'break-all',
               }}
             >
-              {formatBalace(amount)} {asset?.symbol}
+              {formatBalance(amount)} {asset?.symbol}
             </Text>
           </div>
           {fromBlockChain === BlockChainType.terra &&
@@ -197,7 +197,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
                 <StyledAmountText
                   isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
                 >
-                  {`After SuttleFee : (estimated) ${formatBalace(
+                  {`After SuttleFee : (estimated) ${formatBalance(
                     amountAfterShuttleFee
                   )} ${asset?.symbol}`}
                 </StyledAmountText>

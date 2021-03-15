@@ -20,7 +20,7 @@ import useEtherBaseBalance from './useEtherBaseBalance'
 
 const useAsset = (): {
   getAssetList: () => Promise<void>
-  formatBalace: (balance: string | BigNumber) => string
+  formatBalance: (balance: string | BigNumber) => string
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
@@ -130,7 +130,7 @@ const useAsset = (): {
     setAssetList(list)
   }
 
-  const formatBalace = (balance: string | BigNumber): string => {
+  const formatBalance = (balance: string | BigNumber): string => {
     if (balance) {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
@@ -149,7 +149,7 @@ const useAsset = (): {
 
   return {
     getAssetList,
-    formatBalace,
+    formatBalance,
   }
 }
 

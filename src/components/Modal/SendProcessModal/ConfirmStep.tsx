@@ -56,7 +56,7 @@ const StyledSecDText = styled(Text)<{ isError?: boolean }>`
 
 const ConfirmStep = (): ReactElement => {
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
@@ -79,7 +79,7 @@ const ConfirmStep = (): ReactElement => {
         <Text
           style={{ fontSize: 22, letterSpacing: -0.5, wordBreak: 'break-all' }}
         >
-          {formatBalace(amount)} {asset?.symbol}
+          {formatBalance(amount)} {asset?.symbol}
         </Text>
       </div>
       <StyledFromToBlockChainBox>
@@ -160,14 +160,14 @@ const ConfirmStep = (): ReactElement => {
                 GAS Fee:
               </StyledSecDText>
               <StyledSecDText style={{ paddingRight: 5 }}>
-                {formatBalace(feeOfGas || '0')}
+                {formatBalance(feeOfGas || '0')}
               </StyledSecDText>
               <StyledSecDText>{ASSET.symbolOfDenom[feeDenom]}</StyledSecDText>
             </div>
 
             {tax && (
               <StyledSecDText>
-                Tax: {formatBalace(tax)} {asset?.symbol}
+                Tax: {formatBalance(tax)} {asset?.symbol}
               </StyledSecDText>
             )}
             {shuttleFee &&
@@ -175,7 +175,7 @@ const ConfirmStep = (): ReactElement => {
                 toBlockChain === BlockChainType.bsc) && (
                 <div>
                   <StyledSecDText>
-                    {`Shuttle fee (estimated) : ${formatBalace(shuttleFee)} ${
+                    {`Shuttle fee (estimated) : ${formatBalance(shuttleFee)} ${
                       asset?.symbol
                     }`}
                   </StyledSecDText>
@@ -195,13 +195,13 @@ const ConfirmStep = (): ReactElement => {
               <StyledSecDText
                 isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
               >
-                {` (estimated) ${formatBalace(amountAfterShuttleFee)} ${
+                {` (estimated) ${formatBalance(amountAfterShuttleFee)} ${
                   asset?.symbol
                 }`}
               </StyledSecDText>
             </div>
           ) : (
-            <StyledSecDText>{`${formatBalace(amount)} ${
+            <StyledSecDText>{`${formatBalance(amount)} ${
               asset?.symbol
             }`}</StyledSecDText>
           )}

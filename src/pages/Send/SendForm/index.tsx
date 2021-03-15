@@ -142,7 +142,7 @@ const FormFeeInfo = ({
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
 
   return (
     <>
@@ -161,7 +161,7 @@ const FormFeeInfo = ({
             >
               <Text style={{ paddingRight: 5, opacity: '0.8' }}>GAS Fee:</Text>
               <Text style={{ paddingRight: 10, opacity: '0.8' }}>
-                {feeOfGas ? formatBalace(feeOfGas) : '0'}
+                {feeOfGas ? formatBalance(feeOfGas) : '0'}
               </Text>
               <div className={'d-inline-block'}>
                 <FormSelect
@@ -190,7 +190,7 @@ const FormFeeInfo = ({
             >
               {tax && (
                 <Text style={{ opacity: '0.8' }}>
-                  Tax: {formatBalace(tax)} {asset?.symbol}
+                  Tax: {formatBalance(tax)} {asset?.symbol}
                 </Text>
               )}
             </div>
@@ -206,7 +206,7 @@ const FormFeeInfo = ({
                 }}
               >
                 <Text style={{ opacity: '0.8' }}>
-                  {`Shuttle fee (estimated) : ${formatBalace(shuttleFee)} ${
+                  {`Shuttle fee (estimated) : ${formatBalance(shuttleFee)} ${
                     asset?.symbol
                   }`}
                 </Text>
@@ -219,7 +219,7 @@ const FormFeeInfo = ({
                       : COLOR.text,
                   }}
                 >
-                  {`Amount after Shuttle fee (estimated) : ${formatBalace(
+                  {`Amount after Shuttle fee (estimated) : ${formatBalance(
                     amountAfterShuttleFee
                   )} ${asset?.symbol}`}
                 </Text>
@@ -268,7 +268,7 @@ const SendForm = ({
   })
   const [inputAmount, setInputAmount] = useState('')
 
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
   const { getTerraSendFeeInfo, getTerraMsgs } = useSend()
   const { validateSendData, validateGasFee } = useSendValidate()
   const isValidGasFee = validateGasFee()
@@ -306,7 +306,7 @@ const SendForm = ({
   }
 
   const onClickMaxButton = (): void => {
-    onChangeAmount({ value: formatBalace(asset?.balance || '0') })
+    onChangeAmount({ value: formatBalance(asset?.balance || '0') })
   }
 
   // after confirm send
