@@ -243,7 +243,7 @@ const SendForm = ({
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
 
   // Send Data
-  const [asset, setAsset] = useRecoilState(SendStore.asset)
+  const asset = useRecoilValue(SendStore.asset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
   const [amount, setAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
@@ -351,7 +351,7 @@ const SendForm = ({
   useEffect(() => {
     dbcGetTerraShuttleFee.callback()
     return dbcGetTerraShuttleFee.cancel
-  }, [asset?.tokenAddress, amount, toBlockChain])
+  }, [amount, toBlockChain])
 
   const dbcValidateAndGetFeeInfo = useDebouncedCallback(() => {
     const vResult = validateSendData()
@@ -394,7 +394,7 @@ const SendForm = ({
   useEffect(() => {
     dbcValidateAndGetFeeInfo.callback()
     return dbcValidateAndGetFeeInfo.cancel
-  }, [asset?.tokenAddress, amount, feeDenom, toAddress, toBlockChain, memo])
+  }, [amount, feeDenom, toAddress, toBlockChain, memo])
 
   return (
     <StyledContainer>
@@ -423,9 +423,7 @@ const SendForm = ({
                   </Col>
                 )}
               </Row>
-              <AssetList
-                {...{ selectedAsset: asset, setSelectedAsset: setAsset }}
-              />
+              <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
             </StyledFormSection>
             <StyledFormSection>
               <Row>
