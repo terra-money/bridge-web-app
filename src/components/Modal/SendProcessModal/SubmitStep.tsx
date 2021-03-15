@@ -241,11 +241,12 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
           loading={loading}
         />
       </div>
-
-      <FormErrorMessage errorMessage={errorMessage} />
+      <div style={{ textAlign: 'center' }}>
+        <FormErrorMessage errorMessage={errorMessage} />
+      </div>
       {sumbitError && (
-        <div>
-          <div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
             <Text>ERROR FROM NETWORK : </Text>
           </div>
           <FormErrorMessage errorMessage={sumbitError} />

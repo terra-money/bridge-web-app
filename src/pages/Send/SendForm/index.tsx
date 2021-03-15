@@ -230,7 +230,9 @@ const FormFeeInfo = ({
                   </div>
                 </Col>
               </Row>
-              <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
+              <div style={{ textAlign: 'right' }}>
+                <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
+              </div>
               {tax && (
                 <Row
                   style={{
