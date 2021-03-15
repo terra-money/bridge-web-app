@@ -17,6 +17,7 @@ const StyledDefaultButton = styled.button<ButtonProps>`
   margin-top: 20px;
   border-style: none;
   box-sizing: border-box;
+  user-select: none;
 
   cursor: pointer;
   :hover {

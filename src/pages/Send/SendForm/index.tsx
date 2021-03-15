@@ -85,6 +85,7 @@ const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
   font-weight: bold;
   opacity: ${({ refreshing }): number => (refreshing ? 0.5 : 1)};
   cursor: ${({ refreshing }): string => (refreshing ? 'default' : 'pointer')};
+  user-select: none;
 `
 
 const SendFormButton = ({
