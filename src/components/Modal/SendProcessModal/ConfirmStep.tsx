@@ -186,7 +186,7 @@ const ConfirmStep = (): ReactElement => {
       )}
 
       <StyledSection>
-        <StyledSecH>You will receive :</StyledSecH>
+        <StyledSecH>You will receive</StyledSecH>
         <StyledSecD>
           {fromBlockChain === BlockChainType.terra &&
           (toBlockChain === BlockChainType.ethereum ||

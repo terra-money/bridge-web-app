@@ -27,11 +27,21 @@ const StyledNav = styled.div`
   align-items: center;
   justify-content: space-between;
   min-height: 79px;
-  padding: 10px 1.5rem;
+  padding: 10px 0;
 `
 
 const StyledLogo = styled(Text)`
   font-size: 0;
+  img {
+    width: 120px;
+    height: 30px;
+  }
+  @media (max-width: 575px) {
+    img {
+      width: 100px;
+      height: 25px;
+    }
+  }
 `
 
 const Address = styled(Text)`
@@ -140,14 +150,14 @@ const TestnetTitle = (): ReactElement => {
           style={{
             borderRadius: 12,
             backgroundColor: COLOR.terraSky,
-            fontSize: 10,
-            paddingTop: 4,
-            paddingBottom: 4,
-            paddingLeft: 12,
-            paddingRight: 12,
+            fontSize: 9,
+            paddingTop: 3,
+            paddingBottom: 3,
+            paddingLeft: 9,
+            paddingRight: 9,
             fontWeight: 500,
-            marginTop: 5,
-            marginBottom: 5,
+            marginTop: 3,
+            marginBottom: 3,
           }}
         >
           TESTNET
@@ -163,19 +173,37 @@ const Header = (): ReactElement => {
   return (
     <StyledContainer>
       <StyledNav>
-        <Row>
+        <Row style={{ width: '100%', margin: 0 }}>
           <Col
-            style={{ display: 'flex', alignItems: 'center', paddingRight: 0 }}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              paddingRight: 0,
+              paddingLeft: 20,
+              flex: 1,
+            }}
+            sm={10}
+            xs={5}
           >
             <StyledLogo>
-              <img src={bridgeLogo} width={120} height={30} alt="" />
+              <img src={bridgeLogo} alt="" />
             </StyledLogo>
-          </Col>
-          <Col style={{ alignSelf: 'center' }}>
             <TestnetTitle />
           </Col>
+          <Col
+            sm={2}
+            xs={7}
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              paddingRight: 20,
+            }}
+          >
+            {isLoggedIn && <LoginUserInfo />}
+          </Col>
         </Row>
-        <Row>{isLoggedIn && <LoginUserInfo />}</Row>
       </StyledNav>
     </StyledContainer>
   )

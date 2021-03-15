@@ -15,12 +15,14 @@ const StyledContainer = styled.div`
 const StyledTitle = styled(Text)`
   display: block;
   font-size: 24;
-  font-weight: bold;
+  font-weight: 500;
   color: ${COLOR.skyGray};
+  font-size: 14px;
 `
 
 const StyledInfoText = styled(Text)`
   display: block;
+  font-size: 14px;
 `
 
 const NotSupportNetworkModal = (): ReactElement => {

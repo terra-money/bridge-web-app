@@ -5,7 +5,11 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
-import { ArrowRight, ArrowClockwise } from 'react-bootstrap-icons'
+import {
+  ArrowRight,
+  ArrowClockwise,
+  InfoCircleFill,
+} from 'react-bootstrap-icons'
 import { isMobile, MobileView } from 'react-device-detect'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
@@ -33,6 +37,7 @@ import SendStore from 'store/SendStore'
 import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
+import color from 'consts/color'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -48,10 +53,12 @@ const StyledMoblieInfoBox = styled.div`
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 20px;
-  background-color: ${COLOR.darkGray};
   border-radius: 1em;
-  padding: 20px;
-  border: 1px solid ${COLOR.blueGray};
+  padding: 12px;
+  border: 1px solid ${COLOR.terraSky};
+  color: ${COLOR.terraSky};
+  font-size: 12px;
+  font-weight: 500;
 `
 
 const StyledForm = styled.div`
@@ -197,71 +204,108 @@ const FormFeeInfo = ({
             <div
               style={{
                 borderTop: 'dashed 1px #444',
-                paddingTop: 10,
-                fontSize: 13,
-              }}
-            >
-              <Text style={{ paddingRight: 5, opacity: '0.8' }}>GAS Fee:</Text>
-              <Text style={{ paddingRight: 10, opacity: '0.8' }}>
-                {feeOfGas ? formatBalance(feeOfGas) : '0'}
-              </Text>
-              <div className={'d-inline-block'}>
-                <FormSelect
-                  defaultValue={feeDenom}
-                  size={'sm'}
-                  optionList={optionList}
-                  onSelect={(value: AssetNativeDenomEnum): void => {
-                    setFeeDenom(value)
-                  }}
-                />
-              </div>
-            </div>
-            <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
-            <div
-              style={{
-                fontSize: 13,
                 borderBottom: 'dashed 1px #444',
-                paddingTop: 5,
-                paddingBottom: 10,
+                fontSize: 13,
               }}
             >
+              <Row style={{ paddingTop: 8, paddingBottom: 8, margin: 0 }}>
+                <Col style={{ padding: 0 }}>
+                  <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                    GAS Fee
+                  </Text>
+                </Col>
+                <Col style={{ textAlign: 'right', padding: 0 }}>
+                  <Text style={{ paddingRight: 10, opacity: 0.8 }}>
+                    {feeOfGas ? formatBalance(feeOfGas) : '0'}
+                  </Text>
+                  <div className={'d-inline-block'}>
+                    <FormSelect
+                      defaultValue={feeDenom}
+                      size={'sm'}
+                      optionList={optionList}
+                      onSelect={(value: AssetNativeDenomEnum): void => {
+                        setFeeDenom(value)
+                      }}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
               {tax && (
-                <Text style={{ opacity: '0.8' }}>
-                  Tax: {formatBalance(tax)} {asset?.symbol}
-                </Text>
-              )}
-            </div>
-
-            {(toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc) && (
-              <div
-                style={{
-                  fontSize: 13,
-                  borderBottom: 'dashed 1px #444',
-                  paddingTop: 5,
-                  paddingBottom: 10,
-                }}
-              >
-                <Text style={{ opacity: '0.8' }}>
-                  {`Shuttle fee (estimated) : ${formatBalance(shuttleFee)} ${
-                    asset?.symbol
-                  }`}
-                </Text>
-                <br />
-                <Text
+                <Row
                   style={{
-                    opacity: '0.8',
-                    color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                      ? 'red'
-                      : COLOR.text,
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    margin: 0,
+                    borderTop: 'solid 1px rgba(255,255,255,.03)',
                   }}
                 >
-                  {`Amount after Shuttle fee (estimated) : ${formatBalance(
-                    amountAfterShuttleFee
-                  )} ${asset?.symbol}`}
-                </Text>
-              </div>
-            )}
+                  <Col style={{ padding: 0 }}>
+                    <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                      Tax
+                    </Text>
+                  </Col>
+                  <Col style={{ textAlign: 'right', padding: 0 }}>
+                    <Text style={{ opacity: '0.8' }}>
+                      {formatBalance(tax)} {asset?.symbol}
+                    </Text>
+                  </Col>
+                </Row>
+              )}
+
+              {(toBlockChain === BlockChainType.ethereum ||
+                toBlockChain === BlockChainType.bsc) && (
+                <>
+                  <Row
+                    style={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      margin: 0,
+                      borderTop: 'solid 1px rgba(255,255,255,.03)',
+                    }}
+                  >
+                    <Col style={{ padding: 0 }}>
+                      <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                        Shuttle fee (estimated)
+                      </Text>
+                    </Col>
+                    <Col style={{ textAlign: 'right', padding: 0 }}>
+                      <Text style={{ opacity: '0.8' }}>
+                        {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
+                      </Text>
+                    </Col>
+                  </Row>
+                  <Row
+                    style={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      margin: 0,
+                      borderTop: 'solid 1px rgba(255,255,255,.03)',
+                    }}
+                  >
+                    <Col style={{ padding: 0 }}>
+                      <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                        Amount after Shuttle fee (estimated){' '}
+                      </Text>
+                    </Col>
+                    <Col style={{ textAlign: 'right', padding: 0 }}>
+                      <Text
+                        style={{
+                          opacity: '0.8',
+                          color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
+                            ? 'red'
+                            : COLOR.text,
+                        }}
+                      >
+                        {`${formatBalance(amountAfterShuttleFee)} ${
+                          asset?.symbol
+                        }`}
+                      </Text>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </div>
           </StyledFormSection>
         )}
     </>
@@ -479,6 +523,10 @@ const SendForm = ({
         <Row className={'justify-content-md-center'}>
           <Col md={8}>
             <StyledMoblieInfoBox>
+              <InfoCircleFill
+                style={{ marginRight: 8, marginTop: -2 }}
+                size={14}
+              />
               Bridge only supports desktop Chrome
             </StyledMoblieInfoBox>
           </Col>

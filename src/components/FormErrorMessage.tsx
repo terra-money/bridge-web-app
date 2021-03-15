@@ -7,6 +7,9 @@ const StyledText = styled(Text)`
   color: red;
   word-break: break-all;
   font-size: 13px;
+  text-align: right;
+  display: block;
+  padding-bottom: 10px;
 `
 
 const FormErrorMessage = ({

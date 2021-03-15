@@ -170,7 +170,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             }
           />
         )}
-        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 20 }}>
+        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 30 }}>
           <div
             style={{
               display: 'flex',
@@ -193,7 +193,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
           {fromBlockChain === BlockChainType.terra &&
             (toBlockChain === BlockChainType.ethereum ||
               toBlockChain === BlockChainType.bsc) && (
-              <div>
+              <div style={{ fontSize: 12 }}>
                 <StyledAmountText
                   isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
                 >

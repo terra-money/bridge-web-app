@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-bootstrap-icons'
 import { useRecoilState } from 'recoil'
 
 import { NETWORK } from 'consts'
@@ -15,7 +14,7 @@ import SelectWalletStore, {
 } from 'store/SelectWalletStore'
 
 const StyledContainer = styled.div`
-  padding: 0 10px 10px 10px;
+  padding: 30px;
 `
 
 const TerraExtensionDownModal = (): ReactElement => {
@@ -37,31 +36,34 @@ const TerraExtensionDownModal = (): ReactElement => {
     >
       <StyledContainer>
         {!navigator.userAgent.includes('Chrome') ? (
-          <div>
-            <Text>{'Mirror currently\nonly supports Chrome'}</Text>
+          <div style={{ textAlign: 'center' }}>
+            <Text style={{ fontSize: 18 }}>
+              {'Bridge currently\nonly supports desktop Chrome'}
+            </Text>
             <br />
             <ExtLink href={NETWORK.CHROME}>
-              <span style={{ paddingRight: 10 }}>
-                <Link />
-              </span>
-              <Text style={{ color: 'inherit' }}>Download Chrome</Text>
+              <Text
+                style={{
+                  color: 'inherit',
+                  fontSize: 18,
+                  marginTop: 10,
+                  marginBottom: 30,
+                }}
+              >
+                Download Chrome
+              </Text>
             </ExtLink>
           </div>
         ) : (
           <>
-            <div>
-              <Text>
-                {'Download Terra Station Extension\nto connect your wallet'}
-              </Text>
-              <br />
+            <div style={{ textAlign: 'center' }}>
               <ExtLink href={NETWORK.TERRA_EXTENSION}>
-                <span style={{ paddingRight: 10 }}>
-                  <Link />
-                </span>
-                <Text style={{ color: 'inherit' }}>
+                <Text style={{ color: 'inherit', fontSize: 18 }}>
                   Download Terra Station Extension
                 </Text>
               </ExtLink>
+              <br />
+              <Text style={{ fontSize: 18 }}>{'to connect your wallet'}</Text>
             </div>
             <br />
             <Button onClick={handleInstalled}>I installed it.</Button>
