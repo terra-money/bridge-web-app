@@ -3,16 +3,12 @@ import styled from 'styled-components'
 
 import { STYLE, COLOR } from 'consts'
 
-import mediumPng from 'images/medium.png'
-import discordPng from 'images/discord.png'
-import telegramPng from 'images/telegram.png'
-import twitterPng from 'images/twitter.png'
 import githubPng from 'images/github.png'
 
 import { ExtLink } from 'components'
 
 const StyledContainer = styled.footer`
-  padding: 20px;
+  padding: 30px;
   background-color: ${COLOR.black};
   text-align: center;
   opacity: 0.5;
@@ -24,29 +20,9 @@ const StyledContainer = styled.footer`
 const Footer = (): ReactElement => {
   const community = [
     {
-      href: `https://github.com/terra-project`,
+      href: `https://github.com/terra-project/bridge-web-app`,
       src: githubPng,
       alt: 'Github',
-    },
-    {
-      href: 'https://medium.com/terra-money',
-      src: mediumPng,
-      alt: 'Medium',
-    },
-    {
-      href: 'https://t.me/TerraLunaChat',
-      src: telegramPng,
-      alt: 'Telegram',
-    },
-    {
-      href: 'https://discord.com/invite/bYfyhUT',
-      src: discordPng,
-      alt: 'Discord',
-    },
-    {
-      href: 'https://twitter.com/terra_money',
-      src: twitterPng,
-      alt: 'Twitter',
     },
   ]
   return (
@@ -55,7 +31,7 @@ const Footer = (): ReactElement => {
         ({ href, src, alt }) =>
           href && (
             <ExtLink href={href} key={alt}>
-              <img src={src} alt={alt} width={16} height={16} />
+              <img src={src} alt={alt} width={24} height={24} />
             </ExtLink>
           )
       )}
