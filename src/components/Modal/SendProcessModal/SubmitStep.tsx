@@ -83,7 +83,7 @@ const SubmitStepButton = ({
 
 const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const { submitRequestTx, waitForEtherBaseTransaction } = useSend()
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
@@ -170,7 +170,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             }
           />
         )}
-        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 20 }}>
+        <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 40 }}>
           <div
             style={{
               display: 'flex',
@@ -187,17 +187,17 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
                 wordBreak: 'break-all',
               }}
             >
-              {formatBalace(amount)} {asset?.symbol}
+              {formatBalance(amount)} {asset?.symbol}
             </Text>
           </div>
           {fromBlockChain === BlockChainType.terra &&
             (toBlockChain === BlockChainType.ethereum ||
               toBlockChain === BlockChainType.bsc) && (
-              <div>
+              <div style={{ fontSize: 12 }}>
                 <StyledAmountText
                   isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
                 >
-                  {`After SuttleFee : (estimated) ${formatBalace(
+                  {`After SuttleFee : (estimated) ${formatBalance(
                     amountAfterShuttleFee
                   )} ${asset?.symbol}`}
                 </StyledAmountText>
@@ -234,16 +234,19 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
         </div>
       )}
 
-      <SubmitStepButton
-        modal={modal}
-        onClickSubmitButton={onClickSubmitButton}
-        loading={loading}
-      />
-
-      <FormErrorMessage errorMessage={errorMessage} />
+      <div style={{ marginBottom: 20 }}>
+        <SubmitStepButton
+          modal={modal}
+          onClickSubmitButton={onClickSubmitButton}
+          loading={loading}
+        />
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <FormErrorMessage errorMessage={errorMessage} />
+      </div>
       {sumbitError && (
-        <div>
-          <div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
             <Text>ERROR FROM NETWORK : </Text>
           </div>
           <FormErrorMessage errorMessage={sumbitError} />

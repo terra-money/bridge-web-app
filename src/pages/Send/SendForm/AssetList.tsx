@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import _ from 'lodash'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { Col, Row } from 'react-bootstrap'
 import { ChevronRight } from 'react-bootstrap-icons'
@@ -49,10 +49,11 @@ const StyledAssetItem = styled.div`
 const StyledSelectAssetButton = styled.div`
   cursor: pointer;
   border-width: 1px;
-  border-color: red;
+  border-color: ${COLOR.red};
   border-radius: ${STYLE.css.borderRadius};
   padding: 10px 15px;
   font-size: 14px;
+  font-weight: 500;
   background-color: ${COLOR.darkGray2};
   :hover {
     opacity: 0.8;
@@ -61,22 +62,25 @@ const StyledSelectAssetButton = styled.div`
 
 const AssetItem = ({
   asset,
-  selected,
-  setSelectedAsset,
   setShowModal,
+  onChangeAmount,
 }: {
   asset: AssetType
-  selected: boolean
-  setSelectedAsset: (asset: AssetType) => void
   setShowModal: (value: boolean) => void
+  onChangeAmount: ({ value }: { value: string }) => void
 }): ReactElement => {
-  const { formatBalace } = useAsset()
+  const [oriAsset, setAsset] = useRecoilState(SendStore.asset)
+  const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   return (
     <StyledAssetItem
       onClick={(): void => {
-        setSelectedAsset(asset)
+        if (oriAsset !== asset) {
+          onChangeAmount({ value: '' })
+        }
+
+        setAsset(asset)
         setShowModal(false)
       }}
     >
@@ -90,7 +94,9 @@ const AssetItem = ({
         <Col>
           <Row>
             <Col>
-              <Text style={{ fontSize: 14 }}>{asset.symbol}</Text>
+              <Text style={{ fontSize: 14, fontWeight: 500 }}>
+                {asset.symbol}
+              </Text>
               <br />
             </Col>
           </Row>
@@ -105,7 +111,7 @@ const AssetItem = ({
         {isLoggedIn && (
           <Col style={{ textAlign: 'right', alignSelf: 'center' }}>
             <Text style={{ fontSize: 14 }}>
-              {asset.balance ? formatBalace(asset.balance) : '0'}{' '}
+              {asset.balance ? formatBalance(asset.balance) : '0'}{' '}
             </Text>
           </Col>
         )}
@@ -121,7 +127,7 @@ const SelectAssetButton = ({
   asset?: AssetType
   setShowModal: (value: boolean) => void
 }): ReactElement => {
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   return (
@@ -138,8 +144,8 @@ const SelectAssetButton = ({
           </Col>
           <Col style={{ textAlign: 'right' }}>
             {isLoggedIn && (
-              <Text style={{ marginRight: 10 }}>
-                {asset.balance ? formatBalace(asset.balance) : '0'}
+              <Text style={{ marginRight: 10, fontWeight: 400 }}>
+                {asset.balance ? formatBalance(asset.balance) : '0'}
               </Text>
             )}
             <ChevronRight style={{ fontSize: 12, marginTop: -2 }} />
@@ -152,14 +158,15 @@ const SelectAssetButton = ({
 
 const AssetList = ({
   selectedAsset,
-  setSelectedAsset,
+  onChangeAmount,
 }: {
   selectedAsset?: AssetType
-  setSelectedAsset: (value: AssetType) => void
+  onChangeAmount: ({ value }: { value: string }) => void
 }): ReactElement => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
+  const setAsset = useSetRecoilState(SendStore.asset)
   const [showModal, setShowModal] = useState(false)
   const [inputFilter, setInputFilter] = useState('')
 
@@ -179,12 +186,12 @@ const AssetList = ({
   useEffect(() => {
     if (_.some(assetList)) {
       if (selectedAsset) {
-        setSelectedAsset(
+        setAsset(
           assetList.find((x) => x.symbol === selectedAsset.symbol) ||
             assetList[0]
         )
       } else {
-        setSelectedAsset(assetList[0])
+        setAsset(assetList[0])
       }
     }
   }, [assetList])
@@ -236,9 +243,8 @@ const AssetList = ({
                 <AssetItem
                   key={`asset-${index}`}
                   asset={asset}
-                  selected={asset === selectedAsset}
-                  setSelectedAsset={setSelectedAsset}
                   setShowModal={setShowModal}
+                  onChangeAmount={onChangeAmount}
                 />
               ))
             ) : (

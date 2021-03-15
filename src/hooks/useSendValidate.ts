@@ -15,7 +15,7 @@ const useSendValidate = (): {
   validateGasFee: () => ValidateItemResultType
   validateSendData: () => ValidateResultType
 } => {
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
@@ -118,7 +118,7 @@ const useSendValidate = (): {
     if (bnAmount.isGreaterThan(selectedAssetAmount)) {
       return {
         isValid: false,
-        errorMessage: `Amount must be between 0 and ${formatBalace(
+        errorMessage: `Amount must be between 0 and ${formatBalance(
           selectedAssetAmount.toString()
         )}`,
       }

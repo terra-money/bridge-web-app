@@ -5,13 +5,18 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
-import { ArrowRight, ArrowClockwise } from 'react-bootstrap-icons'
+import {
+  ArrowRight,
+  ArrowClockwise,
+  InfoCircleFill,
+} from 'react-bootstrap-icons'
+import { isMobile, MobileView } from 'react-device-detect'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
-import { AssetNativeDenomEnum } from 'types/asset'
+import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
 import { Button, Text } from 'components'
 import FormInput from 'components/FormInput'
@@ -32,6 +37,7 @@ import SendStore from 'store/SendStore'
 import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
+import color from 'consts/color'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -41,6 +47,18 @@ const StyledContainer = styled(Container)`
     width: 100vw;
     overflow-x: hidden;
   }
+`
+
+const StyledMoblieInfoBox = styled.div`
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  border-radius: 1em;
+  padding: 12px;
+  border: 1px solid ${COLOR.terraSky};
+  color: ${COLOR.terraSky};
+  font-size: 12px;
+  font-weight: 500;
 `
 
 const StyledForm = styled.div`
@@ -78,15 +96,14 @@ const StyledMaxButton = styled.div`
   }
 `
 
-const StyledRefreshButton = styled.div`
+const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
   display: inline-block;
   color: ${COLOR.primary};
   font-size: 12px;
   font-weight: bold;
-  cursor: pointer;
-  :hover {
-    opacity: 0.8;
-  }
+  opacity: ${({ refreshing }): number => (refreshing ? 0.5 : 1)};
+  cursor: ${({ refreshing }): string => (refreshing ? 'default' : 'pointer')};
+  user-select: none;
 `
 
 const SendFormButton = ({
@@ -115,7 +132,9 @@ const SendFormButton = ({
       Next
     </Button>
   ) : (
-    <Button onClick={selectWallet.open}>Connect Wallet</Button>
+    <Button disabled={isMobile} onClick={selectWallet.open}>
+      Connect Wallet
+    </Button>
   )
 }
 
@@ -142,7 +161,37 @@ const FormFeeInfo = ({
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
-  const { formatBalace } = useAsset()
+  const assetList = useRecoilValue(SendStore.loginUserAssetList)
+
+  const { formatBalance } = useAsset()
+
+  const [optionList, setOptionList] = useState<
+    {
+      label: AssetSymbolEnum
+      value: AssetNativeDenomEnum
+      isDisabled?: boolean
+    }[]
+  >([])
+
+  // disable feeDenom what has no balance
+  useEffect(() => {
+    if (assetList.length > 0) {
+      const defaultOptionList = _.map(AssetNativeDenomEnum, (denom) => {
+        const ownedAmount = new BigNumber(
+          assetList.find((x) => x.tokenAddress === denom)?.balance || '0'
+        )
+        const isDisabled = ownedAmount.isLessThanOrEqualTo(0)
+
+        return {
+          label: ASSET.symbolOfDenom[denom],
+          value: denom,
+          isDisabled,
+        }
+      })
+
+      setOptionList(defaultOptionList)
+    }
+  }, [assetList])
 
   return (
     <>
@@ -155,78 +204,152 @@ const FormFeeInfo = ({
             <div
               style={{
                 borderTop: 'dashed 1px #444',
-                paddingTop: 10,
-                fontSize: 13,
-              }}
-            >
-              <Text style={{ paddingRight: 5, opacity: '0.8' }}>GAS Fee:</Text>
-              <Text style={{ paddingRight: 10, opacity: '0.8' }}>
-                {feeOfGas ? formatBalace(feeOfGas) : '0'}
-              </Text>
-              <div className={'d-inline-block'}>
-                <FormSelect
-                  defaultValue={feeDenom}
-                  size={'sm'}
-                  optionList={_.map(AssetNativeDenomEnum, (denom) => {
-                    return {
-                      label: ASSET.symbolOfDenom[denom],
-                      value: denom,
-                    }
-                  })}
-                  onSelect={(value: AssetNativeDenomEnum): void => {
-                    setFeeDenom(value)
-                  }}
-                />
-              </div>
-            </div>
-            <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
-            <div
-              style={{
-                fontSize: 13,
                 borderBottom: 'dashed 1px #444',
-                paddingTop: 5,
-                paddingBottom: 10,
+                fontSize: 13,
               }}
             >
+              <Row style={{ paddingTop: 8, paddingBottom: 8, margin: 0 }}>
+                <Col style={{ padding: 0 }}>
+                  <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                    GAS Fee
+                  </Text>
+                </Col>
+                <Col style={{ textAlign: 'right', padding: 0 }}>
+                  <Text style={{ paddingRight: 10, opacity: 0.8 }}>
+                    {feeOfGas ? formatBalance(feeOfGas) : '0'}
+                  </Text>
+                  <div className={'d-inline-block'}>
+                    <FormSelect
+                      defaultValue={feeDenom}
+                      size={'sm'}
+                      optionList={optionList}
+                      onSelect={(value: AssetNativeDenomEnum): void => {
+                        setFeeDenom(value)
+                      }}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <div style={{ textAlign: 'right' }}>
+                <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
+              </div>
               {tax && (
-                <Text style={{ opacity: '0.8' }}>
-                  Tax: {formatBalace(tax)} {asset?.symbol}
-                </Text>
-              )}
-            </div>
-
-            {(toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc) && (
-              <div
-                style={{
-                  fontSize: 13,
-                  borderBottom: 'dashed 1px #444',
-                  paddingTop: 5,
-                  paddingBottom: 10,
-                }}
-              >
-                <Text style={{ opacity: '0.8' }}>
-                  {`Shuttle fee (estimated) : ${formatBalace(shuttleFee)} ${
-                    asset?.symbol
-                  }`}
-                </Text>
-                <br />
-                <Text
+                <Row
                   style={{
-                    opacity: '0.8',
-                    color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                      ? 'red'
-                      : COLOR.text,
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    margin: 0,
+                    borderTop: 'solid 1px rgba(255,255,255,.03)',
                   }}
                 >
-                  {`Amount after Shuttle fee (estimated) : ${formatBalace(
-                    amountAfterShuttleFee
-                  )} ${asset?.symbol}`}
-                </Text>
-              </div>
-            )}
+                  <Col style={{ padding: 0 }}>
+                    <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                      Tax
+                    </Text>
+                  </Col>
+                  <Col style={{ textAlign: 'right', padding: 0 }}>
+                    <Text style={{ opacity: '0.8' }}>
+                      {formatBalance(tax)} {asset?.symbol}
+                    </Text>
+                  </Col>
+                </Row>
+              )}
+
+              {(toBlockChain === BlockChainType.ethereum ||
+                toBlockChain === BlockChainType.bsc) && (
+                <>
+                  <Row
+                    style={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      margin: 0,
+                      borderTop: 'solid 1px rgba(255,255,255,.03)',
+                    }}
+                  >
+                    <Col style={{ padding: 0 }}>
+                      <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                        Shuttle fee (estimated)
+                      </Text>
+                    </Col>
+                    <Col style={{ textAlign: 'right', padding: 0 }}>
+                      <Text style={{ opacity: '0.8' }}>
+                        {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
+                      </Text>
+                    </Col>
+                  </Row>
+                  <Row
+                    style={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      margin: 0,
+                      borderTop: 'solid 1px rgba(255,255,255,.03)',
+                    }}
+                  >
+                    <Col style={{ padding: 0 }}>
+                      <Text style={{ paddingRight: 10, color: color.skyGray }}>
+                        Amount after Shuttle fee (estimated){' '}
+                      </Text>
+                    </Col>
+                    <Col style={{ textAlign: 'right', padding: 0 }}>
+                      <Text
+                        style={{
+                          opacity: '0.8',
+                          color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
+                            ? COLOR.red
+                            : COLOR.text,
+                        }}
+                      >
+                        {`${formatBalance(amountAfterShuttleFee)} ${
+                          asset?.symbol
+                        }`}
+                      </Text>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </div>
           </StyledFormSection>
         )}
+    </>
+  )
+}
+
+const RefreshButton = (): ReactElement => {
+  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+  const { getAssetList } = useAsset()
+  const [refreshing, setRefreshing] = useState(false)
+  const dbcRefresh = useDebouncedCallback(() => {
+    setRefreshing(true)
+    getAssetList().finally((): void => {
+      setTimeout(() => {
+        setRefreshing(false)
+      }, 500)
+    })
+  }, 300)
+
+  return (
+    <>
+      {isLoggedIn && (
+        <Col style={{ textAlign: 'right' }}>
+          <StyledRefreshButton
+            onClick={(): void => {
+              dbcRefresh.callback()
+            }}
+            refreshing={refreshing}
+          >
+            <ArrowClockwise style={{ marginRight: 5 }} size={14} />
+            <Text
+              style={{
+                fontWeight: 500,
+                fontSize: 10,
+                color: COLOR.terraSky,
+              }}
+            >
+              {refreshing ? 'REFRESHING...' : 'REFRESH'}
+            </Text>
+          </StyledRefreshButton>
+        </Col>
+      )}
     </>
   )
 }
@@ -243,7 +366,7 @@ const SendForm = ({
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
 
   // Send Data
-  const [asset, setAsset] = useRecoilState(SendStore.asset)
+  const asset = useRecoilValue(SendStore.asset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
   const [amount, setAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
@@ -268,7 +391,7 @@ const SendForm = ({
   })
   const [inputAmount, setInputAmount] = useState('')
 
-  const { formatBalace } = useAsset()
+  const { formatBalance } = useAsset()
   const { getTerraSendFeeInfo, getTerraMsgs } = useSend()
   const { validateSendData, validateGasFee } = useSendValidate()
   const isValidGasFee = validateGasFee()
@@ -306,7 +429,7 @@ const SendForm = ({
   }
 
   const onClickMaxButton = (): void => {
-    onChangeAmount({ value: formatBalace(asset?.balance || '0') })
+    onChangeAmount({ value: formatBalance(asset?.balance || '0') })
   }
 
   // after confirm send
@@ -351,7 +474,7 @@ const SendForm = ({
   useEffect(() => {
     dbcGetTerraShuttleFee.callback()
     return dbcGetTerraShuttleFee.cancel
-  }, [asset?.tokenAddress, amount, toBlockChain])
+  }, [amount, toBlockChain])
 
   const dbcValidateAndGetFeeInfo = useDebouncedCallback(() => {
     const vResult = validateSendData()
@@ -394,10 +517,24 @@ const SendForm = ({
   useEffect(() => {
     dbcValidateAndGetFeeInfo.callback()
     return dbcValidateAndGetFeeInfo.cancel
-  }, [asset?.tokenAddress, amount, feeDenom, toAddress, toBlockChain, memo])
+  }, [amount, feeDenom, toAddress, toBlockChain, memo])
 
   return (
     <StyledContainer>
+      <MobileView>
+        <Row className={'justify-content-md-center'}>
+          <Col md={8}>
+            <StyledMoblieInfoBox>
+              <InfoCircleFill
+                style={{ marginRight: 8, marginTop: -2 }}
+                size={14}
+              />
+              Bridge only supports desktop Chrome
+            </StyledMoblieInfoBox>
+          </Col>
+        </Row>
+      </MobileView>
+
       <Row className={'justify-content-md-center'}>
         <Col md={8}>
           <StyledForm>
@@ -406,26 +543,9 @@ const SendForm = ({
                 <Col>
                   <FormLabel title={'Asset'} />
                 </Col>
-                {isLoggedIn && (
-                  <Col style={{ textAlign: 'right' }}>
-                    <StyledRefreshButton onClick={getAssetList}>
-                      <ArrowClockwise style={{ marginRight: 5 }} size={14} />
-                      <Text
-                        style={{
-                          fontWeight: 500,
-                          fontSize: 10,
-                          color: COLOR.terraSky,
-                        }}
-                      >
-                        REFRESH
-                      </Text>
-                    </StyledRefreshButton>
-                  </Col>
-                )}
+                <RefreshButton />
               </Row>
-              <AssetList
-                {...{ selectedAsset: asset, setSelectedAsset: setAsset }}
-              />
+              <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
             </StyledFormSection>
             <StyledFormSection>
               <Row>
