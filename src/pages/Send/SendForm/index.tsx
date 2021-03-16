@@ -420,9 +420,7 @@ const SendForm = ({
     }
   }
 
-  const onChangeMemo = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeMemo = ({ value }: { value: string }): void => {
     setMemo(value)
   }
 
@@ -435,6 +433,7 @@ const SendForm = ({
     if (status === ProcessStatus.Done) {
       onChangeAmount({ value: '' })
       onChangeToAddress({ value: '' })
+      onChangeMemo({ value: '' })
       getAssetList()
     }
   }, [status])
@@ -651,7 +650,12 @@ const SendForm = ({
               toBlockChain === BlockChainType.terra && (
                 <StyledFormSection>
                   <FormLabel title={'Memo (optional)'} />
-                  <FormInput value={memo} onChange={onChangeMemo} />
+                  <FormInput
+                    value={memo}
+                    onChange={({ target: { value } }): void => {
+                      onChangeMemo({ value })
+                    }}
+                  />
                   <FormErrorMessage
                     errorMessage={validationResult.errorMessage?.memo}
                   />
