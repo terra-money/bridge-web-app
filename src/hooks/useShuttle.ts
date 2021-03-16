@@ -82,7 +82,7 @@ const useShuttle = (): {
     amount: BigNumber
   }): Promise<BigNumber> => {
     const minUst = new BigNumber(ASSET.TERRA_DECIMAL)
-    const zeroDotOnePerAmount = amount.times(0.001)
+    const zeroDotOnePerAmount = amount.times(0.001).dp(0)
 
     if (denom === AssetNativeDenomEnum.uusd) {
       return zeroDotOnePerAmount.isGreaterThan(minUst)

@@ -26,7 +26,8 @@ const isLoggedIn = selector({
     const terraLocal = get(NetworkStore.terraLocal)
 
     return (
-      _.some(user && user.address) && (etherBaseExt || (terraExt && terraLocal))
+      _.some(user && user.address) &&
+      _.some(etherBaseExt || (terraExt && terraLocal))
     )
   },
 })
