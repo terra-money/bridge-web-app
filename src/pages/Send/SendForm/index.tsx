@@ -10,22 +10,20 @@ import {
   ArrowClockwise,
   InfoCircleFill,
 } from 'react-bootstrap-icons'
-import { isMobile, MobileView } from 'react-device-detect'
+import { MobileView } from 'react-device-detect'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
 import { BlockChainType } from 'types/network'
-import { ValidateItemResultType, ValidateResultType } from 'types/send'
-import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
+import { ValidateResultType } from 'types/send'
+import { AssetNativeDenomEnum } from 'types/asset'
 
-import { Button, Text } from 'components'
+import { Text } from 'components'
 import FormInput from 'components/FormInput'
 import FormLabel from 'components/FormLabel'
-import FormSelect from 'components/FormSelect'
 import FormErrorMessage from 'components/FormErrorMessage'
 
 import useSend, { TerraSendFeeInfo } from 'hooks/useSend'
-import useSelectWallet from 'hooks/useSelectWallet'
 import useAuth from 'hooks/useAuth'
 import useShuttle from 'hooks/useShuttle'
 import useSendValidate from 'hooks/useSendValidate'
@@ -33,11 +31,12 @@ import useAsset from 'hooks/useAsset'
 
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
 import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
-import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
-import color from 'consts/color'
+import SendFormButton from './SendFormButton'
+import FormFeeInfo from './FormFeeInfo'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -105,214 +104,6 @@ const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
   cursor: ${({ refreshing }): string => (refreshing ? 'default' : 'pointer')};
   user-select: none;
 `
-
-const SendFormButton = ({
-  validationResult,
-  onClickSendButton,
-  isValidGasFee,
-}: {
-  validationResult: ValidateResultType
-  onClickSendButton: () => Promise<void>
-  isValidGasFee: ValidateItemResultType
-}): ReactElement => {
-  const selectWallet = useSelectWallet()
-  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-
-  return isLoggedIn ? (
-    <Button
-      onClick={onClickSendButton}
-      disabled={
-        false === validationResult.isValid ||
-        (fromBlockChain === BlockChainType.terra &&
-          false === isValidGasFee.isValid)
-      }
-    >
-      Next
-    </Button>
-  ) : (
-    <Button disabled={isMobile} onClick={selectWallet.open}>
-      Connect Wallet
-    </Button>
-  )
-}
-
-const FormFeeInfo = ({
-  validationResult,
-  isValidGasFee,
-}: {
-  validationResult: ValidateResultType
-  isValidGasFee: ValidateItemResultType
-}): ReactElement => {
-  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-
-  // Send Data
-  const asset = useRecoilValue(SendStore.asset)
-  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
-
-  // Computed data from Send data
-  const feeOfGas = useRecoilValue(SendStore.feeOfGas)
-  const tax = useRecoilValue(SendStore.tax)
-  const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
-    SendStore.feeDenom
-  )
-  const shuttleFee = useRecoilValue(SendStore.shuttleFee)
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-
-  const assetList = useRecoilValue(SendStore.loginUserAssetList)
-
-  const { formatBalance } = useAsset()
-
-  const [optionList, setOptionList] = useState<
-    {
-      label: AssetSymbolEnum
-      value: AssetNativeDenomEnum
-      isDisabled?: boolean
-    }[]
-  >([])
-
-  // disable feeDenom what has no balance
-  useEffect(() => {
-    if (assetList.length > 0) {
-      const defaultOptionList = _.map(AssetNativeDenomEnum, (denom) => {
-        const ownedAmount = new BigNumber(
-          assetList.find((x) => x.tokenAddress === denom)?.balance || '0'
-        )
-        const isDisabled = ownedAmount.isLessThanOrEqualTo(0)
-
-        return {
-          label: ASSET.symbolOfDenom[denom],
-          value: denom,
-          isDisabled,
-        }
-      })
-
-      setOptionList(defaultOptionList)
-    }
-  }, [assetList])
-
-  return (
-    <>
-      {isLoggedIn &&
-        fromBlockChain === BlockChainType.terra &&
-        validationResult.isValid && (
-          <StyledFormSection>
-            <FormLabel title={'TxFee'} />
-
-            <div
-              style={{
-                borderTop: 'dashed 1px #444',
-                borderBottom: 'dashed 1px #444',
-                fontSize: 13,
-              }}
-            >
-              <Row style={{ paddingTop: 8, paddingBottom: 8, margin: 0 }}>
-                <Col style={{ padding: 0 }}>
-                  <Text style={{ paddingRight: 10, color: color.skyGray }}>
-                    GAS Fee
-                  </Text>
-                </Col>
-                <Col style={{ textAlign: 'right', padding: 0 }}>
-                  <Text style={{ paddingRight: 10, opacity: 0.8 }}>
-                    {feeOfGas ? formatBalance(feeOfGas) : '0'}
-                  </Text>
-                  <div className={'d-inline-block'}>
-                    <FormSelect
-                      defaultValue={feeDenom}
-                      size={'sm'}
-                      optionList={optionList}
-                      onSelect={(value: AssetNativeDenomEnum): void => {
-                        setFeeDenom(value)
-                      }}
-                    />
-                  </div>
-                </Col>
-              </Row>
-              <div style={{ textAlign: 'right' }}>
-                <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
-              </div>
-              {tax && (
-                <Row
-                  style={{
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                    margin: 0,
-                    borderTop: 'solid 1px rgba(255,255,255,.03)',
-                  }}
-                >
-                  <Col style={{ padding: 0 }}>
-                    <Text style={{ paddingRight: 10, color: color.skyGray }}>
-                      Tax
-                    </Text>
-                  </Col>
-                  <Col style={{ textAlign: 'right', padding: 0 }}>
-                    <Text style={{ opacity: '0.8' }}>
-                      {formatBalance(tax)} {asset?.symbol}
-                    </Text>
-                  </Col>
-                </Row>
-              )}
-
-              {(toBlockChain === BlockChainType.ethereum ||
-                toBlockChain === BlockChainType.bsc) && (
-                <>
-                  <Row
-                    style={{
-                      paddingTop: 8,
-                      paddingBottom: 8,
-                      margin: 0,
-                      borderTop: 'solid 1px rgba(255,255,255,.03)',
-                    }}
-                  >
-                    <Col style={{ padding: 0 }}>
-                      <Text style={{ paddingRight: 10, color: color.skyGray }}>
-                        Shuttle fee (estimated)
-                      </Text>
-                    </Col>
-                    <Col style={{ textAlign: 'right', padding: 0 }}>
-                      <Text style={{ opacity: '0.8' }}>
-                        {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
-                      </Text>
-                    </Col>
-                  </Row>
-                  <Row
-                    style={{
-                      paddingTop: 8,
-                      paddingBottom: 8,
-                      margin: 0,
-                      borderTop: 'solid 1px rgba(255,255,255,.03)',
-                    }}
-                  >
-                    <Col style={{ padding: 0 }}>
-                      <Text style={{ paddingRight: 10, color: color.skyGray }}>
-                        Amount after Shuttle fee (estimated){' '}
-                      </Text>
-                    </Col>
-                    <Col style={{ textAlign: 'right', padding: 0 }}>
-                      <Text
-                        style={{
-                          opacity: '0.8',
-                          color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                            ? COLOR.red
-                            : COLOR.text,
-                        }}
-                      >
-                        {`${formatBalance(amountAfterShuttleFee)} ${
-                          asset?.symbol
-                        }`}
-                      </Text>
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </div>
-          </StyledFormSection>
-        )}
-    </>
-  )
-}
 
 const RefreshButton = (): ReactElement => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
@@ -393,8 +184,9 @@ const SendForm = ({
 
   const { formatBalance } = useAsset()
   const { getTerraSendFeeInfo, getTerraMsgs } = useSend()
-  const { validateSendData, validateGasFee } = useSendValidate()
+  const { validateSendData, validateGasFee, validateTax } = useSendValidate()
   const isValidGasFee = validateGasFee()
+  const isValidTax = validateTax()
   const { getTerraShuttleFee } = useShuttle()
   const { getAssetList } = useAsset()
 
@@ -679,12 +471,14 @@ const SendForm = ({
             <FormFeeInfo
               validationResult={validationResult}
               isValidGasFee={isValidGasFee}
+              isValidTax={isValidTax}
             />
 
             <SendFormButton
               onClickSendButton={onClickSendButton}
               validationResult={validationResult}
               isValidGasFee={isValidGasFee}
+              isValidTax={isValidTax}
             />
           </StyledForm>
         </Col>

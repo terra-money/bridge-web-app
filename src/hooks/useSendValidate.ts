@@ -12,6 +12,7 @@ import { ValidateItemResultType, ValidateResultType } from 'types/send'
 import useAsset from './useAsset'
 
 const useSendValidate = (): {
+  validateTax: () => ValidateItemResultType
   validateGasFee: () => ValidateItemResultType
   validateSendData: () => ValidateResultType
 } => {
@@ -29,6 +30,8 @@ const useSendValidate = (): {
   const feeDenom = useRecoilValue(SendStore.feeDenom)
 
   const feeOfGas = useRecoilValue(SendStore.feeOfGas)
+  const tax = useRecoilValue(SendStore.tax)
+
   const validateGasFee = (): ValidateItemResultType => {
     if (fromBlockChain === BlockChainType.terra) {
       if (_.isEmpty(feeOfGas)) {
@@ -42,6 +45,33 @@ const useSendValidate = (): {
         assetList.find((x) => x.tokenAddress === feeDenom)?.balance || '0'
       )
       if (balanceForfeeDenom.isLessThanOrEqualTo(0)) {
+        return {
+          isValid: false,
+          errorMessage: 'Insufficient balance',
+        }
+      }
+    }
+
+    return { isValid: true }
+  }
+  const validateTax = (): ValidateItemResultType => {
+    if (fromBlockChain === BlockChainType.terra) {
+      const taxAmount = new BigNumber(tax)
+      const sendAmount = new BigNumber(amount)
+      const selectedAssetAmount = new BigNumber(
+        assetList.find((x) => x.tokenAddress === asset?.tokenAddress)
+          ?.balance || '0'
+      )
+      const balanceForfeeDenom =
+        asset?.tokenAddress === feeDenom
+          ? new BigNumber(feeOfGas || 0)
+          : new BigNumber(0)
+
+      if (
+        selectedAssetAmount.isLessThan(
+          taxAmount.plus(sendAmount).plus(balanceForfeeDenom)
+        )
+      ) {
         return {
           isValid: false,
           errorMessage: 'Insufficient balance',
@@ -145,6 +175,7 @@ const useSendValidate = (): {
   }
 
   return {
+    validateTax,
     validateGasFee,
     validateSendData,
   }

@@ -129,18 +129,14 @@ const useSend = (): UseSendType => {
         : new Coin(feeDenom, 0)
 
       // fee + tax
-      let unsignedTx = await lcd.tx.create(loginUser.address, {
+      const unsignedTx = await lcd.tx.create(loginUser.address, {
         msgs,
         feeDenoms: [feeDenom],
       })
-      const stdFee = new StdFee(
-        unsignedTx.fee.gas,
-        unsignedTx.fee.amount.add(tax)
-      )
 
       return {
         gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
-        fee: stdFee,
+        fee: unsignedTx.fee,
         tax,
         feeOfGas: unsignedTx.fee.amount.toArray()[0],
       }
@@ -180,6 +176,7 @@ const useSend = (): UseSendType => {
         : // if send to ether-base then memo must be to-address
           toAddress
     const msgs = getTerraMsgs()
+
     const result = await terraService.post({
       msgs,
       memo: memoOrToAddress,

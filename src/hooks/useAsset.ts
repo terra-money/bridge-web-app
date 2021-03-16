@@ -136,12 +136,12 @@ const useAsset = (): {
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
       return fromBlockChain === BlockChainType.terra
-        ? bnBalance.div(ASSET.TERRA_DECIMAL).toString()
+        ? bnBalance.div(ASSET.TERRA_DECIMAL).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
             .integerValue(BigNumber.ROUND_DOWN)
             .div(ASSET.TERRA_DECIMAL)
-            .toString()
+            .toString(10)
     }
 
     return ''
