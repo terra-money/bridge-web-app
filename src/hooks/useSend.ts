@@ -11,6 +11,7 @@ import {
   Coin,
 } from '@terra-money/terra.js'
 import _ from 'lodash'
+import BigNumber from 'bignumber.js'
 
 import { UTIL } from 'consts'
 
@@ -29,8 +30,8 @@ import useEtherBaseContract from './useEtherBaseContract'
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
   fee: StdFee
-  tax: Coin
-  feeOfGas: Coin
+  tax: BigNumber
+  feeOfGas: BigNumber
 }
 
 type UseSendType = {
@@ -134,11 +135,15 @@ const useSend = (): UseSendType => {
         feeDenoms: [feeDenom],
       })
 
+      const feeOfGas = unsignedTx.fee.amount
+        .toArray()
+        .find((x) => x.denom === feeDenom)
+
       return {
         gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
         fee: unsignedTx.fee,
-        tax,
-        feeOfGas: unsignedTx.fee.amount.toArray()[0],
+        tax: new BigNumber(tax.amount.toString()),
+        feeOfGas: new BigNumber(feeOfGas?.amount.toString() || 0),
       }
     }
   }

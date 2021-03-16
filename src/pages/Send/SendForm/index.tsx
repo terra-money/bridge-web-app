@@ -280,19 +280,19 @@ const SendForm = ({
           msgs,
         })
           .then((res?: TerraSendFeeInfo) => {
-            setTax('')
-            setFeeOfGas('')
+            setTax(new BigNumber(0))
+            setFeeOfGas(new BigNumber(0))
             if (res) {
               const { tax, feeOfGas, fee, gasPrices } = res
-              setTax(tax.amount.toString())
-              setFeeOfGas(feeOfGas.amount.toString())
+              setTax(tax)
+              setFeeOfGas(feeOfGas)
               setFee(fee)
               setGasPrices(gasPrices)
             }
           })
           .catch(() => {
-            setTax('')
-            setFeeOfGas('')
+            setTax(new BigNumber(0))
+            setFeeOfGas(new BigNumber(0))
           })
       }
     }
