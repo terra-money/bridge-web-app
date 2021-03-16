@@ -646,6 +646,19 @@ const SendForm = ({
               )}
             </StyledFormSection>
 
+            <StyledFormSection>
+              <FormLabel title={'Destination'} />
+              <FormInput
+                value={toAddress}
+                onChange={({ target: { value } }): void => {
+                  onChangeToAddress({ value })
+                }}
+              />
+              <FormErrorMessage
+                errorMessage={validationResult.errorMessage?.toAddress}
+              />
+            </StyledFormSection>
+
             {fromBlockChain === BlockChainType.terra &&
               toBlockChain === BlockChainType.terra && (
                 <StyledFormSection>
@@ -661,19 +674,6 @@ const SendForm = ({
                   />
                 </StyledFormSection>
               )}
-
-            <StyledFormSection>
-              <FormLabel title={'Destination'} />
-              <FormInput
-                value={toAddress}
-                onChange={({ target: { value } }): void => {
-                  onChangeToAddress({ value })
-                }}
-              />
-              <FormErrorMessage
-                errorMessage={validationResult.errorMessage?.toAddress}
-              />
-            </StyledFormSection>
 
             {/* only if from terra */}
             <FormFeeInfo
