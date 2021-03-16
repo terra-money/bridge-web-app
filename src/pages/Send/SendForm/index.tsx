@@ -398,9 +398,7 @@ const SendForm = ({
   const { getTerraShuttleFee } = useShuttle()
   const { getAssetList } = useAsset()
 
-  const onChangeToAddress = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeToAddress = ({ value }: { value: string }): void => {
     setToAddress(value)
   }
 
@@ -435,9 +433,9 @@ const SendForm = ({
   // after confirm send
   useEffect(() => {
     if (status === ProcessStatus.Done) {
-      getAssetList().then((): void => {
-        dbcValidateAndGetFeeInfo.callback()
-      })
+      onChangeAmount({ value: '' })
+      onChangeToAddress({ value: '' })
+      getAssetList()
     }
   }, [status])
 
@@ -652,7 +650,7 @@ const SendForm = ({
             {fromBlockChain === BlockChainType.terra &&
               toBlockChain === BlockChainType.terra && (
                 <StyledFormSection>
-                  <FormLabel title={'Memo'} />
+                  <FormLabel title={'Memo (optional)'} />
                   <FormInput value={memo} onChange={onChangeMemo} />
                   <FormErrorMessage
                     errorMessage={validationResult.errorMessage?.memo}
@@ -662,7 +660,12 @@ const SendForm = ({
 
             <StyledFormSection>
               <FormLabel title={'Destination'} />
-              <FormInput value={toAddress} onChange={onChangeToAddress} />
+              <FormInput
+                value={toAddress}
+                onChange={({ target: { value } }): void => {
+                  onChangeToAddress({ value })
+                }}
+              />
               <FormErrorMessage
                 errorMessage={validationResult.errorMessage?.toAddress}
               />

@@ -98,6 +98,10 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
   const [requestTxResult, setrequestTxResult] = useState<RequestTxResultType>()
   const [errorMessage, setErrorMessage] = useState('')
   const [sumbitError, setSumbitError] = useState('')
+
+  const [displayAmount] = useState(amount)
+  const [displayToAddress] = useState(toAddress)
+
   const { getScannerLink } = useNetwork()
   const { getTxInfos } = useTerraTxInfo()
   const [loading, setloading] = useState(false)
@@ -187,7 +191,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
                 wordBreak: 'break-all',
               }}
             >
-              {formatBalance(amount)} {asset?.symbol}
+              {formatBalance(displayAmount)} {asset?.symbol}
             </Text>
           </div>
           {fromBlockChain === BlockChainType.terra &&
@@ -212,7 +216,7 @@ const SubmitStep = ({ modal }: { modal: ModalProps }): ReactElement => {
             To Address
           </Text>
         </div>
-        <Text>{toAddress}</Text>
+        <Text>{displayToAddress}</Text>
       </StyledToAddress>
 
       {requestTxResult?.success && (
