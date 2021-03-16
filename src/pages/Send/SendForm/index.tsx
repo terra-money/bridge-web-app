@@ -510,8 +510,10 @@ const SendForm = ({
   }, 300)
 
   useEffect(() => {
+    onChangeAmount({ value: inputAmount })
     getAssetList().then((): void => {
       dbcValidateAndGetFeeInfo.callback()
+      dbcGetTerraShuttleFee.callback()
     })
   }, [loginUser])
 
