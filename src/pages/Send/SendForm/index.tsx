@@ -210,7 +210,7 @@ const SendForm = ({
           ? ASSET.TERRA_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
       )
-      setAmount(new BigNumber(value).times(decimalSize).toString())
+      setAmount(new BigNumber(value).times(decimalSize).toString(10))
     }
   }
 
