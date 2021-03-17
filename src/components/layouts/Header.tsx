@@ -8,10 +8,10 @@ import { COLOR, WALLET, UTIL, STYLE } from 'consts'
 import { Text } from 'components'
 
 import useAuth from 'hooks/useAuth'
+import useSelectWallet from 'hooks/useSelectWallet'
 
 import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
-import SendStore from 'store/SendStore'
 import FormImage from 'components/FormImage'
 
 import bridgeLogo from 'images/bridge_logo.png'
@@ -48,6 +48,16 @@ const Address = styled(Text)`
   overflow: hidden;
 `
 
+const StyledConnectWallet = styled.div`
+  border-radius: ${STYLE.css.borderRadius};
+  background-color: ${COLOR.primary};
+  font-size: 14px;
+  padding: 8px 12px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.8;
+  }
+`
 const StyledLoginUserInfoBox = styled.div`
   border-radius: ${STYLE.css.borderRadius};
   background-color: ${COLOR.darkGray2};
@@ -77,8 +87,8 @@ const StyledDropdownMenu = styled(Dropdown.Menu)`
   }
 `
 const LoginUserInfo = (): ReactElement => {
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const loginUser = useRecoilValue(AuthStore.loginUser)
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   const { logout } = useAuth()
   const CustomToggle = React.forwardRef((props: any, ref: any) => {
@@ -118,16 +128,28 @@ const LoginUserInfo = (): ReactElement => {
           <div
             style={{
               textAlign: 'left',
-              opacity: '0.5',
               borderTop: 'solid 1px #555',
               marginTop: 3,
               paddingTop: 3,
             }}
           >
-            <Text>
-              {fromBlockChain === 'bsc' && 'Binance Chain Network'}
-              {fromBlockChain === 'ethereum' && 'Ethereum Network'}
-              {fromBlockChain === 'terra' && 'Terra Network'}
+            <Text
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                borderRadius: 12,
+                backgroundColor: isTestnet ? COLOR.red : COLOR.terraSky,
+                fontSize: 9,
+                paddingTop: 3,
+                paddingBottom: 3,
+                paddingLeft: 9,
+                paddingRight: 9,
+                fontWeight: 500,
+                marginTop: 3,
+                marginBottom: 3,
+              }}
+            >
+              {isTestnet ? 'TESTNET' : 'MAINNET'}
             </Text>
           </div>
         </StyledLoginUserInfoBox>
@@ -140,34 +162,8 @@ const LoginUserInfo = (): ReactElement => {
   )
 }
 
-const TestnetTitle = (): ReactElement => {
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
-
-  return (
-    <>
-      {isTestnet && (
-        <Text
-          style={{
-            borderRadius: 12,
-            backgroundColor: COLOR.terraSky,
-            fontSize: 9,
-            paddingTop: 3,
-            paddingBottom: 3,
-            paddingLeft: 9,
-            paddingRight: 9,
-            fontWeight: 500,
-            marginTop: 3,
-            marginBottom: 3,
-          }}
-        >
-          TESTNET
-        </Text>
-      )}
-    </>
-  )
-}
-
 const Header = (): ReactElement => {
+  const selectWallet = useSelectWallet()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   return (
@@ -190,7 +186,6 @@ const Header = (): ReactElement => {
             <StyledLogo>
               <img src={bridgeLogo} alt="" />
             </StyledLogo>
-            <TestnetTitle />
           </Col>
           <Col
             sm={2}
@@ -201,7 +196,13 @@ const Header = (): ReactElement => {
               paddingRight: 20,
             }}
           >
-            {isLoggedIn && <LoginUserInfo />}
+            {isLoggedIn ? (
+              <LoginUserInfo />
+            ) : (
+              <StyledConnectWallet onClick={selectWallet.open}>
+                Connect Wallet
+              </StyledConnectWallet>
+            )}
           </Col>
         </Row>
       </StyledNav>
