@@ -49,8 +49,6 @@ const StyledContainer = styled(Container)`
 `
 
 const StyledMoblieInfoBox = styled.div`
-  margin-left: 20px;
-  margin-right: 20px;
   margin-bottom: 20px;
   border-radius: 1em;
   padding: 12px;
@@ -58,6 +56,10 @@ const StyledMoblieInfoBox = styled.div`
   color: ${COLOR.terraSky};
   font-size: 12px;
   font-weight: 500;
+  @media (max-width: 575px) {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 `
 
 const StyledForm = styled.div`
@@ -208,7 +210,7 @@ const SendForm = ({
           ? ASSET.TERRA_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
       )
-      setAmount(new BigNumber(value).times(decimalSize).toString())
+      setAmount(new BigNumber(value).times(decimalSize).toString(10))
     }
   }
 
