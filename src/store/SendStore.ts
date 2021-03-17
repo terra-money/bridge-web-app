@@ -50,13 +50,13 @@ const feeDenom = atom<AssetNativeDenomEnum>({
   key: 'sendFeeDenom',
   default: AssetNativeDenomEnum.uusd,
 })
-const feeOfGas = atom<string>({
+const feeOfGas = atom<BigNumber>({
   key: 'sendFeeOfGas',
-  default: '',
+  default: new BigNumber(0),
 })
-const tax = atom<string>({
+const tax = atom<BigNumber>({
   key: 'sendTax',
-  default: '',
+  default: new BigNumber(0),
 })
 const shuttleFee = atom<BigNumber>({
   key: 'sendShuttleFee',
