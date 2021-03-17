@@ -30,19 +30,23 @@ import useEtherBaseContract from './useEtherBaseContract'
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
   fee: StdFee
-  tax: BigNumber
   feeOfGas: BigNumber
 }
 
 type UseSendType = {
   initSendData: () => void
   submitRequestTx: () => Promise<RequestTxResultType>
-  getTerraSendFeeInfo: (props: {
+  getTerraSendTax: (props: {
     denom: AssetNativeDenomEnum
     amount: string
-    msgs: MsgSend[] | MsgExecuteContract[]
     feeDenom: string
-  }) => Promise<TerraSendFeeInfo | undefined>
+  }) => Promise<Coin | undefined>
+  getTerraFeeList: () => Promise<
+    {
+      denom: AssetNativeDenomEnum
+      fee?: StdFee
+    }[]
+  >
   getTerraMsgs: () => MsgSend[] | MsgExecuteContract[]
   waitForEtherBaseTransaction: (props: {
     hash: string
@@ -106,17 +110,15 @@ const useSend = (): UseSendType => {
     setFee(undefined)
   }
 
-  const getTerraSendFeeInfo = async ({
+  const getTerraSendTax = async ({
     denom,
     amount,
-    msgs,
     feeDenom,
   }: {
     denom: AssetNativeDenomEnum
     amount: string
-    msgs: MsgSend[] | MsgExecuteContract[]
     feeDenom: string
-  }): Promise<TerraSendFeeInfo | undefined> => {
+  }): Promise<Coin | undefined> => {
     if (terraExt) {
       const lcd = new LCDClient({
         chainID: terraExt.chainID,
@@ -125,27 +127,48 @@ const useSend = (): UseSendType => {
       })
 
       // tax
-      const tax = UTIL.isNativeTerra(denom)
-        ? await lcd.utils.calculateTax(new Coin(denom, amount))
+      return UTIL.isNativeTerra(denom)
+        ? lcd.utils.calculateTax(new Coin(denom, amount))
         : new Coin(feeDenom, 0)
-
-      // fee + tax
-      const unsignedTx = await lcd.tx.create(loginUser.address, {
-        msgs,
-        feeDenoms: [feeDenom],
-      })
-
-      const feeOfGas = unsignedTx.fee.amount
-        .toArray()
-        .find((x) => x.denom === feeDenom)
-
-      return {
-        gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
-        fee: unsignedTx.fee,
-        tax: new BigNumber(tax.amount.toString()),
-        feeOfGas: new BigNumber(feeOfGas?.amount.toString() || 0),
-      }
     }
+  }
+
+  const getTerraFeeList = async (): Promise<
+    {
+      denom: AssetNativeDenomEnum
+      fee?: StdFee
+    }[]
+  > => {
+    if (terraExt) {
+      const msgs = getTerraMsgs()
+      return Promise.all(
+        _.map(AssetNativeDenomEnum, async (denom) => {
+          try {
+            const lcd = new LCDClient({
+              chainID: terraExt.chainID,
+              URL: terraExt.lcd,
+              gasPrices: { [denom]: gasPricesFromServer[denom] },
+            })
+
+            // fee + tax
+            const unsignedTx = await lcd.tx.create(loginUser.address, {
+              msgs,
+              feeDenoms: [denom],
+            })
+
+            return {
+              denom,
+              fee: unsignedTx.fee,
+            }
+          } catch {
+            return {
+              denom,
+            }
+          }
+        })
+      )
+    }
+    return []
   }
 
   const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] => {
@@ -273,7 +296,8 @@ const useSend = (): UseSendType => {
   return {
     initSendData,
     submitRequestTx,
-    getTerraSendFeeInfo,
+    getTerraSendTax,
+    getTerraFeeList,
     getTerraMsgs,
     waitForEtherBaseTransaction,
   }

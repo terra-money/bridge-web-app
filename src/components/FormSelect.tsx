@@ -33,8 +33,9 @@ const FormSelect = <T,>({
   onSelect,
   size,
 }: FormSelectProps<T>): ReactElement => {
-  const defaultOption =
-    optionList.find((x) => x.value === defaultValue) || optionList[0]
+  const defaultOption = _.some(optionList)
+    ? optionList.find((x) => x.value === defaultValue) || optionList[0]
+    : undefined
   const [selected, setSelected] = useState(defaultOption)
   return (
     <Dropdown>
@@ -66,7 +67,7 @@ const FormSelect = <T,>({
             marginTop: -2,
           }}
         >
-          {selected.label}
+          {selected?.label}
         </Dropdown.Toggle>
       )}
       <Dropdown.Menu

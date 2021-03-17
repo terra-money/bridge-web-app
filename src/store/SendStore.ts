@@ -50,8 +50,17 @@ const feeDenom = atom<AssetNativeDenomEnum>({
   key: 'sendFeeDenom',
   default: AssetNativeDenomEnum.uusd,
 })
-const feeOfGas = atom<BigNumber>({
-  key: 'sendFeeOfGas',
+const gasFeeList = atom<
+  {
+    denom: AssetNativeDenomEnum
+    fee?: StdFee
+  }[]
+>({
+  key: 'sendGasFeeList',
+  default: [],
+})
+const gasFee = atom<BigNumber>({
+  key: 'sendGasFee',
   default: new BigNumber(0),
 })
 const tax = atom<BigNumber>({
@@ -80,7 +89,8 @@ export default {
 
   loginUserAssetList,
   feeDenom,
-  feeOfGas,
+  gasFeeList,
+  gasFee,
   tax,
   shuttleFee,
   amountAfterShuttleFee,

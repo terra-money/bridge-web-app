@@ -67,7 +67,7 @@ const ConfirmStep = (): ReactElement => {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   // Computed data from Send data
-  const feeOfGas = useRecoilValue(SendStore.feeOfGas)
+  const gasFee = useRecoilValue(SendStore.gasFee)
   const tax = useRecoilValue(SendStore.tax)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const shuttleFee = useRecoilValue(SendStore.shuttleFee)
@@ -155,21 +155,21 @@ const ConfirmStep = (): ReactElement => {
         <StyledSection>
           <StyledSecH>NetworkFee</StyledSecH>
           <StyledSecD>
-            <div>
-              <StyledSecDText style={{ paddingRight: 5 }}>
-                GAS Fee:
-              </StyledSecDText>
-              <StyledSecDText style={{ paddingRight: 5 }}>
-                {formatBalance(feeOfGas || '0')}
-              </StyledSecDText>
-              <StyledSecDText>{ASSET.symbolOfDenom[feeDenom]}</StyledSecDText>
-            </div>
-
             {tax && (
               <StyledSecDText>
                 Tax: {formatBalance(tax)} {asset?.symbol}
               </StyledSecDText>
             )}
+            <div>
+              <StyledSecDText style={{ paddingRight: 5 }}>
+                GAS Fee:
+              </StyledSecDText>
+              <StyledSecDText style={{ paddingRight: 5 }}>
+                {formatBalance(gasFee)}
+              </StyledSecDText>
+              <StyledSecDText>{ASSET.symbolOfDenom[feeDenom]}</StyledSecDText>
+            </div>
+
             {shuttleFee &&
               (toBlockChain === BlockChainType.ethereum ||
                 toBlockChain === BlockChainType.bsc) && (
