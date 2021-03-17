@@ -26,8 +26,11 @@ const StyledNav = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  min-height: 79px;
-  padding: 10px 0;
+  min-height: 92px;
+  padding: 15px 10px;
+  @media (max-width: 767px) {
+    padding: 15px 0;
+  }
 `
 
 const StyledLogo = styled(Text)`
@@ -38,8 +41,8 @@ const StyledLogo = styled(Text)`
   }
   @media (max-width: 575px) {
     img {
-      width: 100px;
-      height: 25px;
+      width: 104px;
+      height: 26px;
     }
   }
 `
@@ -49,19 +52,20 @@ const Address = styled(Text)`
 `
 
 const StyledConnectWallet = styled.div`
-  border-radius: ${STYLE.css.borderRadius};
+  border-radius: 30px;
   background-color: ${COLOR.primary};
-  font-size: 14px;
-  padding: 8px 12px;
+  font-size: 13px;
+  padding: 8px 16px;
   cursor: pointer;
+  white-space: nowrap;
   :hover {
     opacity: 0.8;
   }
 `
 const StyledLoginUserInfoBox = styled.div`
   border-radius: ${STYLE.css.borderRadius};
-  background-color: ${COLOR.darkGray2};
-  font-size: 11px;
+  border: solid 1px ${COLOR.terraSky};
+  font-size: 12px;
   padding: 8px 12px;
   cursor: pointer;
   :hover {
@@ -109,49 +113,71 @@ const LoginUserInfo = (): ReactElement => {
     <Dropdown>
       <Dropdown.Toggle as={CustomToggle}>
         <StyledLoginUserInfoBox>
-          <Row style={{ width: 170, overflow: 'hidden', flexWrap: 'nowrap' }}>
+          <Row style={{ padding: 0, margin: 0 }}>
             <Col
               style={{
-                width: 40,
-                paddingRight: 10,
+                padding: 0,
+                paddingRight: 8,
                 alignSelf: 'center',
-                flex: '0 0 23%',
-                maxWidth: '23%',
+                paddingTop: 3,
+                height: 18,
               }}
             >
               <FormImage src={walletLogo[loginUser.walletType]} size={16} />
             </Col>
-            <Col style={{ padding: 0 }}>
+            <Col style={{ padding: 0, height: 18 }}>
               <Address>{UTIL.truncate(loginUser.address)}</Address>
             </Col>
           </Row>
-          <div
-            style={{
-              textAlign: 'left',
-              borderTop: 'solid 1px #555',
-              marginTop: 3,
-              paddingTop: 3,
-            }}
-          >
-            <Text
+          {isTestnet ? (
+            <div
               style={{
-                display: 'block',
+                borderTop: 'solid 1px #333',
+                marginTop: 6,
+                paddingTop: 1,
                 textAlign: 'center',
-                borderRadius: 12,
-                backgroundColor: isTestnet ? COLOR.red : COLOR.terraSky,
-                fontSize: 9,
-                paddingTop: 3,
-                paddingBottom: 3,
-                paddingLeft: 9,
-                paddingRight: 9,
-                fontWeight: 500,
-                marginTop: 3,
-                marginBottom: 3,
               }}
             >
-              {isTestnet ? 'TESTNET' : 'MAINNET'}
-            </Text>
-          </div>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: '#DD794A',
+                  fontWeight: 400,
+                  marginRight: 4,
+                }}
+              >
+                Connected to
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: '#DD794A',
+                  fontWeight: 700,
+                }}
+              >
+                TESTNET
+              </Text>
+            </div>
+          ) : (
+            <div
+              style={{
+                borderTop: 'solid 1px #333',
+                marginTop: 6,
+                paddingTop: 1,
+                textAlign: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: COLOR.skyGray,
+                  fontWeight: 400,
+                }}
+              >
+                Connected
+              </Text>
+            </div>
+          )}
         </StyledLoginUserInfoBox>
       </Dropdown.Toggle>
 
