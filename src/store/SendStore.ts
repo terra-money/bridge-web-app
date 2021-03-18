@@ -1,4 +1,4 @@
-import { StdFee } from '@terra-money/terra.js'
+import { Coin, StdFee } from '@terra-money/terra.js'
 import BigNumber from 'bignumber.js'
 import { atom } from 'recoil'
 
@@ -63,9 +63,9 @@ const gasFee = atom<BigNumber>({
   key: 'sendGasFee',
   default: new BigNumber(0),
 })
-const tax = atom<BigNumber>({
+const tax = atom<Coin | undefined>({
   key: 'sendTax',
-  default: new BigNumber(0),
+  default: undefined,
 })
 const shuttleFee = atom<BigNumber>({
   key: 'sendShuttleFee',

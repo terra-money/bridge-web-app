@@ -284,8 +284,7 @@ const SendForm = ({
         feeDenom,
         amount,
       })
-      const taxAmount = new BigNumber(terraTax?.amount.toString() || 0)
-      setTax(taxAmount)
+      setTax(terraTax)
 
       setTerraShuttleFee()
     }
@@ -297,7 +296,7 @@ const SendForm = ({
     return (): void => {
       dbcGetFeeInfoWithValidation.cancel()
     }
-  }, [amount, feeDenom, toAddress, toBlockChain, memo, asset?.tokenAddress])
+  }, [amount, toAddress, toBlockChain, memo, asset?.tokenAddress])
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })

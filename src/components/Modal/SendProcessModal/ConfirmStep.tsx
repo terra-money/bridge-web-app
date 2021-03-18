@@ -157,7 +157,7 @@ const ConfirmStep = (): ReactElement => {
           <StyledSecD>
             {tax && (
               <StyledSecDText>
-                Tax: {formatBalance(tax)} {asset?.symbol}
+                Tax: {formatBalance(tax.amount.toString())} {asset?.symbol}
               </StyledSecDText>
             )}
             <div>

@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 
@@ -41,6 +41,7 @@ const FormFeeInfo = ({
   // Computed data from Send data
   const gasFeeList = useRecoilValue(SendStore.gasFeeList)
   const [gasFee, setGasFee] = useRecoilState(SendStore.gasFee)
+  const setFee = useSetRecoilState(SendStore.fee)
   const tax = useRecoilValue(SendStore.tax)
   const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
     SendStore.feeDenom
@@ -66,6 +67,7 @@ const FormFeeInfo = ({
     const value = stdFee && stdFee.amount.toArray()[0].amount.toString()
 
     setGasFee(new BigNumber(value || 0))
+    setFee(stdFee)
   }, [feeDenom])
 
   // disable feeDenom what has no balance
@@ -93,6 +95,10 @@ const FormFeeInfo = ({
       })
 
       setOptionList(defaultOptionList)
+      const selectable = defaultOptionList.find((x) => x.isDisabled === false)
+      if (selectable) {
+        setFeeDenom(selectable.value)
+      }
     }
   }, [gasFeeList])
 
@@ -127,7 +133,7 @@ const FormFeeInfo = ({
                   </Col>
                   <Col style={{ textAlign: 'right', padding: 0 }}>
                     <Text style={{ opacity: '0.8' }}>
-                      {formatBalance(tax)} {asset?.symbol}
+                      {formatBalance(tax.amount.toString())} {asset?.symbol}
                     </Text>
                   </Col>
                 </Row>
@@ -145,7 +151,7 @@ const FormFeeInfo = ({
                   </Text>
                   <div className={'d-inline-block'}>
                     <FormSelect
-                      defaultValue={feeDenom}
+                      selectedValue={feeDenom}
                       size={'sm'}
                       optionList={optionList}
                       onSelect={(value: AssetNativeDenomEnum): void => {

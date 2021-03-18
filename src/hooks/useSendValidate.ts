@@ -40,10 +40,11 @@ const useSendValidate = (): {
       )
       const gasFeeIfSameDenomWithSendAsset =
         asset?.tokenAddress === feeDenom ? gasFee : new BigNumber(0)
+      const taxAmount = new BigNumber(tax?.amount.toString() || 0)
 
       if (
         selectedAssetAmount.isLessThan(
-          tax.plus(sendAmount).plus(gasFeeIfSameDenomWithSendAsset)
+          taxAmount.plus(sendAmount).plus(gasFeeIfSameDenomWithSendAsset)
         )
       ) {
         return {
