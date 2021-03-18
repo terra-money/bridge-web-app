@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
 import { Dropdown } from 'react-bootstrap'
@@ -7,7 +7,7 @@ import { COLOR } from 'consts'
 import Text from './Text'
 
 type FormSelectProps<T> = {
-  selectedValue: T
+  defaultValue: T
   optionList: { value: T; label: string; isDisabled?: boolean }[]
   hideSelected?: boolean
   onSelect: (value: T) => void
@@ -27,12 +27,15 @@ const StyledDropdownItem = styled(Dropdown.Item)`
 `
 
 const FormSelect = <T,>({
-  selectedValue,
+  defaultValue,
   optionList,
   hideSelected,
   onSelect,
   size,
 }: FormSelectProps<T>): ReactElement => {
+  const defaultOption =
+    optionList.find((x) => x.value === defaultValue) || optionList[0]
+  const [selected, setSelected] = useState(defaultOption)
   return (
     <Dropdown>
       {hideSelected ? (
@@ -63,7 +66,7 @@ const FormSelect = <T,>({
             marginTop: -2,
           }}
         >
-          {optionList.find((x) => x.value === selectedValue)?.label}
+          {selected.label}
         </Dropdown.Toggle>
       )}
       <Dropdown.Menu
@@ -85,6 +88,7 @@ const FormSelect = <T,>({
                   return
                 }
                 onSelect(option.value)
+                setSelected(option)
               }}
             >
               <Text

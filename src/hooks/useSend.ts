@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import bech32 from 'bech32'
 import axios from 'axios'
@@ -30,23 +30,19 @@ import useEtherBaseContract from './useEtherBaseContract'
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
   fee: StdFee
+  tax: BigNumber
   feeOfGas: BigNumber
 }
 
 type UseSendType = {
   initSendData: () => void
   submitRequestTx: () => Promise<RequestTxResultType>
-  getTerraSendTax: (props: {
+  getTerraSendFeeInfo: (props: {
     denom: AssetNativeDenomEnum
     amount: string
+    msgs: MsgSend[] | MsgExecuteContract[]
     feeDenom: string
-  }) => Promise<Coin | undefined>
-  getTerraFeeList: () => Promise<
-    {
-      denom: AssetNativeDenomEnum
-      fee?: StdFee
-    }[]
-  >
+  }) => Promise<TerraSendFeeInfo | undefined>
   getTerraMsgs: () => MsgSend[] | MsgExecuteContract[]
   waitForEtherBaseTransaction: (props: {
     hash: string
@@ -69,9 +65,9 @@ const useSend = (): UseSendType => {
   const terraExt = useRecoilValue(NetworkStore.terraExt)
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
 
-  const [gasPricesFromServer, setGasPricesFromServer] = useRecoilState(
-    SendStore.gasPrices
-  )
+  const [gasPricesFromServer, setGasPricesFromServer] = useState<
+    Record<string, string>
+  >({})
 
   // Send Data
   const [asset, setAsset] = useRecoilState(SendStore.asset)
@@ -80,7 +76,8 @@ const useSend = (): UseSendType => {
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
+
+  const [gasPrices, setGasPrices] = useRecoilState(SendStore.gasPrices)
   const [fee, setFee] = useRecoilState(SendStore.fee)
 
   const { getEtherBaseContract } = useEtherBaseContract()
@@ -105,66 +102,50 @@ const useSend = (): UseSendType => {
     setMemo('')
     setToBlockChain(BlockChainType.terra)
 
+    setGasPrices({})
     setFee(undefined)
   }
 
-  const getTerraSendTax = async ({
+  const getTerraSendFeeInfo = async ({
     denom,
     amount,
+    msgs,
     feeDenom,
   }: {
     denom: AssetNativeDenomEnum
     amount: string
+    msgs: MsgSend[] | MsgExecuteContract[]
     feeDenom: string
-  }): Promise<Coin | undefined> => {
+  }): Promise<TerraSendFeeInfo | undefined> => {
     if (terraExt) {
       const lcd = new LCDClient({
         chainID: terraExt.chainID,
         URL: terraExt.lcd,
         gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
       })
+
       // tax
-      return UTIL.isNativeTerra(denom)
-        ? lcd.utils.calculateTax(new Coin(denom, amount))
+      const tax = UTIL.isNativeTerra(denom)
+        ? await lcd.utils.calculateTax(new Coin(denom, amount))
         : new Coin(feeDenom, 0)
-    }
-  }
 
-  const getTerraFeeList = async (): Promise<
-    {
-      denom: AssetNativeDenomEnum
-      fee?: StdFee
-    }[]
-  > => {
-    if (terraExt) {
-      const msgs = getTerraMsgs()
+      // fee + tax
+      const unsignedTx = await lcd.tx.create(loginUser.address, {
+        msgs,
+        feeDenoms: [feeDenom],
+      })
 
-      return Promise.all(
-        _.map(AssetNativeDenomEnum, async (denom) => {
-          try {
-            const lcd = new LCDClient({
-              chainID: terraExt.chainID,
-              URL: terraExt.lcd,
-              gasPrices: { [denom]: gasPricesFromServer[denom] },
-            })
-            // fee + tax
-            const unsignedTx = await lcd.tx.create(loginUser.address, {
-              msgs,
-              feeDenoms: [denom],
-            })
-            return {
-              denom,
-              fee: unsignedTx.fee,
-            }
-          } catch {
-            return {
-              denom,
-            }
-          }
-        })
-      )
+      const feeOfGas = unsignedTx.fee.amount
+        .toArray()
+        .find((x) => x.denom === feeDenom)
+
+      return {
+        gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
+        fee: unsignedTx.fee,
+        tax: new BigNumber(tax.amount.toString()),
+        feeOfGas: new BigNumber(feeOfGas?.amount.toString() || 0),
+      }
     }
-    return []
   }
 
   const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] => {
@@ -200,10 +181,11 @@ const useSend = (): UseSendType => {
         : // if send to ether-base then memo must be to-address
           toAddress
     const msgs = getTerraMsgs()
+
     const result = await terraService.post({
       msgs,
       memo: memoOrToAddress,
-      gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
+      gasPrices,
       fee,
     })
 
@@ -291,8 +273,7 @@ const useSend = (): UseSendType => {
   return {
     initSendData,
     submitRequestTx,
-    getTerraSendTax,
-    getTerraFeeList,
+    getTerraSendFeeInfo,
     getTerraMsgs,
     waitForEtherBaseTransaction,
   }

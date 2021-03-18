@@ -1,4 +1,4 @@
-import { Coin, StdFee } from '@terra-money/terra.js'
+import { StdFee } from '@terra-money/terra.js'
 import BigNumber from 'bignumber.js'
 import { atom } from 'recoil'
 
@@ -50,22 +50,13 @@ const feeDenom = atom<AssetNativeDenomEnum>({
   key: 'sendFeeDenom',
   default: AssetNativeDenomEnum.uusd,
 })
-const gasFeeList = atom<
-  {
-    denom: AssetNativeDenomEnum
-    fee?: StdFee
-  }[]
->({
-  key: 'sendGasFeeList',
-  default: [],
-})
-const gasFee = atom<BigNumber>({
-  key: 'sendGasFee',
+const feeOfGas = atom<BigNumber>({
+  key: 'sendFeeOfGas',
   default: new BigNumber(0),
 })
-const tax = atom<Coin | undefined>({
+const tax = atom<BigNumber>({
   key: 'sendTax',
-  default: undefined,
+  default: new BigNumber(0),
 })
 const shuttleFee = atom<BigNumber>({
   key: 'sendShuttleFee',
@@ -89,8 +80,7 @@ export default {
 
   loginUserAssetList,
   feeDenom,
-  gasFeeList,
-  gasFee,
+  feeOfGas,
   tax,
   shuttleFee,
   amountAfterShuttleFee,
