@@ -15,13 +15,11 @@ import SendStore from 'store/SendStore'
 const SendFormButton = ({
   validationResult,
   onClickSendButton,
-  isValidGasFee,
-  isValidTax,
+  feeValidationResult,
 }: {
   validationResult: ValidateResultType
   onClickSendButton: () => Promise<void>
-  isValidGasFee: ValidateItemResultType
-  isValidTax: ValidateItemResultType
+  feeValidationResult: ValidateItemResultType
 }): ReactElement => {
   const selectWallet = useSelectWallet()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
@@ -30,7 +28,7 @@ const SendFormButton = ({
 
   let ableButton =
     fromBlockChain === BlockChainType.terra
-      ? validationResult.isValid && isValidGasFee.isValid && isValidTax.isValid
+      ? validationResult.isValid && feeValidationResult.isValid
       : validationResult.isValid
 
   return isLoggedIn ? (

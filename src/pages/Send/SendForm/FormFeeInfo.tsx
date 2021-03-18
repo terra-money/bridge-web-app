@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 
@@ -27,12 +27,10 @@ const StyledFormSection = styled.div`
 
 const FormFeeInfo = ({
   validationResult,
-  isValidGasFee,
-  isValidTax,
+  feeValidationResult,
 }: {
   validationResult: ValidateResultType
-  isValidGasFee: ValidateItemResultType
-  isValidTax: ValidateItemResultType
+  feeValidationResult: ValidateItemResultType
 }): ReactElement => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
@@ -41,7 +39,9 @@ const FormFeeInfo = ({
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
 
   // Computed data from Send data
-  const feeOfGas = useRecoilValue(SendStore.feeOfGas)
+  const gasFeeList = useRecoilValue(SendStore.gasFeeList)
+  const [gasFee, setGasFee] = useRecoilState(SendStore.gasFee)
+  const setFee = useSetRecoilState(SendStore.fee)
   const tax = useRecoilValue(SendStore.tax)
   const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
     SendStore.feeDenom
@@ -62,14 +62,39 @@ const FormFeeInfo = ({
     }[]
   >([])
 
+  const setStdFee = (props: { feeDenom: AssetNativeDenomEnum }): void => {
+    const stdFee = gasFeeList.find((x) => x.denom === props.feeDenom)?.fee
+    const value =
+      stdFee &&
+      stdFee.amount
+        .toArray()
+        .find((x) => x.denom === feeDenom)
+        ?.amount.toString()
+
+    setGasFee(new BigNumber(value || 0))
+    setFee(stdFee)
+  }
+
+  useEffect(() => {
+    setStdFee({ feeDenom })
+  }, [feeDenom])
+
   // disable feeDenom what has no balance
   useEffect(() => {
     if (assetList.length > 0) {
-      const defaultOptionList = _.map(AssetNativeDenomEnum, (denom) => {
-        const ownedAmount = new BigNumber(
-          assetList.find((x) => x.tokenAddress === denom)?.balance || '0'
-        )
-        const isDisabled = ownedAmount.isLessThanOrEqualTo(0)
+      const defaultOptionList = _.map(gasFeeList, ({ denom, fee }) => {
+        let isDisabled = true
+        if (fee) {
+          const ownedAmount = new BigNumber(
+            assetList.find((x) => x.tokenAddress === denom)?.balance || '0'
+          )
+
+          const feeAmount = new BigNumber(
+            fee.amount.toArray()[0].amount.toString() || 0
+          )
+
+          isDisabled = ownedAmount.isLessThan(feeAmount)
+        }
 
         return {
           label: ASSET.symbolOfDenom[denom],
@@ -79,8 +104,17 @@ const FormFeeInfo = ({
       })
 
       setOptionList(defaultOptionList)
+
+      const selected = defaultOptionList.find((x) => x.value === feeDenom)
+      const selectable = defaultOptionList.find((x) => x.isDisabled === false)
+      if (selected && selected.isDisabled && selectable) {
+        setFeeDenom(selectable.value)
+        setStdFee({ feeDenom: selectable.value })
+      } else {
+        setStdFee({ feeDenom })
+      }
     }
-  }, [assetList])
+  }, [gasFeeList])
 
   return (
     <>
@@ -97,6 +131,28 @@ const FormFeeInfo = ({
                 fontSize: 13,
               }}
             >
+              {tax && (
+                <Row
+                  style={{
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    margin: 0,
+                    borderTop: 'solid 1px rgba(255,255,255,.03)',
+                  }}
+                >
+                  <Col style={{ padding: 0 }}>
+                    <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                      Tax
+                    </Text>
+                  </Col>
+                  <Col style={{ textAlign: 'right', padding: 0 }}>
+                    <Text style={{ opacity: '0.8' }}>
+                      {formatBalance(tax.amount.toString())} {asset?.symbol}
+                    </Text>
+                  </Col>
+                </Row>
+              )}
+
               <Row style={{ paddingTop: 8, paddingBottom: 8, margin: 0 }}>
                 <Col style={{ padding: 0 }}>
                   <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
@@ -105,11 +161,11 @@ const FormFeeInfo = ({
                 </Col>
                 <Col style={{ textAlign: 'right', padding: 0 }}>
                   <Text style={{ paddingRight: 10, opacity: 0.8 }}>
-                    {feeOfGas ? formatBalance(feeOfGas) : '0'}
+                    {formatBalance(gasFee)}
                   </Text>
                   <div className={'d-inline-block'}>
                     <FormSelect
-                      defaultValue={feeDenom}
+                      selectedValue={feeDenom}
                       size={'sm'}
                       optionList={optionList}
                       onSelect={(value: AssetNativeDenomEnum): void => {
@@ -120,34 +176,10 @@ const FormFeeInfo = ({
                 </Col>
               </Row>
               <div style={{ textAlign: 'right' }}>
-                <FormErrorMessage errorMessage={isValidGasFee.errorMessage} />
+                <FormErrorMessage
+                  errorMessage={feeValidationResult.errorMessage}
+                />
               </div>
-              {tax && (
-                <>
-                  <Row
-                    style={{
-                      paddingTop: 8,
-                      paddingBottom: 8,
-                      margin: 0,
-                      borderTop: 'solid 1px rgba(255,255,255,.03)',
-                    }}
-                  >
-                    <Col style={{ padding: 0 }}>
-                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                        Tax
-                      </Text>
-                    </Col>
-                    <Col style={{ textAlign: 'right', padding: 0 }}>
-                      <Text style={{ opacity: '0.8' }}>
-                        {formatBalance(tax)} {asset?.symbol}
-                      </Text>
-                    </Col>
-                  </Row>
-                  <div style={{ textAlign: 'right' }}>
-                    <FormErrorMessage errorMessage={isValidTax.errorMessage} />
-                  </div>
-                </>
-              )}
 
               {(toBlockChain === BlockChainType.ethereum ||
                 toBlockChain === BlockChainType.bsc) && (
