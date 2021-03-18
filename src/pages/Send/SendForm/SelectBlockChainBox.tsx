@@ -48,7 +48,7 @@ const SelectBlockChainBox = ({
         >
           {setBlockChain && (
             <FormSelect
-              selectedValue={blockChain}
+              defaultValue={blockChain}
               optionList={optionList}
               onSelect={setBlockChain}
               hideSelected

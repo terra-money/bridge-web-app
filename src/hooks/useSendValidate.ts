@@ -12,7 +12,8 @@ import { ValidateItemResultType, ValidateResultType } from 'types/send'
 import useAsset from './useAsset'
 
 const useSendValidate = (): {
-  validateFee: () => ValidateItemResultType
+  validateTax: () => ValidateItemResultType
+  validateGasFee: () => ValidateItemResultType
   validateSendData: () => ValidateResultType
 } => {
   const { formatBalance } = useAsset()
@@ -28,23 +29,47 @@ const useSendValidate = (): {
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
   const feeDenom = useRecoilValue(SendStore.feeDenom)
 
-  const gasFee = useRecoilValue(SendStore.gasFee)
+  const feeOfGas = useRecoilValue(SendStore.feeOfGas)
   const tax = useRecoilValue(SendStore.tax)
 
-  const validateFee = (): ValidateItemResultType => {
+  const validateGasFee = (): ValidateItemResultType => {
     if (fromBlockChain === BlockChainType.terra) {
+      if (_.isEmpty(feeOfGas)) {
+        return {
+          isValid: false,
+          errorMessage: 'Insufficient balance',
+        }
+      }
+
+      const balanceForfeeDenom = new BigNumber(
+        assetList.find((x) => x.tokenAddress === feeDenom)?.balance || '0'
+      )
+      if (balanceForfeeDenom.isLessThanOrEqualTo(0)) {
+        return {
+          isValid: false,
+          errorMessage: 'Insufficient balance',
+        }
+      }
+    }
+
+    return { isValid: true }
+  }
+  const validateTax = (): ValidateItemResultType => {
+    if (fromBlockChain === BlockChainType.terra) {
+      const taxAmount = new BigNumber(tax)
       const sendAmount = new BigNumber(amount)
       const selectedAssetAmount = new BigNumber(
         assetList.find((x) => x.tokenAddress === asset?.tokenAddress)
           ?.balance || '0'
       )
-      const gasFeeIfSameDenomWithSendAsset =
-        asset?.tokenAddress === feeDenom ? gasFee : new BigNumber(0)
-      const taxAmount = new BigNumber(tax?.amount.toString() || 0)
+      const balanceForfeeDenom =
+        asset?.tokenAddress === feeDenom
+          ? new BigNumber(feeOfGas || 0)
+          : new BigNumber(0)
 
       if (
         selectedAssetAmount.isLessThan(
-          taxAmount.plus(sendAmount).plus(gasFeeIfSameDenomWithSendAsset)
+          taxAmount.plus(sendAmount).plus(balanceForfeeDenom)
         )
       ) {
         return {
@@ -150,7 +175,8 @@ const useSendValidate = (): {
   }
 
   return {
-    validateFee,
+    validateTax,
+    validateGasFee,
     validateSendData,
   }
 }

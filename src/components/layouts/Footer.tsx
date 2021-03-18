@@ -3,9 +3,9 @@ import styled from 'styled-components'
 
 import { STYLE, COLOR } from 'consts'
 
-import githubPng from 'images/github.png'
+// import githubPng from 'images/github.png'
 
-import { ExtLink } from 'components'
+// import { ExtLink } from 'components'
 
 const StyledContainer = styled.footer`
   padding: 30px;
@@ -18,23 +18,23 @@ const StyledContainer = styled.footer`
 `
 
 const Footer = (): ReactElement => {
-  const community = [
-    {
-      href: `https://github.com/terra-project/bridge-web-app`,
-      src: githubPng,
-      alt: 'Github',
-    },
-  ]
+  // const community = [
+  //   {
+  //     href: `https://github.com/terra-project/bridge-web-app`,
+  //     src: githubPng,
+  //     alt: 'Github',
+  //   },
+  // ]
   return (
     <StyledContainer>
-      {community.map(
+      {/* {community.map(
         ({ href, src, alt }) =>
           href && (
             <ExtLink href={href} key={alt}>
               <img src={src} alt={alt} width={24} height={24} />
             </ExtLink>
           )
-      )}
+      )} */}
     </StyledContainer>
   )
 }

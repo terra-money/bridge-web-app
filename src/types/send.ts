@@ -1,4 +1,18 @@
+import { StdFee } from '@terra-money/terra.js'
 import { ethers } from 'ethers'
+
+import { AssetType } from './asset'
+import { BlockChainType } from './network'
+
+export type SendProps = {
+  asset: AssetType
+  toAddress: string
+  toBlockChain: BlockChainType
+  amount: string
+  memo: string
+  gasPrices?: Record<string, string>
+  fee?: StdFee
+}
 
 // just request transaction, it's not finished
 export type RequestTxResultType =
