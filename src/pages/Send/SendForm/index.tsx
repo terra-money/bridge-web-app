@@ -10,7 +10,7 @@ import {
   ArrowClockwise,
   InfoCircleFill,
 } from 'react-bootstrap-icons'
-import { MobileView } from 'react-device-detect'
+import { isBrowser, MobileView } from 'react-device-detect'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
@@ -23,7 +23,7 @@ import FormInput from 'components/FormInput'
 import FormLabel from 'components/FormLabel'
 import FormErrorMessage from 'components/FormErrorMessage'
 
-import useSend, { TerraSendFeeInfo } from 'hooks/useSend'
+import useSend from 'hooks/useSend'
 import useAuth from 'hooks/useAuth'
 import useShuttle from 'hooks/useShuttle'
 import useSendValidate from 'hooks/useSendValidate'
@@ -37,6 +37,7 @@ import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
 import SendFormButton from './SendFormButton'
 import FormFeeInfo from './FormFeeInfo'
+import useSelectWallet from 'hooks/useSelectWallet'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -164,12 +165,10 @@ const SendForm = ({
   const [amount, setAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
-  const setGasPrices = useSetRecoilState(SendStore.gasPrices)
-  const setFee = useSetRecoilState(SendStore.fee)
 
   // Computed data from Send data
-  const setFeeOfGas = useSetRecoilState(SendStore.feeOfGas)
   const setTax = useSetRecoilState(SendStore.tax)
+  const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const setShuttleFee = useSetRecoilState(SendStore.shuttleFee)
   const setAmountAfterShuttleFee = useSetRecoilState(
@@ -184,13 +183,12 @@ const SendForm = ({
   })
   const [inputAmount, setInputAmount] = useState('')
 
-  const { formatBalance } = useAsset()
-  const { getTerraSendFeeInfo, getTerraMsgs } = useSend()
-  const { validateSendData, validateGasFee, validateTax } = useSendValidate()
-  const isValidGasFee = validateGasFee()
-  const isValidTax = validateTax()
   const { getTerraShuttleFee } = useShuttle()
-  const { getAssetList } = useAsset()
+  const { formatBalance, getAssetList } = useAsset()
+  const { getTerraFeeList, getTerraSendTax } = useSend()
+  const { validateSendData, validateFee } = useSendValidate()
+  const feeValidationResult = validateFee()
+  const selectWallet = useSelectWallet()
 
   const onChangeToAddress = ({ value }: { value: string }): void => {
     setToAddress(value)
@@ -218,8 +216,16 @@ const SendForm = ({
     setMemo(value)
   }
 
-  const onClickMaxButton = (): void => {
-    onChangeAmount({ value: formatBalance(asset?.balance || '0') })
+  const onClickMaxButton = async (): Promise<void> => {
+    const assetAmount = new BigNumber(asset?.balance || 0)
+    const terraTax = await getTerraSendTax({
+      denom: asset?.tokenAddress as AssetNativeDenomEnum,
+      feeDenom,
+      amount: assetAmount.toString(10),
+    })
+    const taxAmount = new BigNumber(terraTax?.amount.toString() || 0)
+
+    onChangeAmount({ value: formatBalance(assetAmount.minus(taxAmount)) })
   }
 
   // after confirm send
@@ -232,17 +238,16 @@ const SendForm = ({
     }
   }, [status])
 
-  const dbcGetTerraShuttleFee = useDebouncedCallback(() => {
+  const setTerraShuttleFee = async (): Promise<void> => {
+    // get terra shutte Fee Info
     if (
-      asset?.tokenAddress &&
-      fromBlockChain === BlockChainType.terra &&
-      (toBlockChain === BlockChainType.ethereum ||
-        toBlockChain === BlockChainType.bsc)
+      toBlockChain === BlockChainType.ethereum ||
+      toBlockChain === BlockChainType.bsc
     ) {
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {
         getTerraShuttleFee({
-          denom: asset.tokenAddress,
+          denom: asset?.tokenAddress || '',
           amount: sendAmount,
         }).then((shuttleFee) => {
           setShuttleFee(shuttleFee)
@@ -255,64 +260,56 @@ const SendForm = ({
         setShuttleFee(new BigNumber(0))
       }
     }
-  }, 300)
+  }
 
-  // get shuttle(terra -> ether/bsc) fee
-  useEffect(() => {
-    dbcGetTerraShuttleFee.callback()
-    return dbcGetTerraShuttleFee.cancel
-  }, [amount, toBlockChain])
+  // It's for Fee(gas), Tax and ShuttleFee
+  const dbcGetFeeInfoWithValidation = useDebouncedCallback(async () => {
+    const sendDataResult = validateSendData()
+    setValidationResult(sendDataResult)
 
-  const dbcValidateAndGetFeeInfo = useDebouncedCallback(() => {
-    const vResult = validateSendData()
-    setValidationResult(vResult)
-    if (isLoggedIn && fromBlockChain === 'terra') {
-      if (
-        vResult.isValid &&
-        asset?.tokenAddress &&
-        amount &&
-        feeDenom &&
-        toAddress
-      ) {
-        const msgs = getTerraMsgs()
-        getTerraSendFeeInfo({
-          denom: asset.tokenAddress as AssetNativeDenomEnum,
-          amount,
-          feeDenom,
-          msgs,
-        })
-          .then((res?: TerraSendFeeInfo) => {
-            setTax(new BigNumber(0))
-            setFeeOfGas(new BigNumber(0))
-            if (res) {
-              const { tax, feeOfGas, fee, gasPrices } = res
-              setTax(tax)
-              setFeeOfGas(feeOfGas)
-              setFee(fee)
-              setGasPrices(gasPrices)
-            }
-          })
-          .catch(() => {
-            setTax(new BigNumber(0))
-            setFeeOfGas(new BigNumber(0))
-          })
+    const ableToGetFeeInfo =
+      isLoggedIn &&
+      fromBlockChain === BlockChainType.terra &&
+      amount &&
+      feeDenom &&
+      toAddress
+
+    if (asset?.tokenAddress && ableToGetFeeInfo) {
+      if (sendDataResult.isValid) {
+        // get terra Send Fee Info
+        const terraFeeList = await getTerraFeeList()
+        setGasFeeList(terraFeeList)
       }
+
+      const terraTax = await getTerraSendTax({
+        denom: asset?.tokenAddress as AssetNativeDenomEnum,
+        feeDenom,
+        amount,
+      })
+      setTax(terraTax)
+
+      setTerraShuttleFee()
     }
   }, 300)
+
+  //get terra send fee info
+  useEffect(() => {
+    dbcGetFeeInfoWithValidation.callback()
+    return (): void => {
+      dbcGetFeeInfoWithValidation.cancel()
+    }
+  }, [amount, toAddress, toBlockChain, memo, asset?.tokenAddress])
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })
     getAssetList().then((): void => {
-      dbcValidateAndGetFeeInfo.callback()
-      dbcGetTerraShuttleFee.callback()
+      dbcGetFeeInfoWithValidation.callback()
     })
   }, [loginUser])
 
-  //get terra send fee info
   useEffect(() => {
-    dbcValidateAndGetFeeInfo.callback()
-    return dbcValidateAndGetFeeInfo.cancel
-  }, [amount, feeDenom, toAddress, toBlockChain, memo])
+    isBrowser && selectWallet.open()
+  }, [fromBlockChain])
 
   return (
     <StyledContainer>
@@ -472,15 +469,13 @@ const SendForm = ({
             {/* only if from terra */}
             <FormFeeInfo
               validationResult={validationResult}
-              isValidGasFee={isValidGasFee}
-              isValidTax={isValidTax}
+              feeValidationResult={feeValidationResult}
             />
 
             <SendFormButton
               onClickSendButton={onClickSendButton}
               validationResult={validationResult}
-              isValidGasFee={isValidGasFee}
-              isValidTax={isValidTax}
+              feeValidationResult={feeValidationResult}
             />
           </StyledForm>
         </Col>
