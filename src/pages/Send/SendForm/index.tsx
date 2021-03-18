@@ -10,7 +10,7 @@ import {
   ArrowClockwise,
   InfoCircleFill,
 } from 'react-bootstrap-icons'
-import { MobileView } from 'react-device-detect'
+import { isBrowser, MobileView } from 'react-device-detect'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
@@ -308,7 +308,7 @@ const SendForm = ({
   }, [loginUser])
 
   useEffect(() => {
-    selectWallet.open()
+    isBrowser && selectWallet.open()
   }, [fromBlockChain])
 
   return (
