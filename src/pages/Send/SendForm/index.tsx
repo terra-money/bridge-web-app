@@ -37,6 +37,7 @@ import AssetList from './AssetList'
 import SelectBlockChainBox from './SelectBlockChainBox'
 import SendFormButton from './SendFormButton'
 import FormFeeInfo from './FormFeeInfo'
+import useSelectWallet from 'hooks/useSelectWallet'
 
 const StyledContainer = styled(Container)`
   padding: 40px 0;
@@ -187,6 +188,7 @@ const SendForm = ({
   const { getTerraFeeList, getTerraSendTax } = useSend()
   const { validateSendData, validateFee } = useSendValidate()
   const feeValidationResult = validateFee()
+  const selectWallet = useSelectWallet()
 
   const onChangeToAddress = ({ value }: { value: string }): void => {
     setToAddress(value)
@@ -304,6 +306,10 @@ const SendForm = ({
       dbcGetFeeInfoWithValidation.callback()
     })
   }, [loginUser])
+
+  useEffect(() => {
+    selectWallet.open()
+  }, [fromBlockChain])
 
   return (
     <StyledContainer>
