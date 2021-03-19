@@ -1,31 +1,89 @@
 {
-  "name": "shuttle-web-app",
+  "name": "bridge-web-app",
   "version": "0.1.0",
   "private": true,
+  "license": "Apache-2.0",
   "dependencies": {
+    "@apollo/client": "^3.3.11",
+    "@binance-chain/bsc-connector": "^1.0.0",
+    "@material-ui/core": "^4.11.3",
+    "@metamask/onboarding": "^1.0.0",
+    "@sentry/react": "^6.2.1",
+    "@sentry/tracing": "^6.2.1",
+    "@terra-money/terra.js": "^1.5.0",
+    "@walletconnect/web3-provider": "^1.3.6",
+    "@web3-react/walletlink-connector": "^6.1.9",
+    "axios": "^0.21.1",
+    "bech32": "^1.1.4",
+    "bignumber.js": "^9.0.1",
+    "bootstrap": "^4.6.0",
+    "ethers": "^5.0.31",
+    "lodash": "^4.17.21",
+    "numeral": "^2.0.6",
+    "ramda": "^0.27.1",
+    "react": "^17.0.1",
+    "react-bootstrap": "^1.5.0",
+    "react-bootstrap-icons": "^1.3.0",
+    "react-device-detect": "^1.17.0",
+    "react-dom": "^17.0.1",
+    "react-modal": "^3.12.1",
+    "react-query": "^3.12.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "recoil": "^0.1.2",
+    "styled-components": "^5.2.1",
+    "use-debounce": "^5.2.1",
+    "web-vitals": "^0.2.4"
+  },
+  "devDependencies": {
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
     "@types/jest": "^26.0.19",
-    "@types/node": "^12.19.11",
-    "@types/react": "^16.14.2",
-    "@types/react-dom": "^16.9.10",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1",
-    "typescript": "^4.1.3",
-    "web-vitals": "^0.2.4"
+    "@types/lodash": "^4.14.168",
+    "@types/node": "^12.20.1",
+    "@types/numeral": "^2.0.0",
+    "@types/ramda": "^0.27.38",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@types/react-modal": "^3.12.0",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/styled-components": "^5.1.7",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "lint": "eslint --fix src/**/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "import/no-anonymous-default-export": "off",
+      "react-hooks/exhaustive-deps": "off"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "npm run lint"
     ]
   },
   "browserslist": {
