@@ -1,6 +1,6 @@
 # Terra Bridge Web App
 
-![banner](./terra_bridge.png)
+![banner](./terra-bridge.png)
 
 The **Terra Bridge** is a web frontend that allows users to easily send Terra assets across supported blockchains via their respective bridges.
 
