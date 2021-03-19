@@ -309,6 +309,17 @@ const SendForm = ({
 
   useEffect(() => {
     isBrowser && selectWallet.open()
+    if (
+      fromBlockChain === BlockChainType.ethereum &&
+      toBlockChain === BlockChainType.bsc
+    ) {
+      setToBlockChain(BlockChainType.terra)
+    } else if (
+      fromBlockChain === BlockChainType.bsc &&
+      toBlockChain === BlockChainType.ethereum
+    ) {
+      setToBlockChain(BlockChainType.terra)
+    }
   }, [fromBlockChain])
 
   return (
