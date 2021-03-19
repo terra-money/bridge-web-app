@@ -27,6 +27,8 @@ const ETH_CHAINID = {
 const INFURAID = '87ae9df0054a4467b5de8501e80bc07c'
 
 const TERRA_EXTENSION = 'https://terra.money/extension'
+const BSC_EXTENSION =
+  'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?utm_source=chrome-ntp-icon'
 const CHROME = 'https://google.com/chrome'
 
 const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
@@ -54,6 +56,7 @@ export default {
   terra_networks,
   INFURAID,
   TERRA_EXTENSION,
+  BSC_EXTENSION,
   CHROME,
   ETH_CHAINID,
 }

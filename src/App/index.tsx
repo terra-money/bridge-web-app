@@ -9,6 +9,7 @@ import Header from 'components/layouts/Header'
 import Footer from 'components/layouts/Footer'
 import SelectEtherBaseWalletModal from './SelectEtherBaseWalletModal'
 import TerraExtensionDownModal from './TerraExtensionDownModal'
+import BscExtensionDownModal from './BscExtensionDownModal'
 import NotSupportNetworkModal from './NotSupportNetworkModal'
 
 import useReloadOnNetworkChange from './useReloadOnNetworkChange'
@@ -32,6 +33,7 @@ const App = (): ReactElement => {
       </StyledContainer>
       <SelectEtherBaseWalletModal />
       <TerraExtensionDownModal />
+      <BscExtensionDownModal />
       <NotSupportNetworkModal />
     </BrowserRouter>
   )

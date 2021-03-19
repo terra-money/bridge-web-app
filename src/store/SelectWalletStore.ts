@@ -3,6 +3,7 @@ import { atom } from 'recoil'
 export enum SelectWalletModalType {
   etherBaseModal,
   terraExtInstall,
+  bscInstall,
 }
 
 const isVisibleModalType = atom<SelectWalletModalType | undefined>({

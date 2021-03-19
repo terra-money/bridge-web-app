@@ -61,14 +61,18 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
   )
 
   const onClickBinanceChain = async (): Promise<void> => {
-    const { address, provider } = await bscService.connect()
-    await login({
-      user: {
-        address,
-        provider: new ethers.providers.Web3Provider(provider),
-        walletType: WalletEnum.Binance,
-      },
-    })
+    if (bscService.checkInstalled()) {
+      const { address, provider } = await bscService.connect()
+      await login({
+        user: {
+          address,
+          provider: new ethers.providers.Web3Provider(provider),
+          walletType: WalletEnum.Binance,
+        },
+      })
+    } else {
+      setIsVisibleModalType(SelectWalletModalType.bscInstall)
+    }
   }
 
   const onClickMetamask = async (): Promise<void> => {
