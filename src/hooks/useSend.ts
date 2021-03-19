@@ -108,25 +108,22 @@ const useSend = (): UseSendType => {
     setFee(undefined)
   }
 
-  const getTerraSendTax = async ({
-    denom,
-    amount,
-    feeDenom,
-  }: {
+  const getTerraSendTax = async (props: {
     denom: AssetNativeDenomEnum
     amount: string
     feeDenom: string
   }): Promise<Coin | undefined> => {
+    const { denom, amount, feeDenom: _feeDenom } = props
     if (terraExt) {
       const lcd = new LCDClient({
         chainID: terraExt.chainID,
         URL: terraExt.lcd,
-        gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
+        gasPrices: { [_feeDenom]: gasPricesFromServer[_feeDenom] },
       })
       // tax
       return UTIL.isNativeTerra(denom)
         ? lcd.utils.calculateTax(new Coin(denom, amount))
-        : new Coin(feeDenom, 0)
+        : new Coin(_feeDenom, 0)
     }
   }
 

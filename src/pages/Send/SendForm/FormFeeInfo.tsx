@@ -64,12 +64,10 @@ const FormFeeInfo = ({
 
   const setStdFee = (props: { feeDenom: AssetNativeDenomEnum }): void => {
     const stdFee = gasFeeList.find((x) => x.denom === props.feeDenom)?.fee
-    const value =
-      stdFee &&
-      stdFee.amount
-        .toArray()
-        .find((x) => x.denom === feeDenom)
-        ?.amount.toString()
+    const value = stdFee?.amount
+      .toArray()
+      .find((x) => x.denom === feeDenom)
+      ?.amount.toString()
 
     setGasFee(new BigNumber(value || 0))
     setFee(stdFee)
@@ -107,7 +105,7 @@ const FormFeeInfo = ({
 
       const selected = defaultOptionList.find((x) => x.value === feeDenom)
       const selectable = defaultOptionList.find((x) => x.isDisabled === false)
-      if (selected && selected.isDisabled && selectable) {
+      if (selected?.isDisabled && selectable) {
         setFeeDenom(selectable.value)
         setStdFee({ feeDenom: selectable.value })
       } else {
