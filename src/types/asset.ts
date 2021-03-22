@@ -7,11 +7,12 @@ export enum AssetNativeDenomEnum {
 }
 
 export enum AssetSymbolEnum {
-  LUNA = 'LUNA',
+  Luna = 'Luna',
   UST = 'UST',
   KRT = 'KRT',
   SDT = 'SDT',
   MNT = 'MNT',
+  ANC = 'ANC',
   MIR = 'MIR',
   mAAPL = 'mAAPL',
   mGOOGL = 'mGOOGL',
@@ -35,6 +36,7 @@ export type AssetType = {
   loguURI: string
   tokenAddress: string
   balance?: string
+  disabled?: boolean
 }
 
 export type WhiteListType = Record<

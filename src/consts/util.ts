@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 
 import currency from './currency'
@@ -35,6 +36,8 @@ const isNativeTerra = (str: string): boolean =>
 const isNativeDenom = (str: string): boolean =>
   str === 'uluna' || isNativeTerra(str)
 
+const toBignumber = (value?: string): BigNumber => new BigNumber(value || 0)
+
 export default {
   truncate,
   jsonTryParse,
@@ -43,4 +46,5 @@ export default {
   extractNumber,
   isNativeTerra,
   isNativeDenom,
+  toBignumber,
 }

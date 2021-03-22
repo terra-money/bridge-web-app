@@ -67,6 +67,7 @@ const useTerraBalance = (): {
         msg: { balance: { address: loginUser.address } },
       }))
     )
+
     const fetchResult: Record<
       string,
       { Height: string; Result: string }

@@ -5,8 +5,6 @@ export enum BlockChainType {
 }
 
 export interface LocalTerraNetwork {
-  /** Contract Addresses JSON URL */
-  contract: string
   /** Graphql server URL */
   mantle: string
   /** Ethereum */
