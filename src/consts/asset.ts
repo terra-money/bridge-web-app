@@ -6,7 +6,7 @@ const ETHER_BASE_DECIMAL = 1e18
 const symbolOfDenom: Record<AssetNativeDenomEnum, AssetSymbolEnum> = {
   [AssetNativeDenomEnum.ukrw]: AssetSymbolEnum.KRT,
   [AssetNativeDenomEnum.uusd]: AssetSymbolEnum.UST,
-  [AssetNativeDenomEnum.uluna]: AssetSymbolEnum.LUNA,
+  [AssetNativeDenomEnum.uluna]: AssetSymbolEnum.Luna,
   [AssetNativeDenomEnum.usdr]: AssetSymbolEnum.SDT,
   [AssetNativeDenomEnum.umnt]: AssetSymbolEnum.MNT,
 }
@@ -25,7 +25,7 @@ const nativeDenoms = {
 
 const assetList: AssetType[] = [
   {
-    symbol: AssetSymbolEnum.LUNA,
+    symbol: AssetSymbolEnum.Luna,
     name: 'Luna',
     loguURI: 'https://assets.terra.money/icon/60/Luna.png',
     tokenAddress: '',
@@ -52,6 +52,12 @@ const assetList: AssetType[] = [
     symbol: AssetSymbolEnum.MNT,
     name: 'Terra MNT',
     loguURI: 'https://assets.terra.money/icon/60/MNT.png',
+    tokenAddress: '',
+  },
+  {
+    symbol: AssetSymbolEnum.ANC,
+    name: 'Anchor',
+    loguURI: 'https://whitelist.anchorprotocol.com/logo/ANC.png',
     tokenAddress: '',
   },
   {

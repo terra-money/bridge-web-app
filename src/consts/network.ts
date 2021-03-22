@@ -33,7 +33,6 @@ const CHROME = 'https://google.com/chrome'
 
 const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
   mainnet: {
-    contract: 'https://whitelist.mirror.finance/columbus.json',
     mantle: 'https://mantle.terra.dev/',
     shuttle: {
       ethereum: 'terra13yxhrk08qvdf5zdc9ss5mwsg5sf7zva9xrgwgc',
@@ -41,7 +40,6 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     },
   },
   testnet: {
-    contract: 'https://whitelist.mirror.finance/tequila.json',
     mantle: 'https://tequila-mantle.terra.dev/',
     shuttle: {
       ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
@@ -49,6 +47,12 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     },
   },
 }
+
+const SHUTTLE_PAIRS = 'https://assets.terra.money/cw20/pairs.json'
+
+const TERRA_WHITELIST = 'https://assets.terra.money/cw20/tokens.json'
+const ETH_WHITELIST = 'https://assets.terra.money/shuttle/eth.json'
+const BSC_WHITELIST = 'https://assets.terra.money/shuttle/bsc.json'
 
 export default {
   blockChainImage,
@@ -59,4 +63,8 @@ export default {
   BSC_EXTENSION,
   CHROME,
   ETH_CHAINID,
+  SHUTTLE_PAIRS,
+  TERRA_WHITELIST,
+  ETH_WHITELIST,
+  BSC_WHITELIST,
 }

@@ -2,21 +2,16 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 
-import { ASSET, NETWORK } from 'consts'
+import { ASSET } from 'consts'
 import AuthStore from 'store/AuthStore'
-import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
-import ShuttleStore from 'store/ShuttleStore'
 
 import { AssetType, WhiteListType, BalanceListType } from 'types/asset'
 import { BlockChainType } from 'types/network'
 
-import bsc_mainnet from '../whitelist/bsc_mainnet.json'
-import bsc_testnet from '../whitelist/bsc_testnet.json'
-import eth_homestead from '../whitelist/eth_homestead.json'
-import eth_ropsten from '../whitelist/eth_ropsten.json'
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
+import ContractStore from 'store/ContractStore'
 
 const useAsset = (): {
   getAssetList: () => Promise<void>
@@ -24,64 +19,23 @@ const useAsset = (): {
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
 
-  const terraLocal = useRecoilValue(NetworkStore.terraLocal)
-  const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
-  const setTerraPair = useSetRecoilState(
-    ShuttleStore.mAssetTerraPairContractAddress
-  )
+  const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
+  const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
+  const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
+
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
   const { getTerraBalances } = useTerraBalance()
   const { getEtherBalances } = useEtherBaseBalance()
 
-  const jsonWhiteListParser = (json: any): WhiteListType => {
-    const list: WhiteListType = {}
-    _.forEach(json, (item: { symbol: string; token: string }) => {
-      list[item.symbol] = item.token
-    })
-    return list
-  }
-
-  const getTerraWhiteList = async ({
-    contract,
-  }: {
-    contract: string
-  }): Promise<WhiteListType> => {
-    const response = await fetch(contract)
-    const json: {
-      /** Token addresses */
-      whitelist: any
-    } = await response.json()
-
-    setTerraPair(
-      _.map(json.whitelist, (x) => ({
-        tokenAddress: x.token,
-        pairContractAddress: x.pair,
-      }))
-    )
-
+  const getTerraWhiteList = async (): Promise<WhiteListType> => {
     return {
       ...ASSET.nativeDenoms,
-      ...jsonWhiteListParser(json.whitelist),
+      ...terraWhiteList,
     }
   }
-
-  const getEtherWhiteList = async ({
-    name,
-  }: {
-    name: string
-  }): Promise<WhiteListType> =>
-    jsonWhiteListParser(name === 'homestead' ? eth_homestead : eth_ropsten)
-
-  const getBscWhiteList = async ({
-    chainId,
-  }: {
-    chainId: number
-  }): Promise<WhiteListType> =>
-    jsonWhiteListParser(
-      chainId === NETWORK.ETH_CHAINID.BSC_MAIN ? bsc_mainnet : bsc_testnet
-    )
 
   const setBalanceToAssetList = ({
     assetList,
@@ -95,39 +49,61 @@ const useAsset = (): {
     if (_.some(balanceList)) {
       return _.map(assetList, (asset) => {
         const tokenAddress = whiteList[asset.symbol]
+
         return {
           ...asset,
           tokenAddress,
           balance: balanceList[tokenAddress],
         }
-      })
+      }).filter((x) => x.tokenAddress)
     }
 
     return assetList
   }
+
   const getAssetList = async (): Promise<void> => {
     const assetList = ASSET.assetList
     let whiteList: WhiteListType = {}
     let balanceList: BalanceListType = {}
     if (isLoggedIn) {
-      if (fromBlockChain === 'terra' && terraLocal) {
-        whiteList = await getTerraWhiteList({
-          contract: terraLocal.contract,
-        })
+      if (fromBlockChain === BlockChainType.terra) {
+        whiteList = await getTerraWhiteList()
         balanceList = await getTerraBalances({
           terraWhiteList: _.map(whiteList, (token) => ({ token })),
         })
-      } else if (fromBlockChain === 'ethereum' && etherBaseExt) {
-        whiteList = await getEtherWhiteList(etherBaseExt)
+      } else if (fromBlockChain === BlockChainType.ethereum) {
+        whiteList = ethWhiteList
         balanceList = await getEtherBalances({ whiteList })
-      } else if (fromBlockChain === 'bsc' && etherBaseExt) {
-        whiteList = await getBscWhiteList(etherBaseExt)
+      } else if (fromBlockChain === BlockChainType.bsc) {
+        whiteList = bscWhiteList
         balanceList = await getEtherBalances({ whiteList })
       }
     }
 
-    const list = setBalanceToAssetList({ assetList, whiteList, balanceList })
-    setAssetList(list)
+    const fromList = setBalanceToAssetList({
+      assetList,
+      whiteList,
+      balanceList,
+    })
+
+    if (
+      fromBlockChain !== toBlockChain &&
+      [BlockChainType.ethereum, BlockChainType.bsc].includes(toBlockChain)
+    ) {
+      const toWhiteList =
+        toBlockChain === BlockChainType.ethereum ? ethWhiteList : bscWhiteList
+
+      const pairList = _.map(fromList, (item) => {
+        const disabled = _.isEmpty(toWhiteList[item.symbol])
+        return {
+          ...item,
+          disabled,
+        }
+      })
+      setAssetList(pairList)
+    } else {
+      setAssetList(fromList)
+    }
   }
 
   const formatBalance = (balance: string | BigNumber): string => {

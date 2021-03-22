@@ -10,6 +10,7 @@ import { BlockChainType } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
 import useAsset from './useAsset'
+import { NETWORK } from 'consts'
 
 const useSendValidate = (): {
   validateFee: () => ValidateItemResultType
@@ -51,6 +52,17 @@ const useSendValidate = (): {
           isValid: false,
           errorMessage: 'Insufficient balance',
         }
+      }
+    }
+
+    return { isValid: true }
+  }
+
+  const validateAsset = (): ValidateItemResultType => {
+    if (asset?.disabled) {
+      return {
+        isValid: false,
+        errorMessage: `${asset.symbol} is not available on ${NETWORK.blockChainName[toBlockChain]}`,
       }
     }
 
@@ -136,15 +148,23 @@ const useSendValidate = (): {
     const toAddressValidResult = validateToAddress()
     const amountValidResult = validateAmount()
     const memoValidResult = validateMemo()
+    const assetValidResult = validateAsset()
+
     return {
       isValid: _.every(
-        [toAddressValidResult, amountValidResult, memoValidResult],
+        [
+          toAddressValidResult,
+          amountValidResult,
+          memoValidResult,
+          assetValidResult,
+        ],
         (x) => x.isValid
       ),
       errorMessage: {
         toAddress: toAddressValidResult.errorMessage,
         amount: amountValidResult.errorMessage,
         memo: memoValidResult.errorMessage,
+        asset: assetValidResult.errorMessage,
       },
     }
   }

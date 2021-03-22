@@ -6,9 +6,7 @@ import { ASSET, UTIL } from 'consts'
 
 import { AssetNativeDenomEnum } from 'types/asset'
 
-import ShuttleStore, {
-  MAssetTerraPairContractAddressType,
-} from 'store/ShuttleStore'
+import ContractStore, { ShuttleUusdPairType } from 'store/ContractStore'
 
 import useMantle from './useMantle'
 
@@ -25,13 +23,13 @@ query {
   `
 
 const getTerraMAssetPairContract = (
-  addressList: MAssetTerraPairContractAddressType[]
+  addressList: ShuttleUusdPairType
 ): string => {
   const mapped = _.map(
     addressList,
-    (item) =>
-      `${item.tokenAddress}: WasmContractsContractAddressStore(
-            ContractAddress: "${item.pairContractAddress}"
+    (pairContractAddress, tokenAddress) =>
+      `${tokenAddress}: WasmContractsContractAddressStore(
+            ContractAddress: "${pairContractAddress}"
             QueryMsg: "{\\"pool\\":{}}"
         ) {
             Height
@@ -70,9 +68,7 @@ const useShuttle = (): {
   }) => Promise<BigNumber>
 } => {
   const { fetchQuery } = useMantle()
-  const mAssetTerraPairContractAddress = useRecoilValue(
-    ShuttleStore.mAssetTerraPairContractAddress
-  )
+  const shuttleUusdPairs = useRecoilValue(ContractStore.shuttleUusdPairs)
 
   const getTerraDenomShuttleFee = async ({
     denom,
@@ -129,7 +125,7 @@ const useShuttle = (): {
     contractAddress: string
     amount: BigNumber
   }): Promise<BigNumber> => {
-    const query = getTerraMAssetPairContract(mAssetTerraPairContractAddress)
+    const query = getTerraMAssetPairContract(shuttleUusdPairs)
     const zeroDotOnePerAmount = amount.times(0.001)
 
     const fetchResult: Record<
@@ -155,7 +151,6 @@ const useShuttle = (): {
       const token = new BigNumber(
         assets.find(({ info }) => 'token' in info)?.amount ?? '0'
       )
-
       const oneUstValueTargetPrice = token
         .div(uusd)
         .times(ASSET.TERRA_DECIMAL)

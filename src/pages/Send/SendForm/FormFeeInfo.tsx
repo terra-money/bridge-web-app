@@ -3,9 +3,8 @@ import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
-import BigNumber from 'bignumber.js'
 
-import { ASSET, COLOR } from 'consts'
+import { ASSET, COLOR, UTIL } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
@@ -69,7 +68,7 @@ const FormFeeInfo = ({
       .find((x) => x.denom === feeDenom)
       ?.amount.toString()
 
-    setGasFee(new BigNumber(value || 0))
+    setGasFee(UTIL.toBignumber(value))
     setFee(stdFee)
   }
 
@@ -83,12 +82,12 @@ const FormFeeInfo = ({
       const defaultOptionList = _.map(gasFeeList, ({ denom, fee }) => {
         let isDisabled = true
         if (fee) {
-          const ownedAmount = new BigNumber(
-            assetList.find((x) => x.tokenAddress === denom)?.balance || '0'
+          const ownedAmount = UTIL.toBignumber(
+            assetList.find((x) => x.tokenAddress === denom)?.balance
           )
 
-          const feeAmount = new BigNumber(
-            fee.amount.toArray()[0].amount.toString() || 0
+          const feeAmount = UTIL.toBignumber(
+            fee.amount.toArray()[0].amount.toString()
           )
 
           isDisabled = ownedAmount.isLessThan(feeAmount)

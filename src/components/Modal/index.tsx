@@ -45,7 +45,7 @@ const DefaultModal = ({
   header,
 }: {
   isOpen: boolean
-  close: () => void
+  close?: () => void
   children: ReactElement
   onRequestClose?: () => void
   header?: ReactElement
@@ -65,9 +65,11 @@ const DefaultModal = ({
     >
       <StyledModalHeader>
         {header}
-        <StyledModalHeaderClose onClick={close}>
-          <X size={24} />
-        </StyledModalHeaderClose>
+        {close && (
+          <StyledModalHeaderClose onClick={close}>
+            <X size={24} />
+          </StyledModalHeaderClose>
+        )}
       </StyledModalHeader>
       {children}
     </StyledModal>

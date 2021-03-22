@@ -301,22 +301,28 @@ const SendForm = ({
   }, [amount, toAddress, toBlockChain, memo, asset?.tokenAddress])
 
   useEffect(() => {
+    getAssetList()
+  }, [])
+
+  useEffect(() => {
     onChangeAmount({ value: inputAmount })
     getAssetList().then((): void => {
       dbcGetFeeInfoWithValidation.callback()
     })
-  }, [loginUser])
+  }, [
+    // to check decimal length by network
+    loginUser,
+    // to check if asset valid by network
+    toBlockChain,
+  ])
 
   useEffect(() => {
     isBrowser && selectWallet.open()
     if (
-      fromBlockChain === BlockChainType.ethereum &&
-      toBlockChain === BlockChainType.bsc
-    ) {
-      setToBlockChain(BlockChainType.terra)
-    } else if (
-      fromBlockChain === BlockChainType.bsc &&
-      toBlockChain === BlockChainType.ethereum
+      (fromBlockChain === BlockChainType.ethereum &&
+        toBlockChain === BlockChainType.bsc) ||
+      (fromBlockChain === BlockChainType.bsc &&
+        toBlockChain === BlockChainType.ethereum)
     ) {
       setToBlockChain(BlockChainType.terra)
     }
@@ -349,6 +355,10 @@ const SendForm = ({
                 <RefreshButton />
               </Row>
               <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
+
+              <FormErrorMessage
+                errorMessage={validationResult.errorMessage?.asset}
+              />
             </StyledFormSection>
             <StyledFormSection>
               <Row>

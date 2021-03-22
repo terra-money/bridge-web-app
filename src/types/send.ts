@@ -26,5 +26,6 @@ export type ValidateResultType = {
     toAddress?: string
     amount?: string
     memo?: string
+    asset?: string
   }
 }
