@@ -1,3 +1,5 @@
+import { isBrowser, isChrome } from 'react-device-detect'
+
 // https://gist.github.com/gokulkrishh/242e68d1ee94ad05f488
 const deviceWidth = {
   mobile: '767px',
@@ -15,4 +17,6 @@ const media = {
 
 const css = { borderRadius: '10px' }
 
-export default { media, css }
+const isSupportBrowser = isBrowser && isChrome
+
+export default { media, css, isSupportBrowser }

@@ -10,9 +10,8 @@ import {
   ArrowClockwise,
   InfoCircleFill,
 } from 'react-bootstrap-icons'
-import { isBrowser, MobileView } from 'react-device-detect'
 
-import { ASSET, COLOR, NETWORK } from 'consts'
+import { ASSET, COLOR, NETWORK, STYLE } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateResultType } from 'types/send'
@@ -317,7 +316,7 @@ const SendForm = ({
   ])
 
   useEffect(() => {
-    isBrowser && selectWallet.open()
+    STYLE.isSupportBrowser && selectWallet.open()
     if (
       (fromBlockChain === BlockChainType.ethereum &&
         toBlockChain === BlockChainType.bsc) ||
@@ -330,19 +329,21 @@ const SendForm = ({
 
   return (
     <StyledContainer>
-      <MobileView>
-        <Row className={'justify-content-md-center'}>
-          <Col md={8}>
-            <StyledMoblieInfoBox>
-              <InfoCircleFill
-                style={{ marginRight: 8, marginTop: -2 }}
-                size={14}
-              />
-              Bridge only supports desktop Chrome
-            </StyledMoblieInfoBox>
-          </Col>
-        </Row>
-      </MobileView>
+      {false === STYLE.isSupportBrowser && (
+        <div>
+          <Row className={'justify-content-md-center'}>
+            <Col md={8}>
+              <StyledMoblieInfoBox>
+                <InfoCircleFill
+                  style={{ marginRight: 8, marginTop: -2 }}
+                  size={14}
+                />
+                Bridge only supports desktop Chrome
+              </StyledMoblieInfoBox>
+            </Col>
+          </Row>
+        </div>
+      )}
 
       <Row className={'justify-content-md-center'}>
         <Col md={8}>

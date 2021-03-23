@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { Col, Dropdown, Row } from 'react-bootstrap'
-import { BrowserView } from 'react-device-detect'
 
 import { COLOR, WALLET, UTIL, STYLE } from 'consts'
 
@@ -226,11 +225,13 @@ const Header = (): ReactElement => {
             {isLoggedIn ? (
               <LoginUserInfo />
             ) : (
-              <BrowserView>
-                <StyledConnectWallet onClick={selectWallet.open}>
-                  Connect Wallet
-                </StyledConnectWallet>
-              </BrowserView>
+              STYLE.isSupportBrowser && (
+                <div>
+                  <StyledConnectWallet onClick={selectWallet.open}>
+                    Connect Wallet
+                  </StyledConnectWallet>
+                </div>
+              )
             )}
           </Col>
         </Row>
