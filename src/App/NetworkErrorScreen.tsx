@@ -1,14 +1,16 @@
 import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Col, Container, Row } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import * as Sentry from '@sentry/react'
 import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
-import { COLOR, STYLE, NETWORK } from 'consts'
+import { COLOR, NETWORK } from 'consts'
 import { Button, Text } from 'components'
 import NetworkStore from 'store/NetworkStore'
 import ContractStore from 'store/ContractStore'
+
+import { ExclamationCircle } from 'react-bootstrap-icons'
 
 const StyledBg = styled.div`
   position: absolute;
@@ -17,12 +19,15 @@ const StyledBg = styled.div`
   background-color: #000000cc;
   width: 100%;
   height: 100%;
-  padding: 100px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
 `
 
 const StyledContainer = styled(Container)`
   background-color: ${COLOR.darkGray};
-  padding: 40px 80px;
+  max-width: 640px;
+  padding: 40px;
   border-radius: 1em;
   @media (max-width: 1199px) {
     padding: 40px;
@@ -36,21 +41,19 @@ const StyledContainer = styled(Container)`
 const StyledTitle = styled(Text)`
   display: block;
   font-size: 24;
-  font-weight: 500;
-  color: ${COLOR.skyGray};
-  font-size: 14px;
+  font-weight: 400;
+  color: ${COLOR.red};
+  font-size: 18px;
+  text-align: center;
 `
 
 const StyledInfoText = styled(Text)`
   display: block;
-
-  border: 1px solid ${COLOR.skyGray};
-  border-radius: ${STYLE.css.borderRadius};
-  margin-bottom: 20px;
-  font-size: 12px;
+  font-size: 14px;
   word-break: break-all;
   white-space: pre-wrap;
-  padding: 20px;
+  padding: 10px 20px 0;
+  text-align: center;
 `
 
 const RefreshButton = ({ isOnline }: { isOnline: boolean }): ReactElement => (
@@ -60,6 +63,7 @@ const RefreshButton = ({ isOnline }: { isOnline: boolean }): ReactElement => (
         onClick={(): void => {
           window.location.reload()
         }}
+        style={{ marginTop: 40 }}
       >
         Refresh
       </Button>
@@ -161,16 +165,16 @@ const NetworkErrorScreen = (): ReactElement => {
 
   return showError ? (
     <StyledBg>
-      <Row className={'justify-content-md-center'}>
-        <Col md={8}>
-          <StyledContainer>
-            <StyledTitle>{title}</StyledTitle>
-            <br />
-            <StyledInfoText>{content}</StyledInfoText>
-            <RefreshButton isOnline={isOnline} />
-          </StyledContainer>
-        </Col>
-      </Row>
+      <StyledContainer>
+        <div style={{ textAlign: 'center' }}>
+          <ExclamationCircle
+            style={{ fontSize: 32, marginBottom: 5, color: COLOR.red }}
+          />
+        </div>
+        <StyledTitle>{title}</StyledTitle>
+        <StyledInfoText>{content}</StyledInfoText>
+        <RefreshButton isOnline={isOnline} />
+      </StyledContainer>
     </StyledBg>
   ) : (
     <></>
