@@ -1,8 +1,7 @@
 import { ReactElement } from 'react'
 import { useRecoilValue } from 'recoil'
 
-import { isMobile } from 'react-device-detect'
-
+import { STYLE } from 'consts'
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
@@ -36,7 +35,10 @@ const SendFormButton = ({
       Next
     </Button>
   ) : (
-    <Button disabled={isMobile} onClick={selectWallet.open}>
+    <Button
+      disabled={false === STYLE.isSupportBrowser}
+      onClick={selectWallet.open}
+    >
       Connect Wallet
     </Button>
   )
