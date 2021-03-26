@@ -1,4 +1,4 @@
-import { isBrowser, isChrome } from 'react-device-detect'
+import { isBrowser, isChrome, isEdgeChromium } from 'react-device-detect'
 
 // https://gist.github.com/gokulkrishh/242e68d1ee94ad05f488
 const deviceWidth = {
@@ -17,6 +17,6 @@ const media = {
 
 const css = { borderRadius: '10px' }
 
-const isSupportBrowser = isBrowser && isChrome
+const isSupportBrowser = isBrowser && (isChrome || isEdgeChromium)
 
 export default { media, css, isSupportBrowser }
