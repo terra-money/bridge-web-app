@@ -7,7 +7,13 @@ import Text from './Text'
 const StyledText = styled(Text)`
   color: ${COLOR.red};
   word-break: break-all;
-  font-size: 13px;
+  font-family: Gotham;
+  font-size: 12px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.28px;
   padding-top: 5px;
   margin-bottom: 8px;
 `

@@ -26,7 +26,7 @@ import { BlockChainType } from 'types/network'
 const { walletLogo } = WALLET
 
 const StyledContainer = styled.div`
-  padding: 0 30px 30px;
+  padding: 0 25px 40px;
 `
 
 const StyledWalletButton = styled(Button)`
@@ -35,13 +35,13 @@ const StyledWalletButton = styled(Button)`
   margin: 8px 0px;
   border: 1px solid #1e2026;
   transition: all 0.3s ease 0s;
-  background: #2b2f36;
+  background: ${COLOR.darkGray};
   color: ${COLOR.white};
   overflow: hidden;
 
   :hover {
     border-color: ${COLOR.terraSky};
-    background: #2b2f36;
+    background: ${COLOR.darkGray};
   }
 `
 

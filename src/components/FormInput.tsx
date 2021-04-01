@@ -10,7 +10,7 @@ const StyledContainer = styled.div`
 
 const StyledInput = styled.input`
   flex: 1;
-  padding: 12px 15px;
+  padding: 12px 0;
   border: none;
   font-size: 14px;
   border-radius: ${STYLE.css.borderRadius};

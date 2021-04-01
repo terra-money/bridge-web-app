@@ -1,13 +1,13 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
-import { STYLE, COLOR } from 'consts'
+import { STYLE } from 'consts'
 
 import { ExtLink, Text } from 'components'
 
 const StyledContainer = styled.footer`
   padding: 30px;
-  background-color: ${COLOR.black};
+  margin-top: 40px;
   text-align: center;
   opacity: 0.5;
   @media ${STYLE.media.mobile} {

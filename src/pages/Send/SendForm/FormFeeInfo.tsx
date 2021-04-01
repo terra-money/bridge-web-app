@@ -7,7 +7,7 @@ import _ from 'lodash'
 import { ASSET, COLOR, UTIL } from 'consts'
 
 import { BlockChainType } from 'types/network'
-import { ValidateItemResultType, ValidateResultType } from 'types/send'
+import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
 import { Text } from 'components'
@@ -25,10 +25,8 @@ const StyledFormSection = styled.div`
 `
 
 const FormFeeInfo = ({
-  validationResult,
   feeValidationResult,
 }: {
-  validationResult: ValidateResultType
   feeValidationResult: ValidateItemResultType
 }): ReactElement => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
@@ -48,6 +46,7 @@ const FormFeeInfo = ({
   const shuttleFee = useRecoilValue(SendStore.shuttleFee)
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const validationResult = useRecoilValue(SendStore.validationResult)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
@@ -168,6 +167,7 @@ const FormFeeInfo = ({
                       onSelect={(value: AssetNativeDenomEnum): void => {
                         setFeeDenom(value)
                       }}
+                      containerStyle={{ height: 26, borderRadius: 3 }}
                     />
                   </div>
                 </Col>
