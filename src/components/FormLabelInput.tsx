@@ -11,9 +11,10 @@ const StyledContainer = styled.div`
 
 const StyledInput = styled.input`
   flex: 1;
-  padding: 12px 0;
+  padding-top: 12px;
+  padding-bottom: 6px;
   border: none;
-  font-size: 14px;
+  font-size: 16px;
   color: ${COLOR.text};
   border-bottom: 1px solid ${COLOR.darkGray2};
   background-color: transparent;

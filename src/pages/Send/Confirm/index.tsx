@@ -23,6 +23,7 @@ const StyledContainer = styled.div`
 const StyledSection = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items:center;
   padding: 16px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   word-break: break-all;
@@ -75,6 +76,7 @@ const StyledSpaceBetween = styled.div`
   width: 100%;
   justify-content: space-between;
   display: flex;
+  align-items:center;
 `
 
 const Confirm = (): ReactElement => {
@@ -106,7 +108,7 @@ const Confirm = (): ReactElement => {
         <StyledSecD>
           <div style={{ alignItems: 'center', textAlign: 'right' }}>
             <span style={{ marginRight: 8, verticalAlign: 'middle' }}>
-              <FormImage src={asset?.loguURI || ''} size={16} />
+              <FormImage src={asset?.loguURI || ''} size={18} />
             </span>
             <StyledSecDText>{asset?.symbol}</StyledSecDText>
           </div>

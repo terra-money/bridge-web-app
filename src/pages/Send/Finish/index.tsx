@@ -24,6 +24,7 @@ const StyledContainer = styled.div`
 const StyledSection = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 16px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   word-break: break-all;
@@ -146,7 +147,7 @@ const Finish = (): ReactElement => {
             <StyledAmountText
               isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
             >
-              {`After SuttleFee : (estimated) ${formatBalance(
+              {`After Suttle Fee : (estimated) ${formatBalance(
                 amountAfterShuttleFee
               )} ${asset?.symbol}`}
             </StyledAmountText>

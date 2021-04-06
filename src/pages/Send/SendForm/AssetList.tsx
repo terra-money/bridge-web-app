@@ -136,7 +136,7 @@ const SelectAssetButton = ({
       {asset && (
         <Row>
           <Col style={{ display: 'flex', alignItems: 'center' }}>
-            <FormImage src={asset.loguURI} size={16} />
+            <FormImage src={asset.loguURI} size={18} />
             <Text style={{ marginLeft: 10 }}>{asset.symbol}</Text>
           </Col>
           <Col style={{ textAlign: 'right' }}>

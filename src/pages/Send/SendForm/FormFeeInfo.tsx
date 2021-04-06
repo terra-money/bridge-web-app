@@ -167,7 +167,7 @@ const FormFeeInfo = ({
                       onSelect={(value: AssetNativeDenomEnum): void => {
                         setFeeDenom(value)
                       }}
-                      containerStyle={{ height: 26, borderRadius: 3 }}
+                      containerStyle={{ height: 26, borderRadius: 1, backgroundColor:'red'}}
                     />
                   </div>
                 </Col>

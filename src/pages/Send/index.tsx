@@ -29,7 +29,7 @@ const StyledProcessCircle = styled.div`
   margin: auto;
   border-radius: 100px;
   border: 1px solid #4abcf0;
-  box-shadow: 0 2px 4px 0 rgba(104, 99, 254, 0.3),
+  box-shadow: 0 2px 4px 0 rgba(15, 15, 24, 0.3),
     0 -1px 4px 0 rgba(119, 232, 255, 0.5);
   align-items: center;
   justify-content: center;
