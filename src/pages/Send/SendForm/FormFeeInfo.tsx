@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
@@ -7,10 +6,10 @@ import _ from 'lodash'
 import { ASSET, COLOR, UTIL } from 'consts'
 
 import { BlockChainType } from 'types/network'
-import { ValidateItemResultType, ValidateResultType } from 'types/send'
+import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
-import { Text } from 'components'
+import { Text, Col, Row } from 'components'
 import FormLabel from 'components/FormLabel'
 import FormSelect from 'components/FormSelect'
 import FormErrorMessage from 'components/FormErrorMessage'
@@ -21,14 +20,12 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 const StyledFormSection = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 `
 
 const FormFeeInfo = ({
-  validationResult,
   feeValidationResult,
 }: {
-  validationResult: ValidateResultType
   feeValidationResult: ValidateItemResultType
 }): ReactElement => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
@@ -48,6 +45,7 @@ const FormFeeInfo = ({
   const shuttleFee = useRecoilValue(SendStore.shuttleFee)
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const validationResult = useRecoilValue(SendStore.validationResult)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
@@ -72,6 +70,33 @@ const FormFeeInfo = ({
     setFee(stdFee)
   }
 
+  const getDefaultOptionList = (): {
+    label: AssetSymbolEnum
+    value: AssetNativeDenomEnum
+    isDisabled: boolean
+  }[] => {
+    return _.map(gasFeeList, ({ denom, fee }) => {
+      let isDisabled = true
+      if (fee) {
+        const ownedAmount = UTIL.toBignumber(
+          assetList.find((x) => x.tokenAddress === denom)?.balance
+        )
+
+        const feeAmount = UTIL.toBignumber(
+          fee.amount.toArray()[0].amount.toString()
+        )
+
+        isDisabled = ownedAmount.isLessThan(feeAmount)
+      }
+
+      return {
+        label: ASSET.symbolOfDenom[denom],
+        value: denom,
+        isDisabled,
+      }
+    })
+  }
+
   useEffect(() => {
     setStdFee({ feeDenom })
   }, [feeDenom])
@@ -79,26 +104,7 @@ const FormFeeInfo = ({
   // disable feeDenom what has no balance
   useEffect(() => {
     if (assetList.length > 0) {
-      const defaultOptionList = _.map(gasFeeList, ({ denom, fee }) => {
-        let isDisabled = true
-        if (fee) {
-          const ownedAmount = UTIL.toBignumber(
-            assetList.find((x) => x.tokenAddress === denom)?.balance
-          )
-
-          const feeAmount = UTIL.toBignumber(
-            fee.amount.toArray()[0].amount.toString()
-          )
-
-          isDisabled = ownedAmount.isLessThan(feeAmount)
-        }
-
-        return {
-          label: ASSET.symbolOfDenom[denom],
-          value: denom,
-          isDisabled,
-        }
-      })
+      const defaultOptionList = getDefaultOptionList()
 
       setOptionList(defaultOptionList)
 
@@ -123,18 +129,20 @@ const FormFeeInfo = ({
 
             <div
               style={{
+                marginTop: 12,
                 borderTop: 'dashed 1px #444',
-                borderBottom: 'dashed 1px #444',
-                fontSize: 13,
+
+                fontSize: 12,
+                paddingTop: 6,
+                paddingBottom: 6,
               }}
             >
               {tax && (
                 <Row
                   style={{
-                    paddingTop: 8,
-                    paddingBottom: 8,
+                    paddingTop: 6,
+                    paddingBottom: 6,
                     margin: 0,
-                    borderTop: 'solid 1px rgba(255,255,255,.03)',
                   }}
                 >
                   <Col style={{ padding: 0 }}>
@@ -142,37 +150,57 @@ const FormFeeInfo = ({
                       Tax
                     </Text>
                   </Col>
-                  <Col style={{ textAlign: 'right', padding: 0 }}>
-                    <Text style={{ opacity: '0.8' }}>
+                  <Col style={{ padding: 0 }}>
+                    <Text
+                      style={{ justifyContent: 'flex-end', opacity: '0.8' }}
+                    >
                       {formatBalance(tax.amount.toString())} {asset?.symbol}
                     </Text>
                   </Col>
                 </Row>
               )}
 
-              <Row style={{ paddingTop: 8, paddingBottom: 8, margin: 0 }}>
+              <Row style={{ paddingTop: 6, paddingBottom: 6, margin: 0 }}>
                 <Col style={{ padding: 0 }}>
                   <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
                     GAS Fee
                   </Text>
                 </Col>
-                <Col style={{ textAlign: 'right', padding: 0 }}>
-                  <Text style={{ paddingRight: 10, opacity: 0.8 }}>
+                <Col style={{ padding: 0 }}>
+                  <Text
+                    style={{
+                      justifyContent: 'flex-end',
+                      paddingRight: 10,
+                      opacity: 0.8,
+                    }}
+                  >
                     {formatBalance(gasFee)}
                   </Text>
-                  <div className={'d-inline-block'}>
-                    <FormSelect
-                      selectedValue={feeDenom}
-                      size={'sm'}
-                      optionList={optionList}
-                      onSelect={(value: AssetNativeDenomEnum): void => {
-                        setFeeDenom(value)
-                      }}
-                    />
-                  </div>
+                  <FormSelect
+                    selectedValue={feeDenom}
+                    size={'sm'}
+                    optionList={optionList}
+                    onSelect={(value: AssetNativeDenomEnum): void => {
+                      setFeeDenom(value)
+                    }}
+                    containerStyle={{
+                      width: 52,
+                      height: 26,
+                      borderRadius: 3,
+                      padding: '6px 5px 5px 8px',
+                    }}
+                    selectedTextStyle={{
+                      fontSize: 12,
+                      fontWeight: 'normal',
+                      letterSpacing: -0.19,
+                    }}
+                    menuContainerStyle={{
+                      borderRadius: 3,
+                    }}
+                  />
                 </Col>
               </Row>
-              <div style={{ textAlign: 'right' }}>
+              <div style={{ justifyContent: 'flex-end' }}>
                 <FormErrorMessage
                   errorMessage={feeValidationResult.errorMessage}
                 />
@@ -183,10 +211,9 @@ const FormFeeInfo = ({
                 <>
                   <Row
                     style={{
-                      paddingTop: 8,
-                      paddingBottom: 8,
+                      paddingTop: 6,
+                      paddingBottom: 12,
                       margin: 0,
-                      borderTop: 'solid 1px rgba(255,255,255,.03)',
                     }}
                   >
                     <Col style={{ padding: 0 }}>
@@ -194,18 +221,19 @@ const FormFeeInfo = ({
                         Shuttle fee (estimated)
                       </Text>
                     </Col>
-                    <Col style={{ textAlign: 'right', padding: 0 }}>
-                      <Text style={{ opacity: '0.8' }}>
+                    <Col style={{ padding: 0 }}>
+                      <Text
+                        style={{ justifyContent: 'flex-end', opacity: '0.8' }}
+                      >
                         {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
                       </Text>
                     </Col>
                   </Row>
                   <Row
                     style={{
-                      paddingTop: 8,
-                      paddingBottom: 8,
+                      paddingTop: 12,
                       margin: 0,
-                      borderTop: 'solid 1px rgba(255,255,255,.03)',
+                      borderTop: 'solid 1px #2e2e2e',
                     }}
                   >
                     <Col style={{ padding: 0 }}>
@@ -213,9 +241,10 @@ const FormFeeInfo = ({
                         Amount after Shuttle fee (estimated){' '}
                       </Text>
                     </Col>
-                    <Col style={{ textAlign: 'right', padding: 0 }}>
+                    <Col style={{ padding: 0 }}>
                       <Text
                         style={{
+                          justifyContent: 'flex-end',
                           opacity: '0.8',
                           color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
                             ? COLOR.red

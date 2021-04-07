@@ -4,6 +4,7 @@ import { atom } from 'recoil'
 
 import { AssetNativeDenomEnum, AssetType } from 'types/asset'
 import { BlockChainType } from 'types/network'
+import { ValidateResultType } from 'types/send'
 
 // Send Data Start
 const asset = atom<AssetType | undefined>({
@@ -77,6 +78,13 @@ const amountAfterShuttleFee = atom<BigNumber>({
 })
 // Computed data from Send data End
 
+const validationResult = atom<ValidateResultType>({
+  key: 'sendValidationResult',
+  default: {
+    isValid: false,
+  },
+})
+
 export default {
   asset,
   toAddress,
@@ -94,4 +102,6 @@ export default {
   tax,
   shuttleFee,
   amountAfterShuttleFee,
+
+  validationResult,
 }

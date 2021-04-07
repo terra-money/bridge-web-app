@@ -3,28 +3,35 @@ import Modal from 'react-modal'
 import styled from 'styled-components'
 import { X } from 'react-bootstrap-icons'
 
-import { COLOR, STYLE } from 'consts'
+import { COLOR } from 'consts'
 
 const StyledModal = styled(Modal)`
-  width: 620px;
+  width: 550px;
   outline: 0;
   margin: auto;
-  background-color: #1e2026;
-  border-radius: ${STYLE.css.borderRadius};
+  background-color: ${COLOR.darkGray2};
+  border-radius: 32px;
   overflow: hidden;
 `
 
 const StyledModalHeader = styled.div`
   position: relative;
   text-align: center;
-  padding: 16px;
-  font-size: 14px;
+  padding-top: 28px;
+  padding-bottom: 35px;
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.25px;
+  justify-content: center;
 `
 
 const StyledModalHeaderClose = styled.a`
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 15px;
+  right: 15px;
   display: inline-block;
   padding: 10px;
   cursor: pointer;

@@ -2,14 +2,13 @@ import { ReactElement, useEffect, useRef, useState } from 'react'
 import _ from 'lodash'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import styled from 'styled-components'
-import { Col, Row } from 'react-bootstrap'
-import { ChevronRight } from 'react-bootstrap-icons'
+import { CaretDownFill } from 'react-bootstrap-icons'
 
 import { COLOR, STYLE } from 'consts'
 
 import { AssetType } from 'types/asset'
 
-import { Text } from 'components'
+import { Text, Col, Row } from 'components'
 import DefaultModal from 'components/Modal'
 import FormInput from 'components/FormInput'
 import FormImage from 'components/FormImage'
@@ -19,7 +18,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 const StyledContainer = styled.div`
-  padding: 20px 30px;
+  padding: 0 25px 40px;
   background-color: ${COLOR.darkGray2};
 `
 
@@ -48,13 +47,10 @@ const StyledAssetItem = styled.div`
 
 const StyledSelectAssetButton = styled.div`
   cursor: pointer;
-  border-width: 1px;
-  border-color: ${COLOR.red};
-  border-radius: ${STYLE.css.borderRadius};
-  padding: 10px 15px;
+  border-bottom: 2px solid ${COLOR.darkGray2};
+  padding: 12px 0 6px;
   font-size: 14px;
   font-weight: 500;
-  background-color: ${COLOR.darkGray2};
   :hover {
     opacity: 0.8;
   }
@@ -86,31 +82,28 @@ const AssetItem = ({
     >
       <Row>
         <Col
-          sm={1}
-          style={{ alignSelf: 'center', marginTop: 3, marginBottom: 3 }}
+          style={{
+            flex: '0 0 8%',
+            alignSelf: 'center',
+            marginTop: 3,
+            marginBottom: 3,
+          }}
         >
           <FormImage src={asset.loguURI} size={20} />
         </Col>
         <Col>
-          <Row>
-            <Col>
-              <Text style={{ fontSize: 14, fontWeight: 500 }}>
-                {asset.symbol}
-              </Text>
-              <br />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Text style={{ color: COLOR.blueGray, fontSize: 12 }}>
-                {asset.name}
-              </Text>
-            </Col>
-          </Row>
+          <div>
+            <Text style={{ fontSize: 14, fontWeight: 500 }}>
+              {asset.symbol}
+            </Text>
+            <Text style={{ color: COLOR.blueGray, fontSize: 12 }}>
+              {asset.name}
+            </Text>
+          </div>
         </Col>
         {isLoggedIn && (
-          <Col style={{ textAlign: 'right', alignSelf: 'center' }}>
-            <Text style={{ fontSize: 14 }}>
+          <Col style={{ alignSelf: 'center' }}>
+            <Text style={{ justifyContent: 'flex-end', fontSize: 14 }}>
               {asset.balance ? formatBalance(asset.balance) : '0'}{' '}
             </Text>
           </Col>
@@ -139,16 +132,27 @@ const SelectAssetButton = ({
       {asset && (
         <Row>
           <Col style={{ display: 'flex', alignItems: 'center' }}>
-            <FormImage src={asset.loguURI} size={16} />
-            <Text style={{ marginLeft: 10 }}>{asset.symbol}</Text>
+            <FormImage
+              src={asset.loguURI}
+              size={18}
+              style={{ marginTop: -2 }}
+            />
+            <Text style={{ marginLeft: 10, fontSize: 16 }}>{asset.symbol}</Text>
           </Col>
-          <Col style={{ textAlign: 'right' }}>
+          <Col style={{ justifyContent: 'flex-end' }}>
             {isLoggedIn && (
-              <Text style={{ marginRight: 10, fontWeight: 400 }}>
-                {asset.balance ? formatBalance(asset.balance) : '0'}
+              <Text
+                style={{
+                  justifyContent: 'flex-end',
+                  marginRight: 10,
+                  fontWeight: 'normal',
+                  color: '#A3A3A3',
+                }}
+              >
+                Available {asset.balance ? formatBalance(asset.balance) : '0'}
               </Text>
             )}
-            <ChevronRight style={{ fontSize: 12, marginTop: -2 }} />
+            <CaretDownFill style={{ fontSize: 8, marginTop: -2 }} />
           </Col>
         </Row>
       )}
@@ -179,6 +183,7 @@ const AssetList = ({
 
   useEffect(() => {
     if (showModal) {
+      setInputFilter('')
       scrollRef.current?.scrollTo({ top: 200, behavior: 'smooth' })
     }
   }, [showModal])
@@ -206,12 +211,12 @@ const AssetList = ({
             setShowModal(false)
           },
         }}
-        header={<Text>Select Asset</Text>}
+        header={<Text style={{ justifyContent: 'center' }}>Select Asset</Text>}
       >
         <StyledContainer>
           <div
             style={{
-              marginBottom: 20,
+              marginBottom: 25,
               border: 'solid 1px rgba(255,255,255,.15)',
               borderRadius: 10,
               overflow: 'hidden',
@@ -223,6 +228,7 @@ const AssetList = ({
               }}
               maxLength={30}
               placeholder={'Search'}
+              style={{ marginLeft: 24 }}
             />
           </div>
 

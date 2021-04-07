@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import { COLOR } from 'consts'
 
 const StyledText = styled.div`
-  display: inline-block;
+  display: flex;
   color: ${COLOR.text};
+  flex: 1;
 `
 
 const Text = (props: HTMLAttributes<HTMLDivElement>): ReactElement => {
