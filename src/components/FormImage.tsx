@@ -1,9 +1,11 @@
+import { CSSProperties } from '@material-ui/core/styles/withStyles'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
 type FormImageProps = {
   src: string
-  size: number
+  size?: number
+  style?: CSSProperties
 }
 
 const StyledFormImage = styled.div<FormImageProps>`
@@ -12,9 +14,8 @@ const StyledFormImage = styled.div<FormImageProps>`
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  height: ${(props): number => props.size}px;
-  width: ${(props): number => props.size}px;
-  margin-top: -2px;
+  height: ${(props): string => (props.size ? `${props.size}px` : '100%')};
+  width: ${(props): string => (props.size ? `${props.size}px` : '100%')};
 `
 
 const FormImage = (props: FormImageProps): ReactElement => {

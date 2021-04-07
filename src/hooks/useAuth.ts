@@ -11,10 +11,19 @@ import terraService from 'services/terraService'
 
 import { User } from 'types/auth'
 import { BlockChainType } from 'types/network'
+import { WalletEnum } from 'types/wallet'
 
 const useAuth = (): {
   login: ({ user }: { user: User }) => Promise<void>
   logout: () => void
+  getLoginStorage: () => {
+    lastFromBlockChain?: BlockChainType
+    lastWalletType?: WalletEnum
+  }
+  setLoginStorage: (props?: {
+    blockChain: BlockChainType
+    walletType: WalletEnum
+  }) => void
 } => {
   const setLoginUser = useSetRecoilState(AuthStore.loginUser)
   const setEtherBaseExt = useSetRecoilState(NetworkStore.etherBaseExt)
@@ -55,6 +64,10 @@ const useAuth = (): {
       setTerraExt(extNet)
       const localNetwork = NETWORK.terra_networks[extNet.name]
       setTerraLocal(localNetwork)
+      setLoginStorage({
+        blockChain: BlockChainType.terra,
+        walletType: WalletEnum.TerraStation,
+      })
     }
     // both ethereum , bsc are ethereum base blockchain
     else {
@@ -63,14 +76,19 @@ const useAuth = (): {
       if (network && isValidEtherNetwork) {
         const { ETH_CHAINID } = NETWORK
 
-        setFromBlockChain(
-          [ETH_CHAINID.ETH_MAIN, ETH_CHAINID.ETH_ROPSTEN].includes(
-            network.chainId
-          )
-            ? BlockChainType.ethereum
-            : BlockChainType.bsc
-        )
+        const reSelectFromBlockChain = [
+          ETH_CHAINID.ETH_MAIN,
+          ETH_CHAINID.ETH_ROPSTEN,
+        ].includes(network.chainId)
+          ? BlockChainType.ethereum
+          : BlockChainType.bsc
+        setFromBlockChain(reSelectFromBlockChain)
         setEtherBaseExt(network)
+
+        setLoginStorage({
+          blockChain: reSelectFromBlockChain,
+          walletType: user.walletType,
+        })
       } else {
         setIsVisibleNotSupportNetworkModal(true)
         setTriedNotSupportNetwork(network)
@@ -82,13 +100,47 @@ const useAuth = (): {
     setLoginUser(user)
   }
 
+  enum LocalStorageKey {
+    lastFromBlockChain = 'lastFromBlockChain',
+    lastWalletType = 'lastWalletType',
+  }
+
+  const setLoginStorage = (props?: {
+    blockChain: BlockChainType
+    walletType: WalletEnum
+  }): void => {
+    localStorage.setItem(
+      LocalStorageKey.lastFromBlockChain,
+      props?.blockChain || ''
+    )
+    localStorage.setItem(
+      LocalStorageKey.lastWalletType,
+      props?.walletType || ''
+    )
+  }
+
+  const getLoginStorage = (): {
+    lastFromBlockChain?: BlockChainType
+    lastWalletType?: WalletEnum
+  } => {
+    return {
+      lastFromBlockChain: localStorage.getItem(
+        LocalStorageKey.lastFromBlockChain
+      ) as BlockChainType,
+      lastWalletType: localStorage.getItem(
+        LocalStorageKey.lastWalletType
+      ) as WalletEnum,
+    }
+  }
+
   const logout = (): void => {
     setLoginUser(initLoginUser)
     setEtherBaseExt(undefined)
     setTerraExt(undefined)
+    setLoginStorage()
   }
 
-  return { login, logout }
+  return { login, logout, getLoginStorage, setLoginStorage }
 }
 
 export default useAuth

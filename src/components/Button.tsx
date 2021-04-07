@@ -14,7 +14,6 @@ const StyledDefaultButton = styled.button<ButtonProps>`
   font-size: 14px;
   text-align: center;
   border-radius: 27px;
-  margin-top: 20px;
   border-style: none;
   box-sizing: border-box;
   user-select: none;

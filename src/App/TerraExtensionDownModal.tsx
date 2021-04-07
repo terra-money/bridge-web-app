@@ -14,7 +14,7 @@ import SelectWalletStore, {
 } from 'store/SelectWalletStore'
 
 const StyledContainer = styled.div`
-  padding: 30px;
+  padding: 0 30px 30px;
 `
 
 const TerraExtensionDownModal = (): ReactElement => {
@@ -56,7 +56,7 @@ const TerraExtensionDownModal = (): ReactElement => {
           </div>
         ) : (
           <>
-            <div style={{ textAlign: 'center' }}>
+            <div>
               <ExtLink href={NETWORK.TERRA_EXTENSION}>
                 <Text style={{ color: 'inherit', fontSize: 18 }}>
                   Download Terra Station Extension

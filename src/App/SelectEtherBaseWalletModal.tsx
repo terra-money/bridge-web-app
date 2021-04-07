@@ -1,4 +1,4 @@
-import { Fragment, ReactElement } from 'react'
+import { Fragment, ReactElement, useEffect } from 'react'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ethers } from 'ethers'
@@ -26,7 +26,7 @@ import { BlockChainType } from 'types/network'
 const { walletLogo } = WALLET
 
 const StyledContainer = styled.div`
-  padding: 0 30px 30px;
+  padding: 0 25px 40px;
 `
 
 const StyledWalletButton = styled(Button)`
@@ -35,13 +35,13 @@ const StyledWalletButton = styled(Button)`
   margin: 8px 0px;
   border: 1px solid #1e2026;
   transition: all 0.3s ease 0s;
-  background: #2b2f36;
+  background: ${COLOR.darkGray};
   color: ${COLOR.white};
   overflow: hidden;
 
   :hover {
     border-color: ${COLOR.terraSky};
-    background: #2b2f36;
+    background: ${COLOR.darkGray};
   }
 `
 
@@ -53,7 +53,7 @@ const StyledButtonContents = styled.div`
 `
 
 const SelectEtherBaseWalletModal = (): ReactElement => {
-  const { login, logout } = useAuth()
+  const { login, logout, getLoginStorage, setLoginStorage } = useAuth()
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   const [isVisibleModalType, setIsVisibleModalType] = useRecoilState(
@@ -158,6 +158,31 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
           },
         ]
 
+  useEffect(() => {
+    const { lastWalletType } = getLoginStorage()
+    if (
+      isVisibleModalType === SelectWalletModalType.etherBaseModal &&
+      lastWalletType
+    ) {
+      switch (lastWalletType) {
+        case WalletEnum.Binance:
+          onClickBinanceChain()
+          break
+        case WalletEnum.MetaMask:
+          onClickMetamask()
+          break
+        case WalletEnum.CoinbaseWallet:
+          onClickCoinbase()
+          break
+        case WalletEnum.WalletConnect:
+          onClickWalletConnect()
+          break
+      }
+      setLoginStorage()
+      setIsVisibleModalType(undefined)
+    }
+  }, [isVisibleModalType])
+
   return (
     <DefaultModal
       {...{
@@ -166,7 +191,7 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
           setIsVisibleModalType(undefined)
         },
       }}
-      header={<Text>Connect Wallet</Text>}
+      header={<Text style={{ justifyContent: 'center' }}>Connect Wallet</Text>}
     >
       <StyledContainer>
         {buttons.map(({ src, label, onClick }) => (

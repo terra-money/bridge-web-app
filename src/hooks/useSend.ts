@@ -86,7 +86,7 @@ const useSend = (): UseSendType => {
   const { getEtherBaseContract } = useEtherBaseContract()
 
   const getGasPricesFromServer = async (): Promise<void> => {
-    if (terraExt) {
+    if (terraExt && terraExt.fcd) {
       const { data } = await axios.get('/v1/txs/gas_prices', {
         baseURL: terraExt.fcd,
       })

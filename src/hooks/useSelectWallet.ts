@@ -27,6 +27,7 @@ const useSelectWallet = (): {
       const terraExtInstalled = terraService.checkInstalled()
       if (terraExtInstalled) {
         const result = await terraService.connect()
+
         await login({
           user: {
             address: result.address,

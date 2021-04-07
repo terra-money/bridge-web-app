@@ -1,18 +1,31 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
-import { STYLE, COLOR } from 'consts'
+import { STYLE } from 'consts'
 
-import { ExtLink, Text } from 'components'
+import { ExtLink, Text, Container, Row, Col } from 'components'
 
-const StyledContainer = styled.footer`
-  padding: 30px;
-  background-color: ${COLOR.black};
-  text-align: center;
+const StyledContainer = styled(Container)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 640px;
+  margin-top: 28px;
+  margin-bottom: 28px;
   opacity: 0.5;
   @media ${STYLE.media.mobile} {
     min-height: 100px;
   }
+`
+
+const StyledText = styled(Text)`
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.22px;
 `
 
 const Footer = (): ReactElement => {
@@ -28,23 +41,29 @@ const Footer = (): ReactElement => {
   ]
   return (
     <StyledContainer>
-      {community.map(
-        ({ href, title }) =>
-          href && (
-            <ExtLink
-              href={href}
-              key={title}
-              style={{
-                paddingLeft: 15,
-                paddingRight: 15,
-                fontSize: 13,
-                textTransform: 'uppercase',
-              }}
-            >
-              <Text>{title}</Text>
-            </ExtLink>
-          )
-      )}
+      <Row>
+        <Col>
+          <StyledText>© Terraform Labs.</StyledText>
+        </Col>
+        {community.map(
+          ({ href, title }) =>
+            href && (
+              <Col key={title} style={{ flex: '0 0 8%' }}>
+                <ExtLink
+                  href={href}
+                  style={{
+                    paddingLeft: 15,
+                    paddingRight: 15,
+                    fontSize: 13,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <StyledText>{title}</StyledText>
+                </ExtLink>
+              </Col>
+            )
+        )}
+      </Row>
     </StyledContainer>
   )
 }

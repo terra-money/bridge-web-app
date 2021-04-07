@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import { Col, Dropdown, Row } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 
 import { COLOR, WALLET, UTIL, STYLE } from 'consts'
 
-import { Text } from 'components'
+import { Container, Text } from 'components'
 
 import useAuth from 'hooks/useAuth'
 import useSelectWallet from 'hooks/useSelectWallet'
@@ -17,17 +17,16 @@ import FormImage from 'components/FormImage'
 import bridgeLogo from 'images/bridge_logo.png'
 
 const { walletLogo } = WALLET
-const StyledContainer = styled.div`
-  background-color: ${COLOR.headerBg};
+const StyledContainer = styled(Container)`
+  max-width: 640px;
 `
 
 const StyledNav = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
-  min-height: 92px;
-  padding: 15px 10px;
+  padding-top: 47px;
+  padding-bottom: 19px;
   @media (max-width: 767px) {
     padding: 15px 0;
   }
@@ -63,6 +62,8 @@ const StyledConnectWallet = styled.div`
   }
 `
 const StyledLoginUserInfoBox = styled.div`
+  display: flex;
+  align-items: center;
   border-radius: ${STYLE.css.borderRadius};
   border: solid 1px ${COLOR.terraSky};
   font-size: 12px;
@@ -72,21 +73,33 @@ const StyledLoginUserInfoBox = styled.div`
     opacity: 0.8;
   }
 `
+
+const StyledDropdown = styled(Dropdown)`
+  position: relative;
+`
+
 const StyledDropdownMenu = styled(Dropdown.Menu)`
   transition-duration: 300ms;
-  background-color: ${COLOR.darkGray2};
+  background-color: #484848;
   border-radius: ${STYLE.css.borderRadius};
-  font-size: 12px;
   width: 100%;
   padding: 0;
   text-align: center;
   a {
+    display: block;
     color: ${COLOR.white};
     padding: 12px;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.25px;
     border-radius: ${STYLE.css.borderRadius};
+    text-decoration: none;
     :hover {
-      color: ${COLOR.terraSky};
-      background-color: ${COLOR.darkGray2};
+      color: ${COLOR.white};
+      background-color: rgba(85, 146, 247, 0.1);
     }
   }
 `
@@ -110,63 +123,45 @@ const LoginUserInfo = (): ReactElement => {
     )
   })
   return (
-    <Dropdown>
+    <StyledDropdown>
       <Dropdown.Toggle as={CustomToggle}>
         <StyledLoginUserInfoBox>
-          <Row style={{ padding: 0, margin: 0 }}>
-            <Col
-              style={{
-                padding: 0,
-                paddingRight: 8,
-                alignSelf: 'center',
-                paddingTop: 3,
-                height: 18,
-              }}
-            >
-              <FormImage src={walletLogo[loginUser.walletType]} size={16} />
-            </Col>
-            <Col style={{ padding: 0, height: 18 }}>
-              <Address>{UTIL.truncate(loginUser.address)}</Address>
-            </Col>
-          </Row>
-          {isTestnet ? (
-            <div
-              style={{
-                borderTop: 'solid 1px #333',
-                marginTop: 6,
-                paddingTop: 1,
-                textAlign: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 10,
-                  color: '#DD794A',
-                  fontWeight: 400,
-                  marginRight: 4,
-                }}
-              >
-                Connected to
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  color: '#DD794A',
-                  fontWeight: 700,
-                }}
-              >
-                TESTNET
-              </Text>
-            </div>
-          ) : (
-            <div
-              style={{
-                borderTop: 'solid 1px #333',
-                marginTop: 6,
-                paddingTop: 1,
-                textAlign: 'center',
-              }}
-            >
+          <FormImage
+            style={{ marginRight: 5 }}
+            src={walletLogo[loginUser.walletType]}
+            size={16}
+          />
+          <Address>{UTIL.truncate(loginUser.address)}</Address>
+          <div
+            style={{
+              display: 'inline-block',
+              width: 1,
+              height: 14,
+              backgroundColor: 'white',
+              opacity: 0.4,
+              margin: '0 8px',
+            }}
+          />
+          <div
+            style={{
+              display: 'inline-block',
+              textAlign: 'center',
+            }}
+          >
+            {isTestnet ? (
+              <>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: '#DD794A',
+                    fontWeight: 400,
+                    marginRight: 4,
+                  }}
+                >
+                  Connected to <b style={{ paddingLeft: 3 }}>TESTNET</b>
+                </Text>
+              </>
+            ) : (
               <Text
                 style={{
                   fontSize: 10,
@@ -176,15 +171,15 @@ const LoginUserInfo = (): ReactElement => {
               >
                 Connected
               </Text>
-            </div>
-          )}
+            )}
+          </div>
         </StyledLoginUserInfoBox>
       </Dropdown.Toggle>
 
       <StyledDropdownMenu>
         <Dropdown.Item onClick={logout}>Disconnect</Dropdown.Item>
       </StyledDropdownMenu>
-    </Dropdown>
+    </StyledDropdown>
   )
 }
 
@@ -195,46 +190,20 @@ const Header = (): ReactElement => {
   return (
     <StyledContainer>
       <StyledNav>
-        <Row style={{ width: '100%', margin: 0 }}>
-          <Col
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              paddingRight: 0,
-              paddingLeft: 20,
-              flex: 1,
-            }}
-            sm={10}
-            xs={5}
-          >
-            <StyledLogo>
-              <img src={bridgeLogo} alt="" />
-            </StyledLogo>
-          </Col>
-          <Col
-            sm={2}
-            xs={7}
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              paddingRight: 20,
-            }}
-          >
-            {isLoggedIn ? (
-              <LoginUserInfo />
-            ) : (
-              STYLE.isSupportBrowser && (
-                <div>
-                  <StyledConnectWallet onClick={selectWallet.open}>
-                    Connect Wallet
-                  </StyledConnectWallet>
-                </div>
-              )
-            )}
-          </Col>
-        </Row>
+        <StyledLogo>
+          <img src={bridgeLogo} alt="" />
+        </StyledLogo>
+        {isLoggedIn ? (
+          <LoginUserInfo />
+        ) : (
+          STYLE.isSupportBrowser && (
+            <div>
+              <StyledConnectWallet onClick={selectWallet.open}>
+                Connect Wallet
+              </StyledConnectWallet>
+            </div>
+          )
+        )}
       </StyledNav>
     </StyledContainer>
   )
