@@ -1,15 +1,35 @@
+@font-face {
+  font-family: 'Gotham';
+  src: url(./fonts/Gotham-Book.otf);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src: url(./fonts/Gotham-Medium.otf);
+  font-weight: 500;
+}
+
 html,
 body,
 #root {
   height: 100%;
 }
 
+* {
+  font-family: Gotham, sans-serif !important;
+}
+
 body {
   margin: 0;
-  font-family: "Gotham A", "Gotham B", sans-serif !important;
+  background-color: #2e2e2e !important;
 }
 
 [type='number']::-webkit-inner-spin-button,
 [type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
+}
+
+a {
+  text-decoration: none;
 }

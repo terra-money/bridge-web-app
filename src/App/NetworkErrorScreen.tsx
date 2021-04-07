@@ -1,12 +1,11 @@
 import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Container } from 'react-bootstrap'
 import * as Sentry from '@sentry/react'
 import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
 import { COLOR, NETWORK } from 'consts'
-import { Button, Text } from 'components'
+import { Button, Text, Container } from 'components'
 import NetworkStore from 'store/NetworkStore'
 import ContractStore from 'store/ContractStore'
 

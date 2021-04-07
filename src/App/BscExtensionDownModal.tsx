@@ -14,7 +14,7 @@ import SelectWalletStore, {
 } from 'store/SelectWalletStore'
 
 const StyledContainer = styled.div`
-  padding: 30px;
+  padding: 0 30px 30px;
 `
 
 const BscExtensionDownModal = (): ReactElement => {

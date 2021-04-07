@@ -1,4 +1,4 @@
-import { ReactElement, CSSProperties } from 'react'
+import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { COLOR } from 'consts'
 
@@ -7,7 +7,12 @@ import Text from './Text'
 const StyledText = styled(Text)`
   color: ${COLOR.red};
   word-break: break-all;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.28px;
   padding-top: 5px;
   margin-bottom: 8px;
 `
@@ -17,7 +22,7 @@ const FormErrorMessage = ({
   style,
 }: {
   errorMessage?: string
-  style?: CSSProperties
+  style?: React.CSSProperties
 }): ReactElement => {
   return (
     <>{errorMessage && <StyledText style={style}>{errorMessage}</StyledText>}</>

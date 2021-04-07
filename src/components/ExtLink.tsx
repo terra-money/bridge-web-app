@@ -2,7 +2,6 @@ import { AnchorHTMLAttributes, ReactElement } from 'react'
 import styled from 'styled-components'
 
 const StyledA = styled.a`
-  padding: 10px;
   color: #5493f7;
   :hover {
     opacity: 1;
