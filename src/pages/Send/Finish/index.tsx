@@ -170,7 +170,7 @@ const Finish = (): ReactElement => {
           )}
       </div>
       <StyledSection>
-        <StyledSecH>Destination</StyledSecH>
+        <StyledSecH>Destination Address</StyledSecH>
         <StyledSecD>
           <StyledSecDText>{displayToAddress}</StyledSecDText>
         </StyledSecD>

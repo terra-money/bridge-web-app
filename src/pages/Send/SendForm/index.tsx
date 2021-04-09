@@ -299,7 +299,7 @@ const SendForm = ({
               onChangeToAddress({ value })
             },
           }}
-          labelProps={{ children: 'Destination' }}
+          labelProps={{ children: 'Destination Address' }}
         />
         <FormErrorMessage
           errorMessage={validationResult.errorMessage?.toAddress}
