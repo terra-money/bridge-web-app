@@ -150,6 +150,12 @@ const assetList: AssetType[] = [
     loguURI: 'https://whitelist.mirror.finance/icon/FB.png',
     tokenAddress: '',
   },
+  {
+    symbol: AssetSymbolEnum.mCOIN,
+    name: 'Coinbase Global, Inc.',
+    loguURI: 'https://whitelist.mirror.finance/icon/COIN.png',
+    tokenAddress: '',
+  },
 ]
 export default {
   assetList,

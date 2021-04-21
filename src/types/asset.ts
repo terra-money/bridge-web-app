@@ -28,6 +28,7 @@ export enum AssetSymbolEnum {
   mUSO = 'mUSO',
   mVIXY = 'mVIXY',
   mFB = 'mFB',
+  mCOIN = 'mCOIN',
 }
 
 export type AssetType = {
