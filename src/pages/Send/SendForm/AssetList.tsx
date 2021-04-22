@@ -174,12 +174,13 @@ const AssetList = ({
   const [showModal, setShowModal] = useState(false)
   const [inputFilter, setInputFilter] = useState('')
 
-  const filteredAssetList = assetList.filter((x) =>
-    inputFilter
-      ? x.name.toLowerCase().includes(inputFilter) ||
-        x.symbol.toLowerCase().includes(inputFilter)
+  const filteredAssetList = assetList.filter((x) => {
+    const inputFilterLower = inputFilter.toLowerCase()
+    return inputFilterLower
+      ? x.name.toLowerCase().includes(inputFilterLower) ||
+          x.symbol.toLowerCase().includes(inputFilterLower)
       : true
-  )
+  })
 
   useEffect(() => {
     if (showModal) {
