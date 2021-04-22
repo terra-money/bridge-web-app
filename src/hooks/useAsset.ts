@@ -24,6 +24,7 @@ const useAsset = (): {
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
   const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
+  const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
@@ -77,6 +78,9 @@ const useAsset = (): {
       } else if (fromBlockChain === BlockChainType.bsc) {
         whiteList = bscWhiteList
         balanceList = await getEtherBalances({ whiteList })
+      } else if (fromBlockChain === BlockChainType.hmy) {
+        whiteList = hmyWhiteList
+        balanceList = await getEtherBalances({ whiteList })
       }
     }
 
@@ -88,10 +92,18 @@ const useAsset = (): {
 
     if (
       fromBlockChain !== toBlockChain &&
-      [BlockChainType.ethereum, BlockChainType.bsc].includes(toBlockChain)
+      [
+        BlockChainType.ethereum,
+        BlockChainType.bsc,
+        BlockChainType.hmy,
+      ].includes(toBlockChain)
     ) {
       const toWhiteList =
-        toBlockChain === BlockChainType.ethereum ? ethWhiteList : bscWhiteList
+        toBlockChain === BlockChainType.ethereum
+          ? ethWhiteList
+          : toBlockChain === BlockChainType.hmy
+          ? hmyWhiteList
+          : bscWhiteList
 
       const pairList = _.map(fromList, (item) => {
         const disabled = _.isEmpty(toWhiteList[item.symbol])

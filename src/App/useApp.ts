@@ -14,6 +14,7 @@ const useApp = (): {
   )
   const setEthWhiteList = useSetRecoilState(ContractStore.initOnlyEthWhiteList)
   const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
+  const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
 
   const getContractAddress = async (): Promise<void> => {
     try {
@@ -64,6 +65,9 @@ const useApp = (): {
 
       const ethListJson = await (await fetch(NETWORK.ETH_WHITELIST)).json()
       setEthWhiteList(ethListJson)
+
+      const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
+      setHmyWhiteList(hmyListJson)
 
       const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
 

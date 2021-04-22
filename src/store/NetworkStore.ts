@@ -39,6 +39,8 @@ const isTestnet = selector<boolean>({
 
       if (fromBlockChain === BlockChainType.ethereum) {
         return _etherBaseExt?.name !== 'homestead'
+      } else if (fromBlockChain === BlockChainType.hmy) {
+        return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.HMY_MAIN
       } else {
         return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.BSC_MAIN
       }

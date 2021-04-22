@@ -52,6 +52,8 @@ const useAuth = (): {
         ETH_CHAINID.ETH_ROPSTEN,
         ETH_CHAINID.BSC_MAIN,
         ETH_CHAINID.BSC_TEST,
+        ETH_CHAINID.HMY_MAIN,
+        ETH_CHAINID.HMY_TEST,
       ].includes(network.chainId)
     }
 
@@ -69,7 +71,7 @@ const useAuth = (): {
         walletType: WalletEnum.TerraStation,
       })
     }
-    // both ethereum , bsc are ethereum base blockchain
+    // both ethereum , bsc, hmy are ethereum base blockchain
     else {
       const network = await user.provider?.getNetwork()
       const isValidEtherNetwork = checkIsValidEtherNetwork({ network })
@@ -81,6 +83,10 @@ const useAuth = (): {
           ETH_CHAINID.ETH_ROPSTEN,
         ].includes(network.chainId)
           ? BlockChainType.ethereum
+          : [ETH_CHAINID.HMY_MAIN, ETH_CHAINID.HMY_TEST].includes(
+              network.chainId
+            )
+          ? BlockChainType.hmy
           : BlockChainType.bsc
         setFromBlockChain(reSelectFromBlockChain)
         setEtherBaseExt(network)

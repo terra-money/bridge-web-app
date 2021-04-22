@@ -145,6 +145,19 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
             onClick: onClickCoinbase,
           },
         ]
+      : fromBlockChain === BlockChainType.hmy
+      ? [
+          {
+            src: walletLogo[WalletEnum.MetaMask],
+            label: 'Metamask',
+            onClick: onClickMetamask,
+          },
+          {
+            src: walletLogo[WalletEnum.WalletConnect],
+            label: 'WalletConnect',
+            onClick: onClickWalletConnect,
+          },
+        ]
       : [
           {
             src: walletLogo[WalletEnum.Binance],
