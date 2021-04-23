@@ -145,6 +145,14 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
             onClick: onClickCoinbase,
           },
         ]
+      : BlockChainType.harmony
+      ? [
+          {
+            src: walletLogo[WalletEnum.MetaMask],
+            label: 'Metamask',
+            onClick: onClickMetamask,
+          },
+        ]
       : [
           {
             src: walletLogo[WalletEnum.Binance],

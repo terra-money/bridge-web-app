@@ -14,6 +14,7 @@ const useApp = (): {
   )
   const setEthWhiteList = useSetRecoilState(ContractStore.initOnlyEthWhiteList)
   const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
+  const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
 
   const getContractAddress = async (): Promise<void> => {
     try {
@@ -66,8 +67,10 @@ const useApp = (): {
       setEthWhiteList(ethListJson)
 
       const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
-
       setBscWhiteList(bscListJson)
+
+      const hmyListJson = NETWORK.HMY_WHITELIST
+      setHmyWhiteList(hmyListJson)
     } catch (error) {
       Sentry.captureException(error)
     }

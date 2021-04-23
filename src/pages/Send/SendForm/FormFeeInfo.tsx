@@ -207,7 +207,8 @@ const FormFeeInfo = ({
               </div>
 
               {(toBlockChain === BlockChainType.ethereum ||
-                toBlockChain === BlockChainType.bsc) && (
+                toBlockChain === BlockChainType.bsc ||
+                toBlockChain === BlockChainType.harmony) && (
                 <>
                   <Row
                     style={{

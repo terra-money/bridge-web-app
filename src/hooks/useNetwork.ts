@@ -31,6 +31,11 @@ const useNetwork = (): {
         return `https://${subdomain}bscscan.com/${type}/${address}`
       }
 
+      if (fromBlockChain === BlockChainType.harmony) {
+        subdomain = isTestnet ? 'pops' : 'harmony'
+        return `https://explorer.${subdomain}.one/#/${type}/${address}`
+      }
+
       subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
       return `https://${subdomain}etherscan.io/${type}/${address}`
     }

@@ -2,6 +2,7 @@ export enum BlockChainType {
   terra = 'terra',
   ethereum = 'ethereum',
   bsc = 'bsc',
+  harmony = 'harmony',
 }
 
 export interface LocalTerraNetwork {
@@ -11,7 +12,10 @@ export interface LocalTerraNetwork {
   shuttle: Record<ShuttleNetwork, string>
 }
 
-export type ShuttleNetwork = BlockChainType.ethereum | BlockChainType.bsc
+export type ShuttleNetwork =
+  | BlockChainType.ethereum
+  | BlockChainType.bsc
+  | BlockChainType.harmony
 
 export interface ExtTerraNetwork {
   name: 'mainnet' | 'testnet'

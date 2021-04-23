@@ -152,7 +152,8 @@ const Confirm = (): ReactElement => {
 
           {shuttleFee &&
             (toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc) && (
+              toBlockChain === BlockChainType.bsc ||
+              toBlockChain === BlockChainType.harmony) && (
               <StyledSpaceBetween style={{ marginBottom: 16 }}>
                 <StyledSecH>Shuttle fee (estimated)</StyledSecH>
                 <StyledSecD>
@@ -168,7 +169,8 @@ const Confirm = (): ReactElement => {
       <StyledSection>
         {fromBlockChain === BlockChainType.terra &&
         (toBlockChain === BlockChainType.ethereum ||
-          toBlockChain === BlockChainType.bsc) ? (
+          toBlockChain === BlockChainType.bsc ||
+          toBlockChain === BlockChainType.harmony) ? (
           <StyledSpaceBetween>
             <StyledSecH>After Shuttle Fee (estimated)</StyledSecH>
             <StyledSecD>

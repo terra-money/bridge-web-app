@@ -76,6 +76,7 @@ const NetworkErrorScreen = (): ReactElement => {
   const terraWhiteList = useRecoilValue(ContractStore.initOnlyTerraWhiteList)
   const ethWhiteList = useRecoilValue(ContractStore.initOnlyEthWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.initOnlyBscWhiteList)
+  const hmyWhiteList = useRecoilValue(ContractStore.initOnlyHmyWhiteList)
 
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [showError, setShowError] = useState(false)
@@ -105,6 +106,7 @@ const NetworkErrorScreen = (): ReactElement => {
           { name: 'Terra Whitelist Json', value: terraWhiteList },
           { name: 'Ethereum Whitelist Json', value: ethWhiteList },
           { name: 'BSC Whitelist Json', value: bscWhiteList },
+          { name: 'Harmony Whitelist Json', value: hmyWhiteList },
         ],
         (item) => {
           if (_.isEmpty(item.value)) {

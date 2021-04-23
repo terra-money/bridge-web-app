@@ -39,8 +39,10 @@ const isTestnet = selector<boolean>({
 
       if (fromBlockChain === BlockChainType.ethereum) {
         return _etherBaseExt?.name !== 'homestead'
-      } else {
+      } else if (fromBlockChain === BlockChainType.bsc) {
         return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.BSC_MAIN
+      } else if (fromBlockChain === BlockChainType.harmony) {
+        return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.HMY_MAIN
       }
     }
     return false

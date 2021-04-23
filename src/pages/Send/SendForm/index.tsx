@@ -181,7 +181,8 @@ const SendForm = ({
     // get terra shutte Fee Info
     if (
       toBlockChain === BlockChainType.ethereum ||
-      toBlockChain === BlockChainType.bsc
+      toBlockChain === BlockChainType.bsc ||
+      toBlockChain === BlockChainType.harmony
     ) {
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {

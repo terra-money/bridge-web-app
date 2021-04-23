@@ -62,7 +62,15 @@ const BlockChainNetwork = (): ReactElement => {
         (fromBlockChain === BlockChainType.ethereum &&
           toBlockChain === BlockChainType.bsc) ||
         (fromBlockChain === BlockChainType.bsc &&
-          toBlockChain === BlockChainType.ethereum)
+          toBlockChain === BlockChainType.ethereum) ||
+        (fromBlockChain === BlockChainType.bsc &&
+          toBlockChain === BlockChainType.harmony) ||
+        (fromBlockChain === BlockChainType.harmony &&
+          toBlockChain === BlockChainType.bsc) ||
+        (fromBlockChain === BlockChainType.harmony &&
+          toBlockChain === BlockChainType.ethereum) ||
+        (fromBlockChain === BlockChainType.ethereum &&
+          toBlockChain === BlockChainType.harmony)
       ) {
         setToBlockChain(BlockChainType.terra)
       }
@@ -94,6 +102,11 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.bsc,
               isDisabled: fromBlockChain === BlockChainType.bsc,
             },
+            {
+              label: NETWORK.blockChainName[BlockChainType.harmony],
+              value: BlockChainType.harmony,
+              isDisabled: fromBlockChain === BlockChainType.harmony,
+            },
           ],
           label: 'FROM',
         }}
@@ -123,6 +136,7 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.ethereum,
               isDisabled:
                 fromBlockChain === BlockChainType.bsc ||
+                fromBlockChain === BlockChainType.harmony ||
                 toBlockChain === BlockChainType.ethereum,
             },
             {
@@ -130,7 +144,16 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.bsc,
               isDisabled:
                 fromBlockChain === BlockChainType.ethereum ||
+                fromBlockChain === BlockChainType.harmony ||
                 toBlockChain === BlockChainType.bsc,
+            },
+            {
+              label: NETWORK.blockChainName[BlockChainType.harmony],
+              value: BlockChainType.harmony,
+              isDisabled:
+                fromBlockChain === BlockChainType.ethereum ||
+                fromBlockChain === BlockChainType.bsc ||
+                toBlockChain === BlockChainType.harmony,
             },
           ],
           label: 'TO',

@@ -35,6 +35,13 @@ const initOnlyBscWhiteList = atom<
   default: undefined,
 })
 
+const initOnlyHmyWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlyHmyWhiteList',
+  default: undefined,
+})
+
 // if empty, service will block from start
 const shuttleUusdPairs = selector<ShuttleUusdPairType>({
   key: 'shuttleUusdPairs',
@@ -87,14 +94,29 @@ const bscWhiteList = selector<WhiteListType>({
   },
 })
 
+// if empty, service will block from start
+const hmyWhiteList = selector<WhiteListType>({
+  key: 'hmyWhiteList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlyHmyWhiteList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
 export default {
   initOnlyShuttlePairs,
   initOnlyTerraWhiteList,
   initOnlyEthWhiteList,
   initOnlyBscWhiteList,
+  initOnlyHmyWhiteList,
 
   shuttleUusdPairs,
   terraWhiteList,
   ethWhiteList,
   bscWhiteList,
+  hmyWhiteList,
 }

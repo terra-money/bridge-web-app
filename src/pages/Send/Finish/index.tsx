@@ -150,7 +150,8 @@ const Finish = (): ReactElement => {
         </div>
         {fromBlockChain === BlockChainType.terra &&
           (toBlockChain === BlockChainType.ethereum ||
-            toBlockChain === BlockChainType.bsc) && (
+            toBlockChain === BlockChainType.bsc ||
+            toBlockChain === BlockChainType.harmony) && (
             <div
               style={{
                 fontSize: 12,
