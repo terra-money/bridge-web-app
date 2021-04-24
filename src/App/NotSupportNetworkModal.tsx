@@ -63,6 +63,12 @@ const NotSupportNetworkModal = (): ReactElement => {
           <StyledInfoText>
             Binance Smart Chain Testnet. Chain ID : 97
           </StyledInfoText>
+          <StyledInfoText>
+            Harmony Mainnet. Chain ID : 1666600000
+          </StyledInfoText>
+          <StyledInfoText>
+            Harmony Testnet. Chain ID : 1666700000
+          </StyledInfoText>
         </div>
       </StyledContainer>
     </DefaultModal>

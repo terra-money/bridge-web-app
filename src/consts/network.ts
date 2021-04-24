@@ -4,8 +4,6 @@ import EthereumPng from 'images/Ethereum.png'
 import TerraPng from 'images/Terra.png'
 import HarmonyPng from 'images/HarmonyOne.png'
 
-import HMY_WHITELIST from './hmy.json'
-
 const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.bsc]: BinanceChainPng,
   [BlockChainType.ethereum]: EthereumPng,
@@ -62,6 +60,7 @@ const SHUTTLE_PAIRS = 'https://assets.terra.money/cw20/pairs.json'
 const TERRA_WHITELIST = 'https://assets.terra.money/cw20/tokens.json'
 const ETH_WHITELIST = 'https://assets.terra.money/shuttle/eth.json'
 const BSC_WHITELIST = 'https://assets.terra.money/shuttle/bsc.json'
+const HMY_WHITELIST = 'http://localhost:3000/hmy.json'
 
 export default {
   blockChainImage,

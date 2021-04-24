@@ -69,7 +69,7 @@ const useApp = (): {
       const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
       setBscWhiteList(bscListJson)
 
-      const hmyListJson = NETWORK.HMY_WHITELIST
+      const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
       setHmyWhiteList(hmyListJson)
     } catch (error) {
       Sentry.captureException(error)
