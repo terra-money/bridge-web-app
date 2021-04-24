@@ -98,12 +98,14 @@ const useAsset = (): {
         BlockChainType.harmony,
       ].includes(toBlockChain)
     ) {
-      const toWhiteList =
-        toBlockChain === BlockChainType.ethereum
-          ? ethWhiteList
-          : BlockChainType.harmony
-          ? hmyWhiteList
-          : bscWhiteList
+      let toWhiteList: WhiteListType
+      if (toBlockChain === BlockChainType.ethereum) {
+        toWhiteList = ethWhiteList
+      } else if (toBlockChain === BlockChainType.bsc) {
+        toWhiteList = bscWhiteList
+      } else if (toBlockChain === BlockChainType.harmony) {
+        toWhiteList = hmyWhiteList
+      }
 
       const pairList = _.map(fromList, (item) => {
         const disabled = _.isEmpty(toWhiteList[item.symbol])

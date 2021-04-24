@@ -44,7 +44,7 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     shuttle: {
       ethereum: 'terra13yxhrk08qvdf5zdc9ss5mwsg5sf7zva9xrgwgc',
       bsc: 'terra1g6llg3zed35nd3mh9zx6n64tfw3z67w2c48tn2',
-      harmony: '',
+      harmony: 'terra1glxltl5z90fmpfaksj5jkqa27rwdf05hqskjcg',
     },
   },
   testnet: {
@@ -52,7 +52,7 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     shuttle: {
       ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
       bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
-      harmony: 'terra188cs5e2pl7gh8kht35z65c6tagj9qshk7dakmw', //recheck
+      harmony: 'terra15tln3p4pn6n2j20rycecyaqu72ds7stgrxxncg',
     },
   },
 }
