@@ -162,7 +162,7 @@ const Finish = (): ReactElement => {
               <StyledAmountText
                 isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
               >
-                {`After Suttle Fee : (estimated) ${formatBalance(
+                {`After Shuttle Fee : (estimated) ${formatBalance(
                   amountAfterShuttleFee
                 )} ${asset?.symbol}`}
               </StyledAmountText>
