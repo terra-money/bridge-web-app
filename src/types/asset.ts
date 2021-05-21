@@ -34,7 +34,7 @@ export enum AssetSymbolEnum {
 export type AssetType = {
   symbol: AssetSymbolEnum
   name: string
-  loguURI: string
+  logoURI: string
   tokenAddress: string
   balance?: string
   disabled?: boolean

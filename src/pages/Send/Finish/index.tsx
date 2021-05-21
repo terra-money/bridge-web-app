@@ -136,7 +136,7 @@ const Finish = (): ReactElement => {
             alignItems: 'center',
           }}
         >
-          <FormImage src={asset?.loguURI || ''} size={24} />
+          <FormImage src={asset?.logoURI || ''} size={24} />
           <Text
             style={{
               fontSize: 22,

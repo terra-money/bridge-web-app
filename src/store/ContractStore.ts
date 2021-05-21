@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil'
-import { WhiteListType } from 'types/asset'
+import { AssetSymbolEnum, AssetType, WhiteListType } from 'types/asset'
 import NetworkStore from './NetworkStore'
 
 export type ShuttleUusdPairType = Record<
@@ -33,6 +33,42 @@ const initOnlyBscWhiteList = atom<
 >({
   key: 'initOnlyBscWhiteList',
   default: undefined,
+})
+
+const assetList = atom<AssetType[]>({
+  key: 'assetList',
+  default: [
+    {
+      symbol: AssetSymbolEnum.Luna,
+      name: 'Luna',
+      logoURI: 'https://assets.terra.money/icon/60/Luna.png',
+      tokenAddress: '',
+    },
+    {
+      symbol: AssetSymbolEnum.UST,
+      name: 'Terra USD',
+      logoURI: 'https://assets.terra.money/icon/60/UST.png',
+      tokenAddress: '',
+    },
+    {
+      symbol: AssetSymbolEnum.KRT,
+      name: 'Terra KRW',
+      logoURI: 'https://assets.terra.money/icon/60/KRT.png',
+      tokenAddress: '',
+    },
+    {
+      symbol: AssetSymbolEnum.SDT,
+      name: 'Terra SDR',
+      logoURI: 'https://assets.terra.money/icon/60/SDT.png',
+      tokenAddress: '',
+    },
+    {
+      symbol: AssetSymbolEnum.MNT,
+      name: 'Terra MNT',
+      logoURI: 'https://assets.terra.money/icon/60/MNT.png',
+      tokenAddress: '',
+    },
+  ],
 })
 
 // if empty, service will block from start
@@ -93,6 +129,7 @@ export default {
   initOnlyEthWhiteList,
   initOnlyBscWhiteList,
 
+  assetList,
   shuttleUusdPairs,
   terraWhiteList,
   ethWhiteList,
