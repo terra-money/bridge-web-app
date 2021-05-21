@@ -105,7 +105,7 @@ const Confirm = (): ReactElement => {
         <StyledSecH>Asset</StyledSecH>
         <StyledSecD>
           <FormImage
-            src={asset?.loguURI || ''}
+            src={asset?.logoURI || ''}
             size={18}
             style={{ paddingRight: 5 }}
           />

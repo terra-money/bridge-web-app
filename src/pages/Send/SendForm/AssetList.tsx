@@ -89,7 +89,7 @@ const AssetItem = ({
             marginBottom: 3,
           }}
         >
-          <FormImage src={asset.loguURI} size={20} />
+          <FormImage src={asset.logoURI} size={20} />
         </Col>
         <Col>
           <div>
@@ -133,7 +133,7 @@ const SelectAssetButton = ({
         <Row>
           <Col style={{ display: 'flex', alignItems: 'center' }}>
             <FormImage
-              src={asset.loguURI}
+              src={asset.logoURI}
               size={18}
               style={{ marginTop: -2 }}
             />

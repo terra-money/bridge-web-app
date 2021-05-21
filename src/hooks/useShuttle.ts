@@ -140,7 +140,7 @@ const useShuttle = (): {
     const assets =
       (fetchResult &&
         UTIL.jsonTryParse<{ assets: (NativeToken | AssetToken)[] }>(
-          fetchResult[contractAddress].Result
+          fetchResult[contractAddress]?.Result
         )?.assets) ||
       []
 

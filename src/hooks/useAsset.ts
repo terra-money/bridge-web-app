@@ -21,6 +21,7 @@ const useAsset = (): {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
 
+  const assetList = useRecoilValue(ContractStore.assetList)
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
   const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
@@ -62,7 +63,6 @@ const useAsset = (): {
   }
 
   const getAssetList = async (): Promise<void> => {
-    const assetList = ASSET.assetList
     let whiteList: WhiteListType = {}
     let balanceList: BalanceListType = {}
     if (isLoggedIn) {

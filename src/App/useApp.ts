@@ -4,10 +4,12 @@ import _ from 'lodash'
 import * as Sentry from '@sentry/react'
 
 import ContractStore from 'store/ContractStore'
+import { AssetSymbolEnum, AssetType } from 'types/asset'
 
 const useApp = (): {
   initApp: () => Promise<void>
 } => {
+  const setAssetList = useSetRecoilState(ContractStore.assetList)
   const setShuttlePairs = useSetRecoilState(ContractStore.initOnlyShuttlePairs)
   const setTerraWhiteList = useSetRecoilState(
     ContractStore.initOnlyTerraWhiteList
@@ -41,6 +43,16 @@ const useApp = (): {
       setShuttlePairs(formattedPairJson)
 
       const terraListJson = await (await fetch(NETWORK.TERRA_WHITELIST)).json()
+      const assetList: AssetType[] = _.map(terraListJson['mainnet'], (item) => {
+        return {
+          symbol: item.symbol as AssetSymbolEnum,
+          name: item.name || item.protocol,
+          logoURI: item.icon,
+          tokenAddress: item.token,
+        }
+      })
+      setAssetList((ori) => ori.concat(assetList))
+
       const formattedTerraListJson = _.reduce<
         any,
         Record<string, Record<string, string>>

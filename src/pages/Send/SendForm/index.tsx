@@ -237,7 +237,7 @@ const SendForm = ({
     return (): void => {
       dbcGetFeeInfoWithValidation.cancel()
     }
-  }, [amount, toAddress, toBlockChain, memo, asset?.tokenAddress])
+  }, [amount, toAddress, toBlockChain, memo, asset])
 
   useEffect(() => {
     getAssetList()
