@@ -5,7 +5,7 @@ import routes from 'routes'
 
 import Header from 'components/layouts/Header'
 import Footer from 'components/layouts/Footer'
-import SelectEtherBaseWalletModal from './SelectEtherBaseWalletModal'
+import SelectWalletModal from './SelectWalletModal'
 import TerraExtensionDownModal from './TerraExtensionDownModal'
 import BscExtensionDownModal from './BscExtensionDownModal'
 import NotSupportNetworkModal from './NotSupportNetworkModal'
@@ -39,7 +39,7 @@ const App = (): ReactElement => {
             {routes()}
             <Footer />
           </StyledContainer>
-          <SelectEtherBaseWalletModal />
+          <SelectWalletModal />
           <TerraExtensionDownModal />
           <BscExtensionDownModal />
           <NotSupportNetworkModal />

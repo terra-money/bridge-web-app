@@ -240,10 +240,6 @@ const SendForm = ({
   }, [amount, toAddress, toBlockChain, memo, asset])
 
   useEffect(() => {
-    getAssetList()
-  }, [])
-
-  useEffect(() => {
     onChangeAmount({ value: inputAmount })
     getAssetList().then((): void => {
       dbcGetFeeInfoWithValidation.callback()

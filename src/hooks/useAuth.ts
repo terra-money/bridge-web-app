@@ -12,6 +12,7 @@ import terraService from 'services/terraService'
 import { User } from 'types/auth'
 import { BlockChainType } from 'types/network'
 import { WalletEnum } from 'types/wallet'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
 const useAuth = (): {
   login: ({ user }: { user: User }) => Promise<void>
@@ -39,6 +40,7 @@ const useAuth = (): {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
+  const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
   const checkIsValidEtherNetwork = ({
     network,
@@ -60,13 +62,23 @@ const useAuth = (): {
 
   const login = async ({ user }: { user: User }): Promise<void> => {
     if (fromBlockChain === BlockChainType.terra) {
-      const extNet = await terraService.info()
-      setTerraExt(extNet)
-      const localNetwork = NETWORK.terra_networks[extNet.name]
+      let localNetwork = NETWORK.terra_networks['mainnet']
+
+      if (user.walletType === WalletEnum.TerraWalletConnect) {
+        const network =
+          user.walletConnect?.chainId === 0 ? 'testnet' : 'mainnet'
+        localNetwork = NETWORK.terra_networks[network]
+        setTerraExt({ name: network, chainID: NETWORK.TERRA_CHAIN_ID[network] })
+      } else {
+        const extNet = await terraService.info()
+        setTerraExt(extNet)
+        localNetwork = NETWORK.terra_networks[extNet.name]
+      }
+
       setTerraLocal(localNetwork)
       setLoginStorage({
         blockChain: BlockChainType.terra,
-        walletType: WalletEnum.TerraStation,
+        walletType: user.walletType,
       })
     }
     // both ethereum , bsc are ethereum base blockchain
@@ -134,7 +146,11 @@ const useAuth = (): {
   }
 
   const logout = (): void => {
-    setLoginUser(initLoginUser)
+    setLoginUser((user) => {
+      user.walletConnect?.killSession()
+      return initLoginUser
+    })
+    setStatus(ProcessStatus.Input)
     setEtherBaseExt(undefined)
     setTerraExt(undefined)
     setLoginStorage()

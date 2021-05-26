@@ -94,7 +94,6 @@ const useTerraBalance = (): {
       query: bankBalanceQuery,
       variables: JSON.stringify({ address: loginUser.address }),
     })
-
     const resultList: {
       Amount: string
       Denom: string

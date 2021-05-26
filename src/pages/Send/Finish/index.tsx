@@ -26,7 +26,7 @@ const StyledContainer = styled.div`
 const StyledSection = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 16px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   word-break: break-all;
@@ -172,7 +172,9 @@ const Finish = (): ReactElement => {
       <StyledSection>
         <StyledSecH>Destination Address</StyledSecH>
         <StyledSecD>
-          <StyledSecDText>{displayToAddress}</StyledSecDText>
+          <StyledSecDText>
+            {UTIL.truncate(displayToAddress, [10, 10])}
+          </StyledSecDText>
         </StyledSecD>
       </StyledSection>
 
@@ -190,7 +192,7 @@ const Finish = (): ReactElement => {
                   style={{ padding: 0, display: 'flex', alignItems: 'center' }}
                 >
                   <div>
-                    {UTIL.truncate(displayRequestTxResult.hash, [15, 15])}
+                    {UTIL.truncate(displayRequestTxResult.hash, [10, 10])}
                   </div>
                   <BoxArrowUpRight
                     color="#5592f7"

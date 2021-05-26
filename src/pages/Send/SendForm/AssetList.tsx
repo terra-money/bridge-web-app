@@ -20,6 +20,9 @@ import SendStore from 'store/SendStore'
 const StyledContainer = styled.div`
   padding: 0 25px 40px;
   background-color: ${COLOR.darkGray2};
+  @media ${STYLE.media.mobile} {
+    padding: 0 24px 20px;
+  }
 `
 
 const StyledAssetItemBox = styled.div`
@@ -56,6 +59,16 @@ const StyledSelectAssetButton = styled.div`
   }
 `
 
+const StyledIconBox = styled(Col)`
+  flex: 0 0 8%;
+  align-self: center;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  @media ${STYLE.media.mobile} {
+    padding-right: 10px;
+  }
+`
+
 const AssetItem = ({
   asset,
   setShowModal,
@@ -81,16 +94,9 @@ const AssetItem = ({
       }}
     >
       <Row>
-        <Col
-          style={{
-            flex: '0 0 8%',
-            alignSelf: 'center',
-            marginTop: 3,
-            marginBottom: 3,
-          }}
-        >
+        <StyledIconBox>
           <FormImage src={asset.logoURI} size={20} />
-        </Col>
+        </StyledIconBox>
         <Col>
           <div>
             <Text style={{ fontSize: 14, fontWeight: 500 }}>

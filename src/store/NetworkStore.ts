@@ -33,6 +33,7 @@ const isTestnet = selector<boolean>({
     if (isLoggedIn) {
       if (fromBlockChain === BlockChainType.terra) {
         const _terraExt = get(terraExt)
+
         return _terraExt?.name !== 'mainnet'
       }
       const _etherBaseExt = get(etherBaseExt)

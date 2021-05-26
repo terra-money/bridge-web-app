@@ -125,7 +125,7 @@ const Confirm = (): ReactElement => {
       <StyledSection>
         <StyledSecH>Destination Address</StyledSecH>
         <StyledSecD>
-          <StyledSecDText>{UTIL.truncate(toAddress, [15, 15])}</StyledSecDText>
+          <StyledSecDText>{UTIL.truncate(toAddress, [10, 10])}</StyledSecDText>
         </StyledSecD>
       </StyledSection>
 

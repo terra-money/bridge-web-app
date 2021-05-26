@@ -9,6 +9,8 @@ export interface LocalTerraNetwork {
   mantle: string
   /** Ethereum */
   shuttle: Record<ShuttleNetwork, string>
+  lcd: string
+  fcd: string
 }
 
 export type ShuttleNetwork = BlockChainType.ethereum | BlockChainType.bsc
@@ -16,6 +18,4 @@ export type ShuttleNetwork = BlockChainType.ethereum | BlockChainType.bsc
 export interface ExtTerraNetwork {
   name: 'mainnet' | 'testnet'
   chainID: string
-  lcd: string
-  fcd: string
 }
