@@ -241,7 +241,7 @@ const FormFeeInfo = ({
                         Amount after Shuttle fee (estimated){' '}
                       </Text>
                     </Col>
-                    <Col style={{ padding: 0 }}>
+                    <Col style={{ padding: 0, alignItems: 'flex-start' }}>
                       <Text
                         style={{
                           justifyContent: 'flex-end',

@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react'
 import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
-import { COLOR, NETWORK } from 'consts'
+import { COLOR } from 'consts'
 import { Button, Text, Container } from 'components'
 import NetworkStore from 'store/NetworkStore'
 import ContractStore from 'store/ContractStore'
@@ -120,21 +120,8 @@ const NetworkErrorScreen = (): ReactElement => {
       }
     }
 
-    const fetchUrl =
-      NETWORK.terra_networks[isTestnet ? 'testnet' : 'mainnet'].mantle
-    try {
-      await fetch(fetchUrl)
-
-      return {
-        success: true,
-      }
-    } catch (error) {
-      const errorMessage = `Error: ${fetchUrl} is error\nMessage: ${error}`
-      Sentry.captureException(errorMessage)
-      return {
-        success: false,
-        errorMessage,
-      }
+    return {
+      success: true,
     }
   }
 

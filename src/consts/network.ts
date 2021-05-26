@@ -24,12 +24,18 @@ const ETH_CHAINID = {
   BSC_TEST: 97,
 }
 
-const INFURAID = '87ae9df0054a4467b5de8501e80bc07c'
+const INFURAID =
+  process.env.REACT_APP_INFURAID || 'a2efa9feabf84deb8f4dc696adf8f360'
 
 const TERRA_EXTENSION = 'https://terra.money/extension'
 const BSC_EXTENSION =
   'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?utm_source=chrome-ntp-icon'
 const CHROME = 'https://google.com/chrome'
+
+const TERRA_CHAIN_ID = {
+  mainnet: 'columbus-4',
+  testnet: 'tequila-0004',
+}
 
 const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
   mainnet: {
@@ -38,6 +44,8 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
       ethereum: 'terra13yxhrk08qvdf5zdc9ss5mwsg5sf7zva9xrgwgc',
       bsc: 'terra1g6llg3zed35nd3mh9zx6n64tfw3z67w2c48tn2',
     },
+    fcd: 'https://fcd.terra.dev',
+    lcd: 'https://lcd.terra.dev',
   },
   testnet: {
     mantle: 'https://tequila-mantle.terra.dev/',
@@ -45,6 +53,8 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
       ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
       bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
     },
+    fcd: 'https://tequila-fcd.terra.dev',
+    lcd: 'https://tequila-lcd.terra.dev',
   },
 }
 
@@ -59,6 +69,7 @@ export default {
   blockChainName,
   terra_networks,
   INFURAID,
+  TERRA_CHAIN_ID,
   TERRA_EXTENSION,
   BSC_EXTENSION,
   CHROME,

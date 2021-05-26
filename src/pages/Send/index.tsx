@@ -1,7 +1,7 @@
-import { ReactElement, useCallback, useRef } from 'react'
+import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState } from 'recoil'
-import { InfoCircleFill } from 'react-bootstrap-icons'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import _ from 'lodash'
 
 import loading from 'images/loading.gif'
 import failed from 'images/failed.gif'
@@ -22,6 +22,11 @@ import SendFormButton from './SendFormButton'
 import BlockChainNetwork from './BlockChainNetwork'
 import FormImage from 'components/FormImage'
 import FinishButton from './FinishButton'
+import AuthStore from 'store/AuthStore'
+import useAuth from 'hooks/useAuth'
+import SendStore from 'store/SendStore'
+import useSelectWallet from 'hooks/useSelectWallet'
+import { BlockChainType } from 'types/network'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -39,24 +44,9 @@ const StyledContainer = styled(Container)`
   max-width: 640px;
   padding: 0;
   height: 100%;
-  @media (max-width: 575px) {
-    padding: 20px 0;
+  @media ${STYLE.media.mobile} {
     width: 100vw;
     overflow-x: hidden;
-  }
-`
-
-const StyledMoblieInfoBox = styled.div`
-  margin-bottom: 20px;
-  border-radius: 1em;
-  padding: 12px;
-  border: 1px solid ${COLOR.terraSky};
-  color: ${COLOR.terraSky};
-  font-size: 12px;
-  font-weight: 500;
-  @media (max-width: 575px) {
-    margin-left: 20px;
-    margin-right: 20px;
   }
 `
 
@@ -64,9 +54,9 @@ const StyledForm = styled.div`
   background-color: ${COLOR.black};
   padding: 60px;
   border-radius: 1em;
-  @media (max-width: 575px) {
+  @media ${STYLE.media.mobile} {
     border-radius: 0;
-    padding: 20px;
+    padding: 38px 24px 20px;
   }
 `
 
@@ -74,6 +64,13 @@ const Send = (): ReactElement => {
   const formScrollView = useRef<HTMLDivElement>(null)
 
   const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
+  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+  const { getLoginStorage } = useAuth()
+  const [initPage, setInitPage] = useState(false)
+  const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
+  const [fromBlockChain, setFromBlockChain] = useRecoilState(
+    SendStore.fromBlockChain
+  )
 
   const { validateFee } = useSendValidate()
   const feeValidationResult = validateFee()
@@ -119,19 +116,55 @@ const Send = (): ReactElement => {
 
   const onClickGoBackToSendInputButton = async (): Promise<void> => {
     setStatus(ProcessStatus.Input)
-    formScrollView.current?.scrollTo({ left: 0, behavior: 'smooth' })
   }
+
+  const selectWallet = useSelectWallet()
+
+  useEffect(() => {
+    setInitPage(true)
+    const { lastFromBlockChain } = getLoginStorage()
+
+    if (false === isLoggedIn && lastFromBlockChain) {
+      // default network is terra
+      if (lastFromBlockChain === BlockChainType.terra) {
+        selectWallet.open()
+      } else {
+        setFromBlockChain(lastFromBlockChain)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (initPage) {
+      if (false === isLoggedIn) {
+        selectWallet.open()
+      }
+
+      if (
+        (fromBlockChain === BlockChainType.ethereum &&
+          toBlockChain === BlockChainType.bsc) ||
+        (fromBlockChain === BlockChainType.bsc &&
+          toBlockChain === BlockChainType.ethereum)
+      ) {
+        setToBlockChain(BlockChainType.terra)
+      }
+    }
+  }, [fromBlockChain])
+
+  useEffect(() => {
+    const scroll = formScrollView.current
+    if (scroll) {
+      if (status === ProcessStatus.Input) {
+        scroll.scrollTo({ left: 0, behavior: 'smooth' })
+      } else if (status === ProcessStatus.Confirm) {
+        scroll.scrollTo({ left: 600, behavior: 'smooth' })
+      }
+    }
+  }, [status])
 
   return (
     <StyledContainer>
-      {false === STYLE.isSupportBrowser && (
-        <StyledMoblieInfoBox>
-          <InfoCircleFill style={{ marginRight: 8, marginTop: -2 }} size={14} />
-          Bridge only supports desktop Chrome
-        </StyledMoblieInfoBox>
-      )}
-
-      <StyledForm>
+      <StyledForm key={_.toString(isLoggedIn)}>
         {/* FormTitle */}
         <FormTitle
           onClickGoBackToSendInputButton={onClickGoBackToSendInputButton}
@@ -143,7 +176,7 @@ const Send = (): ReactElement => {
         {[ProcessStatus.Done, ProcessStatus.Failed].includes(status) ? (
           <>
             <Finish />
-            <FinishButton formScrollView={formScrollView} />
+            <FinishButton />
           </>
         ) : (
           <>
@@ -159,11 +192,12 @@ const Send = (): ReactElement => {
               </div>
             </div>
 
-            {[ProcessStatus.Input, ProcessStatus.Confirm].includes(status) && (
-              <SendFormButton
-                formScrollView={formScrollView}
-                feeValidationResult={feeValidationResult}
-              />
+            {[
+              ProcessStatus.Input,
+              ProcessStatus.Submit,
+              ProcessStatus.Confirm,
+            ].includes(status) && (
+              <SendFormButton feeValidationResult={feeValidationResult} />
             )}
           </>
         )}

@@ -9,9 +9,11 @@ import {
   StdFee,
   LCDClient,
   Coin,
+  CreateTxOptions,
 } from '@terra-money/terra.js'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
+import { isMobile } from 'react-device-detect'
 
 import { UTIL } from 'consts'
 
@@ -26,6 +28,7 @@ import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
 import { WalletEnum } from 'types/wallet'
 
 import useEtherBaseContract from './useEtherBaseContract'
+import { useDebouncedCallback } from 'use-debounce/lib'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -82,21 +85,27 @@ const useSend = (): UseSendType => {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const [fee, setFee] = useRecoilState(SendStore.fee)
+  const tax = useRecoilValue(SendStore.tax)
+  const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
-  const getGasPricesFromServer = async (): Promise<void> => {
-    if (terraExt && terraExt.fcd) {
+  const getGasPricesFromServer = useDebouncedCallback(
+    async (fcd): Promise<void> => {
       const { data } = await axios.get('/v1/txs/gas_prices', {
-        baseURL: terraExt.fcd,
+        baseURL: fcd,
       })
       setGasPricesFromServer(data)
-    }
-  }
+    },
+    300
+  )
 
   useEffect(() => {
-    getGasPricesFromServer()
-  }, [terraExt])
+    getGasPricesFromServer.callback(terraLocal.fcd)
+    return (): void => {
+      getGasPricesFromServer.cancel()
+    }
+  }, [terraLocal.fcd])
 
   const initSendData = (): void => {
     setAsset(undefined)
@@ -117,7 +126,7 @@ const useSend = (): UseSendType => {
     if (terraExt) {
       const lcd = new LCDClient({
         chainID: terraExt.chainID,
-        URL: terraExt.lcd,
+        URL: terraLocal.lcd,
         gasPrices: { [_feeDenom]: gasPricesFromServer[_feeDenom] },
       })
       // tax
@@ -134,32 +143,55 @@ const useSend = (): UseSendType => {
     }[]
   > => {
     if (terraExt) {
-      const msgs = getTerraMsgs()
+      let gas = 200000
+      try {
+        let feeDenoms = [AssetNativeDenomEnum.uusd]
+        const ownedAssetList = assetList.filter(
+          (x) => _.toNumber(x.balance) > 0
+        )
 
-      return Promise.all(
-        _.map(AssetNativeDenomEnum, async (denom) => {
-          try {
-            const lcd = new LCDClient({
-              chainID: terraExt.chainID,
-              URL: terraExt.lcd,
-              gasPrices: { [denom]: gasPricesFromServer[denom] },
-            })
-            // fee + tax
-            const unsignedTx = await lcd.tx.create(loginUser.address, {
-              msgs,
-              feeDenoms: [denom],
-            })
-            return {
-              denom,
-              fee: unsignedTx.fee,
-            }
-          } catch {
-            return {
-              denom,
+        if (ownedAssetList.length > 0) {
+          if (ownedAssetList.length === 1) {
+            feeDenoms = [ownedAssetList[0].tokenAddress as AssetNativeDenomEnum]
+          } else {
+            const target = ownedAssetList.find(
+              (x) => x.tokenAddress !== asset?.tokenAddress
+            )
+            if (target) {
+              feeDenoms = [target.tokenAddress as AssetNativeDenomEnum]
             }
           }
+        }
+
+        const msgs = getTerraMsgs()
+        const lcd = new LCDClient({
+          chainID: terraExt.chainID,
+          URL: terraLocal.lcd,
+          gasPrices: gasPricesFromServer,
         })
-      )
+        // fee + tax
+        const unsignedTx = await lcd.tx.create(loginUser.address, {
+          msgs,
+          feeDenoms,
+        })
+
+        gas = unsignedTx.fee.gas
+      } catch {
+        // gas is just default value
+      }
+
+      return _.map(AssetNativeDenomEnum, (denom) => {
+        const amount = new BigNumber(gasPricesFromServer[denom])
+          .multipliedBy(gas)
+          .dp(0, BigNumber.ROUND_UP)
+          .toString(10)
+        const gasFee = new Coins({ [denom]: amount })
+        const fee = new StdFee(gas, gasFee)
+        return {
+          denom,
+          fee,
+        }
+      })
     }
     return []
   }
@@ -190,6 +222,7 @@ const useSend = (): UseSendType => {
   }
 
   const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
+    let errorMessage
     const memoOrToAddress =
       toBlockChain === BlockChainType.terra
         ? // only terra network can get user's memo
@@ -197,24 +230,77 @@ const useSend = (): UseSendType => {
         : // if send to ether-base then memo must be to-address
           toAddress
     const msgs = getTerraMsgs()
-    const result = await terraService.post({
+    const txFee =
+      tax?.amount.greaterThan(0) && fee
+        ? new StdFee(fee.gas, fee.amount.add(tax))
+        : fee
+    const tx: CreateTxOptions = {
+      gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
       msgs,
+      fee: txFee,
       memo: memoOrToAddress,
-      gasPrices: { [feeDenom]: gasPricesFromServer[feeDenom] },
-      fee,
-    })
+    }
+    const connector = loginUser.walletConnect
+    if (connector) {
+      const sendId = Date.now()
+      const params = [
+        {
+          msgs: tx.msgs.map((msg) => msg.toJSON()),
+          fee: tx.fee?.toJSON(),
+          memo: tx.memo,
+          gasPrices: tx.gasPrices?.toString(),
+          gasAdjustment: tx.gasAdjustment?.toString(),
+          account_number: tx.account_number,
+          sequence: tx.sequence,
+          feeDenoms: tx.feeDenoms,
+        },
+      ]
 
-    if (result.success && result.result) {
-      return {
-        success: true,
-        hash: result.result.txhash,
+      if (isMobile) {
+        window.location.href = `terrastation://wallet_connect_confirm?id=${sendId}&handshakeTopic=${
+          connector.handshakeTopic
+        }&params=${JSON.stringify(params)}`
       }
+      try {
+        const result = await connector.sendCustomRequest({
+          id: sendId,
+          method: 'post',
+          params,
+        })
+        return {
+          success: true,
+          hash: result.txhash,
+        }
+      } catch (error) {
+        const jsonMsg = UTIL.jsonTryParse<{
+          id: number
+          errorCode?: number
+          message: string
+          txHash?: string
+          raw_message?: any
+        }>(error.message)
+        const errorMessage = jsonMsg?.message || _.toString(error)
+        return {
+          success: false,
+          errorMessage,
+        }
+      }
+    } else {
+      const result = await terraService.post(tx)
+
+      if (result.success && result.result) {
+        return {
+          success: true,
+          hash: result.result.txhash,
+        }
+      }
+      errorMessage =
+        result.error?.code === 1 ? 'Denied by the user' : result.error?.message
     }
 
     return {
       success: false,
-      errorMessage:
-        result.error?.code === 1 ? 'Denied by the user' : result.error?.message,
+      errorMessage,
     }
   }
 

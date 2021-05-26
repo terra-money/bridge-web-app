@@ -2,7 +2,7 @@ import { ReactElement, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
-import { COLOR, STYLE } from 'consts'
+import { COLOR } from 'consts'
 import { BlockChainType } from 'types/network'
 import { RequestTxResultType, ValidateItemResultType } from 'types/send'
 
@@ -19,15 +19,12 @@ import { CircularProgress } from '@material-ui/core'
 
 const SendFormButton = ({
   feeValidationResult,
-  formScrollView,
 }: {
   feeValidationResult: ValidateItemResultType
-  formScrollView: React.RefObject<HTMLDivElement>
 }): ReactElement => {
   const selectWallet = useSelectWallet()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
-  const [loading, setloading] = useState(false)
 
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
@@ -46,9 +43,11 @@ const SendFormButton = ({
       : validationResult.isValid
 
   const onClickSendNextButton = async (): Promise<void> => {
+    setErrorMessage('')
     setStatus(ProcessStatus.Confirm)
-    formScrollView.current?.scrollTo({ left: 600, behavior: 'smooth' })
   }
+
+  const loading = [ProcessStatus.Pending, ProcessStatus.Submit].includes(status)
 
   const waitForReceipt = async ({
     submitResult,
@@ -56,7 +55,6 @@ const SendFormButton = ({
     submitResult: RequestTxResultType
   }): Promise<void> => {
     if (submitResult.success) {
-      setloading(true)
       setStatus(ProcessStatus.Pending)
       if (fromBlockChain === BlockChainType.terra) {
         const waitReceipt = setInterval(async () => {
@@ -65,7 +63,6 @@ const SendFormButton = ({
               hash: submitResult.hash,
             })
             if (_.some(txInfos)) {
-              setloading(false)
               setStatus(ProcessStatus.Done)
               clearInterval(waitReceipt)
             }
@@ -79,7 +76,6 @@ const SendFormButton = ({
           await waitForEtherBaseTransaction({
             hash: submitResult.hash,
           })
-          setloading(false)
           setStatus(ProcessStatus.Done)
         } catch (error) {
           setWaitForReceiptError(_.toString(error))
@@ -93,13 +89,13 @@ const SendFormButton = ({
 
   const onClickSubmitButton = async (): Promise<void> => {
     setErrorMessage('')
-    setloading(true)
+    setStatus(ProcessStatus.Submit)
 
     const submitResult = await submitRequestTx()
 
     setRequestTxResult(submitResult)
 
-    setloading(false)
+    setStatus(ProcessStatus.Confirm)
     return waitForReceipt({ submitResult })
   }
 
@@ -132,12 +128,7 @@ const SendFormButton = ({
   return isLoggedIn ? (
     <NextButton />
   ) : (
-    <Button
-      disabled={false === STYLE.isSupportBrowser}
-      onClick={selectWallet.open}
-    >
-      Connect Wallet
-    </Button>
+    <Button onClick={selectWallet.open}>Connect Wallet</Button>
   )
 }
 
