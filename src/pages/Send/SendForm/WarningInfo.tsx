@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import _ from 'lodash'
 
 import cautionPng from 'images/caution.png'
 
@@ -55,7 +54,7 @@ const WarningInfo = (): ReactElement => {
     }
   }, [toBlockChain, fromBlockChain])
 
-  return _.some(infoText) ? (
+  return infoText ? (
     <StyledWarningInfo>
       <div style={{ paddingRight: 12 }}>
         <FormImage src={cautionPng} size={16} />
