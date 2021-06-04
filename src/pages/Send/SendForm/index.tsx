@@ -6,6 +6,8 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowClockwise } from 'react-bootstrap-icons'
 
+import cautionPng from 'images/caution.png'
+
 import { ASSET, COLOR } from 'consts'
 
 import { BlockChainType } from 'types/network'
@@ -27,6 +29,7 @@ import SendStore from 'store/SendStore'
 import AssetList from './AssetList'
 import FormFeeInfo from './FormFeeInfo'
 import FormLabelInput from 'components/FormLabelInput'
+import FormImage from 'components/FormImage'
 
 const StyledContainer = styled.div``
 
@@ -61,6 +64,16 @@ const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
   opacity: ${({ refreshing }): number => (refreshing ? 0.5 : 1)};
   cursor: ${({ refreshing }): string => (refreshing ? 'default' : 'pointer')};
   user-select: none;
+`
+
+const StyledWarningInfo = styled.div`
+  display: flex;
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 40px;
+  background-color: #eda24d26;
+  white-space: pre-wrap;
+  font-size: 12px;
 `
 
 const RefreshButton = (): ReactElement => {
@@ -322,6 +335,21 @@ const SendForm = ({
 
       {/* only if from terra */}
       <FormFeeInfo feeValidationResult={feeValidationResult} />
+      <StyledWarningInfo>
+        <div style={{ paddingRight: 12 }}>
+          <FormImage src={cautionPng} size={16} />
+        </div>
+        <Text
+          style={{
+            color: '#cccccc',
+            lineHeight: 1.5,
+            fontSize: 14,
+          }}
+        >
+          {`- Don't use exchange addresses for cross-chain transfers
+- For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”`}
+        </Text>
+      </StyledWarningInfo>
     </StyledContainer>
   )
 }
