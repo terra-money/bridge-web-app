@@ -76,6 +76,16 @@ const StyledWarningInfo = styled.div`
   font-size: 12px;
 `
 
+const StyledWarningInfoText = styled(Text)`
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #cccccc;
+`
+
 const RefreshButton = (): ReactElement => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const { getAssetList } = useAsset()
@@ -339,16 +349,19 @@ const SendForm = ({
         <div style={{ paddingRight: 12 }}>
           <FormImage src={cautionPng} size={16} />
         </div>
-        <Text
-          style={{
-            color: '#cccccc',
-            lineHeight: 1.5,
-            fontSize: 14,
-          }}
-        >
-          {`- Don't use exchange addresses for cross-chain transfers
-- For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”`}
-        </Text>
+        <div>
+          <StyledWarningInfoText
+            style={{
+              marginBottom: 5,
+            }}
+          >
+            Don't use exchange addresses for cross-chain transfers
+          </StyledWarningInfoText>
+          <StyledWarningInfoText>
+            For Terra to Terra transfers, if the Terra address at the receiving
+            end is an exchange address, the transaction will require a “memo”
+          </StyledWarningInfoText>
+        </div>
       </StyledWarningInfo>
     </StyledContainer>
   )
