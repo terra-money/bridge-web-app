@@ -11,6 +11,7 @@ import { BlockChainType } from 'types/network'
 
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
+import useSecretBalance from './useSecretBalance'
 import ContractStore from 'store/ContractStore'
 
 const useAsset = (): {
@@ -25,11 +26,13 @@ const useAsset = (): {
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
   const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
+  const secretWhiteList = useRecoilValue(ContractStore.secretWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
   const { getTerraBalances } = useTerraBalance()
   const { getEtherBalances } = useEtherBaseBalance()
+  const { getSecretBalances } = useSecretBalance()
 
   const getTerraWhiteList = async (): Promise<WhiteListType> => {
     return {
@@ -77,6 +80,9 @@ const useAsset = (): {
       } else if (fromBlockChain === BlockChainType.bsc) {
         whiteList = bscWhiteList
         balanceList = await getEtherBalances({ whiteList })
+      } else if (fromBlockChain === BlockChainType.secret) {
+        whiteList = secretWhiteList
+        balanceList = await getSecretBalances({ whiteList })
       }
     }
 
@@ -88,10 +94,24 @@ const useAsset = (): {
 
     if (
       fromBlockChain !== toBlockChain &&
-      [BlockChainType.ethereum, BlockChainType.bsc].includes(toBlockChain)
+      [
+        BlockChainType.ethereum,
+        BlockChainType.bsc,
+        BlockChainType.secret,
+      ].includes(toBlockChain)
     ) {
-      const toWhiteList =
-        toBlockChain === BlockChainType.ethereum ? ethWhiteList : bscWhiteList
+      let toWhiteList = ethWhiteList
+      switch (toBlockChain) {
+        case BlockChainType.ethereum:
+          toWhiteList = ethWhiteList
+          break
+        case BlockChainType.bsc:
+          toWhiteList = bscWhiteList
+          break
+        case BlockChainType.secret:
+          toWhiteList = secretWhiteList
+          break
+      }
 
       const pairList = _.map(fromList, (item) => {
         const disabled = _.isEmpty(toWhiteList[item.symbol])
@@ -100,6 +120,7 @@ const useAsset = (): {
           disabled,
         }
       })
+
       setAssetList(pairList)
     } else {
       setAssetList(fromList)
@@ -113,6 +134,8 @@ const useAsset = (): {
 
       return fromBlockChain === BlockChainType.terra
         ? bnBalance.div(ASSET.TERRA_DECIMAL).toString(10)
+        : fromBlockChain === BlockChainType.secret
+        ? bnBalance.div(ASSET.SECRET_DECIMAL).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
             .integerValue(BigNumber.ROUND_DOWN)

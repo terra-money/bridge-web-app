@@ -153,11 +153,13 @@ const SendForm = ({
 
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
-      const decimalSize = new BigNumber(
-        fromBlockChain === 'terra'
+      const decimal =
+        fromBlockChain === BlockChainType.terra
           ? ASSET.TERRA_DECIMAL
+          : fromBlockChain === BlockChainType.secret
+          ? ASSET.SECRET_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
-      )
+      const decimalSize = new BigNumber(decimal)
       setAmount(new BigNumber(value).times(decimalSize).toString(10))
     }
   }

@@ -34,6 +34,7 @@
     "react-scripts": "4.0.1",
     "react-use-clipboard": "^1.0.7",
     "recoil": "^0.1.2",
+    "secretjs": "^0.11.0",
     "styled-components": "^5.2.1",
     "use-debounce": "^5.2.1",
     "web-vitals": "^0.2.4"

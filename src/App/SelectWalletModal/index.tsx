@@ -23,6 +23,7 @@ import { WalletEnum } from 'types/wallet'
 import { BlockChainType } from 'types/network'
 
 import WalletButton from './WalletButton'
+import keplrService from 'services/keplrService'
 
 const StyledContainer = styled.div`
   padding: 0 25px 40px;
@@ -154,6 +155,26 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     }
   }
 
+  const onClickKeplr = async ({
+    isMainnet,
+  }: {
+    isMainnet: boolean
+  }): Promise<void> => {
+    if (keplrService.checkInstalled()) {
+      const { address, signingCosmWasmClient } = await keplrService.connect({
+        isMainnet,
+      })
+      await login({
+        user: {
+          address,
+          signingCosmWasmClient,
+          walletType: WalletEnum.Keplr_Secret,
+        },
+      })
+    } else {
+      alert('Please install keplr extension')
+    }
+  }
   const onClickWallet = (wallet: WalletEnum): void => {
     switch (wallet) {
       case WalletEnum.Binance:
@@ -174,6 +195,12 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       case WalletEnum.TerraWalletConnect:
         onClickTerraWalletConnect()
         break
+      case WalletEnum.Keplr_Secret:
+        onClickKeplr({ isMainnet: true })
+        break
+      case WalletEnum.Keplr_Holodeck:
+        onClickKeplr({ isMainnet: false })
+        break
     }
   }
 
@@ -186,8 +213,9 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     ]
   } else if (fromBlockChain === BlockChainType.bsc) {
     buttons = [WalletEnum.Binance, WalletEnum.MetaMask]
+  } else if (fromBlockChain === BlockChainType.secret) {
+    buttons = [WalletEnum.Keplr_Secret, WalletEnum.Keplr_Holodeck]
   }
-
   useEffect(() => {
     const { lastWalletType } = getLoginStorage()
     if (

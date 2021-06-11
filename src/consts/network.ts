@@ -1,18 +1,25 @@
-import { BlockChainType, LocalTerraNetwork } from 'types/network'
+import {
+  BlockChainType,
+  LocalSecretNetwork,
+  LocalTerraNetwork,
+} from 'types/network'
 import BinanceChainPng from 'images/BinanceChain.png'
 import EthereumPng from 'images/Ethereum.png'
 import TerraPng from 'images/Terra.png'
+import SecretNetworkPng from 'images/SecretNetwork.png'
 
 const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.bsc]: BinanceChainPng,
   [BlockChainType.ethereum]: EthereumPng,
   [BlockChainType.terra]: TerraPng,
+  [BlockChainType.secret]: SecretNetworkPng,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.bsc]: 'BSC',
   [BlockChainType.ethereum]: 'Ethereum',
   [BlockChainType.terra]: 'Terra',
+  [BlockChainType.secret]: 'Secret',
 }
 
 // what terra shuttle supply, https://github.com/terra-project/shuttle
@@ -43,6 +50,7 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     shuttle: {
       ethereum: 'terra13yxhrk08qvdf5zdc9ss5mwsg5sf7zva9xrgwgc',
       bsc: 'terra1g6llg3zed35nd3mh9zx6n64tfw3z67w2c48tn2',
+      secret: '',
     },
     fcd: 'https://fcd.terra.dev',
     lcd: 'https://lcd.terra.dev',
@@ -52,9 +60,23 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     shuttle: {
       ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
       bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
+      secret: 'terra1v0m6zsdd58kh7ps0hdhfrktjy0t3n2lscqshpv',
     },
     fcd: 'https://tequila-fcd.terra.dev',
     lcd: 'https://tequila-lcd.terra.dev',
+  },
+}
+
+const secret_networks: Record<'mainnet' | 'testnet', LocalSecretNetwork> = {
+  mainnet: {
+    chainID: 'secret-2',
+    bridge: '',
+    apiUrl: '',
+  },
+  testnet: {
+    chainID: 'holodeck-2',
+    bridge: 'secret1fufve2jygrz6l26jstx0c2vfrl8l6ky2kgldys',
+    apiUrl: 'https://chainofsecrets.secrettestnet.io/',
   },
 }
 
@@ -68,6 +90,7 @@ export default {
   blockChainImage,
   blockChainName,
   terra_networks,
+  secret_networks,
   INFURAID,
   TERRA_CHAIN_ID,
   TERRA_EXTENSION,

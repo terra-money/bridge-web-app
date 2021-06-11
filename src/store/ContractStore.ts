@@ -35,6 +35,13 @@ const initOnlyBscWhiteList = atom<
   default: undefined,
 })
 
+const initOnlySecretWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlySecretWhiteList',
+  default: undefined,
+})
+
 const assetList = atom<AssetType[]>({
   key: 'assetList',
   default: [
@@ -123,15 +130,30 @@ const bscWhiteList = selector<WhiteListType>({
   },
 })
 
+// if empty, service will block from start
+const secretWhiteList = selector<WhiteListType>({
+  key: 'secretWhiteList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlySecretWhiteList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
 export default {
   initOnlyShuttlePairs,
   initOnlyTerraWhiteList,
   initOnlyEthWhiteList,
   initOnlyBscWhiteList,
+  initOnlySecretWhiteList,
 
   assetList,
   shuttleUusdPairs,
   terraWhiteList,
   ethWhiteList,
   bscWhiteList,
+  secretWhiteList,
 }

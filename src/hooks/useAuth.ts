@@ -30,6 +30,7 @@ const useAuth = (): {
   const setEtherBaseExt = useSetRecoilState(NetworkStore.etherBaseExt)
   const setTerraExt = useSetRecoilState(NetworkStore.terraExt)
   const setTerraLocal = useSetRecoilState(NetworkStore.terraLocal)
+  const setLocalKeplr = useSetRecoilState(NetworkStore.keplrLocal)
   const setIsVisibleNotSupportNetworkModal = useSetRecoilState(
     NetworkStore.isVisibleNotSupportNetworkModal
   )
@@ -80,6 +81,18 @@ const useAuth = (): {
         blockChain: BlockChainType.terra,
         walletType: user.walletType,
       })
+    } else if (fromBlockChain === BlockChainType.secret) {
+      setLoginStorage({
+        blockChain: BlockChainType.secret,
+        walletType: user.walletType,
+      })
+
+      const chainId = (await user.signingCosmWasmClient?.getChainId()) || ''
+      const localNetwork =
+        NETWORK.secret_networks[
+          chainId?.includes('secret') ? 'mainnet' : 'testnet'
+        ]
+      setLocalKeplr(localNetwork)
     }
     // both ethereum , bsc are ethereum base blockchain
     else {

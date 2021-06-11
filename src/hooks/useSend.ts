@@ -71,6 +71,7 @@ const useSend = (): UseSendType => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const terraExt = useRecoilValue(NetworkStore.terraExt)
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
+  const keplrLocal = useRecoilValue(NetworkStore.keplrLocal)
 
   const [gasPricesFromServer, setGasPricesFromServer] = useRecoilState(
     SendStore.gasPrices
@@ -198,49 +199,94 @@ const useSend = (): UseSendType => {
 
   const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] => {
     if (asset) {
-      const recipient =
-        toBlockChain === BlockChainType.terra
-          ? toAddress
-          : terraLocal.shuttle[toBlockChain]
+      if (toBlockChain === BlockChainType.secret) {
+        return UTIL.isNativeDenom(asset.tokenAddress)
+          ? [
+              new MsgExecuteContract(
+                loginUser.address, // sender
+                terraLocal.shuttle[toBlockChain], // contract account address
+                {
+                  receive: { msg: btoa(toAddress) },
+                }, // handle msg
+                [new Coin(asset.tokenAddress, sendAmount)] // coins
+              ),
+            ]
+          : [
+              new MsgExecuteContract(
+                loginUser.address, // sender
+                asset.tokenAddress, // contract account address
+                {
+                  // handle msg
+                  send: {
+                    contract: terraLocal.shuttle[toBlockChain],
+                    amount: sendAmount,
+                    msg: btoa(toAddress),
+                  },
+                },
+                new Coins([])
+              ),
+            ]
+      } else {
+        const recipient =
+          toBlockChain === BlockChainType.terra
+            ? toAddress
+            : terraLocal.shuttle[toBlockChain]
 
-      return UTIL.isNativeDenom(asset.tokenAddress)
-        ? [
-            new MsgSend(loginUser.address, recipient, [
-              new Coin(asset.tokenAddress, sendAmount),
-            ]),
-          ]
-        : [
-            new MsgExecuteContract(
-              loginUser.address,
-              asset.tokenAddress,
-              { transfer: { recipient, amount: sendAmount } },
-              new Coins([])
-            ),
-          ]
+        return UTIL.isNativeDenom(asset.tokenAddress)
+          ? [
+              new MsgSend(loginUser.address, recipient, [
+                new Coin(asset.tokenAddress, sendAmount),
+              ]),
+            ]
+          : [
+              new MsgExecuteContract(
+                loginUser.address,
+                asset.tokenAddress,
+                { transfer: { recipient, amount: sendAmount } },
+                new Coins([])
+              ),
+            ]
+      }
     }
     return []
   }
 
-  const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
-    let errorMessage
-    const memoOrToAddress =
-      toBlockChain === BlockChainType.terra
-        ? // only terra network can get user's memo
-          memo
-        : // if send to ether-base then memo must be to-address
-          toAddress
+  const getCreateTxOptions = (): CreateTxOptions => {
     const msgs = getTerraMsgs()
     const txFee =
       tax?.amount.greaterThan(0) && fee
         ? new StdFee(fee.gas, fee.amount.add(tax))
         : fee
-    const tx: CreateTxOptions = {
-      gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
-      msgs,
-      fee: txFee,
-      memo: memoOrToAddress,
+    if (toBlockChain === BlockChainType.secret) {
+      return {
+        gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
+        msgs,
+        fee: txFee,
+      }
+    } else {
+      const memoOrToAddress =
+        toBlockChain === BlockChainType.terra
+          ? // only terra network can get user's memo
+            memo
+          : // if send to ether-base then memo must be to-address
+            toAddress
+
+      return {
+        gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
+        msgs,
+        fee: txFee,
+        memo: memoOrToAddress,
+      }
     }
+  }
+
+  const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
+    let errorMessage
+
+    const tx: CreateTxOptions = getCreateTxOptions()
+
     const connector = loginUser.walletConnect
+
     if (connector) {
       const sendId = Date.now()
       const params = [
@@ -353,9 +399,39 @@ const useSend = (): UseSendType => {
     }
   }
 
+  const submitRequestTxFromSecretNetwork = async (): Promise<RequestTxResultType> => {
+    if (asset?.tokenAddress) {
+      const MSG = btoa(toAddress)
+
+      const result = await loginUser.signingCosmWasmClient?.execute(
+        asset.tokenAddress,
+        {
+          send: {
+            recipient: keplrLocal?.bridge,
+            amount: sendAmount,
+            msg: MSG,
+          },
+        },
+        '',
+        []
+      )
+
+      return {
+        success: true,
+        hash: result?.transactionHash || '',
+      }
+    }
+
+    return {
+      success: false,
+    }
+  }
+
   const submitRequestTx = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain === BlockChainType.terra) {
       return submitRequestTxFromTerra()
+    } else if (fromBlockChain === BlockChainType.secret) {
+      return submitRequestTxFromSecretNetwork()
     }
 
     return submitRequestTxFromEtherBase()

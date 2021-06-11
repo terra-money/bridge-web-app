@@ -5,6 +5,7 @@ import { NETWORK } from 'consts'
 import {
   BlockChainType,
   ExtTerraNetwork,
+  LocalSecretNetwork,
   LocalTerraNetwork,
 } from 'types/network'
 import AuthStore from './AuthStore'
@@ -18,6 +19,11 @@ const terraExt = atom<ExtTerraNetwork | undefined>({
 const terraLocal = atom<LocalTerraNetwork>({
   key: 'terraLocal',
   default: NETWORK.terra_networks.mainnet,
+})
+
+const keplrLocal = atom<LocalSecretNetwork | undefined>({
+  key: 'keplrLocal',
+  default: undefined,
 })
 
 const etherBaseExt = atom<EtherNetwork | undefined>({
@@ -35,6 +41,9 @@ const isTestnet = selector<boolean>({
         const _terraExt = get(terraExt)
 
         return _terraExt?.name !== 'mainnet'
+      } else if (fromBlockChain === BlockChainType.secret) {
+        const _keplrLocal = get(keplrLocal)
+        return _keplrLocal?.chainID.includes('holodeck') === true
       }
       const _etherBaseExt = get(etherBaseExt)
 
@@ -61,6 +70,7 @@ const triedNotSupportNetwork = atom<EtherNetwork | undefined>({
 export default {
   terraExt,
   terraLocal,
+  keplrLocal,
   etherBaseExt,
   isTestnet,
   isVisibleNotSupportNetworkModal,

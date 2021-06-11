@@ -57,6 +57,11 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.bsc,
               isDisabled: fromBlockChain === BlockChainType.bsc,
             },
+            {
+              label: NETWORK.blockChainName[BlockChainType.secret],
+              value: BlockChainType.secret,
+              isDisabled: fromBlockChain === BlockChainType.secret,
+            },
           ],
           label: 'FROM',
         }}
@@ -86,6 +91,7 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.ethereum,
               isDisabled:
                 fromBlockChain === BlockChainType.bsc ||
+                fromBlockChain === BlockChainType.secret ||
                 toBlockChain === BlockChainType.ethereum,
             },
             {
@@ -93,7 +99,16 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.bsc,
               isDisabled:
                 fromBlockChain === BlockChainType.ethereum ||
+                fromBlockChain === BlockChainType.secret ||
                 toBlockChain === BlockChainType.bsc,
+            },
+            {
+              label: NETWORK.blockChainName[BlockChainType.secret],
+              value: BlockChainType.secret,
+              isDisabled:
+                fromBlockChain === BlockChainType.ethereum ||
+                fromBlockChain === BlockChainType.bsc ||
+                toBlockChain === BlockChainType.secret,
             },
           ],
           label: 'TO',

@@ -12,6 +12,7 @@ const useNetwork = (): {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const terraExt = useRecoilValue(NetworkStore.terraExt)
   const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
+  const keplrLocal = useRecoilValue(NetworkStore.keplrLocal)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const getScannerLink = ({
@@ -33,6 +34,9 @@ const useNetwork = (): {
 
       subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
       return `https://${subdomain}etherscan.io/${type}/${address}`
+    } else if (keplrLocal) {
+      const pageType = type === 'tx' ? 'transactions' : 'accounts'
+      return `https://secretnodes.com/secret/chains/${keplrLocal.chainID}/${pageType}/${address}`
     }
     return ''
   }

@@ -89,10 +89,18 @@ const useSendValidate = (): {
       return { isValid: false, errorMessage: '' }
     }
 
-    const validAddress =
-      toBlockChain === BlockChainType.terra
-        ? AccAddress.validate(toAddress)
-        : ethers.utils.isAddress(toAddress)
+    let validAddress = false
+    switch (toBlockChain) {
+      case BlockChainType.terra:
+        validAddress = AccAddress.validate(toAddress)
+        break
+      case BlockChainType.secret:
+        validAddress = true // TODO : check if it's valid address
+        break
+      default:
+        validAddress = ethers.utils.isAddress(toAddress)
+        break
+    }
 
     if (false === validAddress) {
       return { isValid: false, errorMessage: 'Invalid address' }
@@ -112,7 +120,10 @@ const useSendValidate = (): {
       return { isValid: false, errorMessage: 'Amount must be greater than 0' }
     }
 
-    const rebalanceDecimal = fromBlockChain === BlockChainType.terra ? 1 : 1e12
+    const rebalanceDecimal =
+      fromBlockChain === BlockChainType.terra || BlockChainType.secret
+        ? 1
+        : 1e12
 
     if (false === bnAmount.div(rebalanceDecimal).isInteger()) {
       return {

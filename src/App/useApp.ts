@@ -6,6 +6,8 @@ import * as Sentry from '@sentry/react'
 import ContractStore from 'store/ContractStore'
 import { AssetSymbolEnum, AssetType } from 'types/asset'
 
+import secret_whitelist from 'consts/secret_whitelist.json'
+
 const useApp = (): {
   initApp: () => Promise<void>
 } => {
@@ -16,6 +18,9 @@ const useApp = (): {
   )
   const setEthWhiteList = useSetRecoilState(ContractStore.initOnlyEthWhiteList)
   const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
+  const setSecretWhiteList = useSetRecoilState(
+    ContractStore.initOnlySecretWhiteList
+  )
 
   const getContractAddress = async (): Promise<void> => {
     try {
@@ -80,6 +85,8 @@ const useApp = (): {
       const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
 
       setBscWhiteList(bscListJson)
+
+      setSecretWhiteList(secret_whitelist)
     } catch (error) {
       Sentry.captureException(error)
     }

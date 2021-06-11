@@ -140,12 +140,19 @@ const Send = (): ReactElement => {
         selectWallet.open()
       }
 
-      if (
-        (fromBlockChain === BlockChainType.ethereum &&
-          toBlockChain === BlockChainType.bsc) ||
-        (fromBlockChain === BlockChainType.bsc &&
-          toBlockChain === BlockChainType.ethereum)
-      ) {
+      const notToBtwOtherChain =
+        toBlockChain !== fromBlockChain &&
+        [
+          BlockChainType.ethereum,
+          BlockChainType.bsc,
+          BlockChainType.secret,
+        ].includes(fromBlockChain) &&
+        [
+          BlockChainType.ethereum,
+          BlockChainType.bsc,
+          BlockChainType.secret,
+        ].includes(toBlockChain)
+      if (notToBtwOtherChain) {
         setToBlockChain(BlockChainType.terra)
       }
     }

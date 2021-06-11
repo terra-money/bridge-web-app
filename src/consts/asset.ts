@@ -1,6 +1,7 @@
 import { AssetSymbolEnum, AssetNativeDenomEnum } from 'types/asset'
 
 const TERRA_DECIMAL = 1e6
+const SECRET_DECIMAL = 1e6
 const ETHER_BASE_DECIMAL = 1e18
 
 const symbolOfDenom: Record<AssetNativeDenomEnum, AssetSymbolEnum> = {
@@ -27,5 +28,6 @@ export default {
   nativeDenoms,
   symbolOfDenom,
   TERRA_DECIMAL,
+  SECRET_DECIMAL,
   ETHER_BASE_DECIMAL,
 }
