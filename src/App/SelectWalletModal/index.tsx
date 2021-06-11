@@ -157,8 +157,10 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
 
   const onClickKeplr = async ({
     isMainnet,
+    walletType,
   }: {
     isMainnet: boolean
+    walletType: WalletEnum
   }): Promise<void> => {
     if (keplrService.checkInstalled()) {
       const { address, signingCosmWasmClient } = await keplrService.connect({
@@ -168,15 +170,15 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
         user: {
           address,
           signingCosmWasmClient,
-          walletType: WalletEnum.Keplr_Secret,
+          walletType,
         },
       })
     } else {
       alert('Please install keplr extension')
     }
   }
-  const onClickWallet = (wallet: WalletEnum): void => {
-    switch (wallet) {
+  const onClickWallet = (walletType: WalletEnum): void => {
+    switch (walletType) {
       case WalletEnum.Binance:
         onClickBinanceChain()
         break
@@ -196,10 +198,13 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
         onClickTerraWalletConnect()
         break
       case WalletEnum.Keplr_Secret:
-        onClickKeplr({ isMainnet: true })
+        onClickKeplr({ isMainnet: true, walletType })
         break
       case WalletEnum.Keplr_Holodeck:
-        onClickKeplr({ isMainnet: false })
+        onClickKeplr({
+          isMainnet: false,
+          walletType,
+        })
         break
     }
   }
