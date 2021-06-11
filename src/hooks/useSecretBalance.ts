@@ -27,17 +27,21 @@ const useSecretBalance = (): {
     token: string
     userAddress: string
   }): Promise<string> => {
-    const secretViewingKey = await window.keplr.getSecret20ViewingKey(
-      chainId,
-      token
-    )
-    const result = await loginUser.signingCosmWasmClient?.queryContractSmart(
-      token,
-      {
-        balance: { address: userAddress, key: secretViewingKey },
-      }
-    )
-    return result.balance?.amount
+    try {
+      const secretViewingKey = await window.keplr.getSecret20ViewingKey(
+        chainId,
+        token
+      )
+      const result = await loginUser.signingCosmWasmClient?.queryContractSmart(
+        token,
+        {
+          balance: { address: userAddress, key: secretViewingKey },
+        }
+      )
+      return result.balance?.amount
+    } catch {
+      return '0'
+    }
   }
 
   const getSecretBalances = async ({
@@ -48,6 +52,7 @@ const useSecretBalance = (): {
     const userAddress = loginUser.address
     const chainId = keplrLocal?.chainID!
     const list: BalanceListType = {}
+
     await Promise.all(
       _.map(whiteList, async (token) => {
         const balance = await getSecretBalance({
