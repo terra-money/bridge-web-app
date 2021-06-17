@@ -19,6 +19,42 @@ const connect = async ({
     NETWORK.secret_networks[isMainnet ? 'mainnet' : 'testnet']
   const CHAIN_ID = secretNetworks.chainID
 
+  if (CHAIN_ID === 'holodeck-2' && window.keplr.experimentalSuggestChain) {
+    try {
+      await window.keplr.experimentalSuggestChain({
+        chainId: CHAIN_ID,
+        chainName: 'Secret Testnet',
+        rpc: 'http://chainofsecrets.secrettestnet.io:26657',
+        rest: 'https://chainofsecrets.secrettestnet.io',
+        bip44: { coinType: 529 },
+        coinType: 529,
+        stakeCurrency: {
+          coinDenom: 'SCRT',
+          coinMinimalDenom: 'uscrt',
+          coinDecimals: 6,
+        },
+        bech32Config: {
+          bech32PrefixAccAddr: 'secret',
+          bech32PrefixAccPub: 'secretpub',
+          bech32PrefixValAddr: 'secretvaloper',
+          bech32PrefixValPub: 'secretvaloperpub',
+          bech32PrefixConsAddr: 'secretvalcons',
+          bech32PrefixConsPub: 'secretvalconspub',
+        },
+        currencies: [
+          { coinDenom: 'SCRT', coinMinimalDenom: 'uscrt', coinDecimals: 6 },
+        ],
+        feeCurrencies: [
+          { coinDenom: 'SCRT', coinMinimalDenom: 'uscrt', coinDecimals: 6 },
+        ],
+        gasPriceStep: { low: 0.1, average: 0.25, high: 0.4 },
+        features: ['secretwasm'],
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   await window.keplr.enable(CHAIN_ID)
   const keplrOfflineSigner = window.getOfflineSigner(CHAIN_ID)
   const accounts = await keplrOfflineSigner.getAccounts()
