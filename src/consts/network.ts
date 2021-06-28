@@ -41,7 +41,7 @@ const CHROME = 'https://google.com/chrome'
 
 const TERRA_CHAIN_ID = {
   mainnet: 'columbus-4',
-  testnet: 'tequila-0004',
+  testnet: 'bombay-0007',
 }
 
 const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
@@ -58,12 +58,12 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
   testnet: {
     mantle: 'https://tequila-mantle.terra.dev/',
     shuttle: {
-      ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
-      bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
-      secret: 'terra1v0m6zsdd58kh7ps0hdhfrktjy0t3n2lscqshpv',
+      ethereum: '', // not yet
+      bsc: '', // not yet
+      secret: 'terra16kqe0nvmn4j92u9m53aya4wr5t3fcggjjpp843',
     },
-    fcd: 'https://tequila-fcd.terra.dev',
-    lcd: 'https://tequila-lcd.terra.dev',
+    fcd: 'https://bombay-fcd.terra.dev',
+    lcd: 'https://bombay-lcd.terra.dev',
   },
 }
 
@@ -75,8 +75,8 @@ const secret_networks: Record<'mainnet' | 'testnet', LocalSecretNetwork> = {
   },
   testnet: {
     chainID: 'holodeck-2',
-    bridge: 'secret1fufve2jygrz6l26jstx0c2vfrl8l6ky2kgldys',
-    apiUrl: 'https://chainofsecrets.secrettestnet.io/',
+    bridge: 'secret19v4y8gtzrs6fr8e85pgmgj8lks2z2ykwudxcym',
+    apiUrl: 'https://bootstrap.secrettestnet.io',
   },
 }
 

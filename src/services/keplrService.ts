@@ -24,8 +24,8 @@ const connect = async ({
       await window.keplr.experimentalSuggestChain({
         chainId: CHAIN_ID,
         chainName: 'Secret Testnet',
-        rpc: 'http://chainofsecrets.secrettestnet.io:26657',
-        rest: 'https://chainofsecrets.secrettestnet.io',
+        rpc: 'https://bootstrap.secrettestnet.io:26667',
+        rest: 'https://bootstrap.secrettestnet.io',
         bip44: { coinType: 529 },
         coinType: 529,
         stakeCurrency: {

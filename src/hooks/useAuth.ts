@@ -73,7 +73,10 @@ const useAuth = (): {
       } else {
         const extNet = await terraService.info()
         setTerraExt(extNet)
-        localNetwork = NETWORK.terra_networks[extNet.name]
+        localNetwork =
+          NETWORK.terra_networks[
+            extNet.name === 'mainnet' ? 'mainnet' : 'testnet'
+          ]
       }
 
       setTerraLocal(localNetwork)

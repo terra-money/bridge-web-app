@@ -170,6 +170,7 @@ const useSend = (): UseSendType => {
           URL: terraLocal.lcd,
           gasPrices: gasPricesFromServer,
         })
+
         // fee + tax
         const unsignedTx = await lcd.tx.create(loginUser.address, {
           msgs,
@@ -208,7 +209,7 @@ const useSend = (): UseSendType => {
                 {
                   receive: { msg: btoa(toAddress) },
                 }, // handle msg
-                [new Coin(asset.tokenAddress, sendAmount)] // coins
+                { [asset.tokenAddress]: sendAmount } // coins
               ),
             ]
           : [

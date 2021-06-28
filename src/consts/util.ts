@@ -38,6 +38,12 @@ const isNativeDenom = (str: string): boolean =>
 
 const toBignumber = (value?: string): BigNumber => new BigNumber(value || 0)
 
+const toBase64 = (value: string): string =>
+  Buffer.from(value).toString('base64')
+
+const fromBase64 = (value: string): string =>
+  Buffer.from(value, 'base64').toString()
+
 export default {
   truncate,
   jsonTryParse,
@@ -47,4 +53,6 @@ export default {
   isNativeTerra,
   isNativeDenom,
   toBignumber,
+  toBase64,
+  fromBase64,
 }
