@@ -26,7 +26,7 @@ const isLoggedIn = selector({
 
     return (
       _.some(user && user.address) &&
-      _.some(etherBaseExt || terraExt || user.walletConnect)
+      _.some(etherBaseExt || terraExt || user.terraWalletConnect)
     )
   },
 })

@@ -63,7 +63,7 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
         login({
           user: {
             address: connector.accounts[0],
-            walletConnect: connector,
+            terraWalletConnect: connector,
             walletType: WalletEnum.TerraWalletConnect,
           },
         })
@@ -76,7 +76,7 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
           login({
             user: {
               address,
-              walletConnect: connector,
+              terraWalletConnect: connector,
               walletType: WalletEnum.TerraWalletConnect,
             },
           })
@@ -122,12 +122,12 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     try {
       const { address, provider } = await walletConnectService.connect()
       provider.on('disconnect', () => {
-        provider.disconnect()
         logout()
       })
       await login({
         user: {
           address,
+          walletConnect: provider,
           provider: new ethers.providers.Web3Provider(provider),
           walletType: WalletEnum.WalletConnect,
         },

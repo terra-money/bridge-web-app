@@ -240,7 +240,7 @@ const useSend = (): UseSendType => {
       fee: txFee,
       memo: memoOrToAddress,
     }
-    const connector = loginUser.walletConnect
+    const connector = loginUser.terraWalletConnect
     if (connector) {
       const sendId = Date.now()
       const params = [

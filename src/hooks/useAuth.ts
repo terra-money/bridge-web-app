@@ -66,7 +66,7 @@ const useAuth = (): {
 
       if (user.walletType === WalletEnum.TerraWalletConnect) {
         const network =
-          user.walletConnect?.chainId === 0 ? 'testnet' : 'mainnet'
+          user.terraWalletConnect?.chainId === 0 ? 'testnet' : 'mainnet'
         localNetwork = NETWORK.terra_networks[network]
         setTerraExt({ name: network, chainID: NETWORK.TERRA_CHAIN_ID[network] })
       } else {
@@ -147,7 +147,8 @@ const useAuth = (): {
 
   const logout = (): void => {
     setLoginUser((user) => {
-      user.walletConnect?.killSession()
+      user.terraWalletConnect?.killSession()
+      user.walletConnect?.disconnect()
       return initLoginUser
     })
     setStatus(ProcessStatus.Input)
