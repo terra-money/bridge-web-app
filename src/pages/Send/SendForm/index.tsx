@@ -6,7 +6,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR } from 'consts'
+import { ASSET, COLOR, NETWORK } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
@@ -180,10 +180,7 @@ const SendForm = ({
 
   const setTerraShuttleFee = async (): Promise<void> => {
     // get terra shutte Fee Info
-    if (
-      toBlockChain === BlockChainType.ethereum ||
-      toBlockChain === BlockChainType.bsc
-    ) {
+    if (NETWORK.isEtherBaseBlockChain(toBlockChain)) {
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {
         getTerraShuttleFee({

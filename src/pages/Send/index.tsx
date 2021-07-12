@@ -7,7 +7,7 @@ import loading from 'images/loading.gif'
 import failed from 'images/failed.gif'
 import complete from 'images/complete.gif'
 
-import { COLOR, STYLE } from 'consts'
+import { COLOR, NETWORK, STYLE } from 'consts'
 
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
@@ -141,10 +141,8 @@ const Send = (): ReactElement => {
       }
 
       if (
-        (fromBlockChain === BlockChainType.ethereum &&
-          toBlockChain === BlockChainType.bsc) ||
-        (fromBlockChain === BlockChainType.bsc &&
-          toBlockChain === BlockChainType.ethereum)
+        NETWORK.isEtherBaseBlockChain(fromBlockChain) &&
+        fromBlockChain !== toBlockChain
       ) {
         setToBlockChain(BlockChainType.terra)
       }
