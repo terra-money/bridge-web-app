@@ -2,7 +2,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 
-import { ASSET } from 'consts'
+import { ASSET, NETWORK } from 'consts'
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
@@ -25,6 +25,7 @@ const useAsset = (): {
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
   const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
+  const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
@@ -71,11 +72,14 @@ const useAsset = (): {
         balanceList = await getTerraBalances({
           terraWhiteList: _.map(whiteList, (token) => ({ token })),
         })
-      } else if (fromBlockChain === BlockChainType.ethereum) {
-        whiteList = ethWhiteList
-        balanceList = await getEtherBalances({ whiteList })
-      } else if (fromBlockChain === BlockChainType.bsc) {
-        whiteList = bscWhiteList
+      } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
+        if (fromBlockChain === BlockChainType.ethereum) {
+          whiteList = ethWhiteList
+        } else if (fromBlockChain === BlockChainType.bsc) {
+          whiteList = bscWhiteList
+        } else if (fromBlockChain === BlockChainType.hmy) {
+          whiteList = hmyWhiteList
+        }
         balanceList = await getEtherBalances({ whiteList })
       }
     }
@@ -88,10 +92,14 @@ const useAsset = (): {
 
     if (
       fromBlockChain !== toBlockChain &&
-      [BlockChainType.ethereum, BlockChainType.bsc].includes(toBlockChain)
+      NETWORK.isEtherBaseBlockChain(toBlockChain)
     ) {
-      const toWhiteList =
-        toBlockChain === BlockChainType.ethereum ? ethWhiteList : bscWhiteList
+      let toWhiteList = bscWhiteList
+      if (toBlockChain === BlockChainType.ethereum) {
+        toWhiteList = ethWhiteList
+      } else if (toBlockChain === BlockChainType.hmy) {
+        toWhiteList = hmyWhiteList
+      }
 
       const pairList = _.map(fromList, (item) => {
         const disabled = _.isEmpty(toWhiteList[item.symbol])

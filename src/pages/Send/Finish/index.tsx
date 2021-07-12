@@ -149,8 +149,7 @@ const Finish = (): ReactElement => {
           </Text>
         </div>
         {fromBlockChain === BlockChainType.terra &&
-          (toBlockChain === BlockChainType.ethereum ||
-            toBlockChain === BlockChainType.bsc) && (
+          NETWORK.isEtherBaseBlockChain(toBlockChain) && (
             <div
               style={{
                 fontSize: 12,

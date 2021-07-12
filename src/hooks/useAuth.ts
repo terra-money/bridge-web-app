@@ -54,6 +54,8 @@ const useAuth = (): {
         ETH_CHAINID.ETH_ROPSTEN,
         ETH_CHAINID.BSC_MAIN,
         ETH_CHAINID.BSC_TEST,
+        ETH_CHAINID.HMY_MAIN,
+        ETH_CHAINID.HMY_TEST,
       ].includes(network.chainId)
     }
 
@@ -81,19 +83,26 @@ const useAuth = (): {
         walletType: user.walletType,
       })
     }
-    // both ethereum , bsc are ethereum base blockchain
+    // ethereum, bsc, hmy are ethereum base blockchain
     else {
       const network = await user.provider?.getNetwork()
       const isValidEtherNetwork = checkIsValidEtherNetwork({ network })
       if (network && isValidEtherNetwork) {
         const { ETH_CHAINID } = NETWORK
 
-        const reSelectFromBlockChain = [
-          ETH_CHAINID.ETH_MAIN,
-          ETH_CHAINID.ETH_ROPSTEN,
-        ].includes(network.chainId)
-          ? BlockChainType.ethereum
-          : BlockChainType.bsc
+        let reSelectFromBlockChain = BlockChainType.bsc
+        if (
+          [ETH_CHAINID.ETH_MAIN, ETH_CHAINID.ETH_ROPSTEN].includes(
+            network.chainId
+          )
+        ) {
+          reSelectFromBlockChain = BlockChainType.ethereum
+        } else if (
+          [ETH_CHAINID.HMY_MAIN, ETH_CHAINID.HMY_TEST].includes(network.chainId)
+        ) {
+          reSelectFromBlockChain = BlockChainType.hmy
+        }
+
         setFromBlockChain(reSelectFromBlockChain)
         setEtherBaseExt(network)
 

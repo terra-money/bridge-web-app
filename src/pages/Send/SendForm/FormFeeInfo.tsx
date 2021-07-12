@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
-import { ASSET, COLOR, UTIL } from 'consts'
+import { ASSET, COLOR, NETWORK, UTIL } from 'consts'
 
 import { BlockChainType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
@@ -206,8 +206,7 @@ const FormFeeInfo = ({
                 />
               </div>
 
-              {(toBlockChain === BlockChainType.ethereum ||
-                toBlockChain === BlockChainType.bsc) && (
+              {NETWORK.isEtherBaseBlockChain(toBlockChain) && (
                 <>
                   <Row
                     style={{
