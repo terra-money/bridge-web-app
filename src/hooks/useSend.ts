@@ -243,29 +243,32 @@ const useSend = (): UseSendType => {
     const connector = loginUser.terraWalletConnect
     if (connector) {
       const sendId = Date.now()
-      const params = [
-        {
-          msgs: tx.msgs.map((msg) => msg.toJSON()),
-          fee: tx.fee?.toJSON(),
-          memo: tx.memo,
-          gasPrices: tx.gasPrices?.toString(),
-          gasAdjustment: tx.gasAdjustment?.toString(),
-          account_number: tx.account_number,
-          sequence: tx.sequence,
-          feeDenoms: tx.feeDenoms,
-        },
-      ]
+      const serializedTxOptions = {
+        msgs: tx.msgs.map((msg) => msg.toJSON()),
+        fee: tx.fee?.toJSON(),
+        memo: tx.memo,
+        gasPrices: tx.gasPrices?.toString(),
+        gasAdjustment: tx.gasAdjustment?.toString(),
+        account_number: tx.account_number,
+        sequence: tx.sequence,
+        feeDenoms: tx.feeDenoms,
+      }
 
       if (isMobile) {
-        window.location.href = `terrastation://wallet_connect_confirm?id=${sendId}&handshakeTopic=${
-          connector.handshakeTopic
-        }&params=${JSON.stringify(params)}`
+        const payload = btoa(
+          JSON.stringify({
+            id: sendId,
+            handshakeTopic: connector.handshakeTopic,
+            params: serializedTxOptions,
+          })
+        )
+        window.location.href = `terrastation://walletconnect_confirm/?payload=${payload}`
       }
       try {
         const result = await connector.sendCustomRequest({
           id: sendId,
           method: 'post',
-          params,
+          params: [serializedTxOptions],
         })
         return {
           success: true,
