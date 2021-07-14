@@ -47,14 +47,13 @@ const CopyTokenAddress = (): ReactElement => {
       {asset && (fromTokenAddress || toTokenAddress) && (
         <Row
           style={{
-            justifyContent: 'flex-end',
             alignItems: 'center',
             paddingTop: 8,
           }}
         >
           <Text
             style={{ color: '#737373', fontSize: 11 }}
-          >{`Copy "${asset.symbol}" token address`}</Text>
+          >{`Copy ${asset.symbol} token address`}</Text>
           {fromTokenAddress && (
             <View style={{ paddingLeft: 4 }}>
               <CopyTokenAddressButton
