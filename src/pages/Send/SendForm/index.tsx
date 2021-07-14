@@ -257,7 +257,7 @@ const SendForm = ({
         </Row>
 
         <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
-        <FormErrorMessage errorMessage={validationResult.errorMessage?.asset} />
+        <FormErrorMessage errorMessage={validationResult.errorMessage?.asset} style={{marginBottom:0}} />
         <CopyTokenAddress />
       </StyledFormSection>
 
