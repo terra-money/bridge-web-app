@@ -8,7 +8,7 @@ import { COLOR, STYLE } from 'consts'
 
 import { AssetType } from 'types/asset'
 
-import { Text, Col, Row } from 'components'
+import { Text, View, Row } from 'components'
 import DefaultModal from 'components/Modal'
 import FormInput from 'components/FormInput'
 import FormImage from 'components/FormImage'
@@ -59,14 +59,12 @@ const StyledSelectAssetButton = styled.div`
   }
 `
 
-const StyledIconBox = styled(Col)`
+const StyledIconBox = styled(View)`
   flex: 0 0 8%;
   align-self: center;
   margin-top: 3px;
   margin-bottom: 3px;
-  @media ${STYLE.media.mobile} {
-    padding-right: 10px;
-  }
+  padding-right: 10px;
 `
 
 const AssetItem = ({
@@ -93,26 +91,26 @@ const AssetItem = ({
         setShowModal(false)
       }}
     >
-      <Row>
-        <StyledIconBox>
-          <FormImage src={asset.logoURI} size={20} />
-        </StyledIconBox>
-        <Col>
-          <div>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <Row>
+          <StyledIconBox>
+            <FormImage src={asset.logoURI} size={20} />
+          </StyledIconBox>
+          <View>
             <Text style={{ fontSize: 14, fontWeight: 500 }}>
               {asset.symbol}
             </Text>
             <Text style={{ color: COLOR.blueGray, fontSize: 12 }}>
               {asset.name}
             </Text>
-          </div>
-        </Col>
+          </View>
+        </Row>
         {isLoggedIn && (
-          <Col style={{ alignSelf: 'center' }}>
-            <Text style={{ justifyContent: 'flex-end', fontSize: 14 }}>
+          <View style={{ justifyContent: 'center' }}>
+            <Text style={{ fontSize: 14 }}>
               {asset.balance ? formatBalance(asset.balance) : '0'}{' '}
             </Text>
-          </Col>
+          </View>
         )}
       </Row>
     </StyledAssetItem>
@@ -137,15 +135,15 @@ const SelectAssetButton = ({
     >
       {asset && (
         <Row>
-          <Col style={{ display: 'flex', alignItems: 'center' }}>
+          <Row style={{ flex: 1, alignItems: 'center' }}>
             <FormImage
               src={asset.logoURI}
               size={18}
               style={{ marginTop: -2 }}
             />
             <Text style={{ marginLeft: 10, fontSize: 16 }}>{asset.symbol}</Text>
-          </Col>
-          <Col style={{ justifyContent: 'flex-end' }}>
+          </Row>
+          <Row style={{ alignItems: 'center' }}>
             {isLoggedIn && (
               <Text
                 style={{
@@ -159,7 +157,7 @@ const SelectAssetButton = ({
               </Text>
             )}
             <CaretDownFill style={{ fontSize: 8, marginTop: -2 }} />
-          </Col>
+          </Row>
         </Row>
       )}
     </StyledSelectAssetButton>

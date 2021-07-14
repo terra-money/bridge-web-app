@@ -2,18 +2,18 @@ import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 
-import { Text } from 'components'
+import { Text, View } from 'components'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import FormImage from 'components/FormImage'
 import btn_back from 'images/btn_back.png'
 
-const StyledContainer = styled.div`
-  display: flex;
+const StyledContainer = styled(View)`
+  position: relative;
+  align-items: center;
 `
 
 const StyledFormTitle = styled(Text)`
   margin-bottom: 42px;
-  width: 100%;
   height: 24px;
   font-size: 20px;
   font-weight: 500;
@@ -42,12 +42,12 @@ const FormTitle = ({
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
   const GoBackButton = (): ReactElement => {
     return (
-      <div
-        style={{ position: 'absolute', cursor: 'pointer' }}
+      <View
+        style={{ position: 'absolute', cursor: 'pointer', left: 0 }}
         onClick={onClickGoBackToSendInputButton}
       >
         <FormImage src={btn_back} size={18} />
-      </div>
+      </View>
     )
   }
   return (

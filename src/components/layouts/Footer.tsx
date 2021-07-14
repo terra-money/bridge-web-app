@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { STYLE } from 'consts'
 
-import { ExtLink, Text, Row, Col, Container } from 'components'
+import { ExtLink, Text, Row, View, Container } from 'components'
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -11,8 +11,7 @@ const StyledContainer = styled(Container)`
   align-items: center;
   justify-content: space-between;
   max-width: 640px;
-  margin-top: 28px;
-  margin-bottom: 28px;
+  padding: 28px 0;
   opacity: 0.5;
   @media ${STYLE.media.mobile} {
     width: auto;
@@ -43,27 +42,29 @@ const Footer = (): ReactElement => {
   ]
   return (
     <StyledContainer>
-      <Row>
-        <Col>
+      <Row style={{ justifyContent: 'space-between', flex: 1 }}>
+        <View>
           <StyledText>© Terraform Labs.</StyledText>
-        </Col>
-        {community.map(
-          ({ href, title }) =>
-            href && (
-              <Col key={title} style={{ flex: '0 0 8%' }}>
-                <ExtLink
-                  href={href}
-                  style={{
-                    paddingLeft: 30,
-                    fontSize: 13,
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  <StyledText>{title}</StyledText>
-                </ExtLink>
-              </Col>
-            )
-        )}
+        </View>
+        <Row>
+          {community.map(
+            ({ href, title }) =>
+              href && (
+                <View key={title}>
+                  <ExtLink
+                    href={href}
+                    style={{
+                      paddingLeft: 30,
+                      fontSize: 13,
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    <StyledText>{title}</StyledText>
+                  </ExtLink>
+                </View>
+              )
+          )}
+        </Row>
       </Row>
     </StyledContainer>
   )

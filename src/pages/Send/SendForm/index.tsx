@@ -12,7 +12,7 @@ import { BlockChainType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 
-import { Text, Col, Row } from 'components'
+import { Text, Row } from 'components'
 import FormLabel from 'components/FormLabel'
 import FormErrorMessage from 'components/FormErrorMessage'
 import FormLabelInput from 'components/FormLabelInput'
@@ -26,6 +26,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import AssetList from './AssetList'
+import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import WarningInfo from './WarningInfo'
 
@@ -80,25 +81,23 @@ const RefreshButton = (): ReactElement => {
   return (
     <>
       {isLoggedIn && (
-        <Col style={{ justifyContent: 'flex-end' }}>
-          <StyledRefreshButton
-            onClick={(): void => {
-              dbcRefresh.callback()
+        <StyledRefreshButton
+          onClick={(): void => {
+            dbcRefresh.callback()
+          }}
+          refreshing={refreshing}
+        >
+          <ArrowClockwise style={{ marginRight: 5 }} size={14} />
+          <Text
+            style={{
+              fontWeight: 500,
+              fontSize: 10,
+              color: COLOR.terraSky,
             }}
-            refreshing={refreshing}
           >
-            <ArrowClockwise style={{ marginRight: 5 }} size={14} />
-            <Text
-              style={{
-                fontWeight: 500,
-                fontSize: 10,
-                color: COLOR.terraSky,
-              }}
-            >
-              {refreshing ? 'REFRESHING...' : 'REFRESH'}
-            </Text>
-          </StyledRefreshButton>
-        </Col>
+            {refreshing ? 'REFRESHING...' : 'REFRESH'}
+          </Text>
+        </StyledRefreshButton>
       )}
     </>
   )
@@ -252,15 +251,14 @@ const SendForm = ({
   return (
     <StyledContainer>
       <StyledFormSection>
-        <Row>
-          <Col>
-            <FormLabel title={'Asset'} />
-          </Col>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <FormLabel title={'Asset'} />
           <RefreshButton />
         </Row>
-        <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
 
+        <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
         <FormErrorMessage errorMessage={validationResult.errorMessage?.asset} />
+        <CopyTokenAddress />
       </StyledFormSection>
 
       <StyledFormSection>

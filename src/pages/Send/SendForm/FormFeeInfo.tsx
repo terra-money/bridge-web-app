@@ -9,7 +9,7 @@ import { BlockChainType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
-import { Text, Col, Row } from 'components'
+import { Text, View, Row } from 'components'
 import FormLabel from 'components/FormLabel'
 import FormSelect from 'components/FormSelect'
 import FormErrorMessage from 'components/FormErrorMessage'
@@ -19,7 +19,7 @@ import useAsset from 'hooks/useAsset'
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
-const StyledFormSection = styled.div`
+const StyledFormSection = styled(View)`
   margin-bottom: 40px;
 `
 
@@ -127,7 +127,7 @@ const FormFeeInfo = ({
           <StyledFormSection>
             <FormLabel title={'TxFee'} />
 
-            <div
+            <View
               style={{
                 marginTop: 12,
                 borderTop: 'dashed 1px #444',
@@ -143,30 +143,38 @@ const FormFeeInfo = ({
                     paddingTop: 6,
                     paddingBottom: 6,
                     margin: 0,
+                    justifyContent: 'space-between',
                   }}
                 >
-                  <Col style={{ padding: 0 }}>
+                  <View>
                     <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
                       Tax
                     </Text>
-                  </Col>
-                  <Col style={{ padding: 0 }}>
+                  </View>
+                  <View>
                     <Text
                       style={{ justifyContent: 'flex-end', opacity: '0.8' }}
                     >
                       {formatBalance(tax.amount.toString())} {asset?.symbol}
                     </Text>
-                  </Col>
+                  </View>
                 </Row>
               )}
 
-              <Row style={{ paddingTop: 6, paddingBottom: 6, margin: 0 }}>
-                <Col style={{ padding: 0 }}>
+              <Row
+                style={{
+                  paddingTop: 6,
+                  paddingBottom: 6,
+                  margin: 0,
+                  justifyContent: 'space-between',
+                }}
+              >
+                <View>
                   <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
                     GAS Fee
                   </Text>
-                </Col>
-                <Col style={{ padding: 0 }}>
+                </View>
+                <Row style={{ alignItems: 'center' }}>
                   <Text
                     style={{
                       justifyContent: 'flex-end',
@@ -198,13 +206,13 @@ const FormFeeInfo = ({
                       borderRadius: 3,
                     }}
                   />
-                </Col>
+                </Row>
               </Row>
-              <div style={{ justifyContent: 'flex-end' }}>
+              <View style={{ justifyContent: 'flex-end' }}>
                 <FormErrorMessage
                   errorMessage={feeValidationResult.errorMessage}
                 />
-              </div>
+              </View>
 
               {NETWORK.isEtherBaseBlockChain(toBlockChain) && (
                 <>
@@ -213,34 +221,36 @@ const FormFeeInfo = ({
                       paddingTop: 6,
                       paddingBottom: 12,
                       margin: 0,
+                      justifyContent: 'space-between',
                     }}
                   >
-                    <Col style={{ padding: 0 }}>
+                    <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
                         Shuttle fee (estimated)
                       </Text>
-                    </Col>
-                    <Col style={{ padding: 0 }}>
+                    </View>
+                    <View>
                       <Text
                         style={{ justifyContent: 'flex-end', opacity: '0.8' }}
                       >
                         {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
                       </Text>
-                    </Col>
+                    </View>
                   </Row>
                   <Row
                     style={{
                       paddingTop: 12,
                       margin: 0,
                       borderTop: 'solid 1px #2e2e2e',
+                      justifyContent: 'space-between',
                     }}
                   >
-                    <Col style={{ padding: 0 }}>
+                    <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
                         Amount after Shuttle fee (estimated){' '}
                       </Text>
-                    </Col>
-                    <Col style={{ padding: 0, alignItems: 'flex-start' }}>
+                    </View>
+                    <View style={{ padding: 0, alignItems: 'flex-start' }}>
                       <Text
                         style={{
                           justifyContent: 'flex-end',
@@ -254,11 +264,11 @@ const FormFeeInfo = ({
                           asset?.symbol
                         }`}
                       </Text>
-                    </Col>
+                    </View>
                   </Row>
                 </>
               )}
-            </div>
+            </View>
           </StyledFormSection>
         )}
     </>

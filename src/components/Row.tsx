@@ -1,14 +1,8 @@
-import { ReactElement, HTMLAttributes } from 'react'
 import styled from 'styled-components'
+import View from './View'
 
-const StyledRow = styled.div`
-  display: flex;
+const StyledRow = styled(View)`
   flex-direction: row;
-  width: 100%;
 `
 
-const Row = (props: HTMLAttributes<HTMLDivElement>): ReactElement => {
-  return <StyledRow {...props} />
-}
-
-export default Row
+export default StyledRow

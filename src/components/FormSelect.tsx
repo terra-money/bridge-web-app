@@ -64,6 +64,7 @@ const StyledDropdownToggle = styled(StyledDropdown.Toggle)`
 `
 
 const StyledDropdownMenu = styled(StyledDropdown.Menu)`
+  z-index: 1;
   background-color: ${COLOR.darkGray};
   margin-top: 5;
   border: 0;
