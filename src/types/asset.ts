@@ -41,7 +41,7 @@ export type AssetType = {
 }
 
 export type WhiteListType = Record<
-  string, // symbol
+  string, // terra tokenAddress
   string // tokenAddress
 >
 

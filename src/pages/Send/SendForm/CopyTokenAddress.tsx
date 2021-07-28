@@ -5,7 +5,6 @@ import SendStore from 'store/SendStore'
 import { Text, View, Row, CopyTokenAddressButton } from 'components'
 import ContractStore from 'store/ContractStore'
 import { BlockChainType } from 'types/network'
-import { AssetSymbolEnum } from 'types/asset'
 
 const CopyTokenAddress = (): ReactElement => {
   const asset = useRecoilValue(SendStore.asset)
@@ -19,26 +18,26 @@ const CopyTokenAddress = (): ReactElement => {
 
   const getTokenAddress = (
     blockChain: BlockChainType,
-    symbol: AssetSymbolEnum
+    tokenAddress: string
   ): string => {
     switch (blockChain) {
       case BlockChainType.terra:
-        return terraWhiteList[symbol]
+        return terraWhiteList[tokenAddress]
       case BlockChainType.ethereum:
-        return ethWhiteList[symbol]
+        return ethWhiteList[tokenAddress]
       case BlockChainType.bsc:
-        return bscWhiteList[symbol]
+        return bscWhiteList[tokenAddress]
       case BlockChainType.hmy:
-        return hmyWhiteList[symbol]
+        return hmyWhiteList[tokenAddress]
     }
   }
 
   const fromTokenAddress = useMemo(
-    () => asset && getTokenAddress(fromBlockChain, asset.symbol),
+    () => asset && getTokenAddress(fromBlockChain, asset.tokenAddress),
     [asset]
   )
   const toTokenAddress = useMemo(
-    () => asset && getTokenAddress(toBlockChain, asset.symbol),
+    () => asset && getTokenAddress(toBlockChain, asset.tokenAddress),
     [asset]
   )
 
