@@ -1,11 +1,18 @@
 import { atom, selector } from 'recoil'
-import { AssetSymbolEnum, AssetType, WhiteListType } from 'types/asset'
+import { AssetType, WhiteListType } from 'types/asset'
 import NetworkStore from './NetworkStore'
 
 export type ShuttleUusdPairType = Record<
   string, //token address
   string // pair contract address
 >
+
+const initOnlyAssetList = atom<
+  Record<'mainnet' | 'testnet', AssetType[]> | undefined
+>({
+  key: 'initOnlyAssetList',
+  default: undefined,
+})
 
 const initOnlyShuttlePairs = atom<
   Record<'mainnet' | 'testnet', ShuttleUusdPairType> | undefined
@@ -42,42 +49,17 @@ const initOnlyHmyWhiteList = atom<
   default: undefined,
 })
 
-const assetList = atom<AssetType[]>({
+const assetList = selector<AssetType[]>({
   key: 'assetList',
-  default: [
-    {
-      symbol: AssetSymbolEnum.Luna,
-      name: 'Luna',
-      logoURI: 'https://assets.terra.money/icon/60/Luna.png',
-      tokenAddress: '',
-    },
-    {
-      symbol: AssetSymbolEnum.UST,
-      name: 'Terra USD',
-      logoURI: 'https://assets.terra.money/icon/60/UST.png',
-      tokenAddress: '',
-    },
-    {
-      symbol: AssetSymbolEnum.KRT,
-      name: 'Terra KRW',
-      logoURI: 'https://assets.terra.money/icon/60/KRT.png',
-      tokenAddress: '',
-    },
-    {
-      symbol: AssetSymbolEnum.SDT,
-      name: 'Terra SDR',
-      logoURI: 'https://assets.terra.money/icon/60/SDT.png',
-      tokenAddress: '',
-    },
-    {
-      symbol: AssetSymbolEnum.MNT,
-      name: 'Terra MNT',
-      logoURI: 'https://assets.terra.money/icon/60/MNT.png',
-      tokenAddress: '',
-    },
-  ],
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlyAssetList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return []
+  },
 })
-
 // if empty, service will block from start
 const shuttleUusdPairs = selector<ShuttleUusdPairType>({
   key: 'shuttleUusdPairs',
@@ -143,6 +125,7 @@ const hmyWhiteList = selector<WhiteListType>({
   },
 })
 export default {
+  initOnlyAssetList,
   initOnlyShuttlePairs,
   initOnlyTerraWhiteList,
   initOnlyEthWhiteList,

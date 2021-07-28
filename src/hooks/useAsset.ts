@@ -32,13 +32,6 @@ const useAsset = (): {
   const { getTerraBalances } = useTerraBalance()
   const { getEtherBalances } = useEtherBaseBalance()
 
-  const getTerraWhiteList = async (): Promise<WhiteListType> => {
-    return {
-      ...ASSET.nativeDenoms,
-      ...terraWhiteList,
-    }
-  }
-
   const setBalanceToAssetList = ({
     assetList,
     whiteList,
@@ -50,7 +43,7 @@ const useAsset = (): {
   }): AssetType[] => {
     if (_.some(balanceList)) {
       return _.map(assetList, (asset) => {
-        const tokenAddress = whiteList[asset.symbol]
+        const tokenAddress = whiteList[asset.tokenAddress]
 
         return {
           ...asset,
@@ -68,7 +61,7 @@ const useAsset = (): {
     let balanceList: BalanceListType = {}
     if (isLoggedIn) {
       if (fromBlockChain === BlockChainType.terra) {
-        whiteList = await getTerraWhiteList()
+        whiteList = terraWhiteList
         balanceList = await getTerraBalances({
           terraWhiteList: _.map(whiteList, (token) => ({ token })),
         })
@@ -102,7 +95,7 @@ const useAsset = (): {
       }
 
       const pairList = _.map(fromList, (item) => {
-        const disabled = _.isEmpty(toWhiteList[item.symbol])
+        const disabled = _.isEmpty(toWhiteList[item.tokenAddress])
         return {
           ...item,
           disabled,
