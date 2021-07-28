@@ -6,10 +6,6 @@ import * as Sentry from '@sentry/react'
 import ContractStore from 'store/ContractStore'
 import { AssetNativeDenomEnum, AssetSymbolEnum, AssetType } from 'types/asset'
 
-import ETH_WHITELIST from 'consts/shuttle_eth.json'
-import BSC_WHITELIST from 'consts/shuttle_bsc.json'
-import HMY_WHITELIST from 'consts/shuttle_hmy.json'
-
 const useApp = (): {
   initApp: () => Promise<void>
 } => {
@@ -138,16 +134,13 @@ const useApp = (): {
       )
       setTerraWhiteList(formattedTerraListJson)
 
-      //const ethListJson = await (await fetch(NETWORK.ETH_WHITELIST)).json()
-      const ethListJson = ETH_WHITELIST
+      const ethListJson = await (await fetch(NETWORK.ETH_WHITELIST)).json()
       setEthWhiteList(ethListJson)
 
-      //const bscListJson = await(await fetch(NETWORK.BSC_WHITELIST)).json()
-      const bscListJson = BSC_WHITELIST
+      const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
       setBscWhiteList(bscListJson)
 
-      //const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
-      const hmyListJson = HMY_WHITELIST
+      const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
       setHmyWhiteList(hmyListJson)
     } catch (error) {
       Sentry.captureException(error)
