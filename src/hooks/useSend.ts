@@ -29,6 +29,8 @@ import { WalletEnum } from 'types/wallet'
 
 import useEtherBaseContract from './useEtherBaseContract'
 import { useDebouncedCallback } from 'use-debounce/lib'
+import ContractStore from 'store/ContractStore'
+import useNetwork from './useNetwork'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -72,6 +74,8 @@ const useSend = (): UseSendType => {
   const terraExt = useRecoilValue(NetworkStore.terraExt)
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
 
+  const etherVaultTokenList = useRecoilValue(ContractStore.etherVaultTokenList)
+
   const [gasPricesFromServer, setGasPricesFromServer] = useRecoilState(
     SendStore.gasPrices
   )
@@ -89,6 +93,8 @@ const useSend = (): UseSendType => {
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
   const { getEtherBaseContract } = useEtherBaseContract()
+
+  const { fromTokenAddress } = useNetwork()
 
   const getGasPricesFromServer = useDebouncedCallback(
     async (fcd): Promise<void> => {
@@ -152,13 +158,13 @@ const useSend = (): UseSendType => {
 
         if (ownedAssetList.length > 0) {
           if (ownedAssetList.length === 1) {
-            feeDenoms = [ownedAssetList[0].tokenAddress as AssetNativeDenomEnum]
+            feeDenoms = [ownedAssetList[0].terraToken as AssetNativeDenomEnum]
           } else {
             const target = ownedAssetList.find(
-              (x) => x.tokenAddress !== asset?.tokenAddress
+              (x) => x.terraToken !== asset?.terraToken
             )
             if (target) {
-              feeDenoms = [target.tokenAddress as AssetNativeDenomEnum]
+              feeDenoms = [target.terraToken as AssetNativeDenomEnum]
             }
           }
         }
@@ -203,16 +209,30 @@ const useSend = (): UseSendType => {
           ? toAddress
           : terraLocal.shuttle[toBlockChain]
 
-      return UTIL.isNativeDenom(asset.tokenAddress)
+      if (
+        etherVaultTokenList[asset.terraToken] &&
+        toBlockChain === BlockChainType.ethereum
+      ) {
+        return [
+          new MsgExecuteContract(
+            loginUser.address,
+            asset.terraToken,
+            { burn: { amount: sendAmount } },
+            new Coins([])
+          ),
+        ]
+      }
+
+      return UTIL.isNativeDenom(asset.terraToken)
         ? [
             new MsgSend(loginUser.address, recipient, [
-              new Coin(asset.tokenAddress, sendAmount),
+              new Coin(asset.terraToken, sendAmount),
             ]),
           ]
         : [
             new MsgExecuteContract(
               loginUser.address,
-              asset.tokenAddress,
+              asset.terraToken,
               { transfer: { recipient, amount: sendAmount } },
               new Coins([])
             ),
@@ -328,33 +348,56 @@ const useSend = (): UseSendType => {
   }
 
   // Can't send tx between Ethereum <-> BSC
-  const submitRequestTxFromEtherBase = async (): Promise<RequestTxResultType> => {
-    if (fromBlockChain !== BlockChainType.terra && asset?.tokenAddress) {
-      const contract = getEtherBaseContract({ token: asset.tokenAddress })
+  const submitRequestTxFromEtherBase =
+    async (): Promise<RequestTxResultType> => {
+      if (
+        fromBlockChain !== BlockChainType.terra &&
+        asset &&
+        fromTokenAddress
+      ) {
+        const contract = getEtherBaseContract({ token: fromTokenAddress })
 
-      if (contract && loginUser.provider) {
-        const signer = loginUser.provider.getSigner()
-        const withSigner = contract.connect(signer)
+        if (contract && loginUser.provider) {
+          const signer = loginUser.provider.getSigner()
+          const withSigner = contract.connect(signer)
 
-        const isTerra = toBlockChain === BlockChainType.terra
-        const decoded = decodeTerraAddressOnEtherBase(toAddress)
-        try {
-          const tx = isTerra
-            ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
-            : withSigner.transfer(toAddress, sendAmount)
+          const isTerra = toBlockChain === BlockChainType.terra
+          const decoded = decodeTerraAddressOnEtherBase(toAddress)
+          try {
+            const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
-          const { hash } = await tx
-          return { success: true, hash }
-        } catch (error) {
-          return handleTxErrorFromEtherBase(error)
+            if (etherVaultToken && fromBlockChain === BlockChainType.ethereum) {
+              await withSigner.approve(etherVaultToken.vault, sendAmount)
+
+              const vaultContract = getEtherBaseContract({
+                token: etherVaultToken.vault,
+              })!
+              const vaultContractSigner = vaultContract.connect(signer)
+
+              const tx = isTerra
+                ? vaultContractSigner?.burn(sendAmount, decoded.padEnd(66, '0'))
+                : withSigner.transfer(toAddress, sendAmount)
+
+              const { hash } = await tx
+              return { success: true, hash }
+            } else {
+              const tx = isTerra
+                ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
+                : withSigner.transfer(toAddress, sendAmount)
+
+              const { hash } = await tx
+              return { success: true, hash }
+            }
+          } catch (error) {
+            return handleTxErrorFromEtherBase(error)
+          }
         }
       }
-    }
 
-    return {
-      success: false,
+      return {
+        success: false,
+      }
     }
-  }
 
   const submitRequestTx = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain === BlockChainType.terra) {
@@ -369,7 +412,7 @@ const useSend = (): UseSendType => {
   }: {
     hash: string
   }): Promise<EtherBaseReceiptResultType | undefined> => {
-    if (fromBlockChain !== BlockChainType.terra && asset?.tokenAddress) {
+    if (fromBlockChain !== BlockChainType.terra && asset?.terraToken) {
       return loginUser.provider?.waitForTransaction(hash)
     }
   }

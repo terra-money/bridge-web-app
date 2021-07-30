@@ -168,7 +168,7 @@ const SendForm = ({
   const onClickMaxButton = async (): Promise<void> => {
     const assetAmount = new BigNumber(asset?.balance || 0)
     const terraTax = await getTerraSendTax({
-      denom: asset?.tokenAddress as AssetNativeDenomEnum,
+      denom: asset?.terraToken as AssetNativeDenomEnum,
       feeDenom,
       amount: assetAmount.toString(10),
     })
@@ -183,7 +183,7 @@ const SendForm = ({
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {
         getTerraShuttleFee({
-          denom: asset?.tokenAddress || '',
+          denom: asset?.terraToken || '',
           amount: sendAmount,
         }).then((shuttleFee) => {
           setShuttleFee(shuttleFee)
@@ -210,7 +210,7 @@ const SendForm = ({
       feeDenom &&
       toAddress
 
-    if (asset?.tokenAddress && ableToGetFeeInfo) {
+    if (asset?.terraToken && ableToGetFeeInfo) {
       if (sendDataResult.isValid) {
         // get terra Send Fee Info
         const terraFeeList = await getTerraFeeList()
@@ -218,7 +218,7 @@ const SendForm = ({
       }
 
       const terraTax = await getTerraSendTax({
-        denom: asset?.tokenAddress as AssetNativeDenomEnum,
+        denom: asset?.terraToken as AssetNativeDenomEnum,
         feeDenom,
         amount,
       })
@@ -257,7 +257,10 @@ const SendForm = ({
         </Row>
 
         <AssetList {...{ selectedAsset: asset, onChangeAmount }} />
-        <FormErrorMessage errorMessage={validationResult.errorMessage?.asset} style={{marginBottom:0}} />
+        <FormErrorMessage
+          errorMessage={validationResult.errorMessage?.asset}
+          style={{ marginBottom: 0 }}
+        />
         <CopyTokenAddress />
       </StyledFormSection>
 

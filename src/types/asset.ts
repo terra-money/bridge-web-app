@@ -12,30 +12,14 @@ export enum AssetSymbolEnum {
   KRT = 'KRT',
   SDT = 'SDT',
   MNT = 'MNT',
-  ANC = 'ANC',
-  MIR = 'MIR',
-  mAAPL = 'mAAPL',
-  mGOOGL = 'mGOOGL',
-  mTSLA = 'mTSLA',
-  mNFLX = 'mNFLX',
-  mQQQ = 'mQQQ',
-  mTWTR = 'mTWTR',
-  mMSFT = 'mMSFT',
-  mAMZN = 'mAMZN',
-  mBABA = 'mBABA',
-  mIAU = 'mIAU',
-  mSLV = 'mSLV',
-  mUSO = 'mUSO',
-  mVIXY = 'mVIXY',
-  mFB = 'mFB',
-  mCOIN = 'mCOIN',
+  bETH = 'bETH',
 }
 
 export type AssetType = {
   symbol: AssetSymbolEnum
   name: string
   logoURI: string
-  tokenAddress: string
+  terraToken: string
   balance?: string
   disabled?: boolean
 }
