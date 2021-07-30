@@ -1,6 +1,10 @@
+import { NETWORK } from 'consts'
 import { atom, selector } from 'recoil'
+import _ from 'lodash'
+
 import { AssetType, WhiteListType } from 'types/asset'
 import NetworkStore from './NetworkStore'
+import BigNumber from 'bignumber.js'
 
 export type ShuttleUusdPairType = Record<
   string, //token address
@@ -92,10 +96,25 @@ const ethWhiteList = selector<WhiteListType>({
   get: ({ get }) => {
     const isTestnet = get(NetworkStore.isTestnet)
     const fetchedData = get(initOnlyEthWhiteList)
-    if (fetchedData) {
-      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    const ethVaultTokenList: Record<
+      string,
+      {
+        ether: string
+        vault: string
+      }
+    > = NETWORK.ETH_VAULT_TOKEN_LIST[isTestnet ? 'testnet' : 'mainnet']
+
+    const result = fetchedData
+      ? _.clone(fetchedData[isTestnet ? 'testnet' : 'mainnet'])
+      : {}
+
+    if (_.some(ethVaultTokenList)) {
+      _.forEach(ethVaultTokenList, (val, key) => {
+        result[key] = val.ether
+      })
     }
-    return {}
+
+    return result
   },
 })
 
@@ -124,6 +143,24 @@ const hmyWhiteList = selector<WhiteListType>({
     return {}
   },
 })
+
+const etherVaultTokenList = selector<
+  Record<
+    string,
+    { ether: string; vault: string; getPricePerUst: () => Promise<BigNumber> }
+  >
+>({
+  key: 'etherVaultTokenList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = NETWORK.ETH_VAULT_TOKEN_LIST
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
 export default {
   initOnlyAssetList,
   initOnlyShuttlePairs,
@@ -138,4 +175,5 @@ export default {
   ethWhiteList,
   bscWhiteList,
   hmyWhiteList,
+  etherVaultTokenList,
 }

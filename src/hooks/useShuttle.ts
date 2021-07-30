@@ -9,6 +9,8 @@ import { AssetNativeDenomEnum } from 'types/asset'
 import ContractStore, { ShuttleUusdPairType } from 'store/ContractStore'
 
 import useMantle from './useMantle'
+import SendStore from 'store/SendStore'
+import { BlockChainType } from 'types/network'
 
 const OracleDenomsExchangeRates = `
 query {
@@ -69,6 +71,9 @@ const useShuttle = (): {
 } => {
   const { fetchQuery } = useMantle()
   const shuttleUusdPairs = useRecoilValue(ContractStore.shuttleUusdPairs)
+  const etherVaultTokenList = useRecoilValue(ContractStore.etherVaultTokenList)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
+  const asset = useRecoilValue(SendStore.asset)
 
   const getTerraDenomShuttleFee = async ({
     denom,
@@ -118,7 +123,7 @@ const useShuttle = (): {
     return new BigNumber(0)
   }
 
-  const getTerraMAssetShuttleFee = async ({
+  const getTerraCW20TokenShuttleFee = async ({
     contractAddress,
     amount,
   }: {
@@ -127,6 +132,20 @@ const useShuttle = (): {
   }): Promise<BigNumber> => {
     const query = getTerraMAssetPairContract(shuttleUusdPairs)
     const zeroDotOnePerAmount = amount.times(0.001)
+
+    const etherVaultToken = etherVaultTokenList[asset?.terraToken || '']
+    if (etherVaultToken && toBlockChain === BlockChainType.ethereum) {
+      const tokenPrice = await etherVaultToken.getPricePerUst()
+      const minimumPrice = UTIL.toBignumber('1')
+        .div(tokenPrice)
+        .multipliedBy(ASSET.TERRA_DECIMAL)
+        .dp(0)
+
+      return tokenPrice.isEqualTo(0) ||
+        zeroDotOnePerAmount.isGreaterThan(minimumPrice)
+        ? zeroDotOnePerAmount
+        : minimumPrice
+    }
 
     const fetchResult: Record<
       string,
@@ -173,7 +192,7 @@ const useShuttle = (): {
   }): Promise<BigNumber> => {
     return UTIL.isNativeDenom(denom)
       ? getTerraDenomShuttleFee({ denom, amount })
-      : getTerraMAssetShuttleFee({ contractAddress: denom, amount })
+      : getTerraCW20TokenShuttleFee({ contractAddress: denom, amount })
   }
 
   return {

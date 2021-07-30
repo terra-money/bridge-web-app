@@ -79,7 +79,7 @@ const FormFeeInfo = ({
       let isDisabled = true
       if (fee) {
         const ownedAmount = UTIL.toBignumber(
-          assetList.find((x) => x.tokenAddress === denom)?.balance
+          assetList.find((x) => x.terraToken === denom)?.balance
         )
 
         const feeAmount = UTIL.toBignumber(

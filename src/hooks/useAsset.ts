@@ -42,17 +42,23 @@ const useAsset = (): {
     balanceList: BalanceListType
   }): AssetType[] => {
     if (_.some(balanceList)) {
-      return _.map(assetList, (asset) => {
-        const tokenAddress = whiteList[asset.tokenAddress]
-
-        return {
-          ...asset,
-          tokenAddress,
-          balance: balanceList[tokenAddress],
-        }
-      }).filter((x) => x.tokenAddress)
+      return _.reduce<AssetType, AssetType[]>(
+        assetList,
+        (arr, asset) => {
+          const tokenAddress = whiteList[asset.terraToken]
+          return tokenAddress
+            ? [
+                ...arr,
+                {
+                  ...asset,
+                  balance: balanceList[tokenAddress],
+                },
+              ]
+            : arr
+        },
+        []
+      )
     }
-
     return assetList
   }
 
@@ -95,7 +101,7 @@ const useAsset = (): {
       }
 
       const pairList = _.map(fromList, (item) => {
-        const disabled = _.isEmpty(toWhiteList[item.tokenAddress])
+        const disabled = _.isEmpty(toWhiteList[item.terraToken])
         return {
           ...item,
           disabled,
@@ -113,11 +119,12 @@ const useAsset = (): {
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
       return fromBlockChain === BlockChainType.terra
-        ? bnBalance.div(ASSET.TERRA_DECIMAL).toString(10)
+        ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
             .integerValue(BigNumber.ROUND_DOWN)
             .div(ASSET.TERRA_DECIMAL)
+            .dp(6)
             .toString(10)
     }
 

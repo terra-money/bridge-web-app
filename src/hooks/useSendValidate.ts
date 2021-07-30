@@ -36,11 +36,11 @@ const useSendValidate = (): {
     if (fromBlockChain === BlockChainType.terra) {
       const sendAmount = new BigNumber(amount)
       const selectedAssetAmount = new BigNumber(
-        assetList.find((x) => x.tokenAddress === asset?.tokenAddress)
-          ?.balance || '0'
+        assetList.find((x) => x.terraToken === asset?.terraToken)?.balance ||
+          '0'
       )
       const gasFeeIfSameDenomWithSendAsset =
-        asset?.tokenAddress === feeDenom ? gasFee : new BigNumber(0)
+        asset?.terraToken === feeDenom ? gasFee : new BigNumber(0)
       const taxAmount = new BigNumber(tax?.amount.toString() || 0)
 
       if (
@@ -122,8 +122,7 @@ const useSendValidate = (): {
     }
 
     const selectedAssetAmount = new BigNumber(
-      assetList.find((x) => x.tokenAddress === asset?.tokenAddress)?.balance ||
-        '0'
+      assetList.find((x) => x.terraToken === asset?.terraToken)?.balance || '0'
     )
     if (selectedAssetAmount.isLessThanOrEqualTo(0)) {
       return {
