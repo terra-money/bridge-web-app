@@ -367,7 +367,14 @@ const useSend = (): UseSendType => {
             const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
             if (etherVaultToken && fromBlockChain === BlockChainType.ethereum) {
-              await withSigner.approve(etherVaultToken.vault, sendAmount)
+              const approveResult = await withSigner.approve(
+                etherVaultToken.vault,
+                sendAmount
+              )
+
+              await waitForEtherBaseTransaction({
+                hash: approveResult.hash,
+              })
 
               const vaultContract = getEtherBaseContract({
                 token: etherVaultToken.vault,
