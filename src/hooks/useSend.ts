@@ -31,6 +31,8 @@ import useEtherBaseContract from './useEtherBaseContract'
 import { useDebouncedCallback } from 'use-debounce/lib'
 import ContractStore from 'store/ContractStore'
 import useNetwork from './useNetwork'
+import { useQuery } from 'react-query'
+import QueryKeysEnum from 'types/queryKeys'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -38,7 +40,17 @@ export type TerraSendFeeInfo = {
   feeOfGas: BigNumber
 }
 
+type AllowanceOfSelectedAssetType =
+  | {
+      isNeedApprove: true
+      allowance: BigNumber
+    }
+  | {
+      isNeedApprove: false
+    }
+
 type UseSendType = {
+  allowanceOfSelectedAsset: AllowanceOfSelectedAssetType
   initSendData: () => void
   submitRequestTx: () => Promise<RequestTxResultType>
   getTerraSendTax: (props: {
@@ -56,6 +68,7 @@ type UseSendType = {
   waitForEtherBaseTransaction: (props: {
     hash: string
   }) => Promise<EtherBaseReceiptResultType | undefined>
+  approveTxFromEtherBase: () => Promise<RequestTxResultType>
 }
 
 /* bech32 */
@@ -95,6 +108,49 @@ const useSend = (): UseSendType => {
   const { getEtherBaseContract } = useEtherBaseContract()
 
   const { fromTokenAddress } = useNetwork()
+
+  const {
+    data: allowanceOfSelectedAsset = {
+      isNeedApprove: false,
+    },
+    refetch: refetchAllowanceOfSelectedAsset,
+  } = useQuery<AllowanceOfSelectedAssetType>(
+    [
+      QueryKeysEnum.allowanceOfSelectedAsset,
+      fromBlockChain,
+      asset,
+      fromTokenAddress,
+    ],
+    async (): Promise<AllowanceOfSelectedAssetType> => {
+      if (
+        fromBlockChain !== BlockChainType.terra &&
+        asset &&
+        fromTokenAddress
+      ) {
+        const contract = getEtherBaseContract({ token: fromTokenAddress })
+
+        if (contract && loginUser.provider) {
+          const signer = loginUser.provider.getSigner()
+          const withSigner = contract.connect(signer)
+          const etherVaultToken = etherVaultTokenList[asset.terraToken]
+          if (etherVaultToken) {
+            const res: BigNumber = await withSigner.allowance(
+              loginUser.address,
+              etherVaultToken.vault
+            )
+
+            return {
+              isNeedApprove: true,
+              allowance: UTIL.toBignumber(res.toString()),
+            }
+          }
+        }
+      }
+      return {
+        isNeedApprove: false,
+      }
+    }
+  )
 
   const getGasPricesFromServer = useDebouncedCallback(
     async (fcd): Promise<void> => {
@@ -329,21 +385,49 @@ const useSend = (): UseSendType => {
 
   // function for 'submitRequestTxFromEtherBase'
   const handleTxErrorFromEtherBase = (error: any): RequestTxResultType => {
+    let errorMessage = _.toString(error)
     if (loginUser.walletType === WalletEnum.Binance) {
-      return {
-        success: false,
-        errorMessage: _.toString(error.error),
-      }
+      errorMessage = _.toString(error.error)
     } else if (loginUser.walletType === WalletEnum.MetaMask) {
-      return {
-        success: false,
-        errorMessage: error?.message,
+      errorMessage = error?.message
+    }
+
+    return {
+      success: false,
+      errorMessage,
+    }
+  }
+
+  const approveTxFromEtherBase = async (): Promise<RequestTxResultType> => {
+    if (fromBlockChain !== BlockChainType.terra && asset && fromTokenAddress) {
+      const contract = getEtherBaseContract({ token: fromTokenAddress })
+
+      if (contract && loginUser.provider) {
+        const signer = loginUser.provider.getSigner()
+        const withSigner = contract.connect(signer)
+
+        try {
+          const etherVaultToken = etherVaultTokenList[asset.terraToken]
+
+          const { hash } = await withSigner.approve(
+            etherVaultToken.vault,
+            sendAmount
+          )
+
+          await waitForEtherBaseTransaction({
+            hash,
+          })
+          refetchAllowanceOfSelectedAsset()
+
+          return { success: true, hash }
+        } catch (error) {
+          return handleTxErrorFromEtherBase(error)
+        }
       }
     }
 
     return {
       success: false,
-      errorMessage: _.toString(error),
     }
   }
 
@@ -367,15 +451,6 @@ const useSend = (): UseSendType => {
             const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
             if (etherVaultToken && fromBlockChain === BlockChainType.ethereum) {
-              const approveResult = await withSigner.approve(
-                etherVaultToken.vault,
-                sendAmount
-              )
-
-              await waitForEtherBaseTransaction({
-                hash: approveResult.hash,
-              })
-
               const vaultContract = getEtherBaseContract({
                 token: etherVaultToken.vault,
               })!
@@ -425,12 +500,14 @@ const useSend = (): UseSendType => {
   }
 
   return {
+    allowanceOfSelectedAsset,
     initSendData,
     submitRequestTx,
     getTerraSendTax,
     getTerraFeeList,
     getTerraMsgs,
     waitForEtherBaseTransaction,
+    approveTxFromEtherBase,
   }
 }
 

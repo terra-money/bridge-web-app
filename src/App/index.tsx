@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { BrowserRouter } from 'react-router-dom'
 import routes from 'routes'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 import Header from 'components/layouts/Header'
 import Footer from 'components/layouts/Footer'
@@ -13,6 +14,8 @@ import NetworkErrorScreen from './NetworkErrorScreen'
 
 import useApp from './useApp'
 import useReloadOnNetworkChange from './useReloadOnNetworkChange'
+
+const queryClient = new QueryClient()
 
 const StyledContainer = styled.div`
   color: white;
@@ -31,22 +34,24 @@ const App = (): ReactElement => {
   }, [])
 
   return (
-    <BrowserRouter>
-      {initComplete && (
-        <>
-          <StyledContainer>
-            <Header />
-            {routes()}
-            <Footer />
-          </StyledContainer>
-          <SelectWalletModal />
-          <TerraExtensionDownModal />
-          <BscExtensionDownModal />
-          <NotSupportNetworkModal />
-          <NetworkErrorScreen />
-        </>
-      )}
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        {initComplete && (
+          <>
+            <StyledContainer>
+              <Header />
+              {routes()}
+              <Footer />
+            </StyledContainer>
+            <SelectWalletModal />
+            <TerraExtensionDownModal />
+            <BscExtensionDownModal />
+            <NotSupportNetworkModal />
+            <NetworkErrorScreen />
+          </>
+        )}
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 
