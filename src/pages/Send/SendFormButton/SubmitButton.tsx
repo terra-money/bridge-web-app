@@ -1,51 +1,32 @@
 import { ReactElement, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
+import { CircularProgress } from '@material-ui/core'
 
 import { COLOR } from 'consts'
 import { BlockChainType } from 'types/network'
-import { RequestTxResultType, ValidateItemResultType } from 'types/send'
+import { RequestTxResultType } from 'types/send'
 
 import { Button } from 'components'
-import useSelectWallet from 'hooks/useSelectWallet'
-
-import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import FormErrorMessage from 'components/FormErrorMessage'
 import useSend from 'hooks/useSend'
 import useTerraTxInfo from 'hooks/useTerraTxInfo'
-import { CircularProgress } from '@material-ui/core'
 
-const SendFormButton = ({
-  feeValidationResult,
-}: {
-  feeValidationResult: ValidateItemResultType
-}): ReactElement => {
-  const selectWallet = useSelectWallet()
-  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+const SubmitButton = (): ReactElement => {
   const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
 
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const validationResult = useRecoilValue(SendStore.validationResult)
   const setRequestTxResult = useSetRecoilState(SendProcessStore.requestTxResult)
   const setWaitForReceiptError = useSetRecoilState(
     SendProcessStore.waitForReceiptError
   )
 
   const [errorMessage, setErrorMessage] = useState('')
+
   const { submitRequestTx, waitForEtherBaseTransaction } = useSend()
   const { getTxInfos } = useTerraTxInfo()
-
-  const ableButton =
-    fromBlockChain === BlockChainType.terra
-      ? validationResult.isValid && feeValidationResult.isValid
-      : validationResult.isValid
-
-  const onClickSendNextButton = async (): Promise<void> => {
-    setErrorMessage('')
-    setStatus(ProcessStatus.Confirm)
-  }
 
   const loading = [ProcessStatus.Pending, ProcessStatus.Submit].includes(status)
 
@@ -99,37 +80,25 @@ const SendFormButton = ({
     return waitForReceipt({ submitResult })
   }
 
-  const NextButton = (): ReactElement => {
-    const IfLoadingText = (): ReactElement => {
-      return loading ? (
-        <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
-      ) : (
-        <>Confirm</>
-      )
-    }
-
-    return status === ProcessStatus.Input ? (
-      <Button onClick={onClickSendNextButton} disabled={!ableButton}>
-        Next
-      </Button>
+  const IfLoadingText = (): ReactElement => {
+    return loading ? (
+      <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
     ) : (
-      <>
-        <Button onClick={onClickSubmitButton} disabled={loading}>
-          <IfLoadingText />
-        </Button>
-        <FormErrorMessage
-          errorMessage={errorMessage}
-          style={{ display: 'block', textAlign: 'center', marginTop: 10 }}
-        />
-      </>
+      <>Confirm</>
     )
   }
 
-  return isLoggedIn ? (
-    <NextButton />
-  ) : (
-    <Button onClick={selectWallet.open}>Connect Wallet</Button>
+  return (
+    <>
+      <Button onClick={onClickSubmitButton} disabled={loading}>
+        <IfLoadingText />
+      </Button>
+      <FormErrorMessage
+        errorMessage={errorMessage}
+        style={{ display: 'block', textAlign: 'center', marginTop: 10 }}
+      />
+    </>
   )
 }
 
-export default SendFormButton
+export default SubmitButton
