@@ -1,12 +1,12 @@
-import React, { ReactElement } from 'react'
-import styled from 'styled-components'
+import React, { ReactElement, useState } from 'react'
+import styled, { keyframes } from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import { Dropdown } from 'react-bootstrap'
 import { isBrowser, isMobile } from 'react-device-detect'
+import ClickAwayListener from 'react-click-away-listener'
 
 import { COLOR, UTIL, STYLE } from 'consts'
 
-import { Container, Text } from 'components'
+import { Container, Text, View, Row } from 'components'
 
 import useAuth from 'hooks/useAuth'
 import useSelectWallet from 'hooks/useSelectWallet'
@@ -26,7 +26,7 @@ const StyledNavContainer = styled(Container)`
   max-width: 640px;
 `
 
-const StyledNav = styled.div`
+const StyledNav = styled(View)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -60,7 +60,7 @@ const StyledAddress = styled(Text)`
   letter-spacing: -0.19px;
 `
 
-const StyledConnectWallet = styled.div`
+const StyledConnectWallet = styled(View)`
   border-radius: 30px;
   background-color: ${COLOR.primary};
   font-size: 13px;
@@ -71,8 +71,7 @@ const StyledConnectWallet = styled.div`
     opacity: 0.8;
   }
 `
-const StyledLoginUserInfoBox = styled.div`
-  display: flex;
+const StyledLoginUserInfoBox = styled(Row)`
   align-items: center;
   border-radius: ${STYLE.css.borderRadius};
   border: solid 1px ${COLOR.terraSky};
@@ -84,17 +83,38 @@ const StyledLoginUserInfoBox = styled.div`
   }
 `
 
-const StyledDropdown = styled(Dropdown)`
+const StyledDropdown = styled(View)`
   position: relative;
 `
 
-const StyledDropdownMenu = styled(Dropdown.Menu)`
-  transition-duration: 300ms;
+const dropdownKeyframes = keyframes`
+  0% {
+    opacity: 0;
+    margin-bottom: 0;
+  }
+  
+  100% {
+    margin-bottom: -40px;
+    opacity: 1;
+  }
+`
+
+const StyledDropdownMenu = styled(View)`
+  position: absolute;
+  cursor: pointer;
+  bottom: 0;
+  height: 40px;
+  margin-bottom: -40px;
+  justify-content: center;
+  animation: ${dropdownKeyframes} 0.3s ease;
   background-color: #484848;
   border-radius: ${STYLE.css.borderRadius};
   width: 100%;
   padding: 0;
   text-align: center;
+  :hover {
+    opacity: 0.8;
+  }
   a {
     display: block;
     color: ${COLOR.white};
@@ -124,7 +144,7 @@ const StyledConnectedText = styled(Text)`
   color: ${COLOR.terraSky};
 `
 
-const StyledTestnetLabel = styled.div`
+const StyledTestnetLabel = styled(View)`
   position: absolute;
   top: 0;
   right: 0;
@@ -133,26 +153,18 @@ const StyledTestnetLabel = styled.div`
 const LoginUserInfo = (): ReactElement => {
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const loginUser = useRecoilValue(AuthStore.loginUser)
+  const [isOpen, setIsOpen] = useState(false)
 
   const { logout } = useAuth()
-  const CustomToggle = React.forwardRef((props: any, ref: any) => {
-    const { children, onClick } = props
-    return (
-      <span
-        ref={ref}
-        onClick={(e): void => {
-          e.preventDefault()
-          onClick(e)
-        }}
-      >
-        {children}
-      </span>
-    )
-  })
+
   return (
-    <StyledDropdown>
-      <Dropdown.Toggle as={CustomToggle}>
-        <StyledLoginUserInfoBox>
+    <ClickAwayListener
+      onClickAway={(): void => {
+        setIsOpen(false)
+      }}
+    >
+      <StyledDropdown>
+        <StyledLoginUserInfoBox onClick={(): void => setIsOpen(!isOpen)}>
           <WalletLogo
             style={{ marginRight: 5 }}
             walleEnum={loginUser.walletType}
@@ -162,7 +174,7 @@ const LoginUserInfo = (): ReactElement => {
 
           {isBrowser && (
             <>
-              <div
+              <View
                 style={{
                   display: 'inline-block',
                   width: 1,
@@ -172,7 +184,7 @@ const LoginUserInfo = (): ReactElement => {
                   margin: '0 8px',
                 }}
               />
-              <div
+              <View
                 style={{
                   display: 'inline-block',
                   textAlign: 'center',
@@ -187,16 +199,18 @@ const LoginUserInfo = (): ReactElement => {
                 ) : (
                   <StyledConnectedText>Connected</StyledConnectedText>
                 )}
-              </div>
+              </View>
             </>
           )}
         </StyledLoginUserInfoBox>
-      </Dropdown.Toggle>
 
-      <StyledDropdownMenu>
-        <Dropdown.Item onClick={logout}>Disconnect</Dropdown.Item>
-      </StyledDropdownMenu>
-    </StyledDropdown>
+        {isOpen && (
+          <StyledDropdownMenu>
+            <View onClick={logout}>Disconnect</View>
+          </StyledDropdownMenu>
+        )}
+      </StyledDropdown>
+    </ClickAwayListener>
   )
 }
 
@@ -215,11 +229,11 @@ const Header = (): ReactElement => {
           {isLoggedIn ? (
             <LoginUserInfo />
           ) : (
-            <div>
+            <View>
               <StyledConnectWallet onClick={selectWallet.open}>
                 Connect Wallet
               </StyledConnectWallet>
-            </div>
+            </View>
           )}
         </StyledNav>
       </StyledNavContainer>
