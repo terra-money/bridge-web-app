@@ -75,12 +75,12 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
   },
 }
 
-const SHUTTLE_PAIRS = 'https://assets.terra.dev/cw20/pairs.json'
+const SHUTTLE_PAIRS = 'assets/cw20/pairs.json'
 
-const TERRA_WHITELIST = 'https://assets.terra.dev/cw20/tokens.json'
-const ETH_WHITELIST = 'https://assets.terra.dev/shuttle/eth.json'
-const BSC_WHITELIST = 'https://assets.terra.dev/shuttle/bsc.json'
-const HMY_WHITELIST = 'https://assets.terra.dev/shuttle/hmy.json'
+const TERRA_WHITELIST = 'assets/cw20/tokens.json'
+const ETH_WHITELIST = 'assets/shuttle/eth.json'
+const BSC_WHITELIST = 'assets/shuttle/bsc.json'
+const HMY_WHITELIST = 'assets/shuttle/hmy.json'
 
 const getEtherPricePerUst = async (): Promise<BigNumber> => {
   try {

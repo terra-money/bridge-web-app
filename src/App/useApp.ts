@@ -1,40 +1,52 @@
-import { NETWORK } from 'consts'
 import { useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 import * as Sentry from '@sentry/react'
 
+import SHUTTLE_PAIRS from 'assets/cw20/pairs.json'
+
+import TERRA_WHITELIST from 'assets/cw20/tokens.json'
+import ETH_WHITELIST from 'assets/shuttle/eth.json'
+import BSC_WHITELIST from 'assets/shuttle/bsc.json'
+import HMY_WHITELIST from 'assets/shuttle/hmy.json'
+
 import ContractStore from 'store/ContractStore'
 import { AssetNativeDenomEnum, AssetSymbolEnum, AssetType } from 'types/asset'
+
+import LunaPng from 'assets/60/Luna.png'
+import USTPng from 'assets/60/UST.png'
+import KRTPng from 'assets/60/KRT.png'
+import SDTPng from 'assets/60/SDT.png'
+import MNTPng from 'assets/60/MNT.png'
 
 const defaultList: AssetType[] = [
   {
     symbol: AssetSymbolEnum.Luna,
     name: 'Luna',
-    logoURI: 'https://assets.terra.dev/icon/60/Luna.png',
+    logoURI: LunaPng,
     terraToken: AssetNativeDenomEnum.uluna,
   },
   {
     symbol: AssetSymbolEnum.UST,
     name: 'Terra USD',
-    logoURI: 'https://assets.terra.dev/icon/60/UST.png',
+    logoURI: USTPng,
     terraToken: AssetNativeDenomEnum.uusd,
   },
   {
     symbol: AssetSymbolEnum.KRT,
     name: 'Terra KRW',
-    logoURI: 'https://assets.terra.dev/icon/60/KRT.png',
+    logoURI: KRTPng,
     terraToken: AssetNativeDenomEnum.ukrw,
   },
   {
     symbol: AssetSymbolEnum.SDT,
     name: 'Terra SDR',
-    logoURI: 'https://assets.terra.dev/icon/60/SDT.png',
+    logoURI: SDTPng,
     terraToken: AssetNativeDenomEnum.usdr,
   },
   {
     symbol: AssetSymbolEnum.MNT,
     name: 'Terra MNT',
-    logoURI: 'https://assets.terra.dev/icon/60/MNT.png',
+    logoURI: MNTPng,
     terraToken: AssetNativeDenomEnum.umnt,
   },
 ]
@@ -69,9 +81,12 @@ const useApp = (): {
 
   const getContractAddress = async (): Promise<void> => {
     try {
-      const fetchPairJson: ShuttlePairType = await (
-        await fetch(NETWORK.SHUTTLE_PAIRS)
-      ).json()
+      // const fetchPairJson: ShuttlePairType = await (
+      //   await fetch(NETWORK.SHUTTLE_PAIRS)
+      // ).json()
+      console.log(SHUTTLE_PAIRS)
+
+      const fetchPairJson: ShuttlePairType = SHUTTLE_PAIRS
       const formattedPairJson = _.reduce<
         ShuttlePairType,
         Record<string, Record<string, string>>
@@ -96,9 +111,11 @@ const useApp = (): {
       )
       setShuttlePairs(formattedPairJson)
 
-      const terraListJson: TerraWhiteListType = await (
-        await fetch(NETWORK.TERRA_WHITELIST)
-      ).json()
+      // const terraListJson: TerraWhiteListType = await (
+      //   await fetch(NETWORK.TERRA_WHITELIST)
+      // ).json()
+
+      const terraListJson = TERRA_WHITELIST
       const assetList = _.reduce<
         TerraWhiteListType,
         Record<string, AssetType[]>
@@ -148,15 +165,19 @@ const useApp = (): {
       )
       setTerraWhiteList(formattedTerraListJson)
 
-      const ethListJson = await (await fetch(NETWORK.ETH_WHITELIST)).json()
+      //const ethListJson = await (await fetch(NETWORK.ETH_WHITELIST)).json()
+      const ethListJson = ETH_WHITELIST
       setEthWhiteList(ethListJson)
 
-      const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
+      //const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
+      const bscListJson = BSC_WHITELIST
       setBscWhiteList(bscListJson)
 
-      const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
+      //const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
+      const hmyListJson = HMY_WHITELIST
       setHmyWhiteList(hmyListJson)
     } catch (error) {
+      debugger
       Sentry.captureException(error)
     }
   }
