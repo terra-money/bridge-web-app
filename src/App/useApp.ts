@@ -10,31 +10,31 @@ const defaultList: AssetType[] = [
   {
     symbol: AssetSymbolEnum.Luna,
     name: 'Luna',
-    logoURI: 'https://assets.terra.dev/icon/60/Luna.png',
+    logoURI: 'https://assets.terra.money/icon/60/Luna.png',
     terraToken: AssetNativeDenomEnum.uluna,
   },
   {
     symbol: AssetSymbolEnum.UST,
     name: 'Terra USD',
-    logoURI: 'https://assets.terra.dev/icon/60/UST.png',
+    logoURI: 'https://assets.terra.money/icon/60/UST.png',
     terraToken: AssetNativeDenomEnum.uusd,
   },
   {
     symbol: AssetSymbolEnum.KRT,
     name: 'Terra KRW',
-    logoURI: 'https://assets.terra.dev/icon/60/KRT.png',
+    logoURI: 'https://assets.terra.money/icon/60/KRT.png',
     terraToken: AssetNativeDenomEnum.ukrw,
   },
   {
     symbol: AssetSymbolEnum.SDT,
     name: 'Terra SDR',
-    logoURI: 'https://assets.terra.dev/icon/60/SDT.png',
+    logoURI: 'https://assets.terra.money/icon/60/SDT.png',
     terraToken: AssetNativeDenomEnum.usdr,
   },
   {
     symbol: AssetSymbolEnum.MNT,
     name: 'Terra MNT',
-    logoURI: 'https://assets.terra.dev/icon/60/MNT.png',
+    logoURI: 'https://assets.terra.money/icon/60/MNT.png',
     terraToken: AssetNativeDenomEnum.umnt,
   },
 ]
