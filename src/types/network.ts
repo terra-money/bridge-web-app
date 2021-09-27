@@ -5,21 +5,26 @@ export enum BlockChainType {
   hmy = 'harmony',
 }
 
-export interface LocalTerraNetwork {
-  /** Graphql server URL */
-  mantle: string
-  /** Ethereum */
-  shuttle: Record<ShuttleNetwork, string>
-  lcd: string
-  fcd: string
-}
-
 export type ShuttleNetwork =
   | BlockChainType.ethereum
   | BlockChainType.bsc
   | BlockChainType.hmy
 
 export interface ExtTerraNetwork {
-  name: 'mainnet' | 'testnet'
+  name: TerraNetworkNameEnum
   chainID: string
+  mantle: string
+  lcd: string
+  fcd: string
+  walletconnectID: number
+}
+
+export interface LocalTerraNetwork extends ExtTerraNetwork {
+  shuttle: Record<ShuttleNetwork, string>
+}
+
+export enum TerraNetworkNameEnum {
+  mainnet = 'mainnet',
+  testnet = 'testnet',
+  bombay = 'bombay',
 }

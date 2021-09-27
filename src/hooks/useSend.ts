@@ -14,6 +14,8 @@ import {
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 import { isMobile } from 'react-device-detect'
+import { useQuery } from 'react-query'
+import { useDebouncedCallback } from 'use-debounce/lib'
 
 import { UTIL } from 'consts'
 
@@ -28,10 +30,8 @@ import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
 import { WalletEnum } from 'types/wallet'
 
 import useEtherBaseContract from './useEtherBaseContract'
-import { useDebouncedCallback } from 'use-debounce/lib'
 import ContractStore from 'store/ContractStore'
 import useNetwork from './useNetwork'
-import { useQuery } from 'react-query'
 import QueryKeysEnum from 'types/queryKeys'
 
 export type TerraSendFeeInfo = {

@@ -9,6 +9,7 @@ import {
 } from 'types/network'
 import AuthStore from './AuthStore'
 import SendStore from './SendStore'
+import { defaultTerraNetworks } from 'hooks/useTerraNetwork'
 
 const terraExt = atom<ExtTerraNetwork | undefined>({
   key: 'terraExt',
@@ -17,7 +18,7 @@ const terraExt = atom<ExtTerraNetwork | undefined>({
 
 const terraLocal = atom<LocalTerraNetwork>({
   key: 'terraLocal',
-  default: NETWORK.terra_networks.mainnet,
+  default: defaultTerraNetworks.mainnet,
 })
 
 const etherBaseExt = atom<EtherNetwork | undefined>({

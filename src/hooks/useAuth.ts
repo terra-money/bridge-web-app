@@ -1,5 +1,6 @@
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { Network } from '@ethersproject/networks'
+import _ from 'lodash'
 
 import { NETWORK } from 'consts'
 
@@ -10,9 +11,10 @@ import NetworkStore from 'store/NetworkStore'
 import terraService from 'services/terraService'
 
 import { User } from 'types/auth'
-import { BlockChainType } from 'types/network'
+import { BlockChainType, LocalTerraNetwork } from 'types/network'
 import { WalletEnum } from 'types/wallet'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
+import useTerraNetwork from './useTerraNetwork'
 
 const useAuth = (): {
   login: ({ user }: { user: User }) => Promise<void>
@@ -26,6 +28,9 @@ const useAuth = (): {
     walletType: WalletEnum
   }) => void
 } => {
+  const { getTerraNetworkByName, getTerraNetworkByWalletconnectID } =
+    useTerraNetwork()
+
   const setLoginUser = useSetRecoilState(AuthStore.loginUser)
   const setEtherBaseExt = useSetRecoilState(NetworkStore.etherBaseExt)
   const setTerraExt = useSetRecoilState(NetworkStore.terraExt)
@@ -64,30 +69,32 @@ const useAuth = (): {
 
   const login = async ({ user }: { user: User }): Promise<void> => {
     if (fromBlockChain === BlockChainType.terra) {
-      let localNetwork = NETWORK.terra_networks['mainnet']
-
+      let localNetwork: LocalTerraNetwork | undefined
+      let name = ''
+      let chainId: string | number = ''
       if (user.walletType === WalletEnum.TerraWalletConnect) {
-        const network =
-          user.terraWalletConnect?.chainId === 1 ? 'mainnet' : 'testnet'
-        localNetwork = NETWORK.terra_networks[network]
-        setTerraExt({ name: network, chainID: NETWORK.TERRA_CHAIN_ID[network] })
+        const walletConneceId = user.terraWalletConnect?.chainId
+        chainId = walletConneceId || ''
+        localNetwork = _.isNumber(walletConneceId)
+          ? getTerraNetworkByWalletconnectID(walletConneceId)
+          : undefined
+        setTerraExt(localNetwork)
       } else {
         const extNet = await terraService.info()
+        name = extNet.name
+        chainId = extNet.chainID
         setTerraExt(extNet)
-        localNetwork =
-          NETWORK.terra_networks[
-            extNet.name === 'mainnet' ? 'mainnet' : 'testnet'
-          ]
+        localNetwork = getTerraNetworkByName(extNet.name)
+      }
 
-        if (extNet.chainID.includes('tequila')) {
-          setIsVisibleNotSupportNetworkModal(true)
-          setTriedNotSupportNetwork({
-            blockChain: BlockChainType.terra,
-            name: extNet.name,
-            chainId: extNet.chainID,
-          })
-          return
-        }
+      if (!localNetwork) {
+        setIsVisibleNotSupportNetworkModal(true)
+        setTriedNotSupportNetwork({
+          blockChain: BlockChainType.terra,
+          name,
+          chainId,
+        })
+        return
       }
 
       setTerraLocal(localNetwork)

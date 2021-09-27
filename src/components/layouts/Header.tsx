@@ -152,6 +152,7 @@ const StyledTestnetLabel = styled(View)`
 
 const LoginUserInfo = (): ReactElement => {
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
+  const terraLocal = useRecoilValue(NetworkStore.terraLocal)
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -193,7 +194,7 @@ const LoginUserInfo = (): ReactElement => {
                 {isTestnet ? (
                   <>
                     <StyledConnectedText style={{ color: '#DD794A' }}>
-                      Connected to TESTNET
+                      Connected to {terraLocal.name.toUpperCase()}
                     </StyledConnectedText>
                   </>
                 ) : (
