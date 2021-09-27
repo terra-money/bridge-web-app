@@ -55,7 +55,14 @@ const isVisibleNotSupportNetworkModal = atom<boolean>({
   default: false,
 })
 
-const triedNotSupportNetwork = atom<EtherNetwork | undefined>({
+const triedNotSupportNetwork = atom<
+  | {
+      blockChain: BlockChainType
+      name: string
+      chainId: string | number
+    }
+  | undefined
+>({
   key: 'triedNotSupportNetwork',
   default: undefined,
 })

@@ -68,13 +68,26 @@ const useAuth = (): {
 
       if (user.walletType === WalletEnum.TerraWalletConnect) {
         const network =
-          user.terraWalletConnect?.chainId === 0 ? 'testnet' : 'mainnet'
+          user.terraWalletConnect?.chainId === 1 ? 'mainnet' : 'testnet'
         localNetwork = NETWORK.terra_networks[network]
         setTerraExt({ name: network, chainID: NETWORK.TERRA_CHAIN_ID[network] })
       } else {
         const extNet = await terraService.info()
         setTerraExt(extNet)
-        localNetwork = NETWORK.terra_networks[extNet.name]
+        localNetwork =
+          NETWORK.terra_networks[
+            extNet.name === 'mainnet' ? 'mainnet' : 'testnet'
+          ]
+
+        if (extNet.chainID.includes('tequila')) {
+          setIsVisibleNotSupportNetworkModal(true)
+          setTriedNotSupportNetwork({
+            blockChain: BlockChainType.terra,
+            name: extNet.name,
+            chainId: extNet.chainID,
+          })
+          return
+        }
       }
 
       setTerraLocal(localNetwork)
@@ -112,7 +125,12 @@ const useAuth = (): {
         })
       } else {
         setIsVisibleNotSupportNetworkModal(true)
-        setTriedNotSupportNetwork(network)
+        network &&
+          setTriedNotSupportNetwork({
+            blockChain: BlockChainType.ethereum,
+            name: network.name,
+            chainId: network.chainId,
+          })
         return
       }
     }

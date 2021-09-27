@@ -49,7 +49,7 @@ const CHROME = 'https://google.com/chrome'
 
 const TERRA_CHAIN_ID = {
   mainnet: 'columbus-4',
-  testnet: 'tequila-0004',
+  testnet: 'bombay-11',
 }
 
 const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
@@ -64,14 +64,14 @@ const terra_networks: Record<'mainnet' | 'testnet', LocalTerraNetwork> = {
     lcd: 'https://lcd.terra.dev',
   },
   testnet: {
-    mantle: 'https://tequila-mantle.terra.dev/',
+    mantle: 'https://bombay-mantle.terra.dev/',
     shuttle: {
       ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
       bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
       harmony: 'terra1nrmn0klu4st0qdg4w0wcktnsu5lwfneqlgw5w9',
     },
-    fcd: 'https://tequila-fcd.terra.dev',
-    lcd: 'https://tequila-lcd.terra.dev',
+    fcd: 'https://bombay-fcd.terra.dev',
+    lcd: 'https://bombay-lcd.terra.dev',
   },
 }
 
