@@ -4,7 +4,12 @@ import _ from 'lodash'
 import * as Sentry from '@sentry/react'
 
 import ContractStore from 'store/ContractStore'
-import { AssetNativeDenomEnum, AssetSymbolEnum, AssetType } from 'types/asset'
+import {
+  AssetNativeDenomEnum,
+  AssetSymbolEnum,
+  AssetType,
+  TerraAssetsPathEnum,
+} from 'types'
 
 const defaultList: AssetType[] = [
   {
@@ -67,11 +72,15 @@ const useApp = (): {
   const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
   const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
 
+  const fetchAssets = async (path: TerraAssetsPathEnum): Promise<any> => {
+    return (await fetch(`${NETWORK.TERRA_ASSETS_URL}${path}`)).json()
+  }
+
   const getContractAddress = async (): Promise<void> => {
     try {
-      const fetchPairJson: ShuttlePairType = await (
-        await fetch(NETWORK.SHUTTLE_PAIRS)
-      ).json()
+      const fetchPairJson: ShuttlePairType = await fetchAssets(
+        TerraAssetsPathEnum.cw20_pairs
+      )
       const formattedPairJson = _.reduce<
         ShuttlePairType,
         Record<string, Record<string, string>>
@@ -96,9 +105,9 @@ const useApp = (): {
       )
       setShuttlePairs(formattedPairJson)
 
-      const terraListJson: TerraWhiteListType = await (
-        await fetch(NETWORK.TERRA_WHITELIST)
-      ).json()
+      const terraListJson: TerraWhiteListType = await fetchAssets(
+        TerraAssetsPathEnum.cw20_tokens
+      )
       const assetList = _.reduce<
         TerraWhiteListType,
         Record<string, AssetType[]>
@@ -148,13 +157,13 @@ const useApp = (): {
       )
       setTerraWhiteList(formattedTerraListJson)
 
-      const ethListJson = await (await fetch(NETWORK.ETH_WHITELIST)).json()
+      const ethListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_eth)
       setEthWhiteList(ethListJson)
 
-      const bscListJson = await (await fetch(NETWORK.BSC_WHITELIST)).json()
+      const bscListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_bsc)
       setBscWhiteList(bscListJson)
 
-      const hmyListJson = await (await fetch(NETWORK.HMY_WHITELIST)).json()
+      const hmyListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_hmy)
       setHmyWhiteList(hmyListJson)
     } catch (error) {
       Sentry.captureException(error)

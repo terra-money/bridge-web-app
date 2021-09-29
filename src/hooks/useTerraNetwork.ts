@@ -1,13 +1,7 @@
-import axios from 'axios'
-import { NETWORK } from 'consts'
 import { useMemo } from 'react'
-import { useQuery } from 'react-query'
 
-import {
-  LocalTerraNetwork,
-  TerraNetworkNameEnum as TerraNetworkEnum,
-} from 'types'
-import QueryKeysEnum from 'types/queryKeys'
+import { LocalTerraNetwork, TerraAssetsPathEnum, TerraNetworkEnum } from 'types'
+import useTerraAssets from './useTerraAssets'
 
 export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
   {
@@ -39,7 +33,7 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
     },
     bombay: {
       name: TerraNetworkEnum.bombay,
-      chainID: 'bombay-11',
+      chainID: 'bombay-12',
       lcd: 'https://bombay-lcd.terra.dev',
       fcd: 'https://bombay-fcd.terra.dev',
       mantle: 'https://bombay-mantle.terra.dev',
@@ -60,15 +54,9 @@ const useTerraNetwork = (): {
     id: number
   ) => LocalTerraNetwork | undefined
 } => {
-  const { data } = useQuery<Record<TerraNetworkEnum, LocalTerraNetwork>>(
-    [QueryKeysEnum.terraAssetsJson, NETWORK.TERRA_CHAINS],
-    async () => {
-      try {
-        const { data } = await axios.get(NETWORK.TERRA_CHAINS)
-        return data
-      } catch {}
-    }
-  )
+  const { data } = useTerraAssets<Record<TerraNetworkEnum, LocalTerraNetwork>>({
+    path: TerraAssetsPathEnum.chains,
+  })
 
   const networkList: LocalTerraNetwork[] = useMemo(() => {
     const getOptions = (net: TerraNetworkEnum): LocalTerraNetwork => {

@@ -11,6 +11,7 @@ import TerraExtensionDownModal from './TerraExtensionDownModal'
 import BscExtensionDownModal from './BscExtensionDownModal'
 import NotSupportNetworkModal from './NotSupportNetworkModal'
 import NetworkErrorScreen from './NetworkErrorScreen'
+import UnderMaintenance from './UnderMaintenance'
 
 import useApp from './useApp'
 import useReloadOnNetworkChange from './useReloadOnNetworkChange'
@@ -48,6 +49,7 @@ const App = (): ReactElement => {
             <BscExtensionDownModal />
             <NotSupportNetworkModal />
             <NetworkErrorScreen />
+            <UnderMaintenance />
           </>
         )}
       </BrowserRouter>

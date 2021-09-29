@@ -47,18 +47,7 @@ const BSC_EXTENSION =
   'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?utm_source=chrome-ntp-icon'
 const CHROME = 'https://google.com/chrome'
 
-const TERRA_CHAIN_ID = {
-  mainnet: 'columbus-4',
-  testnet: 'bombay-11',
-}
-
-const TERRA_CHAINS = 'https://assets.terra.money/chains.json'
-const SHUTTLE_PAIRS = 'https://assets.terra.money/cw20/pairs.json'
-
-const TERRA_WHITELIST = 'https://assets.terra.money/cw20/tokens.json'
-const ETH_WHITELIST = 'https://assets.terra.money/shuttle/eth.json'
-const BSC_WHITELIST = 'https://assets.terra.money/shuttle/bsc.json'
-const HMY_WHITELIST = 'https://assets.terra.money/shuttle/hmy.json'
+const TERRA_ASSETS_URL = 'https://assets.terra.money'
 
 const getEtherPricePerUst = async (): Promise<BigNumber> => {
   try {
@@ -106,16 +95,10 @@ export default {
   blockChainName,
   isEtherBaseBlockChain,
   INFURAID,
-  TERRA_CHAINS,
-  TERRA_CHAIN_ID,
+  TERRA_ASSETS_URL,
   TERRA_EXTENSION,
   BSC_EXTENSION,
   CHROME,
   ETH_CHAINID,
-  SHUTTLE_PAIRS,
-  TERRA_WHITELIST,
-  ETH_WHITELIST,
-  BSC_WHITELIST,
-  HMY_WHITELIST,
   ETH_VAULT_TOKEN_LIST,
 }
