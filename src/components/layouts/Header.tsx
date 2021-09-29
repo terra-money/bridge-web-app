@@ -18,6 +18,8 @@ import bridgeLogo from 'images/bridge_logo.png'
 import testnetLabel from 'images/testnet_label.png'
 import WalletLogo from 'components/WalletLogo'
 import FormImage from 'components/FormImage'
+import SendStore from 'store/SendStore'
+import { BlockChainType } from 'types'
 
 const StyledContainer = styled(Container)`
   position: relative;
@@ -154,6 +156,8 @@ const LoginUserInfo = (): ReactElement => {
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
   const loginUser = useRecoilValue(AuthStore.loginUser)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
   const [isOpen, setIsOpen] = useState(false)
 
   const { logout } = useAuth()
@@ -194,7 +198,11 @@ const LoginUserInfo = (): ReactElement => {
                 {isTestnet ? (
                   <>
                     <StyledConnectedText style={{ color: '#DD794A' }}>
-                      Connected to {terraLocal.name.toUpperCase()}
+                      {fromBlockChain === BlockChainType.terra
+                        ? `Connected to ${terraLocal.name.toUpperCase()}`
+                        : `Connected to ${
+                            etherBaseExt?.name.toUpperCase() || 'TESTNET'
+                          }`}
                     </StyledConnectedText>
                   </>
                 ) : (
