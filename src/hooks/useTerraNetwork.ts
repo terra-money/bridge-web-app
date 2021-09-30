@@ -7,7 +7,7 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
   {
     mainnet: {
       name: TerraNetworkEnum.mainnet,
-      chainID: 'columbus-4',
+      chainID: 'columbus-5',
       lcd: 'https://lcd.terra.dev',
       fcd: 'https://fcd.terra.dev',
       mantle: 'https://mantle.terra.dev',
@@ -20,10 +20,10 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
     },
     testnet: {
       name: TerraNetworkEnum.testnet,
-      chainID: 'tequila-0004',
-      lcd: 'https://tequila-lcd.terra.dev',
-      fcd: 'https://tequila-fcd.terra.dev',
-      mantle: 'https://tequila-mantle.terra.dev',
+      chainID: 'bombay-12',
+      lcd: 'https://bombay-lcd.terra.dev',
+      fcd: 'https://bombay-fcd.terra.dev',
+      mantle: 'https://bombay-mantle.terra.dev',
       walletconnectID: 0,
       shuttle: {
         ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
