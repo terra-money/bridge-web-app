@@ -11,12 +11,14 @@ import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
 import useAsset from './useAsset'
 import { NETWORK } from 'consts'
+import ContractStore from 'store/ContractStore'
 
 const useSendValidate = (): {
   validateFee: () => ValidateItemResultType
   validateSendData: () => ValidateResultType
 } => {
   const { formatBalance } = useAsset()
+  const allTokenAddress = useRecoilValue(ContractStore.allTokenAddress)
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
@@ -87,6 +89,13 @@ const useSendValidate = (): {
   const validateToAddress = (): ValidateItemResultType => {
     if (_.isEmpty(toAddress)) {
       return { isValid: false, errorMessage: '' }
+    }
+
+    if (allTokenAddress.includes(toAddress.trim())) {
+      return {
+        isValid: false,
+        errorMessage: `${toAddress} is not a user address.\nDouble check the address above.`,
+      }
     }
 
     const validAddress =

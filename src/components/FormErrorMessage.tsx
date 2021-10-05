@@ -7,6 +7,7 @@ import Text from './Text'
 const StyledText = styled(Text)`
   color: ${COLOR.red};
   word-break: break-all;
+  white-space: pre-wrap;
   font-size: 12px;
   font-weight: normal;
   font-stretch: normal;

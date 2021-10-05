@@ -161,6 +161,39 @@ const etherVaultTokenList = selector<
   },
 })
 
+const allTokenAddress = selector<string[]>({
+  key: 'etherVaultTokenList',
+  get: ({ get }) => {
+    const terraWhiteList = get(initOnlyTerraWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
+    const ethWhiteList = get(initOnlyEthWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
+    const bscWhiteList = get(initOnlyBscWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
+    const hmyWhiteList = get(initOnlyHmyWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
+
+    return [
+      ..._.flatMap(terraWhiteList['mainnet']),
+      ..._.flatMap(terraWhiteList['testnet']),
+      ..._.flatMap(ethWhiteList['mainnet']),
+      ..._.flatMap(ethWhiteList['testnet']),
+      ..._.flatMap(bscWhiteList['mainnet']),
+      ..._.flatMap(bscWhiteList['testnet']),
+      ..._.flatMap(hmyWhiteList['mainnet']),
+      ..._.flatMap(hmyWhiteList['testnet']),
+    ]
+  },
+})
+
 export default {
   initOnlyAssetList,
   initOnlyShuttlePairs,
@@ -176,4 +209,6 @@ export default {
   bscWhiteList,
   hmyWhiteList,
   etherVaultTokenList,
+
+  allTokenAddress,
 }
