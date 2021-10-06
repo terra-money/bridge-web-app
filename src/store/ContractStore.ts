@@ -162,7 +162,7 @@ const etherVaultTokenList = selector<
 })
 
 const allTokenAddress = selector<string[]>({
-  key: 'etherVaultTokenList',
+  key: 'allTokenAddress',
   get: ({ get }) => {
     const terraWhiteList = get(initOnlyTerraWhiteList) || {
       mainnet: {},
