@@ -1,6 +1,5 @@
 import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import * as Sentry from '@sentry/react'
 import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
@@ -115,7 +114,6 @@ const NetworkErrorScreen = (): ReactElement => {
         }
       )
     } catch (error) {
-      Sentry.captureException(error)
       return {
         success: false,
         errorMessage: _.toString(error),

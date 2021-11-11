@@ -1,7 +1,6 @@
 import { NETWORK } from 'consts'
 import { useSetRecoilState } from 'recoil'
 import _ from 'lodash'
-import * as Sentry from '@sentry/react'
 
 import ContractStore from 'store/ContractStore'
 import {
@@ -165,9 +164,7 @@ const useApp = (): {
 
       const hmyListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_hmy)
       setHmyWhiteList(hmyListJson)
-    } catch (error) {
-      Sentry.captureException(error)
-    }
+    } catch { }
   }
 
   const initApp = async (): Promise<void> => {
