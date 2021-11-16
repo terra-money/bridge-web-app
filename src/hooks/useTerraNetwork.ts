@@ -26,7 +26,7 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
       mantle: 'https://bombay-mantle.terra.dev',
       walletconnectID: 0,
       shuttle: {
-        ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
+        ethereum: 'terra1skc56hrrg92zj8xxj6lyjlt2l2m8q8sf832sqm',
         bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
         harmony: 'terra1nrmn0klu4st0qdg4w0wcktnsu5lwfneqlgw5w9',
       },
