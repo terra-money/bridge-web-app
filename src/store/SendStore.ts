@@ -1,4 +1,4 @@
-import { Coin, StdFee } from '@terra-money/terra.js'
+import { Coin, Fee } from '@terra-money/terra.js'
 import BigNumber from 'bignumber.js'
 import { atom } from 'recoil'
 
@@ -31,7 +31,7 @@ const toBlockChain = atom<BlockChainType>({
   key: 'sendToBlockChain',
   default: BlockChainType.ethereum,
 })
-const fee = atom<StdFee | undefined>({
+const fee = atom<Fee | undefined>({
   key: 'sendFee',
   default: undefined,
 })
@@ -54,7 +54,7 @@ const feeDenom = atom<AssetNativeDenomEnum>({
 const gasFeeList = atom<
   {
     denom: AssetNativeDenomEnum
-    fee?: StdFee
+    fee?: Fee
   }[]
 >({
   key: 'sendGasFeeList',

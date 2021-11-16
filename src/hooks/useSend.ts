@@ -6,7 +6,7 @@ import {
   MsgSend,
   Coins,
   MsgExecuteContract,
-  StdFee,
+  Fee,
   LCDClient,
   Coin,
   CreateTxOptions,
@@ -36,7 +36,7 @@ import QueryKeysEnum from 'types/queryKeys'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
-  fee: StdFee
+  fee: Fee
   feeOfGas: BigNumber
 }
 
@@ -61,7 +61,7 @@ type UseSendType = {
   getTerraFeeList: () => Promise<
     {
       denom: AssetNativeDenomEnum
-      fee?: StdFee
+      fee?: Fee
     }[]
   >
   getTerraMsgs: () => MsgSend[] | MsgExecuteContract[]
@@ -201,7 +201,7 @@ const useSend = (): UseSendType => {
   const getTerraFeeList = async (): Promise<
     {
       denom: AssetNativeDenomEnum
-      fee?: StdFee
+      fee?: Fee
     }[]
   > => {
     if (terraExt) {
@@ -232,12 +232,15 @@ const useSend = (): UseSendType => {
           gasPrices: gasPricesFromServer,
         })
         // fee + tax
-        const unsignedTx = await lcd.tx.create(loginUser.address, {
-          msgs,
-          feeDenoms,
-        })
+        const unsignedTx = await lcd.tx.create(
+          [{ address: loginUser.address }],
+          {
+            msgs,
+            feeDenoms,
+          }
+        )
 
-        gas = unsignedTx.fee.gas
+        gas = unsignedTx.auth_info.fee.gas_limit
       } catch {
         // gas is just default value
       }
@@ -248,7 +251,7 @@ const useSend = (): UseSendType => {
           .dp(0, BigNumber.ROUND_UP)
           .toString(10)
         const gasFee = new Coins({ [denom]: amount })
-        const fee = new StdFee(gas, gasFee)
+        const fee = new Fee(gas, gasFee)
         return {
           denom,
           fee,
@@ -308,7 +311,7 @@ const useSend = (): UseSendType => {
     const msgs = getTerraMsgs()
     const txFee =
       tax?.amount.greaterThan(0) && fee
-        ? new StdFee(fee.gas, fee.amount.add(tax))
+        ? new Fee(fee.gas_limit, fee.amount.add(tax))
         : fee
     const tx: CreateTxOptions = {
       gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
@@ -325,8 +328,6 @@ const useSend = (): UseSendType => {
         memo: tx.memo,
         gasPrices: tx.gasPrices?.toString(),
         gasAdjustment: tx.gasAdjustment?.toString(),
-        account_number: tx.account_number,
-        sequence: tx.sequence,
         feeDenoms: tx.feeDenoms,
       }
 
