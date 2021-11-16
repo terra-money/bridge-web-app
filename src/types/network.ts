@@ -26,7 +26,6 @@ export interface LocalTerraNetwork extends ExtTerraNetwork {
 export enum TerraNetworkEnum {
   mainnet = 'mainnet',
   testnet = 'testnet',
-  bombay = 'bombay',
 }
 
 export enum TerraAssetsPathEnum {

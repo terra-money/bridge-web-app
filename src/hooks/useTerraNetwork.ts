@@ -31,19 +31,6 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
         harmony: 'terra1nrmn0klu4st0qdg4w0wcktnsu5lwfneqlgw5w9',
       },
     },
-    bombay: {
-      name: TerraNetworkEnum.bombay,
-      chainID: 'bombay-12',
-      lcd: 'https://bombay-lcd.terra.dev',
-      fcd: 'https://bombay-fcd.terra.dev',
-      mantle: 'https://bombay-mantle.terra.dev',
-      walletconnectID: 2,
-      shuttle: {
-        ethereum: 'terra10a29fyas9768pw8mewdrar3kzr07jz8f3n73t3',
-        bsc: 'terra1paav7jul3dzwzv78j0k59glmevttnkfgmgzv2r',
-        harmony: 'terra1nrmn0klu4st0qdg4w0wcktnsu5lwfneqlgw5w9',
-      },
-    },
   }
 
 const useTerraNetwork = (): {
@@ -66,7 +53,6 @@ const useTerraNetwork = (): {
     return [
       getOptions(TerraNetworkEnum.mainnet),
       getOptions(TerraNetworkEnum.testnet),
-      getOptions(TerraNetworkEnum.bombay),
     ]
   }, [data])
 

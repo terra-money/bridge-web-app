@@ -127,7 +127,6 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       await login({
         user: {
           address,
-          walletConnect: provider,
           provider: new ethers.providers.Web3Provider(provider),
           walletType: WalletEnum.WalletConnect,
         },

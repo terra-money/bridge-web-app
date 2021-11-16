@@ -182,7 +182,6 @@ const useAuth = (): {
   const logout = (): void => {
     setLoginUser((user) => {
       user.terraWalletConnect?.killSession()
-      user.walletConnect?.disconnect()
       return initLoginUser
     })
     setStatus(ProcessStatus.Input)

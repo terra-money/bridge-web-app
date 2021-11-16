@@ -70,7 +70,6 @@ const UnderMaintenance = (): ReactElement => {
   const { data: maintenance } = useTerraAssets<{
     mainnet: boolean
     testnet: boolean
-    bombay: boolean
   }>({
     path: TerraAssetsPathEnum.station_maintenamce,
   })
