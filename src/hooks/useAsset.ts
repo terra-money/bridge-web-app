@@ -106,7 +106,7 @@ const useAsset = (): {
           ...item,
           disabled,
         }
-      })
+      }).filter((item) => !item.disabled)
       setAssetList(pairList)
     } else {
       setAssetList(fromList)
