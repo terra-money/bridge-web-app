@@ -14,7 +14,6 @@ import NetworkErrorScreen from './NetworkErrorScreen'
 import UnderMaintenance from './UnderMaintenance'
 
 import useApp from './useApp'
-import useReloadOnNetworkChange from './useReloadOnNetworkChange'
 
 const queryClient = new QueryClient()
 
@@ -25,7 +24,6 @@ const StyledContainer = styled.div`
 
 const App = (): ReactElement => {
   const [initComplete, setInitComplete] = useState(false)
-  useReloadOnNetworkChange()
 
   const { initApp } = useApp()
   useEffect(() => {
