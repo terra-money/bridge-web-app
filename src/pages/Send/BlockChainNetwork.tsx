@@ -110,6 +110,14 @@ const BlockChainNetwork = (): ReactElement => {
                 fromBlockChain === BlockChainType.bsc ||
                 toBlockChain === BlockChainType.hmy,
             },
+            {
+              label: NETWORK.blockChainName[BlockChainType.osmo],
+              value: BlockChainType.osmo,
+              isDisabled:
+                fromBlockChain === BlockChainType.ethereum ||
+                fromBlockChain === BlockChainType.bsc ||
+                fromBlockChain === BlockChainType.hmy,
+            },
           ],
           label: 'TO',
         }}

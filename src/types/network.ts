@@ -3,12 +3,15 @@ export enum BlockChainType {
   ethereum = 'ethereum',
   bsc = 'bsc',
   hmy = 'harmony',
+  osmo = 'osmosis'
 }
 
 export type ShuttleNetwork =
   | BlockChainType.ethereum
   | BlockChainType.bsc
   | BlockChainType.hmy
+
+export type IbcNetwork = BlockChainType.osmo
 
 export interface ExtTerraNetwork {
   name: TerraNetworkEnum
@@ -39,4 +42,6 @@ export enum TerraAssetsPathEnum {
   shuttle_eth = '/shuttle/eth.json',
   shuttle_bsc = '/shuttle/bsc.json',
   shuttle_hmy = '/shuttle/hmy.json',
+
+  ibc_tokens = '/ibc/tokens.json',
 }

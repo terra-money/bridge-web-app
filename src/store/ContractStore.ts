@@ -53,6 +53,13 @@ const initOnlyHmyWhiteList = atom<
   default: undefined,
 })
 
+const initOnlyIbcWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlyOsmoWhiteList',
+  default: undefined,
+})
+
 const assetList = selector<AssetType[]>({
   key: 'assetList',
   get: ({ get }) => {
@@ -201,7 +208,7 @@ export default {
   initOnlyEthWhiteList,
   initOnlyBscWhiteList,
   initOnlyHmyWhiteList,
-
+  initOnlyIbcWhiteList,
   assetList,
   shuttleUusdPairs,
   terraWhiteList,
