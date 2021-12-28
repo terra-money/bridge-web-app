@@ -13,7 +13,7 @@
     "@walletconnect/client": "^1.6.1",
     "@walletconnect/web3-provider": "^1.6.1",
     "@web3-react/walletlink-connector": "^6.1.9",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bech32": "^1.1.4",
     "bignumber.js": "^9.0.1",
     "bootstrap": "^4.6.0",
