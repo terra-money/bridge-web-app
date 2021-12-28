@@ -10,6 +10,7 @@ import {
   LCDClient,
   Coin,
   CreateTxOptions,
+  MsgTransfer,
 } from '@terra-money/terra.js'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
@@ -24,7 +25,7 @@ import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, ShuttleNetwork } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
 import { WalletEnum } from 'types/wallet'
@@ -64,7 +65,7 @@ type UseSendType = {
       fee?: Fee
     }[]
   >
-  getTerraMsgs: () => MsgSend[] | MsgExecuteContract[]
+  getTerraMsgs: () => MsgSend[] | MsgExecuteContract[] | MsgTransfer[]
   waitForEtherBaseTransaction: (props: {
     hash: string
   }) => Promise<EtherBaseReceiptResultType | undefined>
@@ -261,12 +262,12 @@ const useSend = (): UseSendType => {
     return []
   }
 
-  const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] => {
+  const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] | MsgTransfer[] => {
     if (asset) {
       const recipient =
         toBlockChain === BlockChainType.terra
           ? toAddress
-          : terraLocal.shuttle[toBlockChain]
+          : terraLocal.shuttle[toBlockChain as ShuttleNetwork]
 
       if (
         etherVaultTokenList[asset.terraToken] &&
@@ -278,6 +279,20 @@ const useSend = (): UseSendType => {
             asset.terraToken,
             { burn: { amount: sendAmount } },
             new Coins([])
+          ),
+        ]
+      }
+
+      if (UTIL.isNativeDenom(asset.terraToken) && toBlockChain === BlockChainType.osmo) {
+        return [
+          new MsgTransfer(
+            'transfer',
+            'channel-1',
+            new Coin(asset.terraToken, sendAmount),
+            loginUser.address,
+            toAddress,
+            undefined,
+            (Date.now() + 60 * 1000) * 1e6
           ),
         ]
       }

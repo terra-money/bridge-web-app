@@ -3,6 +3,7 @@ import { AccAddress } from '@terra-money/terra.js'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
+import { Bech32Address } from '@keplr-wallet/cosmos';
 
 import SendStore from 'store/SendStore'
 
@@ -98,10 +99,20 @@ const useSendValidate = (): {
       }
     }
 
-    const validAddress =
-      toBlockChain === BlockChainType.terra
-        ? AccAddress.validate(toAddress)
-        : ethers.utils.isAddress(toAddress)
+    let validAddress = false;
+
+    if (toBlockChain === BlockChainType.terra) {
+      validAddress = AccAddress.validate(toAddress)
+    } else if (toBlockChain === BlockChainType.osmo) {
+      try {
+        Bech32Address.validate(toAddress)
+        validAddress = true;
+      } catch (error) {
+        validAddress = false;
+      }
+    } else {
+      validAddress = ethers.utils.isAddress(toAddress)
+    }
 
     if (false === validAddress) {
       return { isValid: false, errorMessage: 'Invalid address' }

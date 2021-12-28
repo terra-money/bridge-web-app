@@ -64,6 +64,8 @@ const useNetwork = (): {
         return bscWhiteList[tokenAddress]
       case BlockChainType.hmy:
         return hmyWhiteList[tokenAddress]
+      default:
+        return terraWhiteList[tokenAddress]
     }
   }
 
