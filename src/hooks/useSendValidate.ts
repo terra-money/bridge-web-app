@@ -106,7 +106,8 @@ const useSendValidate = (): {
     } else if (toBlockChain === BlockChainType.osmo) {
       try {
         Bech32Address.validate(toAddress)
-        validAddress = true;
+        const toAddressHRP = toAddress.slice(0,toAddress.lastIndexOf("1"))
+        validAddress = toAddressHRP === "osmo";
       } catch (error) {
         validAddress = false;
       }
