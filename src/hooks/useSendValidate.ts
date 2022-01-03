@@ -103,12 +103,14 @@ const useSendValidate = (): {
 
     if (toBlockChain === BlockChainType.terra) {
       validAddress = AccAddress.validate(toAddress)
-    } else if (toBlockChain === BlockChainType.osmo) {
-      try {
-        Bech32Address.validate(toAddress)
-        validAddress = true;
-      } catch (error) {
-        validAddress = false;
+    } else if (
+      toBlockChain === BlockChainType.osmo
+    ) {
+      if (toAddress.match(/^osmo/gm)) {
+        try {
+          Bech32Address.validate(toAddress)
+          validAddress = true;
+        } catch (error) {}
       }
     } else {
       validAddress = ethers.utils.isAddress(toAddress)
