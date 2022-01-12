@@ -122,6 +122,14 @@ const useApp = (): {
               terraToken: item.token,
             }
           })
+            // TODO remove hard coding - disable bETH on testnet
+            .filter(({ terraToken }) => {
+              return (
+                //terraToken !== 'terra1dzhzukyezv0etz22ud940z7adyv7xgcjkahuun' &&
+                terraToken !== 'terra19mkj9nec6e3y5754tlnuz4vem7lzh4n0lc2s3l'
+              )
+            })
+
           result[network] = defaultList.concat(val)
           return result
         },
@@ -167,7 +175,7 @@ const useApp = (): {
       setHmyWhiteList(hmyListJson)
       const ibcTokensJson = await fetchAssets(TerraAssetsPathEnum.ibc_tokens)
       setIbcWhiteList(ibcTokensJson)
-    } catch { }
+    } catch {}
   }
 
   const initApp = async (): Promise<void> => {
