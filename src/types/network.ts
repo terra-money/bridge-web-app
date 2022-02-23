@@ -4,9 +4,9 @@ export enum BlockChainType {
   bsc = 'bsc',
   hmy = 'harmony',
   osmo = 'osmosis',
-  cosmos = 'cosmos',
-  cro = 'cronos',
   scrt = 'secret',
+//cosmos = 'cosmos',
+//cro = 'cronos',
 }
 
 export type ShuttleNetwork =
@@ -16,31 +16,31 @@ export type ShuttleNetwork =
 
 export type IbcNetwork =
   | BlockChainType.osmo
-  | BlockChainType.cosmos
-  | BlockChainType.cro
   | BlockChainType.scrt
+//| BlockChainType.cosmos
+//| BlockChainType.cro
 
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
     BlockChainType.osmo,
-    BlockChainType.cosmos,
-    BlockChainType.cro,
     BlockChainType.scrt,
+//  BlockChainType.cosmos,
+//  BlockChainType.cro,
   ].includes(network)
 }
 
 export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-1',
-  [BlockChainType.cosmos]: 'channel-2',
-  [BlockChainType.cro]: 'channel-22',
   [BlockChainType.scrt]: 'channel-16',
+//[BlockChainType.cosmos]: 'channel-2',
+//[BlockChainType.cro]: 'channel-22',
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'osmo1',
-  [BlockChainType.cosmos]: 'cosmos1',
-  [BlockChainType.cro]: 'cro1',
   [BlockChainType.scrt]: 'secret1',
+//[BlockChainType.cosmos]: 'cosmos1',
+//[BlockChainType.cro]: 'cro1',
 }
 
 export interface ExtTerraNetwork {

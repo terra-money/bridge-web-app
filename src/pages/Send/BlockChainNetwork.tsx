@@ -119,6 +119,15 @@ const BlockChainNetwork = (): ReactElement => {
                 fromBlockChain === BlockChainType.hmy,
             },
             {
+              label: NETWORK.blockChainName[BlockChainType.scrt],
+              value: BlockChainType.scrt,
+              isDisabled:
+                fromBlockChain === BlockChainType.ethereum ||
+                fromBlockChain === BlockChainType.bsc ||
+                fromBlockChain === BlockChainType.hmy,
+            },
+/*
+            {
               label: NETWORK.blockChainName[BlockChainType.cosmos],
               value: BlockChainType.cosmos,
               isDisabled:
@@ -134,14 +143,7 @@ const BlockChainNetwork = (): ReactElement => {
                 fromBlockChain === BlockChainType.bsc ||
                 fromBlockChain === BlockChainType.hmy,
             },
-            {
-              label: NETWORK.blockChainName[BlockChainType.scrt],
-              value: BlockChainType.scrt,
-              isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.bsc ||
-                fromBlockChain === BlockChainType.hmy,
-            },
+*/
           ],
           label: 'TO',
         }}
