@@ -4,6 +4,9 @@ import EthereumPng from 'images/Ethereum.png'
 import TerraPng from 'images/Terra.png'
 import HarmonyPng from 'images/harmony-one.png'
 import OsmoSvg from 'images/osmo.svg'
+import CosmosSvg from 'images/cosmos.svg'
+import CronosSvg from 'images/cronos.svg'
+import SecretSvg from 'images/secret.svg'
 import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
@@ -13,6 +16,9 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.terra]: TerraPng,
   [BlockChainType.hmy]: HarmonyPng,
   [BlockChainType.osmo]: OsmoSvg,
+  [BlockChainType.cosmos]: CosmosSvg,
+  [BlockChainType.cro]: CronosSvg,
+  [BlockChainType.scrt]: SecretSvg,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
@@ -21,6 +27,9 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.terra]: 'Terra',
   [BlockChainType.hmy]: 'Harmony',
   [BlockChainType.osmo]: 'Osmosis',
+  [BlockChainType.cosmos]: 'Cosmos',
+  [BlockChainType.cro]: 'Cronos',
+  [BlockChainType.scrt]: 'Secret',
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {
