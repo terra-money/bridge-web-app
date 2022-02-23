@@ -111,7 +111,7 @@ const useAsset = (): {
     } else if (
       fromBlockChain === BlockChainType.terra && toBlockChain === BlockChainType.osmo
     ) {
-      const allowedCoins = ['uluna', 'uusd', 'ukrw', 'ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B'];
+      const allowedCoins = ['uluna', 'uusd', 'ukrw'];
       const filteredList = fromList.filter((item) => allowedCoins.includes(item.terraToken))
       setAssetList(filteredList)
     } else if (
