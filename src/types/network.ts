@@ -33,7 +33,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-1',
   [BlockChainType.cosmos]: 'channel-2',
   [BlockChainType.cro]: 'channel-22',
-  [BlockChainType.scrt]: 'channel-12',
+  [BlockChainType.scrt]: 'channel-16',
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
