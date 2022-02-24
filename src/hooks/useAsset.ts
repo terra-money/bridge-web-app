@@ -7,7 +7,12 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import { AssetType, WhiteListType, BalanceListType } from 'types/asset'
-import { BlockChainType, isIbcNetwork } from 'types/network'
+import {
+  BlockChainType,
+  isIbcNetwork,
+  allowedCoins,
+  IbcNetwork,
+} from 'types/network'
 
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
@@ -109,16 +114,13 @@ const useAsset = (): {
       }).filter((item) => !item.disabled)
       setAssetList(pairList)
     } else if (
-      fromBlockChain === BlockChainType.terra && toBlockChain === BlockChainType.osmo
+      fromBlockChain === BlockChainType.terra &&
+      isIbcNetwork(toBlockChain)
     ) {
-      const allowedCoins = ['uluna', 'uusd', 'ukrw'];
-      const filteredList = fromList.filter((item) => allowedCoins.includes(item.terraToken))
-      setAssetList(filteredList)
-    } else if (
-      fromBlockChain === BlockChainType.terra && isIbcNetwork(toBlockChain)
-    ) {
-      const allowedCoins = ['uluna', 'uusd'];
-      const filteredList = fromList.filter((item) => allowedCoins.includes(item.terraToken))
+      const allowed = allowedCoins[toBlockChain as IbcNetwork] as string[]
+      const filteredList = fromList.filter((item) =>
+        allowed.includes(item.terraToken)
+      )
       setAssetList(filteredList)
     } else {
       setAssetList(fromList)
