@@ -26,6 +26,24 @@ $ npm install
 $ npm start
 ```
 
+## Add a new IBC network
+
+1. Update `src/types/network.ts`:
+
+Add the chain to BlockChainType, IbcNetwork, isIbcNetwork, ibcChannels, ibcPrefix and allowedCoins
+
+2. Update `src/consts/network.ts`:
+
+Update blockChainImage and blockChainName
+
+3. Add the chain in `src/pages/Send/BlockChainNetwork.tsx`:
+
+Add the chain in the TO SelectBlockchain's array
+
+4. (optional) Add the chain token to the assets list:
+
+Make a PR to https://github.com/terra-money/assets/blob/master/ibc/tokens.js and add the chain native token, it's necessary if you want to send the token back to it's native chain
+
 ## License
 
 This software is licensed under the Apache 2.0 license. Read more about it [here](./LICENSE).
