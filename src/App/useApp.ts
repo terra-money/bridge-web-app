@@ -59,6 +59,21 @@ type TerraWhiteListType = Record<
   >
 >
 
+type TerraIbcListType = Record<
+  'mainnet' | 'testnet',
+  Record<
+    string,
+    {
+      denom: string
+      path: string
+      base_denom: string
+      symbol: string
+      name: string
+      icon: string
+    }
+  >
+>
+
 const useApp = (): {
   initApp: () => Promise<void>
 } => {
@@ -108,7 +123,11 @@ const useApp = (): {
       const terraListJson: TerraWhiteListType = await fetchAssets(
         TerraAssetsPathEnum.cw20_tokens
       )
-      const assetList = _.reduce<
+      const ibcListJson: TerraIbcListType = await fetchAssets(
+        TerraAssetsPathEnum.ibc_tokens
+      )
+
+      const tokenList = _.reduce<
         TerraWhiteListType,
         Record<string, AssetType[]>
       >(
@@ -136,18 +155,34 @@ const useApp = (): {
         {}
       )
 
+      const assetList = _.reduce<TerraIbcListType, Record<string, AssetType[]>>(
+        ibcListJson,
+        (result, pairs, network) => {
+          const val: AssetType[] = _.map(pairs, (item) => {
+            return {
+              symbol: item.symbol as AssetSymbolEnum,
+              name: item.name,
+              logoURI: item.icon,
+              terraToken: item.denom,
+            }
+          })
+          result[network] = tokenList[network].concat(val)
+          return result
+        },
+        {}
+      )
       setAssetList(assetList)
 
       const formattedTerraListJson = _.reduce<
         any,
         Record<string, Record<string, string>>
       >(
-        terraListJson,
+        assetList,
         (result, pairs, network) => {
-          const val = _.reduce<{ token: string }, Record<string, string>>(
+          const val = _.reduce<{ terraToken: string }, Record<string, string>>(
             pairs,
-            (obj, { token }) => {
-              obj[token] = token
+            (obj, { terraToken }) => {
+              obj[terraToken] = terraToken
               return obj
             },
             {

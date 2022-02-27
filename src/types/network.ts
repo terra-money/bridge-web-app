@@ -1,9 +1,14 @@
+import { AssetNativeDenomEnum } from './asset'
+
 export enum BlockChainType {
   terra = 'terra',
   ethereum = 'ethereum',
   bsc = 'bsc',
   hmy = 'harmony',
-  osmo = 'osmosis'
+  osmo = 'osmosis',
+  scrt = 'secret',
+  //cosmos = 'cosmos',
+  //cro = 'cronos',
 }
 
 export type ShuttleNetwork =
@@ -11,7 +16,48 @@ export type ShuttleNetwork =
   | BlockChainType.bsc
   | BlockChainType.hmy
 
-export type IbcNetwork = BlockChainType.osmo
+export type IbcNetwork = BlockChainType.osmo | BlockChainType.scrt
+//| BlockChainType.cosmos
+//| BlockChainType.cro
+
+export function isIbcNetwork(network: BlockChainType): boolean {
+  return [
+    BlockChainType.osmo,
+    BlockChainType.scrt,
+    //  BlockChainType.cosmos,
+    //  BlockChainType.cro,
+  ].includes(network)
+}
+
+export const ibcChannels: Record<IbcNetwork, string> = {
+  [BlockChainType.osmo]: 'channel-1',
+  [BlockChainType.scrt]: 'channel-16',
+  //[BlockChainType.cosmos]: 'channel-2',
+  //[BlockChainType.cro]: 'channel-22',
+}
+
+export const ibcPrefix: Record<IbcNetwork, string> = {
+  [BlockChainType.osmo]: 'osmo1',
+  [BlockChainType.scrt]: 'secret1',
+  //[BlockChainType.cosmos]: 'cosmos1',
+  //[BlockChainType.cro]: 'cro1',
+}
+
+export const allowedCoins: Record<IbcNetwork, string[]> = {
+  [BlockChainType.osmo]: [
+    AssetNativeDenomEnum.uusd,
+    AssetNativeDenomEnum.uluna,
+    AssetNativeDenomEnum.ukrw,
+    'ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B',
+  ],
+  [BlockChainType.scrt]: [
+    AssetNativeDenomEnum.uusd,
+    AssetNativeDenomEnum.uluna,
+    'ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09',
+  ],
+  //[BlockChainType.cosmos]: ['uusd', 'uluna'],
+  //[BlockChainType.cro]: ['uusd', 'uluna'],
+}
 
 export interface ExtTerraNetwork {
   name: TerraNetworkEnum

@@ -25,7 +25,13 @@ import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
 
-import { BlockChainType, ShuttleNetwork } from 'types/network'
+import {
+  BlockChainType,
+  ShuttleNetwork,
+  isIbcNetwork,
+  ibcChannels,
+  IbcNetwork,
+} from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
 import { WalletEnum } from 'types/wallet'
@@ -283,11 +289,15 @@ const useSend = (): UseSendType => {
         ]
       }
 
-      if (UTIL.isNativeDenom(asset.terraToken) && toBlockChain === BlockChainType.osmo) {
+      if (
+        (UTIL.isNativeDenom(asset.terraToken) ||
+          asset.terraToken.startsWith('ibc/')) &&
+        isIbcNetwork(toBlockChain)
+      ) {
         return [
           new MsgTransfer(
             'transfer',
-            'channel-1',
+            ibcChannels[toBlockChain as IbcNetwork],
             new Coin(asset.terraToken, sendAmount),
             loginUser.address,
             toAddress,

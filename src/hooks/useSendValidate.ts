@@ -7,7 +7,7 @@ import { Bech32Address } from '@keplr-wallet/cosmos';
 
 import SendStore from 'store/SendStore'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isIbcNetwork, ibcPrefix, IbcNetwork } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
 import useAsset from './useAsset'
@@ -104,9 +104,9 @@ const useSendValidate = (): {
     if (toBlockChain === BlockChainType.terra) {
       validAddress = AccAddress.validate(toAddress)
     } else if (
-      toBlockChain === BlockChainType.osmo
+      isIbcNetwork(toBlockChain)
     ) {
-      if (toAddress.match(/^osmo/gm)) {
+      if (toAddress.startsWith(ibcPrefix[toBlockChain as IbcNetwork])) {
         try {
           Bech32Address.validate(toAddress)
           validAddress = true;
