@@ -4,6 +4,8 @@ import EthereumPng from 'images/Ethereum.png'
 import TerraPng from 'images/Terra.png'
 import HarmonyPng from 'images/harmony-one.png'
 import OsmoSvg from 'images/osmo.svg'
+import AxelarSvg from 'images/axelar.svg'
+import InjectiveSvg from 'images/injective.svg'
 //import CosmosSvg from 'images/cosmos.svg'
 //import CronosSvg from 'images/cronos.svg'
 import SecretSvg from 'images/secret.svg'
@@ -17,6 +19,8 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.hmy]: HarmonyPng,
   [BlockChainType.osmo]: OsmoSvg,
   [BlockChainType.scrt]: SecretSvg,
+  [BlockChainType.inj]: InjectiveSvg,
+  [BlockChainType.axelar]: AxelarSvg,
 //[BlockChainType.cosmos]: CosmosSvg,
 //[BlockChainType.cro]: CronosSvg,
 }
@@ -28,6 +32,8 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.hmy]: 'Harmony',
   [BlockChainType.osmo]: 'Osmosis',
   [BlockChainType.scrt]: 'Secret',
+  [BlockChainType.inj]: 'Injective',
+  [BlockChainType.axelar]: 'Axelar',
 //[BlockChainType.cosmos]: 'Cosmos',
 //[BlockChainType.cro]: 'Cronos',
 }
