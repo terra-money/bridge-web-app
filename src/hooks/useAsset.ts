@@ -73,8 +73,42 @@ const useAsset = (): {
     if (isLoggedIn) {
       if (fromBlockChain === BlockChainType.terra) {
         whiteList = terraWhiteList
+        let balanceWhiteList = _.map(whiteList, (token) => ({ token }))
+        switch (toBlockChain) {
+          case BlockChainType.terra:
+            balanceWhiteList = balanceWhiteList.filter(
+              ({ token }): boolean =>
+                token.startsWith('terra1')
+            )
+            break
+          case BlockChainType.ethereum:
+            balanceWhiteList = balanceWhiteList.filter(
+              ({ token }): boolean =>
+                token.startsWith('terra1') && !!ethWhiteList[token]
+            )
+            break
+          case BlockChainType.bsc:
+            balanceWhiteList = balanceWhiteList.filter(
+              ({ token }): boolean =>
+                token.startsWith('terra1') && !!bscWhiteList[token]
+            )
+            break
+          case BlockChainType.hmy:
+            balanceWhiteList = balanceWhiteList.filter(
+              ({ token }): boolean =>
+                token.startsWith('terra1') && !!hmyWhiteList[token]
+            )
+            break
+          default:
+            // ibc chain
+            balanceWhiteList = balanceWhiteList.filter(
+              ({ token }): boolean =>
+                token.startsWith('terra1') &&
+                allowedCoins[toBlockChain as IbcNetwork].includes(token)
+            )
+        }
         balanceList = await getTerraBalances({
-          terraWhiteList: _.map(whiteList, (token) => ({ token })),
+          terraWhiteList: balanceWhiteList,
         })
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
         if (fromBlockChain === BlockChainType.ethereum) {

@@ -60,7 +60,6 @@ const useTerraBalance = (): {
   }: {
     terraWhiteList: { token: string }[]
   }): Promise<BalanceListType> => {
-    const terraFilteredList = terraWhiteList.filter(t => t.token.startsWith('terra1'))
     // use to be 1 giant gql query for all tokens,
     // however it is likely to go timeout.
     // 
@@ -68,7 +67,7 @@ const useTerraBalance = (): {
     // make parallel requests
     //
     // TODO: fix this for good, where users add their own tokens rather than scanning through the entire list of tokens
-    const terraWhiteListInChunks = _.chunk(terraFilteredList, 10)
+    const terraWhiteListInChunks = _.chunk(terraWhiteList, 10)
 
     // concurrency = len(terraWhiteList) / 10
     const fetchResult = await Promise.all(terraWhiteListInChunks.map(async whitelist => {
@@ -136,7 +135,7 @@ const useTerraBalance = (): {
     terraWhiteList: { token: string }[]
   }): Promise<BalanceListType> => {
     const bank = await getTerraBankBalances()
-    const token = await getTerraTokenBalances({ terraWhiteList })
+    const token = await getTerraTokenBalances({ terraWhiteList  })
     return {
       ...bank,
       ...token,
