@@ -90,7 +90,6 @@ const Confirm = (): ReactElement => {
 
   // Computed data from Send data
   const gasFee = useRecoilValue(SendStore.gasFee)
-  const tax = useRecoilValue(SendStore.tax)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const shuttleFee = useRecoilValue(SendStore.shuttleFee)
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
@@ -131,16 +130,6 @@ const Confirm = (): ReactElement => {
 
       {fromBlockChain === BlockChainType.terra && (
         <StyledSection style={{ flexDirection: 'column', paddingBottom: 0 }}>
-          {tax && (
-            <StyledSpaceBetween style={{ marginBottom: 16 }}>
-              <StyledSecH>Tax</StyledSecH>
-              <StyledSecD>
-                <StyledSecDText2>
-                  {formatBalance(tax.amount.toString())} {asset?.symbol}
-                </StyledSecDText2>
-              </StyledSecD>
-            </StyledSpaceBetween>
-          )}
           <StyledSpaceBetween style={{ marginBottom: 16 }}>
             <StyledSecH>GAS Fee</StyledSecH>
             <StyledSecD>

@@ -120,7 +120,6 @@ const SendForm = ({
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   // Computed data from Send data
-  const setTax = useSetRecoilState(SendStore.tax)
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const setShuttleFee = useSetRecoilState(SendStore.shuttleFee)
@@ -136,7 +135,7 @@ const SendForm = ({
 
   const { getTerraShuttleFee } = useShuttle()
   const { formatBalance, getAssetList } = useAsset()
-  const { getTerraFeeList, getTerraSendTax } = useSend()
+  const { getTerraFeeList } = useSend()
   const { validateSendData } = useSendValidate()
 
   const onChangeToAddress = ({ value }: { value: string }): void => {
@@ -167,14 +166,7 @@ const SendForm = ({
 
   const onClickMaxButton = async (): Promise<void> => {
     const assetAmount = new BigNumber(asset?.balance || 0)
-    const terraTax = await getTerraSendTax({
-      denom: asset?.terraToken as AssetNativeDenomEnum,
-      feeDenom,
-      amount: assetAmount.toString(10),
-    })
-    const taxAmount = new BigNumber(terraTax?.amount.toString() || 0)
-
-    onChangeAmount({ value: formatBalance(assetAmount.minus(taxAmount)) })
+    onChangeAmount({ value: formatBalance(assetAmount) })
   }
 
   const setTerraShuttleFee = async (): Promise<void> => {
@@ -198,7 +190,7 @@ const SendForm = ({
     }
   }
 
-  // It's for Fee(gas), Tax and ShuttleFee
+  // It's for Fee(gas) and ShuttleFee
   const dbcGetFeeInfoWithValidation = useDebouncedCallback(async () => {
     const sendDataResult = validateSendData()
     setValidationResult(sendDataResult)
@@ -216,13 +208,6 @@ const SendForm = ({
         const terraFeeList = await getTerraFeeList()
         setGasFeeList(terraFeeList)
       }
-
-      const terraTax = await getTerraSendTax({
-        denom: asset?.terraToken as AssetNativeDenomEnum,
-        feeDenom,
-        amount,
-      })
-      setTax(terraTax)
 
       setTerraShuttleFee()
     }

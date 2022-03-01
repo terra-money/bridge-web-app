@@ -3,11 +3,16 @@ import { AccAddress } from '@terra-money/terra.js'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
-import { Bech32Address } from '@keplr-wallet/cosmos';
+import { Bech32Address } from '@keplr-wallet/cosmos'
 
 import SendStore from 'store/SendStore'
 
-import { BlockChainType, isIbcNetwork, ibcPrefix, IbcNetwork } from 'types/network'
+import {
+  BlockChainType,
+  isIbcNetwork,
+  ibcPrefix,
+  IbcNetwork,
+} from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
 import useAsset from './useAsset'
@@ -33,7 +38,6 @@ const useSendValidate = (): {
   const feeDenom = useRecoilValue(SendStore.feeDenom)
 
   const gasFee = useRecoilValue(SendStore.gasFee)
-  const tax = useRecoilValue(SendStore.tax)
 
   const validateFee = (): ValidateItemResultType => {
     if (fromBlockChain === BlockChainType.terra) {
@@ -44,11 +48,10 @@ const useSendValidate = (): {
       )
       const gasFeeIfSameDenomWithSendAsset =
         asset?.terraToken === feeDenom ? gasFee : new BigNumber(0)
-      const taxAmount = new BigNumber(tax?.amount.toString() || 0)
 
       if (
         selectedAssetAmount.isLessThan(
-          taxAmount.plus(sendAmount).plus(gasFeeIfSameDenomWithSendAsset)
+          sendAmount.plus(gasFeeIfSameDenomWithSendAsset)
         )
       ) {
         return {
@@ -99,17 +102,15 @@ const useSendValidate = (): {
       }
     }
 
-    let validAddress = false;
+    let validAddress = false
 
     if (toBlockChain === BlockChainType.terra) {
       validAddress = AccAddress.validate(toAddress)
-    } else if (
-      isIbcNetwork(toBlockChain)
-    ) {
+    } else if (isIbcNetwork(toBlockChain)) {
       if (toAddress.startsWith(ibcPrefix[toBlockChain as IbcNetwork])) {
         try {
           Bech32Address.validate(toAddress)
-          validAddress = true;
+          validAddress = true
         } catch (error) {}
       }
     } else {
