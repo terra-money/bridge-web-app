@@ -55,6 +55,24 @@ export const ibcPrefix: Record<IbcNetwork, string> = {
   //[BlockChainType.cro]: 'cro1',
 }
 
+export const ibcChainId: Record<IbcNetwork, string> = {
+  [BlockChainType.osmo]: 'osmosis-1',
+  [BlockChainType.scrt]: 'secret-4',
+  [BlockChainType.inj]: 'injective-1',
+  [BlockChainType.axelar]: 'axelar-dojo-1',
+  //[BlockChainType.cosmos]: 'cosmoshub-4',
+  //[BlockChainType.cro]: 'crypto-org-chain-mainnet-1',
+}
+
+export const ibcRpc: Record<IbcNetwork, string> = {
+  [BlockChainType.osmo]: 'https://rpc-osmosis.blockapsis.com/',
+  [BlockChainType.scrt]: '',
+  [BlockChainType.inj]: '',
+  [BlockChainType.axelar]: '',
+  //[BlockChainType.cosmos]: '',
+  //[BlockChainType.cro]: '',
+}
+
 export const allowedCoins: Record<IbcNetwork, string[]> = {
   [BlockChainType.osmo]: [
     AssetNativeDenomEnum.uusd,
@@ -104,4 +122,5 @@ export enum TerraAssetsPathEnum {
   shuttle_hmy = '/shuttle/hmy.json',
 
   ibc_tokens = '/ibc/tokens.json',
+  osmo_tokens = '/ibc/osmo.json',
 }

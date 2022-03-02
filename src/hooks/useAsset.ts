@@ -16,6 +16,7 @@ import {
 
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
+import useKeplrBalance from './useKeplrBalance'
 import ContractStore from 'store/ContractStore'
 
 const useAsset = (): {
@@ -31,11 +32,13 @@ const useAsset = (): {
   const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
   const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
+  const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
   const { getTerraBalances } = useTerraBalance()
   const { getEtherBalances } = useEtherBaseBalance()
+  const { getKeplrBalances } = useKeplrBalance()
 
   const setBalanceToAssetList = ({
     assetList,
@@ -85,6 +88,11 @@ const useAsset = (): {
           whiteList = hmyWhiteList
         }
         balanceList = await getEtherBalances({ whiteList })
+      } else if (isIbcNetwork(fromBlockChain)) {
+        if (fromBlockChain === BlockChainType.osmo) {
+          whiteList = osmoWhiteList
+          balanceList = await getKeplrBalances({ whiteList })
+        }
       }
     }
 
@@ -132,7 +140,7 @@ const useAsset = (): {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
-      return fromBlockChain === BlockChainType.terra
+      return fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain)
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)

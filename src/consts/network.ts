@@ -62,7 +62,9 @@ const INFURAID =
 
 const TERRA_EXTENSION = 'https://terra.money/extension'
 const BSC_EXTENSION =
-  'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?utm_source=chrome-ntp-icon'
+  'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp'
+const KEPLR_EXTENSION =
+  'https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap'
 const CHROME = 'https://google.com/chrome'
 
 const TERRA_ASSETS_URL = 'https://assets.terra.money'
@@ -116,6 +118,7 @@ export default {
   TERRA_ASSETS_URL,
   TERRA_EXTENSION,
   BSC_EXTENSION,
+  KEPLR_EXTENSION,
   CHROME,
   ETH_CHAINID,
   ETH_VAULT_TOKEN_LIST,

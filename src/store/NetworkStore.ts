@@ -6,6 +6,7 @@ import {
   BlockChainType,
   ExtTerraNetwork,
   LocalTerraNetwork,
+  isIbcNetwork
 } from 'types/network'
 import AuthStore from './AuthStore'
 import SendStore from './SendStore'
@@ -26,6 +27,11 @@ const etherBaseExt = atom<EtherNetwork | undefined>({
   default: undefined,
 })
 
+const keplrExt = atom<{ chainID: string, name: string } | undefined>({
+  key: 'keplrExt',
+  default: undefined,
+})
+
 const isTestnet = selector<boolean>({
   key: 'isTestnet',
   get: ({ get }) => {
@@ -37,8 +43,12 @@ const isTestnet = selector<boolean>({
 
         return _terraExt?.name !== 'mainnet'
       }
-      const _etherBaseExt = get(etherBaseExt)
+      
+      if (isIbcNetwork(fromBlockChain)) {
+        return false
+      }
 
+      const _etherBaseExt = get(etherBaseExt)
       if (fromBlockChain === BlockChainType.ethereum) {
         return _etherBaseExt?.name !== 'homestead'
       } else if (fromBlockChain === BlockChainType.hmy) {
@@ -72,6 +82,7 @@ export default {
   terraExt,
   terraLocal,
   etherBaseExt,
+  keplrExt,
   isTestnet,
   isVisibleNotSupportNetworkModal,
   triedNotSupportNetwork,

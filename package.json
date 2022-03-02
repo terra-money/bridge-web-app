@@ -6,7 +6,11 @@
   "dependencies": {
     "@apollo/client": "^3.3.11",
     "@binance-chain/bsc-connector": "^1.0.0",
+    "@cosmjs/launchpad": "^0.27.1",
+    "@cosmjs/stargate": "^0.27.1",
     "@keplr-wallet/cosmos": "^0.9.10",
+    "@keplr-wallet/stores": "^0.9.15",
+    "@keplr-wallet/types": "^0.9.12",
     "@material-ui/core": "^4.11.3",
     "@metamask/onboarding": "^1.0.0",
     "@terra-money/terra.js": "^3.0.2",

@@ -9,6 +9,7 @@ import Footer from 'components/layouts/Footer'
 import SelectWalletModal from './SelectWalletModal'
 import TerraExtensionDownModal from './TerraExtensionDownModal'
 import BscExtensionDownModal from './BscExtensionDownModal'
+import KeplrDownModal from './KeplrDownModal'
 import NotSupportNetworkModal from './NotSupportNetworkModal'
 import NetworkErrorScreen from './NetworkErrorScreen'
 import UnderMaintenance from './UnderMaintenance'
@@ -45,6 +46,7 @@ const App = (): ReactElement => {
             <SelectWalletModal />
             <TerraExtensionDownModal />
             <BscExtensionDownModal />
+            <KeplrDownModal />
             <NotSupportNetworkModal />
             <NetworkErrorScreen />
             <UnderMaintenance />

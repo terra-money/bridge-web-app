@@ -31,6 +31,7 @@ import {
   isIbcNetwork,
   ibcChannels,
   IbcNetwork,
+  ibcChainId,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -507,11 +508,58 @@ const useSend = (): UseSendType => {
       }
     }
 
+  const handleTxErrorFromIbc = (error: any): RequestTxResultType => {
+    let errorMessage = _.toString(error)
+    return {
+      success: false,
+      errorMessage,
+    }
+  }
+
+  const submitRequestTxFromIbc = async (): Promise<RequestTxResultType> => {
+    if (
+      isIbcNetwork(fromBlockChain) &&
+      asset &&
+      fromTokenAddress &&
+      toBlockChain === BlockChainType.terra
+    ) {
+      if (loginUser.signer) {
+        try {
+          await window.keplr.enable(ibcChainId[fromBlockChain as IbcNetwork])
+          const fee = {
+            amount: [],
+            gas: '100000',
+          }
+          const { code, transactionHash } =
+            await loginUser.signer.sendIbcTokens(
+              // from address
+              loginUser.address,
+              toAddress,
+              { denom: fromTokenAddress, amount: sendAmount },
+              'transfer',
+              'channel-72',
+              undefined,
+              (Date.now() + 60 * 1000) * 1e6,
+              fee
+            )
+          return { success: code === 0, hash: transactionHash }
+        } catch (error) {
+          return handleTxErrorFromIbc(error)
+        }
+      }
+    }
+    return {
+      success: false,
+    }
+  }
+
   const submitRequestTx = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain === BlockChainType.terra) {
       return submitRequestTxFromTerra()
     }
-
+    if (isIbcNetwork(fromBlockChain)) {
+      return submitRequestTxFromIbc()
+    }
     return submitRequestTxFromEtherBase()
   }
 

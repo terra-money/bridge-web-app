@@ -7,6 +7,7 @@ export enum WalletEnum {
   TerraWalletConnect = 'TerraWalletConnect',
   WalletConnect = 'WalletConnect',
   CoinbaseWallet = 'CoinbaseWallet',
+  Keplr = 'Keplr',
 }
 
 export const WalletTitle: Record<WalletEnum, string> = {
@@ -16,6 +17,7 @@ export const WalletTitle: Record<WalletEnum, string> = {
   MetaMask: 'MetaMask',
   WalletConnect: 'WalletConnect',
   CoinbaseWallet: 'Coinbase Wallet',
+  Keplr: 'Keplr (Extension)',
 }
 
 export const WalletSupportBrowser: Record<
@@ -44,5 +46,9 @@ export const WalletSupportBrowser: Record<
   CoinbaseWallet: {
     isSupport: isBrowser,
     errorMessage: 'Available for desktop browsers.',
+  },
+  Keplr: {
+    isSupport: isBrowser && (isChrome || isEdgeChromium),
+    errorMessage: 'Available for desktop Chrome.',
   },
 }

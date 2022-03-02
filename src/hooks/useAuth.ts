@@ -11,7 +11,7 @@ import NetworkStore from 'store/NetworkStore'
 import terraService from 'services/terraService'
 
 import { User } from 'types/auth'
-import { BlockChainType, LocalTerraNetwork } from 'types/network'
+import { BlockChainType, LocalTerraNetwork, isIbcNetwork } from 'types/network'
 import { WalletEnum } from 'types/wallet'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import useTerraNetwork from './useTerraNetwork'
@@ -33,6 +33,7 @@ const useAuth = (): {
 
   const setLoginUser = useSetRecoilState(AuthStore.loginUser)
   const setEtherBaseExt = useSetRecoilState(NetworkStore.etherBaseExt)
+  const setKeplrBaseExt = useSetRecoilState(NetworkStore.keplrExt)
   const setTerraExt = useSetRecoilState(NetworkStore.terraExt)
   const setTerraLocal = useSetRecoilState(NetworkStore.terraLocal)
   const setIsVisibleNotSupportNetworkModal = useSetRecoilState(
@@ -102,6 +103,29 @@ const useAuth = (): {
         blockChain: BlockChainType.terra,
         walletType: user.walletType,
       })
+    } else if(isIbcNetwork(fromBlockChain)) {
+      const network = await user.signer?.getChainId()
+      //const isIbcValidNetwork = ibcChainId[fromBlockChain as IbcNetwork] === network
+      if (network) {
+        setFromBlockChain(fromBlockChain)
+        setKeplrBaseExt({
+          chainID: await user.signer?.getChainId() || '',
+          name: 'osmosis',
+        })
+        setLoginStorage({
+          blockChain: fromBlockChain,
+          walletType: user.walletType,
+        })
+      } else {
+        setIsVisibleNotSupportNetworkModal(true)
+        network &&
+          setTriedNotSupportNetwork({
+            blockChain: BlockChainType.osmo,
+            name: network,
+            chainId: network,
+          })
+        return
+      }
     }
     // ethereum, bsc, hmy are ethereum base blockchain
     else {

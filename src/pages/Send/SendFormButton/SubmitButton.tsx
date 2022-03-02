@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { CircularProgress } from '@material-ui/core'
 
 import { COLOR } from 'consts'
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isIbcNetwork } from 'types/network'
 import { RequestTxResultType } from 'types/send'
 
 import { Button } from 'components'
@@ -52,6 +52,9 @@ const SubmitButton = (): ReactElement => {
             setStatus(ProcessStatus.Failed)
           }
         }, 500)
+      } else if (isIbcNetwork(fromBlockChain)) {
+        // todo implement broadcast sync
+        setStatus(ProcessStatus.Done)
       } else {
         try {
           await waitForEtherBaseTransaction({
@@ -70,7 +73,7 @@ const SubmitButton = (): ReactElement => {
 
   const onClickSubmitButton = async (): Promise<void> => {
     setErrorMessage('')
-    setStatus(ProcessStatus.Submit)
+    setStatus(ProcessStatus.Pending)
 
     const submitResult = await submitRequestTx()
 

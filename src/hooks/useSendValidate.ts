@@ -134,7 +134,7 @@ const useSendValidate = (): {
       return { isValid: false, errorMessage: 'Amount must be greater than 0' }
     }
 
-    const rebalanceDecimal = fromBlockChain === BlockChainType.terra ? 1 : 1e12
+    const rebalanceDecimal = fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain) ? 1 : 1e12
 
     if (false === bnAmount.div(rebalanceDecimal).isInteger()) {
       return {
