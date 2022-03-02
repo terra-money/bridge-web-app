@@ -151,7 +151,7 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.cro,
               isDisabled: toBlockChain !== BlockChainType.terra,
             },
-*/
+          */
           ],
           label: 'TO',
         }}

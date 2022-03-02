@@ -60,24 +60,43 @@ const useTerraBalance = (): {
   }: {
     terraWhiteList: { token: string }[]
   }): Promise<BalanceListType> => {
-    const aliasResult = getTokenBalanceQuery(
-      Object.values(terraWhiteList).map(({ token }) => ({
-        token,
-        contract: token,
-        msg: { balance: { address: loginUser.address } },
-      }))
-    )
+    // use to be 1 giant gql query for all tokens,
+    // however it is likely to go timeout.
+    // 
+    // prevent timeout by chunking it by 1 tokens, and
+    // make parallel requests
+    //
+    // TODO: fix this for good, where users add their own tokens rather than scanning through the entire list of tokens
+    const terraWhiteListInChunks = _.chunk(terraWhiteList, 10)
 
-    const fetchResult: Record<
-      string,
-      { Height: string; Result: string }
-    > = await fetchQuery({
-      query: aliasResult,
-    })
+    // concurrency = len(terraWhiteList) / 10
+    const fetchResult = await Promise.all(terraWhiteListInChunks.map(async whitelist => {
+      const aliasResult = getTokenBalanceQuery(
+        Object.values(whitelist).map(({ token }) => ({
+          token,
+          contract: token,
+          msg: { balance: { address: loginUser.address } },
+        }))
+      )
 
-    if (_.some(fetchResult)) {
+      const fetchResult: Record<
+        string,
+        { Height: string; Result: string }
+      > = await fetchQuery({
+        query: aliasResult,
+      })
+
+      return fetchResult
+    }))
+
+    // flatten to map
+    const fetchResultFlattened = fetchResult.reduce((acc, cur) => {
+      return { ...acc, ...cur }
+    }, {} as typeof fetchResult[0])
+
+    if (_.some(fetchResultFlattened)) {
       const list: BalanceListType = {}
-      _.forEach(fetchResult, (x, key) => {
+      _.forEach(fetchResultFlattened, (x, key) => {
         if (x) {
           const res = UTIL.jsonTryParse<{ balance: string }>(x.Result)
           if (res) list[key] = res.balance
@@ -116,7 +135,7 @@ const useTerraBalance = (): {
     terraWhiteList: { token: string }[]
   }): Promise<BalanceListType> => {
     const bank = await getTerraBankBalances()
-    const token = await getTerraTokenBalances({ terraWhiteList })
+    const token = await getTerraTokenBalances({ terraWhiteList  })
     return {
       ...bank,
       ...token,
