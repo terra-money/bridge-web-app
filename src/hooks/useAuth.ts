@@ -110,7 +110,7 @@ const useAuth = (): {
         setFromBlockChain(fromBlockChain)
         setKeplrBaseExt({
           chainID: await user.signer?.getChainId() || '',
-          name: 'osmosis',
+          name: NETWORK.blockChainName[fromBlockChain],
         })
         setLoginStorage({
           blockChain: fromBlockChain,
