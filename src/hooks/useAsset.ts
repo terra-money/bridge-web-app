@@ -33,6 +33,7 @@ const useAsset = (): {
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
   const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
   const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
+  const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
@@ -125,6 +126,9 @@ const useAsset = (): {
       } else if (isIbcNetwork(fromBlockChain)) {
         if (fromBlockChain === BlockChainType.osmo) {
           whiteList = osmoWhiteList
+          balanceList = await getKeplrBalances({ whiteList })
+        } else if (fromBlockChain === BlockChainType.scrt) {
+          whiteList = scrtWhiteList
           balanceList = await getKeplrBalances({ whiteList })
         }
       }

@@ -87,6 +87,7 @@ const useApp = (): {
   const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
   const setIbcWhiteList = useSetRecoilState(ContractStore.initOnlyIbcWhiteList)
   const setOsmoWhiteList = useSetRecoilState(ContractStore.initOnlyOsmoWhiteList)
+  const setScrtWhiteList = useSetRecoilState(ContractStore.initOnlyScrtWhiteList)
 
   const fetchAssets = async (path: TerraAssetsPathEnum): Promise<any> => {
     return (await fetch(`${NETWORK.TERRA_ASSETS_URL}${path}`)).json()
@@ -212,6 +213,9 @@ const useApp = (): {
 
       const osmoListJson = await fetchAssets(TerraAssetsPathEnum.osmo_tokens)
       setOsmoWhiteList(osmoListJson)
+
+      const scrtListJson = await fetchAssets(TerraAssetsPathEnum.scrt_tokens)
+      setScrtWhiteList(scrtListJson)
 
       const ibcTokensJson = await fetchAssets(TerraAssetsPathEnum.ibc_tokens)
       setIbcWhiteList(ibcTokensJson)

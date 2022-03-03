@@ -29,6 +29,7 @@ import {
   BlockChainType,
   ShuttleNetwork,
   isIbcNetwork,
+  terraIbcChannels,
   ibcChannels,
   IbcNetwork,
   ibcChainId,
@@ -273,7 +274,7 @@ const useSend = (): UseSendType => {
         return [
           new MsgTransfer(
             'transfer',
-            ibcChannels[toBlockChain as IbcNetwork],
+            terraIbcChannels[toBlockChain as IbcNetwork],
             new Coin(asset.terraToken, sendAmount),
             loginUser.address,
             toAddress,
@@ -509,7 +510,7 @@ const useSend = (): UseSendType => {
               toAddress,
               { denom: fromTokenAddress, amount: sendAmount },
               'transfer',
-              'channel-72',
+              ibcChannels[fromBlockChain as IbcNetwork],
               undefined,
               (Date.now() + 60 * 1000) * 1e6,
               fee

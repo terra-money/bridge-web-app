@@ -67,6 +67,23 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.osmo,
               isDisabled: fromBlockChain === BlockChainType.osmo,
             },
+            {
+              label: NETWORK.blockChainName[BlockChainType.scrt],
+              value: BlockChainType.scrt,
+              isDisabled: fromBlockChain === BlockChainType.scrt,
+            },
+            /*
+            {
+              label: NETWORK.blockChainName[BlockChainType.inj],
+              value: BlockChainType.inj,
+              isDisabled: fromBlockChain === BlockChainType.inj,
+            },
+            {
+              label: NETWORK.blockChainName[BlockChainType.axelar],
+              value: BlockChainType.axelar,
+              isDisabled: fromBlockChain === BlockChainType.axelar,
+            },
+            */
           ],
           label: 'FROM',
         }}
