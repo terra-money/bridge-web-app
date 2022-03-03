@@ -13,6 +13,7 @@ import walletConnectService from 'services/walletConnectService'
 import coinBaseService from 'services/coinBaseService'
 import metaMaskService from 'services/metaMaskService'
 import bscService from 'services/bscService'
+import keplrService from 'services/keplrService'
 
 import SelectWalletStore, {
   SelectWalletModalType,
@@ -20,7 +21,10 @@ import SelectWalletStore, {
 import SendStore from 'store/SendStore'
 
 import { WalletEnum } from 'types/wallet'
-import { BlockChainType } from 'types/network'
+import {
+  BlockChainType,
+  isIbcNetwork,
+} from 'types/network'
 
 import WalletButton from './WalletButton'
 
@@ -86,6 +90,7 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       // if user close connect modal then error
       console.log(e)
     }
+
   }
   const onClickBinanceChain = async (): Promise<void> => {
     if (bscService.checkInstalled()) {
@@ -99,6 +104,21 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       })
     } else {
       setIsVisibleModalType(SelectWalletModalType.bscInstall)
+    }
+  }
+
+  const onClickKeplr = async (): Promise<void> => {
+    if (keplrService.checkInstalled()) {
+      const { address, signingCosmosClient } = await keplrService.connect(fromBlockChain)
+      await login({
+        user: {
+          address,
+          signer: signingCosmosClient,
+          walletType: WalletEnum.Keplr,
+        },
+      })
+    } else {
+      setIsVisibleModalType(SelectWalletModalType.keplrInstall)
     }
   }
 
@@ -173,6 +193,9 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       case WalletEnum.TerraWalletConnect:
         onClickTerraWalletConnect()
         break
+      case WalletEnum.Keplr:
+        onClickKeplr()
+        break
     }
   }
 
@@ -188,6 +211,8 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     ]
   } else if (fromBlockChain === BlockChainType.bsc) {
     buttons = [WalletEnum.Binance, WalletEnum.MetaMask]
+  } else if (isIbcNetwork(fromBlockChain)) {
+    buttons = [WalletEnum.Keplr]
   }
 
   useEffect(() => {

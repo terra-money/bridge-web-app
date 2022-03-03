@@ -62,6 +62,11 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.hmy,
               isDisabled: fromBlockChain === BlockChainType.hmy,
             },
+            {
+              label: NETWORK.blockChainName[BlockChainType.osmo],
+              value: BlockChainType.osmo,
+              isDisabled: fromBlockChain === BlockChainType.osmo,
+            },
           ],
           label: 'FROM',
         }}
@@ -90,60 +95,63 @@ const BlockChainNetwork = (): ReactElement => {
               label: NETWORK.blockChainName[BlockChainType.ethereum],
               value: BlockChainType.ethereum,
               isDisabled:
-                fromBlockChain === BlockChainType.bsc ||
-                fromBlockChain === BlockChainType.hmy ||
+                fromBlockChain !== BlockChainType.terra ||
                 toBlockChain === BlockChainType.ethereum,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.bsc],
               value: BlockChainType.bsc,
               isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.hmy ||
+                fromBlockChain !== BlockChainType.terra ||
                 toBlockChain === BlockChainType.bsc,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.hmy],
               value: BlockChainType.hmy,
               isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.bsc ||
+                fromBlockChain !== BlockChainType.terra ||
                 toBlockChain === BlockChainType.hmy,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.osmo],
               value: BlockChainType.osmo,
               isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.bsc ||
-                fromBlockChain === BlockChainType.hmy,
+                fromBlockChain !== BlockChainType.terra ||
+                toBlockChain === BlockChainType.osmo,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.scrt],
               value: BlockChainType.scrt,
               isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.bsc ||
-                fromBlockChain === BlockChainType.hmy,
+                fromBlockChain !== BlockChainType.terra ||
+                toBlockChain === BlockChainType.scrt,
             },
-/*
+            {
+              label: NETWORK.blockChainName[BlockChainType.inj],
+              value: BlockChainType.inj,
+              isDisabled:
+                fromBlockChain !== BlockChainType.terra ||
+                toBlockChain === BlockChainType.inj,
+            },
+            {
+              label: NETWORK.blockChainName[BlockChainType.axelar],
+              value: BlockChainType.axelar,
+              isDisabled:
+                fromBlockChain !== BlockChainType.terra ||
+                toBlockChain === BlockChainType.axelar,
+            },
+            /*
             {
               label: NETWORK.blockChainName[BlockChainType.cosmos],
               value: BlockChainType.cosmos,
-              isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.bsc ||
-                fromBlockChain === BlockChainType.hmy,
+              isDisabled: toBlockChain !== BlockChainType.terra,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.cro],
               value: BlockChainType.cro,
-              isDisabled:
-                fromBlockChain === BlockChainType.ethereum ||
-                fromBlockChain === BlockChainType.bsc ||
-                fromBlockChain === BlockChainType.hmy,
+              isDisabled: toBlockChain !== BlockChainType.terra,
             },
-*/
+          */
           ],
           label: 'TO',
         }}

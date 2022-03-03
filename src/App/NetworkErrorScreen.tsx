@@ -76,6 +76,7 @@ const NetworkErrorScreen = (): ReactElement => {
   const ethWhiteList = useRecoilValue(ContractStore.initOnlyEthWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.initOnlyBscWhiteList)
   const hmyWhiteList = useRecoilValue(ContractStore.initOnlyHmyWhiteList)
+  const osmoWhiteList = useRecoilValue(ContractStore.initOnlyOsmoWhiteList)
 
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [showError, setShowError] = useState(false)
@@ -106,6 +107,7 @@ const NetworkErrorScreen = (): ReactElement => {
           { name: 'Ethereum Whitelist Json', value: ethWhiteList },
           { name: 'BSC Whitelist Json', value: bscWhiteList },
           { name: 'Harmony Whitelist Json', value: hmyWhiteList },
+          { name: 'Osmo Whitelist Json', value: osmoWhiteList },
         ],
         (item) => {
           if (_.isEmpty(item.value)) {

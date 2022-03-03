@@ -4,6 +4,8 @@ import EthereumPng from 'images/Ethereum.png'
 import TerraPng from 'images/Terra.png'
 import HarmonyPng from 'images/harmony-one.png'
 import OsmoSvg from 'images/osmo.svg'
+import AxelarSvg from 'images/axelar.svg'
+import InjectiveSvg from 'images/injective.svg'
 //import CosmosSvg from 'images/cosmos.svg'
 //import CronosSvg from 'images/cronos.svg'
 import SecretSvg from 'images/secret.svg'
@@ -17,6 +19,8 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.hmy]: HarmonyPng,
   [BlockChainType.osmo]: OsmoSvg,
   [BlockChainType.scrt]: SecretSvg,
+  [BlockChainType.inj]: InjectiveSvg,
+  [BlockChainType.axelar]: AxelarSvg,
 //[BlockChainType.cosmos]: CosmosSvg,
 //[BlockChainType.cro]: CronosSvg,
 }
@@ -28,6 +32,8 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.hmy]: 'Harmony',
   [BlockChainType.osmo]: 'Osmosis',
   [BlockChainType.scrt]: 'Secret',
+  [BlockChainType.inj]: 'Injective',
+  [BlockChainType.axelar]: 'Axelar',
 //[BlockChainType.cosmos]: 'Cosmos',
 //[BlockChainType.cro]: 'Cronos',
 }
@@ -56,7 +62,9 @@ const INFURAID =
 
 const TERRA_EXTENSION = 'https://terra.money/extension'
 const BSC_EXTENSION =
-  'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp?utm_source=chrome-ntp-icon'
+  'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp'
+const KEPLR_EXTENSION =
+  'https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap'
 const CHROME = 'https://google.com/chrome'
 
 const TERRA_ASSETS_URL = 'https://assets.terra.money'
@@ -110,6 +118,7 @@ export default {
   TERRA_ASSETS_URL,
   TERRA_EXTENSION,
   BSC_EXTENSION,
+  KEPLR_EXTENSION,
   CHROME,
   ETH_CHAINID,
   ETH_VAULT_TOKEN_LIST,

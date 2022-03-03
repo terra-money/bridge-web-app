@@ -24,6 +24,7 @@ const useNetwork = (): {
   const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
   const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
+  const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
 
   const getScannerLink = ({
     address,
@@ -64,6 +65,8 @@ const useNetwork = (): {
         return bscWhiteList[tokenAddress]
       case BlockChainType.hmy:
         return hmyWhiteList[tokenAddress]
+      case BlockChainType.osmo:
+        return osmoWhiteList[tokenAddress]
       default:
         return terraWhiteList[tokenAddress]
     }
