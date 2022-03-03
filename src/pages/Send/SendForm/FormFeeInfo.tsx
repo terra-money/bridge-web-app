@@ -38,7 +38,7 @@ const FormFeeInfo = ({
   const gasFeeList = useRecoilValue(SendStore.gasFeeList)
   const [gasFee, setGasFee] = useRecoilState(SendStore.gasFee)
   const setFee = useSetRecoilState(SendStore.fee)
-  const tax = useRecoilValue(SendStore.tax)
+
   const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
     SendStore.feeDenom
   )
@@ -137,30 +137,6 @@ const FormFeeInfo = ({
                 paddingBottom: 6,
               }}
             >
-              {tax && (
-                <Row
-                  style={{
-                    paddingTop: 6,
-                    paddingBottom: 6,
-                    margin: 0,
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <View>
-                    <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                      Tax
-                    </Text>
-                  </View>
-                  <View>
-                    <Text
-                      style={{ justifyContent: 'flex-end', opacity: '0.8' }}
-                    >
-                      {formatBalance(tax.amount.toString())} {asset?.symbol}
-                    </Text>
-                  </View>
-                </Row>
-              )}
-
               <Row
                 style={{
                   paddingTop: 6,

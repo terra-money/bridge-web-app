@@ -61,11 +61,6 @@ type UseSendType = {
   allowanceOfSelectedAsset: AllowanceOfSelectedAssetType
   initSendData: () => void
   submitRequestTx: () => Promise<RequestTxResultType>
-  getTerraSendTax: (props: {
-    denom: AssetNativeDenomEnum
-    amount: string
-    feeDenom: string
-  }) => Promise<Coin | undefined>
   getTerraFeeList: () => Promise<
     {
       denom: AssetNativeDenomEnum
@@ -110,7 +105,6 @@ const useSend = (): UseSendType => {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const [fee, setFee] = useRecoilState(SendStore.fee)
-  const tax = useRecoilValue(SendStore.tax)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
   const { getEtherBaseContract } = useEtherBaseContract()
@@ -187,25 +181,6 @@ const useSend = (): UseSendType => {
     setFee(undefined)
   }
 
-  const getTerraSendTax = async (props: {
-    denom: AssetNativeDenomEnum
-    amount: string
-    feeDenom: string
-  }): Promise<Coin | undefined> => {
-    const { denom, amount, feeDenom: _feeDenom } = props
-    if (terraExt) {
-      const lcd = new LCDClient({
-        chainID: terraExt.chainID,
-        URL: terraLocal.lcd,
-        gasPrices: { [_feeDenom]: gasPricesFromServer[_feeDenom] },
-      })
-      // tax
-      return UTIL.isNativeTerra(denom)
-        ? lcd.utils.calculateTax(new Coin(denom, amount))
-        : new Coin(_feeDenom, 0)
-    }
-  }
-
   const getTerraFeeList = async (): Promise<
     {
       denom: AssetNativeDenomEnum
@@ -239,7 +214,7 @@ const useSend = (): UseSendType => {
           URL: terraLocal.lcd,
           gasPrices: gasPricesFromServer,
         })
-        // fee + tax
+        // fee
         const unsignedTx = await lcd.tx.create(
           [{ address: loginUser.address }],
           {
@@ -335,14 +310,11 @@ const useSend = (): UseSendType => {
         : // if send to ether-base then memo must be to-address
           toAddress
     const msgs = getTerraMsgs()
-    const txFee =
-      tax?.amount.greaterThan(0) && fee
-        ? new Fee(fee.gas_limit, fee.amount.add(tax))
-        : fee
+
     const tx: CreateTxOptions = {
       gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
       msgs,
-      fee: txFee,
+      fee,
       memo: memoOrToAddress,
     }
     const connector = loginUser.terraWalletConnect
@@ -577,7 +549,6 @@ const useSend = (): UseSendType => {
     allowanceOfSelectedAsset,
     initSendData,
     submitRequestTx,
-    getTerraSendTax,
     getTerraFeeList,
     getTerraMsgs,
     waitForEtherBaseTransaction,
