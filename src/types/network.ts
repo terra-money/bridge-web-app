@@ -78,8 +78,8 @@ export const ibcChainId: Record<IbcNetwork, string> = {
 export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'https://rpc-osmosis.blockapsis.com/',
   [BlockChainType.scrt]: 'https://rpc-secret.scrtlabs.com/secret-4/rpc/',
-  [BlockChainType.inj]: 'https://injective-rpc.api.chainlayer.network/',
-  [BlockChainType.axelar]: 'https://axelar-rpc.pops.one/',
+  [BlockChainType.inj]: 'https://tm.injective.network/',
+  [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   //[BlockChainType.cosmos]: '',
   //[BlockChainType.cro]: '',
 }
@@ -141,8 +141,6 @@ export enum TerraAssetsPathEnum {
   ibc_tokens = '/ibc/tokens.json',
   osmo_tokens = '/ibc/osmo.json',
   scrt_tokens = '/ibc/scrt.json',
-  
-  // TODO: update token list
-  inj_tokens = '/ibc/inj.json',
   axelar_tokens = '/ibc/axelar.json',
+  inj_tokens = '/ibc/inj.json',
 }

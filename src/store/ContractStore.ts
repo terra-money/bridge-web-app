@@ -74,6 +74,13 @@ const initOnlyScrtWhiteList = atom<
   default: undefined,
 })
 
+const initOnlyInjWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlyScrtWhiteList',
+  default: undefined,
+})
+
 const assetList = selector<AssetType[]>({
   key: 'assetList',
   get: ({ get }) => {
@@ -179,6 +186,19 @@ const scrtWhiteList = selector<WhiteListType>({
 })
 
 // if empty, service will block from start
+const injWhiteList = selector<WhiteListType>({
+  key: 'scrtWhiteList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlyInjWhiteList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
+// if empty, service will block from start
 const hmyWhiteList = selector<WhiteListType>({
   key: 'hmyWhiteList',
   get: ({ get }) => {
@@ -235,6 +255,10 @@ const allTokenAddress = selector<string[]>({
       mainnet: {},
       testnet: {},
     }
+    const injWhiteList = get(initOnlyInjWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
 
     return [
       ..._.flatMap(terraWhiteList['mainnet']),
@@ -249,6 +273,8 @@ const allTokenAddress = selector<string[]>({
       ..._.flatMap(osmoWhiteList['testnet']),
       ..._.flatMap(scrtWhiteList['mainnet']),
       ..._.flatMap(scrtWhiteList['testnet']),
+      ..._.flatMap(injWhiteList['mainnet']),
+      ..._.flatMap(injWhiteList['testnet']),
     ]
   },
 })
@@ -263,6 +289,7 @@ export default {
   initOnlyIbcWhiteList,
   initOnlyOsmoWhiteList,
   initOnlyScrtWhiteList,
+  initOnlyInjWhiteList,
   assetList,
   shuttleUusdPairs,
   terraWhiteList,
@@ -271,6 +298,7 @@ export default {
   hmyWhiteList,
   osmoWhiteList,
   scrtWhiteList,
+  injWhiteList,
   etherVaultTokenList,
   allTokenAddress,
 }

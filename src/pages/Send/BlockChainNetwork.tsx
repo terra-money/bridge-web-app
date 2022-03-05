@@ -72,18 +72,11 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.scrt,
               isDisabled: fromBlockChain === BlockChainType.scrt,
             },
-            /*
             {
               label: NETWORK.blockChainName[BlockChainType.inj],
               value: BlockChainType.inj,
               isDisabled: fromBlockChain === BlockChainType.inj,
             },
-            {
-              label: NETWORK.blockChainName[BlockChainType.axelar],
-              value: BlockChainType.axelar,
-              isDisabled: fromBlockChain === BlockChainType.axelar,
-            },
-            */
           ],
           label: 'FROM',
         }}
@@ -150,6 +143,8 @@ const BlockChainNetwork = (): ReactElement => {
                 fromBlockChain !== BlockChainType.terra ||
                 toBlockChain === BlockChainType.inj,
             },
+            // we should use axelar only to send tokens to Avalance and Fantom
+            /* 
             {
               label: NETWORK.blockChainName[BlockChainType.axelar],
               value: BlockChainType.axelar,
@@ -157,7 +152,6 @@ const BlockChainNetwork = (): ReactElement => {
                 fromBlockChain !== BlockChainType.terra ||
                 toBlockChain === BlockChainType.axelar,
             },
-            /*
             {
               label: NETWORK.blockChainName[BlockChainType.cosmos],
               value: BlockChainType.cosmos,

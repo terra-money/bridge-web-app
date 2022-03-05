@@ -517,6 +517,7 @@ const useSend = (): UseSendType => {
             )
           return { success: code === 0, hash: transactionHash }
         } catch (error) {
+          console.error(error)
           return handleTxErrorFromIbc(error)
         }
       }
