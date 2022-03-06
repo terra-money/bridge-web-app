@@ -12,6 +12,8 @@ import {
   CreateTxOptions,
   MsgTransfer,
 } from '@terra-money/terra.js'
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx.js'
+import { getInjectiveSequence } from 'packages/injective'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 import { isMobile } from 'react-device-detect'
@@ -499,22 +501,42 @@ const useSend = (): UseSendType => {
       if (loginUser.signer) {
         try {
           await window.keplr.enable(ibcChainId[fromBlockChain as IbcNetwork])
-          const fee = {
-            amount: [],
-            gas: '100000',
+
+          const transferMsg = {
+            typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+            value: {
+              sourcePort: 'transfer',
+              sourceChannel: ibcChannels[fromBlockChain as IbcNetwork],
+              sender: loginUser.address,
+              receiver: toAddress,
+              token: { denom: fromTokenAddress, amount: sendAmount },
+              timeoutHeight: undefined,
+              timeoutTimestamp: (Date.now() + 60 * 1000) * 1e6,
+            },
           }
-          const { code, transactionHash } =
-            await loginUser.signer.sendIbcTokens(
-              // from address
-              loginUser.address,
-              toAddress,
-              { denom: fromTokenAddress, amount: sendAmount },
-              'transfer',
-              ibcChannels[fromBlockChain as IbcNetwork],
-              undefined,
-              (Date.now() + 60 * 1000) * 1e6,
-              fee
-            )
+
+          let account
+          if (fromBlockChain === BlockChainType.inj) {
+            account = await getInjectiveSequence(loginUser.address)
+          } else {
+            account = await loginUser.signer.getSequence(loginUser.address)
+          }
+
+          const tx = await loginUser.signer.sign(
+            loginUser.address,
+            [transferMsg],
+            { amount: [], gas: '100000' },
+            '', // memo
+            {
+              chainId: ibcChainId[fromBlockChain as IbcNetwork],
+              accountNumber: account.accountNumber,
+              sequence: account.sequence,
+            }
+          )
+
+          const { code, transactionHash } = await loginUser.signer.broadcastTx(
+            TxRaw.encode(tx).finish()
+          )
           return { success: code === 0, hash: transactionHash }
         } catch (error) {
           console.error(error)
