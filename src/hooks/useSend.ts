@@ -511,7 +511,7 @@ const useSend = (): UseSendType => {
               'transfer',
               'channel-72',
               undefined,
-              (Date.now() + 60 * 1000) * 1e6,
+              Date.now() + 120,
               fee
             )
           return { success: code === 0, hash: transactionHash }
