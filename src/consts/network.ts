@@ -21,8 +21,8 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.scrt]: SecretSvg,
   [BlockChainType.inj]: InjectiveSvg,
   [BlockChainType.axelar]: AxelarSvg,
-//[BlockChainType.cosmos]: CosmosSvg,
-//[BlockChainType.cro]: CronosSvg,
+  //[BlockChainType.cosmos]: CosmosSvg,
+  //[BlockChainType.cro]: CronosSvg,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
@@ -34,8 +34,8 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.scrt]: 'Secret',
   [BlockChainType.inj]: 'Injective',
   [BlockChainType.axelar]: 'Axelar',
-//[BlockChainType.cosmos]: 'Cosmos',
-//[BlockChainType.cro]: 'Cronos',
+  //[BlockChainType.cosmos]: 'Cosmos',
+  //[BlockChainType.cro]: 'Cronos',
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

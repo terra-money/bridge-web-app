@@ -33,7 +33,7 @@
     "react-modal": "^3.12.1",
     "react-query": "^3.19.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.1",
+    "react-scripts": "^4.0.3",
     "react-use-clipboard": "^1.0.7",
     "recoil": "^0.1.2",
     "styled-components": "^5.2.1",
@@ -58,13 +58,14 @@
     "husky": "^4.3.8",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
-    "typescript": "^4.1.5"
+    "typescript": "4.4.x"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "lint": "eslint --fix src/**/*.{ts,tsx}"
+    "lint": "eslint --fix src/**/*.{ts,tsx}",
+    "prettier": "prettier --write './src/**/*.ts'"
   },
   "eslintConfig": {
     "extends": [
@@ -89,7 +90,8 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "npm run lint"
+      "prettier --write",
+      "eslint --fix"
     ]
   },
   "browserslist": {

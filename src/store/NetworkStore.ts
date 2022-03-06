@@ -6,7 +6,7 @@ import {
   BlockChainType,
   ExtTerraNetwork,
   LocalTerraNetwork,
-  isIbcNetwork
+  isIbcNetwork,
 } from 'types/network'
 import AuthStore from './AuthStore'
 import SendStore from './SendStore'
@@ -27,7 +27,7 @@ const etherBaseExt = atom<EtherNetwork | undefined>({
   default: undefined,
 })
 
-const keplrExt = atom<{ chainID: string, name: string } | undefined>({
+const keplrExt = atom<{ chainID: string; name: string } | undefined>({
   key: 'keplrExt',
   default: undefined,
 })
@@ -43,7 +43,7 @@ const isTestnet = selector<boolean>({
 
         return _terraExt?.name !== 'mainnet'
       }
-      
+
       if (isIbcNetwork(fromBlockChain)) {
         return false
       }
