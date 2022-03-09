@@ -77,7 +77,7 @@ const initOnlyScrtWhiteList = atom<
 const initOnlyInjWhiteList = atom<
   Record<'mainnet' | 'testnet', WhiteListType> | undefined
 >({
-  key: 'initOnlyScrtWhiteList',
+  key: 'initOnlyInjWhiteList',
   default: undefined,
 })
 
@@ -187,7 +187,7 @@ const scrtWhiteList = selector<WhiteListType>({
 
 // if empty, service will block from start
 const injWhiteList = selector<WhiteListType>({
-  key: 'scrtWhiteList',
+  key: 'injWhiteList',
   get: ({ get }) => {
     const isTestnet = get(NetworkStore.isTestnet)
     const fetchedData = get(initOnlyInjWhiteList)
