@@ -514,7 +514,7 @@ const useSend = (): UseSendType => {
               timeoutTimestamp: (Date.now() + 60 * 1000) * 1e6,
             },
           }
-
+          
           let account
           if (fromBlockChain === BlockChainType.inj) {
             account = await getInjectiveSequence(loginUser.address)

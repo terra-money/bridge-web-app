@@ -81,9 +81,8 @@ const useAsset = (): {
         let balanceWhiteList = _.map(whiteList, (token) => ({ token }))
         switch (toBlockChain) {
           case BlockChainType.terra:
-            balanceWhiteList = balanceWhiteList.filter(
-              ({ token }): boolean =>
-                token.startsWith('terra1')
+            balanceWhiteList = balanceWhiteList.filter(({ token }): boolean =>
+              token.startsWith('terra1')
             )
             break
           case BlockChainType.ethereum:
@@ -116,7 +115,7 @@ const useAsset = (): {
           terraWhiteList: balanceWhiteList,
         })
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
-        switch(fromBlockChain){
+        switch (fromBlockChain) {
           case BlockChainType.ethereum:
             whiteList = ethWhiteList
             break
@@ -129,7 +128,7 @@ const useAsset = (): {
         }
         balanceList = await getEtherBalances({ whiteList })
       } else if (isIbcNetwork(fromBlockChain)) {
-        switch(fromBlockChain){
+        switch (fromBlockChain) {
           case BlockChainType.osmo:
             whiteList = osmoWhiteList
             break
@@ -188,7 +187,8 @@ const useAsset = (): {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
-      return fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain)
+      return fromBlockChain === BlockChainType.terra ||
+        isIbcNetwork(fromBlockChain)
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)

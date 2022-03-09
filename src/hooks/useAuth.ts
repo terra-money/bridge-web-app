@@ -103,13 +103,13 @@ const useAuth = (): {
         blockChain: BlockChainType.terra,
         walletType: user.walletType,
       })
-    } else if(isIbcNetwork(fromBlockChain)) {
+    } else if (isIbcNetwork(fromBlockChain)) {
       const network = await user.signer?.getChainId()
       //const isIbcValidNetwork = ibcChainId[fromBlockChain as IbcNetwork] === network
       if (network) {
         setFromBlockChain(fromBlockChain)
         setKeplrBaseExt({
-          chainID: await user.signer?.getChainId() || '',
+          chainID: (await user.signer?.getChainId()) || '',
           name: NETWORK.blockChainName[fromBlockChain],
         })
         setLoginStorage({

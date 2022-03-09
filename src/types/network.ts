@@ -18,8 +18,8 @@ export type ShuttleNetwork =
   | BlockChainType.bsc
   | BlockChainType.hmy
 
-export type IbcNetwork = 
-  | BlockChainType.osmo 
+export type IbcNetwork =
+  | BlockChainType.osmo
   | BlockChainType.scrt
   | BlockChainType.inj
   | BlockChainType.axelar
@@ -32,8 +32,8 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.scrt,
     BlockChainType.inj,
     BlockChainType.axelar,
-//  BlockChainType.cosmos,
-//  BlockChainType.cro,
+    //  BlockChainType.cosmos,
+    //  BlockChainType.cro,
   ].includes(network)
 }
 
@@ -96,10 +96,7 @@ export const allowedCoins: Record<IbcNetwork, string[]> = {
     AssetNativeDenomEnum.uluna,
     'ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09',
   ],
-  [BlockChainType.inj]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-  ],
+  [BlockChainType.inj]: [AssetNativeDenomEnum.uusd, AssetNativeDenomEnum.uluna],
   [BlockChainType.axelar]: [
     AssetNativeDenomEnum.uusd,
     AssetNativeDenomEnum.uluna,

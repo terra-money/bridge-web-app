@@ -86,8 +86,12 @@ const useApp = (): {
   const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
   const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
   const setIbcWhiteList = useSetRecoilState(ContractStore.initOnlyIbcWhiteList)
-  const setOsmoWhiteList = useSetRecoilState(ContractStore.initOnlyOsmoWhiteList)
-  const setScrtWhiteList = useSetRecoilState(ContractStore.initOnlyScrtWhiteList)
+  const setOsmoWhiteList = useSetRecoilState(
+    ContractStore.initOnlyOsmoWhiteList
+  )
+  const setScrtWhiteList = useSetRecoilState(
+    ContractStore.initOnlyScrtWhiteList
+  )
   const setInjWhiteList = useSetRecoilState(ContractStore.initOnlyInjWhiteList)
 
   const fetchAssets = async (path: TerraAssetsPathEnum): Promise<any> => {
