@@ -35,6 +35,7 @@ import {
   ibcChannels,
   IbcNetwork,
   ibcChainId,
+  isAxelarNetwork,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -70,7 +71,7 @@ type UseSendType = {
       fee?: Fee
     }[]
   >
-  getTerraMsgs: () => MsgSend[] | MsgExecuteContract[] | MsgTransfer[]
+  getTerraMsgs: () => Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]>
   waitForEtherBaseTransaction: (props: {
     hash: string
   }) => Promise<EtherBaseReceiptResultType | undefined>
@@ -211,7 +212,7 @@ const useSend = (): UseSendType => {
           }
         }
 
-        const msgs = getTerraMsgs()
+        const msgs = await getTerraMsgs()
         const lcd = new LCDClient({
           chainID: terraExt.chainID,
           URL: terraLocal.lcd,
@@ -247,7 +248,7 @@ const useSend = (): UseSendType => {
     return []
   }
 
-  const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] | MsgTransfer[] => {
+  const getTerraMsgs = async (): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
       const recipient =
         toBlockChain === BlockChainType.terra
@@ -286,6 +287,26 @@ const useSend = (): UseSendType => {
         ]
       }
 
+      if (
+        UTIL.isNativeDenom(asset.terraToken) &&
+        isAxelarNetwork(toBlockChain)
+      ) {
+
+
+        const axelarAddress = ''
+        return [
+          new MsgTransfer(
+            'transfer',
+            terraIbcChannels[BlockChainType.axelar],
+            new Coin(asset.terraToken, sendAmount),
+            loginUser.address,
+            axelarAddress,
+            undefined,
+            (Date.now() + 60 * 1000) * 1e6
+          ),
+        ]
+      }
+
       return UTIL.isNativeDenom(asset.terraToken)
         ? [
             new MsgSend(loginUser.address, recipient, [
@@ -312,7 +333,7 @@ const useSend = (): UseSendType => {
           memo
         : // if send to ether-base then memo must be to-address
           toAddress
-    const msgs = getTerraMsgs()
+    const msgs = await getTerraMsgs()
 
     const tx: CreateTxOptions = {
       gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],

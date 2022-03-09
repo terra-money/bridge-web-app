@@ -6,6 +6,8 @@ import HarmonyPng from 'images/harmony-one.png'
 import OsmoSvg from 'images/osmo.svg'
 import AxelarSvg from 'images/axelar.svg'
 import InjectiveSvg from 'images/injective.svg'
+import AvalancheSvg from 'images/avalanche.svg'
+import FantomSvg from 'images/fantom.svg'
 //import CosmosSvg from 'images/cosmos.svg'
 //import CronosSvg from 'images/cronos.svg'
 import SecretSvg from 'images/secret.svg'
@@ -21,6 +23,8 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.scrt]: SecretSvg,
   [BlockChainType.inj]: InjectiveSvg,
   [BlockChainType.axelar]: AxelarSvg,
+  [BlockChainType.avalanche]: AvalancheSvg,
+  [BlockChainType.fantom]: FantomSvg,
 //[BlockChainType.cosmos]: CosmosSvg,
 //[BlockChainType.cro]: CronosSvg,
 }
@@ -34,6 +38,8 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.scrt]: 'Secret',
   [BlockChainType.inj]: 'Injective',
   [BlockChainType.axelar]: 'Axelar',
+  [BlockChainType.avalanche]: 'Avalanche',
+  [BlockChainType.fantom]: 'Fantom',
 //[BlockChainType.cosmos]: 'Cosmos',
 //[BlockChainType.cro]: 'Cronos',
 }

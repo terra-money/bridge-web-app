@@ -106,11 +106,21 @@ const useAsset = (): {
             break
           default:
             // ibc chain
-            balanceWhiteList = balanceWhiteList.filter(
-              ({ token }): boolean =>
-                token.startsWith('terra1') &&
-                allowedCoins[toBlockChain as IbcNetwork].includes(token)
-            )
+            if(isIbcNetwork(toBlockChain)) {
+              balanceWhiteList = balanceWhiteList.filter(
+                ({ token }): boolean =>
+                  token.startsWith('terra1') &&
+                  allowedCoins[toBlockChain as IbcNetwork].includes(token)
+              )
+            // axelar
+            } else {
+              balanceWhiteList = balanceWhiteList.filter(
+                ({ token }): boolean =>
+                  token.startsWith('terra1') &&
+                  allowedCoins[BlockChainType.axelar].includes(token)
+              )
+              console.log(allowedCoins[BlockChainType.axelar])
+            }
         }
         balanceList = await getTerraBalances({
           terraWhiteList: balanceWhiteList,

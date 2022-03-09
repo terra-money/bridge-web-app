@@ -9,6 +9,8 @@ export enum BlockChainType {
   scrt = 'secret',
   inj = 'injective',
   axelar = 'axelar',
+  avalanche = 'avalanche',
+  fantom = 'fantom',
   //cosmos = 'cosmos',
   //cro = 'cronos',
 }
@@ -26,6 +28,10 @@ export type IbcNetwork =
 //| BlockChainType.cosmos
 //| BlockChainType.cro
 
+export type AxelarNetwork =
+  | BlockChainType.avalanche
+  | BlockChainType.fantom
+
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
     BlockChainType.osmo,
@@ -34,6 +40,13 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.axelar,
 //  BlockChainType.cosmos,
 //  BlockChainType.cro,
+  ].includes(network)
+}
+
+export function isAxelarNetwork(network: BlockChainType): boolean {
+  return [
+    BlockChainType.avalanche,
+    BlockChainType.fantom,
   ].includes(network)
 }
 
