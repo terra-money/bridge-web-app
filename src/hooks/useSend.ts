@@ -525,7 +525,10 @@ const useSend = (): UseSendType => {
           const tx = await loginUser.signer.sign(
             loginUser.address,
             [transferMsg],
-            { amount: [], gas: '100000' },
+            {
+              amount: [],
+              gas: fromBlockChain === BlockChainType.inj ? '150000' : '100000',
+            },
             '', // memo
             {
               chainId: ibcChainId[fromBlockChain as IbcNetwork],
