@@ -45,6 +45,7 @@ import useEtherBaseContract from './useEtherBaseContract'
 import ContractStore from 'store/ContractStore'
 import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
+import { getAxelarAddress } from 'packages/axelar'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -212,7 +213,7 @@ const useSend = (): UseSendType => {
           }
         }
 
-        const msgs = await getTerraMsgs()
+        const msgs = await getTerraMsgs(true)
         const lcd = new LCDClient({
           chainID: terraExt.chainID,
           URL: terraLocal.lcd,
@@ -248,7 +249,7 @@ const useSend = (): UseSendType => {
     return []
   }
 
-  const getTerraMsgs = async (): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
+  const getTerraMsgs = async (isSimulation?: boolean): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
       const recipient =
         toBlockChain === BlockChainType.terra
@@ -292,8 +293,11 @@ const useSend = (): UseSendType => {
         isAxelarNetwork(toBlockChain)
       ) {
 
-
-        const axelarAddress = ''
+        // in the fee simulation use the user address
+        const axelarAddress = isSimulation 
+          ? loginUser.address
+          : await getAxelarAddress(toAddress, asset.terraToken as 'uusd' | 'uluna')
+          
         return [
           new MsgTransfer(
             'transfer',

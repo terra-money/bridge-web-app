@@ -82,7 +82,7 @@ const getParameters = (
 }
 
 export async function getAxelarAddress(toAddress: string, coin: 'uusd' | 'uluna'): Promise<string> {
-  const api = new AxelarAPI('testnet')
+  const api = new AxelarAPI('mainnet')
   const { validationMsg, otc } = await api.getOneTimeMessageToSign(toAddress)
   const { provider } = await metaMaskService.connect()
 
@@ -96,8 +96,12 @@ export async function getAxelarAddress(toAddress: string, coin: 'uusd' | 'uluna'
     coin
   )
   parameters.otc = otc
-  parameters.publicAddr = publicAddr
+  parameters.publicAddr = await signer.getAddress()
   parameters.signature = signature
 
-  return ''
+  const address = await api.getDepositAddress(parameters, true)
+
+  console.log(address)
+
+  return address.traceId
 }
