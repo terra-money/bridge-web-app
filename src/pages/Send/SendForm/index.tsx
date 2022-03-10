@@ -8,7 +8,7 @@ import { ArrowClockwise } from 'react-bootstrap-icons'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
-import { BlockChainType, isIbcNetwork, isAxelarNetwork } from 'types/network'
+import { BlockChainType, isIbcNetwork } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 
@@ -29,9 +29,6 @@ import AssetList from './AssetList'
 import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import WarningInfo from './WarningInfo'
-
-import MetamaskImg from '../../../images/Metamask.png'
-import metaMaskService from 'services/metaMaskService'
 
 const StyledContainer = styled.div``
 
@@ -147,14 +144,6 @@ const SendForm = ({
     setToAddress(value)
   }
 
-  const getMetamaskAddress = async (): Promise<void> => {
-    if(!await metaMaskService.checkInstalled()){
-      metaMaskService.install()
-    } else {
-      const { address } = await metaMaskService.connect()
-      setToAddress(address)
-    }
-  }
   const onChangeAmount = ({ value }: { value: string }): void => {
     if (_.isEmpty(value)) {
       setInputAmount('')
@@ -285,31 +274,15 @@ const SendForm = ({
       </StyledFormSection>
 
       <StyledFormSection>
-        {!isAxelarNetwork(toBlockChain) ? (
-          <FormLabelInput
-            inputProps={{
-              value: toAddress,
-              onChange: ({ target: { value } }): void => {
-                onChangeToAddress({ value })
-              },
-            }}
-            labelProps={{ children: 'Destination Address' }}
-          />
-        ) : (
-          <div style={{ position: 'relative' }}>
-            <FormLabelInput
-              inputProps={{
-                value: toAddress.substring(0, 36) + '...',
-                disabled: true,
-              }}
-              labelProps={{ children: 'Destination Address' }}
-            />
-            <StyledMaxButton onClick={getMetamaskAddress}>
-              <img alt="Metamask logo" src={MetamaskImg} style={{ height: '15px', marginRight: '8px'}} />
-              Connect Metamask
-            </StyledMaxButton>
-          </div>
-        )}
+        <FormLabelInput
+          inputProps={{
+            value: toAddress,
+            onChange: ({ target: { value } }): void => {
+              onChangeToAddress({ value })
+            },
+          }}
+          labelProps={{ children: 'Destination Address' }}
+        />
         <FormErrorMessage
           errorMessage={validationResult.errorMessage?.toAddress}
         />
