@@ -77,7 +77,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
 
 export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'https://rpc-osmosis.blockapsis.com/',
-  [BlockChainType.scrt]: 'https://rpc-secret.scrtlabs.com/secret-4/rpc/',
+  [BlockChainType.scrt]: 'https://lcd-secret.scrtlabs.com/rpc/',
   [BlockChainType.inj]: 'https://tm.injective.network/',
   [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   //[BlockChainType.cosmos]: '',
