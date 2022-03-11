@@ -33,6 +33,8 @@ const useAsset = (): {
   const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
   const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
   const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
+  const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
+  const injWhiteList = useRecoilValue(ContractStore.injWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
@@ -79,9 +81,8 @@ const useAsset = (): {
         let balanceWhiteList = _.map(whiteList, (token) => ({ token }))
         switch (toBlockChain) {
           case BlockChainType.terra:
-            balanceWhiteList = balanceWhiteList.filter(
-              ({ token }): boolean =>
-                token.startsWith('terra1')
+            balanceWhiteList = balanceWhiteList.filter(({ token }): boolean =>
+              token.startsWith('terra1')
             )
             break
           case BlockChainType.ethereum:
@@ -114,19 +115,31 @@ const useAsset = (): {
           terraWhiteList: balanceWhiteList,
         })
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
-        if (fromBlockChain === BlockChainType.ethereum) {
-          whiteList = ethWhiteList
-        } else if (fromBlockChain === BlockChainType.bsc) {
-          whiteList = bscWhiteList
-        } else if (fromBlockChain === BlockChainType.hmy) {
-          whiteList = hmyWhiteList
+        switch (fromBlockChain) {
+          case BlockChainType.ethereum:
+            whiteList = ethWhiteList
+            break
+          case BlockChainType.bsc:
+            whiteList = bscWhiteList
+            break
+          case BlockChainType.hmy:
+            whiteList = hmyWhiteList
+            break
         }
         balanceList = await getEtherBalances({ whiteList })
       } else if (isIbcNetwork(fromBlockChain)) {
-        if (fromBlockChain === BlockChainType.osmo) {
-          whiteList = osmoWhiteList
-          balanceList = await getKeplrBalances({ whiteList })
+        switch (fromBlockChain) {
+          case BlockChainType.osmo:
+            whiteList = osmoWhiteList
+            break
+          case BlockChainType.scrt:
+            whiteList = scrtWhiteList
+            break
+          case BlockChainType.inj:
+            whiteList = injWhiteList
+            break
         }
+        balanceList = await getKeplrBalances({ whiteList })
       }
     }
 
@@ -174,7 +187,8 @@ const useAsset = (): {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
-      return fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain)
+      return fromBlockChain === BlockChainType.terra ||
+        isIbcNetwork(fromBlockChain)
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)

@@ -18,8 +18,8 @@ export type ShuttleNetwork =
   | BlockChainType.bsc
   | BlockChainType.hmy
 
-export type IbcNetwork = 
-  | BlockChainType.osmo 
+export type IbcNetwork =
+  | BlockChainType.osmo
   | BlockChainType.scrt
   | BlockChainType.inj
   | BlockChainType.axelar
@@ -32,18 +32,29 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.scrt,
     BlockChainType.inj,
     BlockChainType.axelar,
-//  BlockChainType.cosmos,
-//  BlockChainType.cro,
+    //  BlockChainType.cosmos,
+    //  BlockChainType.cro,
   ].includes(network)
 }
 
-export const ibcChannels: Record<IbcNetwork, string> = {
+// channels Terra -> IBC chain
+export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-1',
   [BlockChainType.scrt]: 'channel-16',
   [BlockChainType.inj]: 'channel-17',
   [BlockChainType.axelar]: 'channel-19',
   //[BlockChainType.cosmos]: 'channel-2',
   //[BlockChainType.cro]: 'channel-22',
+}
+
+// channels IBC chain -> Terra
+export const ibcChannels: Record<IbcNetwork, string> = {
+  [BlockChainType.osmo]: 'channel-72',
+  [BlockChainType.scrt]: 'channel-2',
+  [BlockChainType.inj]: 'channel-4',
+  [BlockChainType.axelar]: 'channel-0',
+  //[BlockChainType.cosmos]: '',
+  //[BlockChainType.cro]: '',
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
@@ -66,9 +77,9 @@ export const ibcChainId: Record<IbcNetwork, string> = {
 
 export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'https://rpc-osmosis.blockapsis.com/',
-  [BlockChainType.scrt]: '',
-  [BlockChainType.inj]: '',
-  [BlockChainType.axelar]: '',
+  [BlockChainType.scrt]: 'https://lcd-secret.scrtlabs.com/rpc/',
+  [BlockChainType.inj]: 'https://tm.injective.network/',
+  [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   //[BlockChainType.cosmos]: '',
   //[BlockChainType.cro]: '',
 }
@@ -85,8 +96,11 @@ export const allowedCoins: Record<IbcNetwork, string[]> = {
     AssetNativeDenomEnum.uluna,
     'ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09',
   ],
-  [BlockChainType.inj]: ['uusd', 'uluna'],
-  [BlockChainType.axelar]: ['uusd', 'uluna'],
+  [BlockChainType.inj]: [AssetNativeDenomEnum.uusd, AssetNativeDenomEnum.uluna],
+  [BlockChainType.axelar]: [
+    AssetNativeDenomEnum.uusd,
+    AssetNativeDenomEnum.uluna,
+  ],
   //[BlockChainType.cosmos]: ['uusd', 'uluna'],
   //[BlockChainType.cro]: ['uusd', 'uluna'],
 }
@@ -123,4 +137,7 @@ export enum TerraAssetsPathEnum {
 
   ibc_tokens = '/ibc/tokens.json',
   osmo_tokens = '/ibc/osmo.json',
+  scrt_tokens = '/ibc/scrt.json',
+  axelar_tokens = '/ibc/axelar.json',
+  inj_tokens = '/ibc/inj.json',
 }
