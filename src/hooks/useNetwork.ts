@@ -46,6 +46,18 @@ const useNetwork = (): {
       } else if (fromBlockChain === BlockChainType.hmy) {
         subdomain = isTestnet ? 'testnet.' : ''
         return `https://explorer.${subdomain}harmony.one/#/${type}/${address}`
+      } else if (fromBlockChain === BlockChainType.osmo) {
+        return type === 'tx' 
+          ? `https://www.mintscan.io/osmosis/txs/${address}` 
+          : `https://www.mintscan.io/osmosis/account/${address}`
+      } else if (fromBlockChain === BlockChainType.scrt) {
+        return type === 'tx' 
+          ? `https://www.mintscan.io/secret/txs/${address}` 
+          : `https://www.mintscan.io/secret/account/${address}`
+      } else if (fromBlockChain === BlockChainType.inj) {
+        return type === 'tx' 
+          ? `https://www.mintscan.io/injective/txs/${address}` 
+          : `https://www.mintscan.io/injective/account/${address}`
       }
 
       subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
