@@ -283,7 +283,7 @@ const useSend = (): UseSendType => {
             loginUser.address,
             toAddress,
             undefined,
-            (Date.now() + 60 * 1000) * 1e6
+            (Date.now() + 120 * 1000) * 1e6
           ),
         ]
       }
@@ -306,7 +306,7 @@ const useSend = (): UseSendType => {
             loginUser.address,
             axelarAddress || '',
             undefined,
-            (Date.now() + 60 * 1000) * 1e6
+            (Date.now() + 300 * 1000) * 1e6
           ),
         ]
       }
@@ -536,7 +536,7 @@ const useSend = (): UseSendType => {
               receiver: toAddress,
               token: { denom: fromTokenAddress, amount: sendAmount },
               timeoutHeight: undefined,
-              timeoutTimestamp: (Date.now() + 60 * 1000) * 1e6,
+              timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
             },
           }
 

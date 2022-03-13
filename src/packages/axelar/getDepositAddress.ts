@@ -4,7 +4,7 @@ import {
 import { AxelarAPI } from './axelarAPI'
 import { getParameters } from './getParameters'
 import { Wallet } from 'ethers'
-const api = new AxelarAPI('testnet')
+const api = new AxelarAPI('mainnet')
 
 const signerAuthority = Wallet.createRandom()
 

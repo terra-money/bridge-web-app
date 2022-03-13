@@ -27,6 +27,8 @@ const useNetwork = (): {
   const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
   const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
   const injWhiteList = useRecoilValue(ContractStore.injWhiteList)
+  const avalancheWhiteList = useRecoilValue(ContractStore.avalancheWhiteList)
+  const fantomWhiteList = useRecoilValue(ContractStore.fantomWhiteList)
 
   const getScannerLink = ({
     address,
@@ -85,6 +87,11 @@ const useNetwork = (): {
         return scrtWhiteList[tokenAddress]
       case BlockChainType.inj:
         return injWhiteList[tokenAddress]
+      // TODO: add Axelars tokens
+      case BlockChainType.avalanche:
+        return avalancheWhiteList[tokenAddress]
+      case BlockChainType.fantom:
+        return fantomWhiteList[tokenAddress]
       default:
         return terraWhiteList[tokenAddress]
     }

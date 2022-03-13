@@ -156,4 +156,7 @@ export enum TerraAssetsPathEnum {
   scrt_tokens = '/ibc/scrt.json',
   axelar_tokens = '/ibc/axelar.json',
   inj_tokens = '/ibc/inj.json',
+
+  avalanche_tokens = '/ibc/axelar/avalanche.json',
+  fantom_tokens = '/ibc/axelar/fantom.json',
 }
