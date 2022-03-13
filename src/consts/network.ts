@@ -26,8 +26,8 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.axelar]: AxelarSvg,
   [BlockChainType.avalanche]: AvalancheSvg,
   [BlockChainType.fantom]: FantomSvg,
-//[BlockChainType.cosmos]: CosmosSvg,
-//[BlockChainType.cro]: CronosSvg,
+  //[BlockChainType.cosmos]: CosmosSvg,
+  //[BlockChainType.cro]: CronosSvg,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
@@ -41,8 +41,8 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.axelar]: 'Axelar',
   [BlockChainType.avalanche]: 'Avalanche',
   [BlockChainType.fantom]: 'Fantom',
-//[BlockChainType.cosmos]: 'Cosmos',
-//[BlockChainType.cro]: 'Cronos',
+  //[BlockChainType.cosmos]: 'Cosmos',
+  //[BlockChainType.cro]: 'Cronos',
 }
 
 const minimumAxelarAmount: Record<string, number> = {

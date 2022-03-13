@@ -20,17 +20,15 @@ export type ShuttleNetwork =
   | BlockChainType.bsc
   | BlockChainType.hmy
 
-export type IbcNetwork = 
-  | BlockChainType.osmo 
+export type IbcNetwork =
+  | BlockChainType.osmo
   | BlockChainType.scrt
   | BlockChainType.inj
   | BlockChainType.axelar
 //| BlockChainType.cosmos
 //| BlockChainType.cro
 
-export type AxelarNetwork =
-  | BlockChainType.avalanche
-  | BlockChainType.fantom
+export type AxelarNetwork = BlockChainType.avalanche | BlockChainType.fantom
 
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
@@ -38,16 +36,13 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.scrt,
     BlockChainType.inj,
     BlockChainType.axelar,
-//  BlockChainType.cosmos,
-//  BlockChainType.cro,
+    //  BlockChainType.cosmos,
+    //  BlockChainType.cro,
   ].includes(network)
 }
 
 export function isAxelarNetwork(network: BlockChainType): boolean {
-  return [
-    BlockChainType.avalanche,
-    BlockChainType.fantom,
-  ].includes(network)
+  return [BlockChainType.avalanche, BlockChainType.fantom].includes(network)
 }
 
 // channels Terra -> IBC chain
@@ -90,7 +85,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
 
 export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'https://rpc-osmosis.blockapsis.com/',
-  [BlockChainType.scrt]: 'https://rpc-secret.scrtlabs.com/secret-4/rpc/',
+  [BlockChainType.scrt]: 'https://lcd-secret.scrtlabs.com/rpc/',
   [BlockChainType.inj]: 'https://tm.injective.network/',
   [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   //[BlockChainType.cosmos]: '',
@@ -109,10 +104,7 @@ export const allowedCoins: Record<IbcNetwork, string[]> = {
     AssetNativeDenomEnum.uluna,
     'ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09',
   ],
-  [BlockChainType.inj]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-  ],
+  [BlockChainType.inj]: [AssetNativeDenomEnum.uusd, AssetNativeDenomEnum.uluna],
   [BlockChainType.axelar]: [
     AssetNativeDenomEnum.uusd,
     AssetNativeDenomEnum.uluna,

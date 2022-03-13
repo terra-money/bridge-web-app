@@ -12,7 +12,6 @@ const useKeplrBalance = (): {
     whiteList: WhiteListType
   }) => Promise<BalanceListType>
 } => {
-
   const loginUser = useRecoilValue(AuthStore.loginUser)
 
   const getKeplrBalance = async ({

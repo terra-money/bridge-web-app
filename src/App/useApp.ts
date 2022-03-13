@@ -86,11 +86,19 @@ const useApp = (): {
   const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
   const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
   const setIbcWhiteList = useSetRecoilState(ContractStore.initOnlyIbcWhiteList)
-  const setOsmoWhiteList = useSetRecoilState(ContractStore.initOnlyOsmoWhiteList)
-  const setScrtWhiteList = useSetRecoilState(ContractStore.initOnlyScrtWhiteList)
+  const setOsmoWhiteList = useSetRecoilState(
+    ContractStore.initOnlyOsmoWhiteList
+  )
+  const setScrtWhiteList = useSetRecoilState(
+    ContractStore.initOnlyScrtWhiteList
+  )
   const setInjWhiteList = useSetRecoilState(ContractStore.initOnlyInjWhiteList)
-  const setAvalancheWhiteList = useSetRecoilState(ContractStore.initOnlyAvalancheWhiteList)
-  const setFantomWhiteList = useSetRecoilState(ContractStore.initOnlyFantomWhiteList)
+  const setAvalancheWhiteList = useSetRecoilState(
+    ContractStore.initOnlyAvalancheWhiteList
+  )
+  const setFantomWhiteList = useSetRecoilState(
+    ContractStore.initOnlyFantomWhiteList
+  )
 
   const fetchAssets = async (path: TerraAssetsPathEnum): Promise<any> => {
     return (await fetch(`${NETWORK.TERRA_ASSETS_URL}${path}`)).json()
@@ -223,10 +231,14 @@ const useApp = (): {
       const injListJson = await fetchAssets(TerraAssetsPathEnum.inj_tokens)
       setInjWhiteList(injListJson)
 
-      const avalancheListJson = await fetchAssets(TerraAssetsPathEnum.avalanche_tokens)
+      const avalancheListJson = await fetchAssets(
+        TerraAssetsPathEnum.avalanche_tokens
+      )
       setAvalancheWhiteList(avalancheListJson)
 
-      const fantomListJson = await fetchAssets(TerraAssetsPathEnum.fantom_tokens)
+      const fantomListJson = await fetchAssets(
+        TerraAssetsPathEnum.fantom_tokens
+      )
       setFantomWhiteList(fantomListJson)
 
       const ibcTokensJson = await fetchAssets(TerraAssetsPathEnum.ibc_tokens)

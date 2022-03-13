@@ -249,7 +249,9 @@ const useSend = (): UseSendType => {
     return []
   }
 
-  const getTerraMsgs = async (isSimulation?: boolean): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
+  const getTerraMsgs = async (
+    isSimulation?: boolean
+  ): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
       const recipient =
         toBlockChain === BlockChainType.terra
@@ -292,12 +294,15 @@ const useSend = (): UseSendType => {
         UTIL.isNativeDenom(asset.terraToken) &&
         isAxelarNetwork(toBlockChain)
       ) {
-
         // in the fee simulation use the user address
-        const axelarAddress = isSimulation 
+        const axelarAddress = isSimulation
           ? loginUser.address
-          : await getAxelarAddress(toAddress, toBlockChain as 'avalanche' | 'fantom', asset.terraToken as 'uusd' | 'uluna')
-          
+          : await getAxelarAddress(
+              toAddress,
+              toBlockChain as 'avalanche' | 'fantom',
+              asset.terraToken as 'uusd' | 'uluna'
+            )
+
         return [
           new MsgTransfer(
             'transfer',
@@ -550,7 +555,10 @@ const useSend = (): UseSendType => {
           const tx = await loginUser.signer.sign(
             loginUser.address,
             [transferMsg],
-            { amount: [], gas: '100000' },
+            {
+              amount: [],
+              gas: fromBlockChain === BlockChainType.inj ? '150000' : '100000',
+            },
             '', // memo
             {
               chainId: ibcChainId[fromBlockChain as IbcNetwork],
