@@ -194,8 +194,8 @@ const SendForm = ({
     // axelar fee (0.1%)
     } else if (isAxelarNetwork(toBlockChain)) {
       const sendAmount = new BigNumber(amount)
-      setAxelarFee(sendAmount.multipliedBy(0.1))
-      setAmountAfterAxelarFee(sendAmount.multipliedBy(0.9))
+      setAxelarFee(sendAmount.multipliedBy(0.001))
+      setAmountAfterAxelarFee(sendAmount.multipliedBy(0.999))
     } else {
       setShuttleFee(new BigNumber(0))
       setAxelarFee(new BigNumber(0))

@@ -46,8 +46,8 @@ const blockChainName: Record<BlockChainType, string> = {
 }
 
 const minimumAxelarAmount: Record<string, number> = {
-  [AssetNativeDenomEnum.uluna]: 100_000,
-  [AssetNativeDenomEnum.uusd]: 10_000_000,
+  [AssetNativeDenomEnum.uluna]: 500_000,
+  [AssetNativeDenomEnum.uusd]: 15_000_000,
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

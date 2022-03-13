@@ -25,7 +25,7 @@ export class AxelarAPI {
 
   public async getDepositAddress(
     payload: AssetTransferObject,
-    showAlerts: boolean = true
+    showAlerts: boolean = false
   ): Promise<AssetInfoWithTrace> {
     try {
       return this.axelarJsSDK.getDepositAddress(payload, showAlerts)
