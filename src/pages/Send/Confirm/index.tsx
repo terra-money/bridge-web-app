@@ -12,7 +12,7 @@ import SendStore from 'store/SendStore'
 
 import useAsset from 'hooks/useAsset'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isAxelarNetwork } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import SendProcessStore from 'store/SendProcessStore'
 import useNetwork from 'hooks/useNetwork'
@@ -93,6 +93,8 @@ const Confirm = (): ReactElement => {
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const shuttleFee = useRecoilValue(SendStore.shuttleFee)
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
+  const axelarFee = useRecoilValue(SendStore.axelarFee)
+  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
 
   const requestTxResult = useRecoilValue(SendProcessStore.requestTxResult)
 
@@ -149,19 +151,44 @@ const Confirm = (): ReactElement => {
               </StyledSecD>
             </StyledSpaceBetween>
           )}
+
+          {axelarFee && isAxelarNetwork(toBlockChain) && (
+            <StyledSpaceBetween style={{ marginBottom: 16 }}>
+              <StyledSecH>Axelar fee</StyledSecH>
+              <StyledSecD>
+                <StyledSecDText2>
+                  {`${formatBalance(axelarFee)} ${asset?.symbol}`}
+                </StyledSecDText2>
+              </StyledSecD>
+            </StyledSpaceBetween>
+          )}
         </StyledSection>
       )}
 
       <StyledSection>
-        {fromBlockChain === BlockChainType.terra &&
-        NETWORK.isEtherBaseBlockChain(toBlockChain) ? (
+        {(fromBlockChain === BlockChainType.terra &&
+          NETWORK.isEtherBaseBlockChain(toBlockChain)) ||
+        isAxelarNetwork(toBlockChain) ? (
           <StyledSpaceBetween>
-            <StyledSecH>After Shuttle Fee (estimated)</StyledSecH>
+            <StyledSecH>
+              After{' '}
+              {isAxelarNetwork(toBlockChain)
+                ? 'Axelar Fee'
+                : 'Shuttle Fee (estimated)'}
+            </StyledSecH>
             <StyledSecD>
               <StyledSecDText
-                isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
+                isError={
+                  isAxelarNetwork(toBlockChain)
+                    ? amountAfterAxelarFee.isLessThanOrEqualTo(0)
+                    : amountAfterShuttleFee.isLessThanOrEqualTo(0)
+                }
               >
-                {`${formatBalance(amountAfterShuttleFee)} ${asset?.symbol}`}
+                {`${formatBalance(
+                  isAxelarNetwork(toBlockChain)
+                    ? amountAfterAxelarFee
+                    : amountAfterShuttleFee
+                )} ${asset?.symbol}`}
               </StyledSecDText>
             </StyledSecD>
           </StyledSpaceBetween>

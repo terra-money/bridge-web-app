@@ -72,6 +72,14 @@ const amountAfterShuttleFee = atom<BigNumber>({
   key: 'sendAmountAfterShuttleFee',
   default: new BigNumber(0),
 })
+const axelarFee = atom<BigNumber>({
+  key: 'sendAxelarFee',
+  default: new BigNumber(0),
+})
+const amountAfterAxelarFee = atom<BigNumber>({
+  key: 'sendAmountAfterShuttleFee',
+  default: new BigNumber(0),
+})
 // Computed data from Send data End
 
 const validationResult = atom<ValidateResultType>({
@@ -97,6 +105,8 @@ export default {
   gasFee,
   shuttleFee,
   amountAfterShuttleFee,
+  axelarFee,
+  amountAfterAxelarFee,
 
   validationResult,
 }
