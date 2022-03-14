@@ -114,8 +114,14 @@ const NetworkErrorScreen = (): ReactElement => {
           { name: 'Osmo Whitelist Json', value: osmoWhiteList },
           { name: 'Secret Whitelist Json', value: scrtWhiteList },
           { name: 'Injective Whitelist Json', value: injWhiteList },
-          { name: 'Avalanche Whitelist Json', value: avalancheWhiteList },
-          { name: 'Fantom Whitelist Json', value: fantomWhiteList },
+          {
+            name: 'Avalanche Whitelist Json',
+            value: isTestnet ? 'testnet' : avalancheWhiteList,
+          },
+          {
+            name: 'Fantom Whitelist Json',
+            value: isTestnet ? 'testnet' : fantomWhiteList,
+          },
         ],
         (item) => {
           if (_.isEmpty(item.value)) {
