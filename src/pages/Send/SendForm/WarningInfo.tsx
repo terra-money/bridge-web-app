@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil'
 
 import cautionPng from 'images/caution.png'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isAxelarNetwork } from 'types/network'
 
 import SendStore from 'store/SendStore'
 
@@ -35,6 +35,7 @@ const StyledWarningInfoText = styled(Text)`
 const WarningInfo = (): ReactElement => {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const asset = useRecoilValue(SendStore.asset)
   const [infoText, setInfoText] = useState('')
 
   useEffect(() => {
@@ -45,6 +46,10 @@ const WarningInfo = (): ReactElement => {
       setInfoText(
         'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
       )
+    } else if (isAxelarNetwork(toBlockChain)) {
+      setInfoText(
+        `${asset?.symbol} will become Axelar Wrapped ${asset?.symbol} after the transfer is completed`
+      )
     } else if (fromBlockChain !== toBlockChain) {
       setInfoText("Don't use exchange addresses for cross-chain transfers")
     }
@@ -52,7 +57,7 @@ const WarningInfo = (): ReactElement => {
     return (): void => {
       setInfoText('')
     }
-  }, [toBlockChain, fromBlockChain])
+  }, [toBlockChain, fromBlockChain, asset])
 
   return infoText ? (
     <StyledWarningInfo>

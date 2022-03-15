@@ -27,7 +27,6 @@ import useAuth from 'hooks/useAuth'
 import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
 import { BlockChainType } from 'types/network'
-import PoweredBy from './PoweredBy'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -200,7 +199,6 @@ const Send = (): ReactElement => {
             )}
           </>
         )}
-        <PoweredBy />
       </StyledForm>
     </StyledContainer>
   )
