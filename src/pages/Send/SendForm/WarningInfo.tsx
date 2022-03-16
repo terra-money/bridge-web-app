@@ -46,10 +46,6 @@ const WarningInfo = (): ReactElement => {
       setInfoText(
         'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
       )
-    } else if (isAxelarNetwork(toBlockChain)) {
-      setInfoText(
-        `${asset?.symbol} will become Axelar Wrapped ${asset?.symbol} after the transfer is completed`
-      )
     } else if (fromBlockChain !== toBlockChain) {
       setInfoText("Don't use exchange addresses for cross-chain transfers")
     }
@@ -60,12 +56,25 @@ const WarningInfo = (): ReactElement => {
   }, [toBlockChain, fromBlockChain, asset])
 
   return infoText ? (
-    <StyledWarningInfo>
-      <div style={{ paddingRight: 12 }}>
-        <FormImage src={cautionPng} size={16} />
-      </div>
-      <StyledWarningInfoText>{infoText}</StyledWarningInfoText>
-    </StyledWarningInfo>
+    <>
+      <StyledWarningInfo>
+        <div style={{ paddingRight: 12 }}>
+          <FormImage src={cautionPng} size={16} />
+        </div>
+        <StyledWarningInfoText>{infoText}</StyledWarningInfoText>
+      </StyledWarningInfo>
+      {isAxelarNetwork(toBlockChain) && (
+        <StyledWarningInfo style={{ marginTop: '-20px' }}>
+          <div style={{ paddingRight: 12 }}>
+            <FormImage src={cautionPng} size={16} />
+          </div>
+          <StyledWarningInfoText>
+            {asset?.symbol} will become Axelar Wrapped {asset?.symbol} after the
+            transfer is completed
+          </StyledWarningInfoText>
+        </StyledWarningInfo>
+      )}
+    </>
   ) : (
     <></>
   )
