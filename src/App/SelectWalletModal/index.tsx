@@ -54,6 +54,24 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     }
   }
 
+  const onClickXDEFIExtension = async (): Promise<void> => {
+    const xdefiExtInstalled =
+      terraService.checkInstalled() && window?.xfi.terra !== undefined
+
+    if (xdefiExtInstalled) {
+      const result = await terraService.connect()
+
+      await login({
+        user: {
+          address: result.address,
+          walletType: WalletEnum.XDEFIExtension,
+        },
+      })
+    } else {
+      setIsVisibleModalType(SelectWalletModalType.xdefiExtInstall)
+    }
+  }
+
   const onClickTerraWalletConnect = async (): Promise<void> => {
     try {
       const connector = await terraWalletConnectService.connect()
@@ -189,6 +207,9 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       case WalletEnum.TerraExtension:
         onClickTerraExtension()
         break
+      case WalletEnum.XDEFIExtension:
+        onClickXDEFIExtension()
+        break
       case WalletEnum.TerraWalletConnect:
         onClickTerraWalletConnect()
         break
@@ -198,7 +219,11 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     }
   }
 
-  let buttons = [WalletEnum.TerraExtension, WalletEnum.TerraWalletConnect]
+  let buttons = [
+    WalletEnum.TerraExtension,
+    WalletEnum.TerraWalletConnect,
+    WalletEnum.XDEFIExtension,
+  ]
   if (
     fromBlockChain === BlockChainType.ethereum ||
     fromBlockChain === BlockChainType.hmy
