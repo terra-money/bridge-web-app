@@ -9,6 +9,8 @@ export enum BlockChainType {
   scrt = 'secret',
   inj = 'injective',
   axelar = 'axelar',
+  avalanche = 'avalanche',
+  fantom = 'fantom',
   //cosmos = 'cosmos',
   //cro = 'cronos',
 }
@@ -26,6 +28,8 @@ export type IbcNetwork =
 //| BlockChainType.cosmos
 //| BlockChainType.cro
 
+export type AxelarNetwork = BlockChainType.avalanche | BlockChainType.fantom
+
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
     BlockChainType.osmo,
@@ -35,6 +39,10 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     //  BlockChainType.cosmos,
     //  BlockChainType.cro,
   ].includes(network)
+}
+
+export function isAxelarNetwork(network: BlockChainType): boolean {
+  return [BlockChainType.avalanche, BlockChainType.fantom].includes(network)
 }
 
 // channels Terra -> IBC chain
@@ -140,4 +148,7 @@ export enum TerraAssetsPathEnum {
   scrt_tokens = '/ibc/scrt.json',
   axelar_tokens = '/ibc/axelar.json',
   inj_tokens = '/ibc/inj.json',
+
+  avalanche_tokens = '/ibc/axelar/avalanche.json',
+  fantom_tokens = '/ibc/axelar/fantom.json',
 }

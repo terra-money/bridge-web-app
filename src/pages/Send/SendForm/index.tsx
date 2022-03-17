@@ -8,7 +8,7 @@ import { ArrowClockwise } from 'react-bootstrap-icons'
 
 import { ASSET, COLOR, NETWORK } from 'consts'
 
-import { BlockChainType, isIbcNetwork } from 'types/network'
+import { BlockChainType, isIbcNetwork, isAxelarNetwork } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 
@@ -47,6 +47,8 @@ const StyledMaxButton = styled.div`
   padding: 0 10px;
   line-height: 24px;
   height: 26px;
+  display: flex;
+  align-items: center;
 
   cursor: pointer;
   :hover {
@@ -126,6 +128,10 @@ const SendForm = ({
   const setAmountAfterShuttleFee = useSetRecoilState(
     SendStore.amountAfterShuttleFee
   )
+  const setAxelarFee = useSetRecoilState(SendStore.axelarFee)
+  const setAmountAfterAxelarFee = useSetRecoilState(
+    SendStore.amountAfterAxelarFee
+  )
 
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
@@ -169,8 +175,8 @@ const SendForm = ({
     onChangeAmount({ value: formatBalance(assetAmount) })
   }
 
-  const setTerraShuttleFee = async (): Promise<void> => {
-    // get terra shutte Fee Info
+  const setBridgeFee = async (): Promise<void> => {
+    // shuttle fee
     if (NETWORK.isEtherBaseBlockChain(toBlockChain)) {
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {
@@ -184,9 +190,15 @@ const SendForm = ({
             computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
           )
         })
-      } else {
-        setShuttleFee(new BigNumber(0))
       }
+    // axelar fee (0.1%)
+    } else if (isAxelarNetwork(toBlockChain)) {
+      const sendAmount = new BigNumber(amount)
+      setAxelarFee(sendAmount.multipliedBy(0.001))
+      setAmountAfterAxelarFee(sendAmount.multipliedBy(0.999))
+    } else {
+      setShuttleFee(new BigNumber(0))
+      setAxelarFee(new BigNumber(0))
     }
   }
 
@@ -201,7 +213,6 @@ const SendForm = ({
       amount &&
       feeDenom &&
       toAddress
-
     if (asset?.terraToken && ableToGetFeeInfo) {
       if (sendDataResult.isValid) {
         // get terra Send Fee Info
@@ -209,7 +220,7 @@ const SendForm = ({
         setGasFeeList(terraFeeList)
       }
 
-      setTerraShuttleFee()
+      setBridgeFee()
     }
   }, 300)
 

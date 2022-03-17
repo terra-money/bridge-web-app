@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import electric from 'images/electric.gif'
 
 import { NETWORK } from 'consts'
@@ -10,6 +10,7 @@ import { BlockChainType } from 'types/network'
 import useAuth from 'hooks/useAuth'
 
 import SendStore from 'store/SendStore'
+import NetworkStore from 'store/NetworkStore'
 
 import SelectBlockChain from '../../components/SelectBlockChain'
 import FormImage from 'components/FormImage'
@@ -31,6 +32,7 @@ const BlockChainNetwork = (): ReactElement => {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   return (
     <StyledNetworkBox>
@@ -127,31 +129,42 @@ const BlockChainNetwork = (): ReactElement => {
               value: BlockChainType.osmo,
               isDisabled:
                 fromBlockChain !== BlockChainType.terra ||
-                toBlockChain === BlockChainType.osmo,
+                toBlockChain === BlockChainType.osmo ||
+                isTestnet,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.scrt],
               value: BlockChainType.scrt,
               isDisabled:
                 fromBlockChain !== BlockChainType.terra ||
-                toBlockChain === BlockChainType.scrt,
+                toBlockChain === BlockChainType.scrt ||
+                isTestnet,
             },
             {
               label: NETWORK.blockChainName[BlockChainType.inj],
               value: BlockChainType.inj,
               isDisabled:
                 fromBlockChain !== BlockChainType.terra ||
-                toBlockChain === BlockChainType.inj,
+                toBlockChain === BlockChainType.inj ||
+                isTestnet,
             },
-            // we should use axelar only to send tokens to Avalance and Fantom
-            /* 
             {
-              label: NETWORK.blockChainName[BlockChainType.axelar],
-              value: BlockChainType.axelar,
+              label: NETWORK.blockChainName[BlockChainType.avalanche],
+              value: BlockChainType.avalanche,
               isDisabled:
                 fromBlockChain !== BlockChainType.terra ||
-                toBlockChain === BlockChainType.axelar,
+                toBlockChain === BlockChainType.avalanche ||
+                isTestnet,
             },
+            {
+              label: NETWORK.blockChainName[BlockChainType.fantom],
+              value: BlockChainType.fantom,
+              isDisabled:
+                fromBlockChain !== BlockChainType.terra ||
+                toBlockChain === BlockChainType.fantom ||
+                isTestnet,
+            },
+            /* 
             {
               label: NETWORK.blockChainName[BlockChainType.cosmos],
               value: BlockChainType.cosmos,

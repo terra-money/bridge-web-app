@@ -10,6 +10,7 @@ import { AssetType, WhiteListType, BalanceListType } from 'types/asset'
 import {
   BlockChainType,
   isIbcNetwork,
+  isAxelarNetwork,
   allowedCoins,
   IbcNetwork,
 } from 'types/network'
@@ -108,7 +109,11 @@ const useAsset = (): {
             balanceWhiteList = balanceWhiteList.filter(
               ({ token }): boolean =>
                 token.startsWith('terra1') &&
-                allowedCoins[toBlockChain as IbcNetwork].includes(token)
+                allowedCoins[
+                  isIbcNetwork(toBlockChain)
+                    ? (toBlockChain as IbcNetwork)
+                    : BlockChainType.axelar
+                ].includes(token)
             )
         }
         balanceList = await getTerraBalances({
@@ -173,6 +178,15 @@ const useAsset = (): {
       isIbcNetwork(toBlockChain)
     ) {
       const allowed = allowedCoins[toBlockChain as IbcNetwork] as string[]
+      const filteredList = fromList.filter((item) =>
+        allowed.includes(item.terraToken)
+      )
+      setAssetList(filteredList)
+    } else if (
+      fromBlockChain === BlockChainType.terra &&
+      isAxelarNetwork(toBlockChain)
+    ) {
+      const allowed = allowedCoins[BlockChainType.axelar] as string[]
       const filteredList = fromList.filter((item) =>
         allowed.includes(item.terraToken)
       )

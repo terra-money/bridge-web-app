@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil'
 
 import cautionPng from 'images/caution.png'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isAxelarNetwork } from 'types/network'
 
 import SendStore from 'store/SendStore'
 
@@ -35,6 +35,7 @@ const StyledWarningInfoText = styled(Text)`
 const WarningInfo = (): ReactElement => {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const asset = useRecoilValue(SendStore.asset)
   const [infoText, setInfoText] = useState('')
 
   useEffect(() => {
@@ -52,15 +53,28 @@ const WarningInfo = (): ReactElement => {
     return (): void => {
       setInfoText('')
     }
-  }, [toBlockChain, fromBlockChain])
+  }, [toBlockChain, fromBlockChain, asset])
 
   return infoText ? (
-    <StyledWarningInfo>
-      <div style={{ paddingRight: 12 }}>
-        <FormImage src={cautionPng} size={16} />
-      </div>
-      <StyledWarningInfoText>{infoText}</StyledWarningInfoText>
-    </StyledWarningInfo>
+    <>
+      <StyledWarningInfo>
+        <div style={{ paddingRight: 12 }}>
+          <FormImage src={cautionPng} size={16} />
+        </div>
+        <StyledWarningInfoText>{infoText}</StyledWarningInfoText>
+      </StyledWarningInfo>
+      {isAxelarNetwork(toBlockChain) && (
+        <StyledWarningInfo style={{ marginTop: '-20px' }}>
+          <div style={{ paddingRight: 12 }}>
+            <FormImage src={cautionPng} size={16} />
+          </div>
+          <StyledWarningInfoText>
+            {asset?.symbol} will become Axelar Wrapped {asset?.symbol} after the
+            transfer is completed
+          </StyledWarningInfoText>
+        </StyledWarningInfo>
+      )}
+    </>
   ) : (
     <></>
   )

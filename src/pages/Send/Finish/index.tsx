@@ -16,7 +16,7 @@ import SendProcessStore from 'store/SendProcessStore'
 import useNetwork from 'hooks/useNetwork'
 import AuthStore from 'store/AuthStore'
 import FormImage from 'components/FormImage'
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isAxelarNetwork } from 'types/network'
 
 const StyledContainer = styled.div`
   padding-top: 20px;
@@ -92,7 +92,9 @@ const Finish = (): ReactElement => {
   const [waitForReceiptError, setWaitForReceiptError] = useRecoilState(
     SendProcessStore.waitForReceiptError
   )
+
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
+  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
 
   const { getScannerLink } = useNetwork()
 
@@ -108,6 +110,8 @@ const Finish = (): ReactElement => {
     setRequestTxResult({ success: false })
     setWaitForReceiptError('')
   }, [])
+
+  // TODO: Add token to Metamask
 
   return (
     <StyledContainer>
@@ -163,6 +167,26 @@ const Finish = (): ReactElement => {
               >
                 {`After Shuttle Fee : (estimated) ${formatBalance(
                   amountAfterShuttleFee
+                )} ${asset?.symbol}`}
+              </StyledAmountText>
+            </div>
+          )}
+
+        {fromBlockChain === BlockChainType.terra &&
+          isAxelarNetwork(toBlockChain) && (
+            <div
+              style={{
+                fontSize: 12,
+                textAlign: 'center',
+                marginBottom: 20,
+                marginTop: 10,
+              }}
+            >
+              <StyledAmountText
+                isError={amountAfterAxelarFee.isLessThanOrEqualTo(0)}
+              >
+                {`After Axelar Fee : ${formatBalance(
+                  amountAfterAxelarFee
                 )} ${asset?.symbol}`}
               </StyledAmountText>
             </div>

@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@apollo/client": "^3.3.11",
+    "@axelar-network/axelarjs-sdk": "^0.4.15",
     "@binance-chain/bsc-connector": "^1.0.0",
     "@cosmjs/launchpad": "^0.27.1",
     "@cosmjs/stargate": "^0.27.1",

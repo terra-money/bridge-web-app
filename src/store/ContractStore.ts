@@ -81,6 +81,20 @@ const initOnlyInjWhiteList = atom<
   default: undefined,
 })
 
+const initOnlyAvalancheWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlyAvalanceWhiteList',
+  default: undefined,
+})
+
+const initOnlyFantomWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlyFantomWhiteList',
+  default: undefined,
+})
+
 const assetList = selector<AssetType[]>({
   key: 'assetList',
   get: ({ get }) => {
@@ -199,6 +213,32 @@ const injWhiteList = selector<WhiteListType>({
 })
 
 // if empty, service will block from start
+const avalancheWhiteList = selector<WhiteListType>({
+  key: 'avalancheWhiteList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlyAvalancheWhiteList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
+// if empty, service will block from start
+const fantomWhiteList = selector<WhiteListType>({
+  key: 'fantomWhiteList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlyFantomWhiteList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
+// if empty, service will block from start
 const hmyWhiteList = selector<WhiteListType>({
   key: 'hmyWhiteList',
   get: ({ get }) => {
@@ -259,6 +299,14 @@ const allTokenAddress = selector<string[]>({
       mainnet: {},
       testnet: {},
     }
+    const avalancheWhiteList = get(initOnlyAvalancheWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
+    const fantomWhiteList = get(initOnlyFantomWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
 
     return [
       ..._.flatMap(terraWhiteList['mainnet']),
@@ -275,6 +323,10 @@ const allTokenAddress = selector<string[]>({
       ..._.flatMap(scrtWhiteList['testnet']),
       ..._.flatMap(injWhiteList['mainnet']),
       ..._.flatMap(injWhiteList['testnet']),
+      ..._.flatMap(avalancheWhiteList['mainnet']),
+      ..._.flatMap(avalancheWhiteList['testnet']),
+      ..._.flatMap(fantomWhiteList['mainnet']),
+      ..._.flatMap(fantomWhiteList['testnet']),
     ]
   },
 })
@@ -290,6 +342,8 @@ export default {
   initOnlyOsmoWhiteList,
   initOnlyScrtWhiteList,
   initOnlyInjWhiteList,
+  initOnlyAvalancheWhiteList,
+  initOnlyFantomWhiteList,
   assetList,
   shuttleUusdPairs,
   terraWhiteList,
@@ -299,6 +353,8 @@ export default {
   osmoWhiteList,
   scrtWhiteList,
   injWhiteList,
+  avalancheWhiteList,
+  fantomWhiteList,
   etherVaultTokenList,
   allTokenAddress,
 }

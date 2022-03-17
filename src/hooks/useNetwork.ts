@@ -27,6 +27,8 @@ const useNetwork = (): {
   const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
   const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
   const injWhiteList = useRecoilValue(ContractStore.injWhiteList)
+  const avalancheWhiteList = useRecoilValue(ContractStore.avalancheWhiteList)
+  const fantomWhiteList = useRecoilValue(ContractStore.fantomWhiteList)
 
   const getScannerLink = ({
     address,
@@ -46,6 +48,18 @@ const useNetwork = (): {
       } else if (fromBlockChain === BlockChainType.hmy) {
         subdomain = isTestnet ? 'testnet.' : ''
         return `https://explorer.${subdomain}harmony.one/#/${type}/${address}`
+      } else if (fromBlockChain === BlockChainType.osmo) {
+        return type === 'tx' 
+          ? `https://www.mintscan.io/osmosis/txs/${address}` 
+          : `https://www.mintscan.io/osmosis/account/${address}`
+      } else if (fromBlockChain === BlockChainType.scrt) {
+        return type === 'tx' 
+          ? `https://www.mintscan.io/secret/txs/${address}` 
+          : `https://www.mintscan.io/secret/account/${address}`
+      } else if (fromBlockChain === BlockChainType.inj) {
+        return type === 'tx' 
+          ? `https://www.mintscan.io/injective/txs/${address}` 
+          : `https://www.mintscan.io/injective/account/${address}`
       }
 
       subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
@@ -73,6 +87,11 @@ const useNetwork = (): {
         return scrtWhiteList[tokenAddress]
       case BlockChainType.inj:
         return injWhiteList[tokenAddress]
+      // TODO: add Axelars tokens
+      case BlockChainType.avalanche:
+        return avalancheWhiteList[tokenAddress]
+      case BlockChainType.fantom:
+        return fantomWhiteList[tokenAddress]
       default:
         return terraWhiteList[tokenAddress]
     }

@@ -35,6 +35,7 @@ import {
   ibcChannels,
   IbcNetwork,
   ibcChainId,
+  isAxelarNetwork,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -44,6 +45,7 @@ import useEtherBaseContract from './useEtherBaseContract'
 import ContractStore from 'store/ContractStore'
 import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
+import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDepositAddress'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -70,7 +72,7 @@ type UseSendType = {
       fee?: Fee
     }[]
   >
-  getTerraMsgs: () => MsgSend[] | MsgExecuteContract[] | MsgTransfer[]
+  getTerraMsgs: () => Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]>
   waitForEtherBaseTransaction: (props: {
     hash: string
   }) => Promise<EtherBaseReceiptResultType | undefined>
@@ -211,7 +213,7 @@ const useSend = (): UseSendType => {
           }
         }
 
-        const msgs = getTerraMsgs()
+        const msgs = await getTerraMsgs(true)
         const lcd = new LCDClient({
           chainID: terraExt.chainID,
           URL: terraLocal.lcd,
@@ -247,7 +249,9 @@ const useSend = (): UseSendType => {
     return []
   }
 
-  const getTerraMsgs = (): MsgSend[] | MsgExecuteContract[] | MsgTransfer[] => {
+  const getTerraMsgs = async (
+    isSimulation?: boolean
+  ): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
       const recipient =
         toBlockChain === BlockChainType.terra
@@ -281,7 +285,33 @@ const useSend = (): UseSendType => {
             loginUser.address,
             toAddress,
             undefined,
-            (Date.now() + 60 * 1000) * 1e6
+            (Date.now() + 120 * 1000) * 1e6
+          ),
+        ]
+      }
+
+      if (
+        UTIL.isNativeDenom(asset.terraToken) &&
+        isAxelarNetwork(toBlockChain)
+      ) {
+        // in the fee simulation use the user address
+        const axelarAddress = isSimulation
+          ? loginUser.address
+          : await getAxelarAddress(
+              toAddress,
+              toBlockChain as 'avalanche' | 'fantom',
+              asset.terraToken as 'uusd' | 'uluna'
+            )
+
+        return [
+          new MsgTransfer(
+            'transfer',
+            terraIbcChannels[BlockChainType.axelar],
+            new Coin(asset.terraToken, sendAmount),
+            loginUser.address,
+            axelarAddress || '',
+            undefined,
+            (Date.now() + 300 * 1000) * 1e6
           ),
         ]
       }
@@ -312,7 +342,7 @@ const useSend = (): UseSendType => {
           memo
         : // if send to ether-base then memo must be to-address
           toAddress
-    const msgs = getTerraMsgs()
+    const msgs = await getTerraMsgs()
 
     const tx: CreateTxOptions = {
       gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
@@ -511,10 +541,10 @@ const useSend = (): UseSendType => {
               receiver: toAddress,
               token: { denom: fromTokenAddress, amount: sendAmount },
               timeoutHeight: undefined,
-              timeoutTimestamp: (Date.now() + 60 * 1000) * 1e6,
+              timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
             },
           }
-          
+
           let account
           if (fromBlockChain === BlockChainType.inj) {
             account = await getInjectiveSequence(loginUser.address)
