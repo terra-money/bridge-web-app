@@ -5,11 +5,9 @@ import {
 } from '@axelar-network/axelarjs-sdk'
 
 export class AxelarAPI {
-  private environment: string
   private axelarJsSDK: TransferAssetBridge
 
   constructor(environment: string) {
-    this.environment = environment
     this.axelarJsSDK = new TransferAssetBridge(environment)
   }
 
@@ -18,6 +16,22 @@ export class AxelarAPI {
   ): Promise<{ validationMsg: string; otc: string }> {
     try {
       return await this.axelarJsSDK.getOneTimeCode(sigerAddress)
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  public async getTransferFee(
+    sourceChain: string,
+    destinationChain: string,
+    asset: string
+  ): Promise<number> {
+    try {
+      return this.axelarJsSDK.getTransferFee(
+        sourceChain,
+        destinationChain,
+        asset
+      )
     } catch (e: any) {
       throw e
     }

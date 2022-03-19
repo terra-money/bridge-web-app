@@ -1,5 +1,4 @@
 import { BlockChainType } from 'types/network'
-import { AssetNativeDenomEnum } from 'types'
 import BinanceChainPng from 'images/BinanceChain.png'
 import EthereumPng from 'images/Ethereum.png'
 import TerraPng from 'images/Terra.png'
@@ -43,11 +42,6 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.fantom]: 'Fantom',
   //[BlockChainType.cosmos]: 'Cosmos',
   //[BlockChainType.cro]: 'Cronos',
-}
-
-const minimumAxelarAmount: Record<string, number> = {
-  [AssetNativeDenomEnum.uluna]: 500_000,
-  [AssetNativeDenomEnum.uusd]: 15_000_000,
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {
@@ -126,7 +120,6 @@ export default {
   blockChainImage,
   blockChainName,
   isEtherBaseBlockChain,
-  minimumAxelarAmount,
   INFURAID,
   TERRA_ASSETS_URL,
   TERRA_EXTENSION,

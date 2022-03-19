@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 import { ASSET, COLOR, NETWORK, UTIL } from 'consts'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, isAxelarNetwork } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
@@ -44,10 +44,18 @@ const FormFeeInfo = ({
   )
   const shuttleFee = useRecoilValue(SendStore.shuttleFee)
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
+  const axelarFee = useRecoilValue(SendStore.axelarFee)
+  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
+
+  const bridgeName = isAxelarNetwork(toBlockChain) ? 'Axelar' : 'Shuttle'
+  const bridgeFee = isAxelarNetwork(toBlockChain) ? axelarFee : shuttleFee
+  const amountAfterFee = isAxelarNetwork(toBlockChain)
+    ? amountAfterAxelarFee
+    : amountAfterShuttleFee
 
   const { formatBalance } = useAsset()
 
@@ -190,7 +198,8 @@ const FormFeeInfo = ({
                 />
               </View>
 
-              {NETWORK.isEtherBaseBlockChain(toBlockChain) && (
+              {(NETWORK.isEtherBaseBlockChain(toBlockChain) ||
+                isAxelarNetwork(toBlockChain)) && (
                 <>
                   <Row
                     style={{
@@ -202,14 +211,14 @@ const FormFeeInfo = ({
                   >
                     <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                        Shuttle fee (estimated)
+                        {bridgeName} fee (estimated)
                       </Text>
                     </View>
                     <View>
                       <Text
                         style={{ justifyContent: 'flex-end', opacity: '0.8' }}
                       >
-                        {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
+                        {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
                       </Text>
                     </View>
                   </Row>
@@ -223,7 +232,7 @@ const FormFeeInfo = ({
                   >
                     <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                        Amount after Shuttle fee (estimated){' '}
+                        Amount after {bridgeName} fee (estimated){' '}
                       </Text>
                     </View>
                     <View style={{ padding: 0, alignItems: 'flex-start' }}>
@@ -231,14 +240,12 @@ const FormFeeInfo = ({
                         style={{
                           justifyContent: 'flex-end',
                           opacity: '0.8',
-                          color: amountAfterShuttleFee.isLessThanOrEqualTo(0)
+                          color: amountAfterFee.isLessThanOrEqualTo(0)
                             ? COLOR.red
                             : COLOR.text,
                         }}
                       >
-                        {`${formatBalance(amountAfterShuttleFee)} ${
-                          asset?.symbol
-                        }`}
+                        {`${formatBalance(amountAfterFee)} ${asset?.symbol}`}
                       </Text>
                     </View>
                   </Row>

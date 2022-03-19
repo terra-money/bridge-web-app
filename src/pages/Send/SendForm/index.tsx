@@ -11,7 +11,7 @@ import { ASSET, COLOR, NETWORK } from 'consts'
 import { BlockChainType, isIbcNetwork, isAxelarNetwork } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
-
+import { AxelarAPI } from 'packages/axelar/axelarAPI'
 import { Text, Row } from 'components'
 import FormLabel from 'components/FormLabel'
 import FormErrorMessage from 'components/FormErrorMessage'
@@ -191,11 +191,18 @@ const SendForm = ({
           )
         })
       }
-    // axelar fee (0.1%)
     } else if (isAxelarNetwork(toBlockChain)) {
-      const sendAmount = new BigNumber(amount)
-      setAxelarFee(sendAmount.multipliedBy(0.001))
-      setAmountAfterAxelarFee(sendAmount.multipliedBy(0.999))
+      const api = new AxelarAPI('mainnet')
+      const fee = await api.getTransferFee(
+        fromBlockChain,
+        toBlockChain,
+        asset?.terraToken || ''
+      )
+      setAxelarFee(new BigNumber(fee))
+      const computedAmount = new BigNumber(amount).minus(fee)
+      setAmountAfterAxelarFee(
+        computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
+      )
     } else {
       setShuttleFee(new BigNumber(0))
       setAxelarFee(new BigNumber(0))
