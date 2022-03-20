@@ -45,6 +45,7 @@ const isTestnet = selector<boolean>({
       }
 
       if (isIbcNetwork(fromBlockChain)) {
+        // testnet not supported
         return false
       }
 

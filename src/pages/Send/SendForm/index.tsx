@@ -211,7 +211,7 @@ const SendForm = ({
 
   // It's for Fee(gas) and ShuttleFee
   const dbcGetFeeInfoWithValidation = useDebouncedCallback(async () => {
-    const sendDataResult = validateSendData()
+    const sendDataResult = await validateSendData()
     setValidationResult(sendDataResult)
 
     const ableToGetFeeInfo =
