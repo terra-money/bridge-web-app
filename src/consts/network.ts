@@ -8,7 +8,7 @@ import AxelarSvg from 'images/axelar.svg'
 import InjectiveSvg from 'images/injective.svg'
 import AvalancheSvg from 'images/avalanche.svg'
 import FantomSvg from 'images/fantom.svg'
-//import CosmosSvg from 'images/cosmos.svg'
+import CosmosSvg from 'images/cosmos.svg'
 //import CronosSvg from 'images/cronos.svg'
 import SecretSvg from 'images/secret.svg'
 import BigNumber from 'bignumber.js'
@@ -25,7 +25,7 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.axelar]: AxelarSvg,
   [BlockChainType.avalanche]: AvalancheSvg,
   [BlockChainType.fantom]: FantomSvg,
-  //[BlockChainType.cosmos]: CosmosSvg,
+  [BlockChainType.cosmos]: CosmosSvg,
   //[BlockChainType.cro]: CronosSvg,
 }
 
@@ -40,7 +40,7 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.axelar]: 'Axelar',
   [BlockChainType.avalanche]: 'Avalanche',
   [BlockChainType.fantom]: 'Fantom',
-  //[BlockChainType.cosmos]: 'Cosmos',
+  [BlockChainType.cosmos]: 'Cosmos',
   //[BlockChainType.cro]: 'Cronos',
 }
 
