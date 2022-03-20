@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { isBrowser, isMobile } from 'react-device-detect'
@@ -20,6 +20,7 @@ import WalletLogo from 'components/WalletLogo'
 import FormImage from 'components/FormImage'
 import SendStore from 'store/SendStore'
 import { BlockChainType } from 'types'
+import useTns from 'packages/tns/useTns'
 
 const StyledContainer = styled(Container)`
   position: relative;
@@ -159,8 +160,19 @@ const LoginUserInfo = (): ReactElement => {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
   const [isOpen, setIsOpen] = useState(false)
+  const [tnsName, setTnsName] = useState<undefined | string>(undefined)
 
   const { logout } = useAuth()
+  const { getName } = useTns()
+
+  useEffect(() => {
+    if (!loginUser.address.startsWith('terra1')) {
+      setTnsName(undefined)
+      return
+    }
+
+    getName(loginUser.address).then((name) => setTnsName(name))
+  }, [loginUser.address])
 
   return (
     <ClickAwayListener
@@ -175,7 +187,9 @@ const LoginUserInfo = (): ReactElement => {
             walleEnum={loginUser.walletType}
             size={16}
           />
-          <StyledAddress>{UTIL.truncate(loginUser.address)}</StyledAddress>
+          <StyledAddress>
+            {tnsName || UTIL.truncate(loginUser.address)}
+          </StyledAddress>
 
           {isBrowser && (
             <>
