@@ -18,7 +18,6 @@ import { ValidateItemResultType, ValidateResultType } from 'types/send'
 import useAsset from './useAsset'
 import { NETWORK } from 'consts'
 import ContractStore from 'store/ContractStore'
-import { isAxelarNetwork } from 'types'
 
 const useSendValidate = (): {
   validateFee: () => ValidateItemResultType
@@ -155,18 +154,6 @@ const useSendValidate = (): {
       return {
         isValid: false,
         errorMessage: 'Insufficient balance',
-      }
-    }
-
-    if (
-      isAxelarNetwork(toBlockChain) &&
-      bnAmount.isLessThan(
-        NETWORK.minimumAxelarAmount[asset?.terraToken || 'uusd']
-      )
-    ) {
-      return {
-        isValid: false,
-        errorMessage: `Minimum amount is ${NETWORK.minimumAxelarAmount[asset?.terraToken || 'uusd']/1_000_000} ${asset?.name}`,
       }
     }
 
