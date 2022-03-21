@@ -20,7 +20,12 @@ export default function useTns(): {
   }
 
   async function getAddress(name: string): Promise<string | undefined> {
-    return await tns.name(name).getTerraAddress()
+    if (!name.endsWith('.ust')) return undefined
+    try {
+      return await tns.name(name).getTerraAddress()
+    } catch {
+      return undefined
+    }
   }
 
   return { getName, getAddress }
