@@ -22,6 +22,7 @@
     "bignumber.js": "^9.0.1",
     "bootstrap": "^4.6.0",
     "ethers": "^5.4.3",
+    "graphql": "^16.3.0",
     "lodash": "^4.17.21",
     "numeral": "^2.0.6",
     "qrcode.react": "^1.0.1",
