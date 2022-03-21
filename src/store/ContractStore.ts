@@ -81,6 +81,13 @@ const initOnlyInjWhiteList = atom<
   default: undefined,
 })
 
+const initOnlyCosmosWhiteList = atom<
+  Record<'mainnet' | 'testnet', WhiteListType> | undefined
+>({
+  key: 'initOnlyCosmosWhiteList',
+  default: undefined,
+})
+
 const initOnlyAvalancheWhiteList = atom<
   Record<'mainnet' | 'testnet', WhiteListType> | undefined
 >({
@@ -213,6 +220,19 @@ const injWhiteList = selector<WhiteListType>({
 })
 
 // if empty, service will block from start
+const cosmosWhiteList = selector<WhiteListType>({
+  key: 'cosmosWhiteList',
+  get: ({ get }) => {
+    const isTestnet = get(NetworkStore.isTestnet)
+    const fetchedData = get(initOnlyCosmosWhiteList)
+    if (fetchedData) {
+      return fetchedData[isTestnet ? 'testnet' : 'mainnet']
+    }
+    return {}
+  },
+})
+
+// if empty, service will block from start
 const avalancheWhiteList = selector<WhiteListType>({
   key: 'avalancheWhiteList',
   get: ({ get }) => {
@@ -299,6 +319,10 @@ const allTokenAddress = selector<string[]>({
       mainnet: {},
       testnet: {},
     }
+    const cosmosWhiteList = get(initOnlyCosmosWhiteList) || {
+      mainnet: {},
+      testnet: {},
+    }
     const avalancheWhiteList = get(initOnlyAvalancheWhiteList) || {
       mainnet: {},
       testnet: {},
@@ -323,6 +347,8 @@ const allTokenAddress = selector<string[]>({
       ..._.flatMap(scrtWhiteList['testnet']),
       ..._.flatMap(injWhiteList['mainnet']),
       ..._.flatMap(injWhiteList['testnet']),
+      ..._.flatMap(cosmosWhiteList['mainnet']),
+      ..._.flatMap(cosmosWhiteList['testnet']),
       ..._.flatMap(avalancheWhiteList['mainnet']),
       ..._.flatMap(avalancheWhiteList['testnet']),
       ..._.flatMap(fantomWhiteList['mainnet']),
@@ -342,6 +368,7 @@ export default {
   initOnlyOsmoWhiteList,
   initOnlyScrtWhiteList,
   initOnlyInjWhiteList,
+  initOnlyCosmosWhiteList,
   initOnlyAvalancheWhiteList,
   initOnlyFantomWhiteList,
   assetList,
@@ -353,6 +380,7 @@ export default {
   osmoWhiteList,
   scrtWhiteList,
   injWhiteList,
+  cosmosWhiteList,
   avalancheWhiteList,
   fantomWhiteList,
   etherVaultTokenList,

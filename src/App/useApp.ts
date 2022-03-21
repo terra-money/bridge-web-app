@@ -93,6 +93,9 @@ const useApp = (): {
     ContractStore.initOnlyScrtWhiteList
   )
   const setInjWhiteList = useSetRecoilState(ContractStore.initOnlyInjWhiteList)
+  const setCosmosWhiteList = useSetRecoilState(
+    ContractStore.initOnlyCosmosWhiteList
+  )
   const setAvalancheWhiteList = useSetRecoilState(
     ContractStore.initOnlyAvalancheWhiteList
   )
@@ -230,6 +233,11 @@ const useApp = (): {
 
       const injListJson = await fetchAssets(TerraAssetsPathEnum.inj_tokens)
       setInjWhiteList(injListJson)
+
+      const cosmosListJson = await fetchAssets(
+        TerraAssetsPathEnum.cosmos_tokens
+      )
+      setCosmosWhiteList(cosmosListJson)
 
       const avalancheListJson = await fetchAssets(
         TerraAssetsPathEnum.avalanche_tokens

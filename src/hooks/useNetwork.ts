@@ -27,6 +27,7 @@ const useNetwork = (): {
   const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
   const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
   const injWhiteList = useRecoilValue(ContractStore.injWhiteList)
+  const cosmosWhiteList = useRecoilValue(ContractStore.cosmosWhiteList)
   const avalancheWhiteList = useRecoilValue(ContractStore.avalancheWhiteList)
   const fantomWhiteList = useRecoilValue(ContractStore.fantomWhiteList)
 
@@ -49,19 +50,22 @@ const useNetwork = (): {
         subdomain = isTestnet ? 'testnet.' : ''
         return `https://explorer.${subdomain}harmony.one/#/${type}/${address}`
       } else if (fromBlockChain === BlockChainType.osmo) {
-        return type === 'tx' 
-          ? `https://www.mintscan.io/osmosis/txs/${address}` 
+        return type === 'tx'
+          ? `https://www.mintscan.io/osmosis/txs/${address}`
           : `https://www.mintscan.io/osmosis/account/${address}`
       } else if (fromBlockChain === BlockChainType.scrt) {
-        return type === 'tx' 
-          ? `https://www.mintscan.io/secret/txs/${address}` 
+        return type === 'tx'
+          ? `https://www.mintscan.io/secret/txs/${address}`
           : `https://www.mintscan.io/secret/account/${address}`
       } else if (fromBlockChain === BlockChainType.inj) {
-        return type === 'tx' 
-          ? `https://www.mintscan.io/injective/txs/${address}` 
+        return type === 'tx'
+          ? `https://www.mintscan.io/injective/txs/${address}`
           : `https://www.mintscan.io/injective/account/${address}`
+      } else if (fromBlockChain === BlockChainType.cosmos) {
+        return type === 'tx'
+          ? `https://www.mintscan.io/cosmos/txs/${address}`
+          : `https://www.mintscan.io/cosmos/account/${address}`
       }
-
       subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
       return `https://${subdomain}etherscan.io/${type}/${address}`
     }
@@ -87,7 +91,8 @@ const useNetwork = (): {
         return scrtWhiteList[tokenAddress]
       case BlockChainType.inj:
         return injWhiteList[tokenAddress]
-      // TODO: add Axelars tokens
+      case BlockChainType.cosmos:
+        return cosmosWhiteList[tokenAddress]
       case BlockChainType.avalanche:
         return avalancheWhiteList[tokenAddress]
       case BlockChainType.fantom:
