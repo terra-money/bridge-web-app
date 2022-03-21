@@ -211,6 +211,8 @@ const SendForm = ({
 
   // It's for Fee(gas) and ShuttleFee
   const dbcGetFeeInfoWithValidation = useDebouncedCallback(async () => {
+    // set false while waiting for verification
+    setValidationResult({ isValid: false })
     const sendDataResult = await validateSendData()
     setValidationResult(sendDataResult)
 
