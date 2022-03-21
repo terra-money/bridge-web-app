@@ -171,7 +171,10 @@ const LoginUserInfo = (): ReactElement => {
       return
     }
 
-    getName(loginUser.address).then((name) => setTnsName(name))
+    ;(async (): Promise<void> => {
+      const name = await getName(loginUser.address)
+      setTnsName(name)
+    })()
   }, [loginUser.address])
 
   return (
@@ -188,7 +191,7 @@ const LoginUserInfo = (): ReactElement => {
             size={16}
           />
           <StyledAddress>
-            {tnsName || UTIL.truncate(loginUser.address)}
+            {UTIL.truncate(tnsName || loginUser.address)}
           </StyledAddress>
 
           {isBrowser && (
