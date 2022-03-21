@@ -18,10 +18,11 @@ import { ValidateItemResultType, ValidateResultType } from 'types/send'
 import useAsset from './useAsset'
 import { NETWORK } from 'consts'
 import ContractStore from 'store/ContractStore'
+import useTns from 'packages/tns/useTns'
 
 const useSendValidate = (): {
   validateFee: () => ValidateItemResultType
-  validateSendData: () => ValidateResultType
+  validateSendData: () => Promise<ValidateResultType>
 } => {
   const { formatBalance } = useAsset()
   const allTokenAddress = useRecoilValue(ContractStore.allTokenAddress)
@@ -38,6 +39,8 @@ const useSendValidate = (): {
   const feeDenom = useRecoilValue(SendStore.feeDenom)
 
   const gasFee = useRecoilValue(SendStore.gasFee)
+
+  const { getAddress } = useTns()
 
   const validateFee = (): ValidateItemResultType => {
     if (fromBlockChain === BlockChainType.terra) {
@@ -90,7 +93,7 @@ const useSendValidate = (): {
     return { isValid: true }
   }
 
-  const validateToAddress = (): ValidateItemResultType => {
+  const validateToAddress = async (): Promise<ValidateItemResultType> => {
     if (_.isEmpty(toAddress)) {
       return { isValid: false, errorMessage: '' }
     }
@@ -105,7 +108,12 @@ const useSendValidate = (): {
     let validAddress = false
 
     if (toBlockChain === BlockChainType.terra) {
-      validAddress = AccAddress.validate(toAddress)
+      if (toAddress.endsWith('.ust')) {
+        const address = await getAddress(toAddress)
+        validAddress = !!address
+      } else {
+        validAddress = AccAddress.validate(toAddress)
+      }
     } else if (isIbcNetwork(toBlockChain)) {
       if (toAddress.startsWith(ibcPrefix[toBlockChain as IbcNetwork])) {
         try {
@@ -169,8 +177,8 @@ const useSendValidate = (): {
     return { isValid: true }
   }
 
-  const validateSendData = (): ValidateResultType => {
-    const toAddressValidResult = validateToAddress()
+  const validateSendData = async (): Promise<ValidateResultType> => {
+    const toAddressValidResult = await validateToAddress()
     const amountValidResult = validateAmount()
     const memoValidResult = validateMemo()
     const assetValidResult = validateAsset()

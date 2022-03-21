@@ -46,6 +46,7 @@ import ContractStore from 'store/ContractStore'
 import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
 import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDepositAddress'
+import useTns from 'packages/tns/useTns'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -115,6 +116,7 @@ const useSend = (): UseSendType => {
   const { getEtherBaseContract } = useEtherBaseContract()
 
   const { fromTokenAddress } = useNetwork()
+  const { getAddress } = useTns()
 
   const {
     data: allowanceOfSelectedAsset = {
@@ -255,7 +257,7 @@ const useSend = (): UseSendType => {
     if (asset) {
       const recipient =
         toBlockChain === BlockChainType.terra
-          ? toAddress
+          ? (await getAddress(toAddress)) || toAddress
           : terraLocal.shuttle[toBlockChain as ShuttleNetwork]
 
       if (
@@ -466,6 +468,7 @@ const useSend = (): UseSendType => {
   // Can't send tx between Ethereum <-> BSC
   const submitRequestTxFromEtherBase =
     async (): Promise<RequestTxResultType> => {
+      const terraAddress = (await getAddress(toAddress)) || toAddress
       if (
         fromBlockChain !== BlockChainType.terra &&
         asset &&
@@ -478,7 +481,7 @@ const useSend = (): UseSendType => {
           const withSigner = contract.connect(signer)
 
           const isTerra = toBlockChain === BlockChainType.terra
-          const decoded = decodeTerraAddressOnEtherBase(toAddress)
+          const decoded = decodeTerraAddressOnEtherBase(terraAddress)
           try {
             const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
@@ -490,14 +493,14 @@ const useSend = (): UseSendType => {
 
               const tx = isTerra
                 ? vaultContractSigner?.burn(sendAmount, decoded.padEnd(66, '0'))
-                : withSigner.transfer(toAddress, sendAmount)
+                : withSigner.transfer(terraAddress, sendAmount)
 
               const { hash } = await tx
               return { success: true, hash }
             } else {
               const tx = isTerra
                 ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
-                : withSigner.transfer(toAddress, sendAmount)
+                : withSigner.transfer(terraAddress, sendAmount)
 
               const { hash } = await tx
               return { success: true, hash }
@@ -530,6 +533,8 @@ const useSend = (): UseSendType => {
     ) {
       if (loginUser.signer) {
         try {
+          const terraAddress = (await getAddress(toAddress)) || toAddress
+
           await window.keplr.enable(ibcChainId[fromBlockChain as IbcNetwork])
 
           const transferMsg = {
@@ -538,7 +543,7 @@ const useSend = (): UseSendType => {
               sourcePort: 'transfer',
               sourceChannel: ibcChannels[fromBlockChain as IbcNetwork],
               sender: loginUser.address,
-              receiver: toAddress,
+              receiver: terraAddress,
               token: { denom: fromTokenAddress, amount: sendAmount },
               timeoutHeight: undefined,
               timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
