@@ -79,6 +79,7 @@ const NetworkErrorScreen = (): ReactElement => {
   const osmoWhiteList = useRecoilValue(ContractStore.initOnlyOsmoWhiteList)
   const scrtWhiteList = useRecoilValue(ContractStore.initOnlyScrtWhiteList)
   const injWhiteList = useRecoilValue(ContractStore.initOnlyInjWhiteList)
+  const cosmosWhiteList = useRecoilValue(ContractStore.initOnlyCosmosWhiteList)
   const avalancheWhiteList = useRecoilValue(ContractStore.avalancheWhiteList)
   const fantomWhiteList = useRecoilValue(ContractStore.fantomWhiteList)
 
@@ -114,6 +115,7 @@ const NetworkErrorScreen = (): ReactElement => {
           { name: 'Osmo Whitelist Json', value: osmoWhiteList },
           { name: 'Secret Whitelist Json', value: scrtWhiteList },
           { name: 'Injective Whitelist Json', value: injWhiteList },
+          { name: 'Cosmos Whitelist Json', value: cosmosWhiteList },
           {
             name: 'Avalanche Whitelist Json',
             value: isTestnet ? 'testnet' : avalancheWhiteList,

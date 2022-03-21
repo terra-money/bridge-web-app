@@ -36,6 +36,7 @@ const useAsset = (): {
   const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
   const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
   const injWhiteList = useRecoilValue(ContractStore.injWhiteList)
+  const cosmosWhiteList = useRecoilValue(ContractStore.cosmosWhiteList)
 
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
@@ -142,6 +143,9 @@ const useAsset = (): {
             break
           case BlockChainType.inj:
             whiteList = injWhiteList
+            break
+          case BlockChainType.cosmos:
+            whiteList = cosmosWhiteList
             break
         }
         balanceList = await getKeplrBalances({ whiteList })
