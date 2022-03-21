@@ -17,6 +17,7 @@ import useNetwork from 'hooks/useNetwork'
 import AuthStore from 'store/AuthStore'
 import FormImage from 'components/FormImage'
 import { BlockChainType, isAxelarNetwork } from 'types/network'
+import MetamaskButton from './MetamaskButton'
 
 const StyledContainer = styled.div`
   padding-top: 20px;
@@ -96,7 +97,7 @@ const Finish = (): ReactElement => {
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
 
-  const { getScannerLink } = useNetwork()
+  const { getScannerLink, toTokenAddress } = useNetwork()
 
   const [displayAmount] = useState(amount)
   const [displayToAddress] = useState(toAddress)
@@ -120,9 +121,21 @@ const Finish = (): ReactElement => {
           {displayErrorMessage}
         </StyledInfoText>
       ) : (
-        <StyledInfoText>
-          {`Transferring ${asset?.symbol} from ${NETWORK.blockChainName[fromBlockChain]} Network to ${NETWORK.blockChainName[toBlockChain]} Network.\nTransaction will be submitted via ${loginUser.walletType}`}
-        </StyledInfoText>
+        <>
+          <StyledInfoText>
+            {
+              // token address exists and is an ERC20 token
+              toTokenAddress && toTokenAddress.startsWith('0x') && (
+                <MetamaskButton
+                  name={asset?.symbol || ''}
+                  token={toTokenAddress}
+                  imgUrl={asset?.logoURI || ''}
+                />
+              )
+            }
+            {`Transferring ${asset?.symbol} from ${NETWORK.blockChainName[fromBlockChain]} Network to ${NETWORK.blockChainName[toBlockChain]} Network.\nTransaction will be submitted via ${loginUser.walletType}`}
+          </StyledInfoText>
+        </>
       )}
 
       <div
@@ -185,9 +198,9 @@ const Finish = (): ReactElement => {
               <StyledAmountText
                 isError={amountAfterAxelarFee.isLessThanOrEqualTo(0)}
               >
-                {`After Axelar Fee : ${formatBalance(
-                  amountAfterAxelarFee
-                )} ${asset?.symbol}`}
+                {`After Axelar Fee : ${formatBalance(amountAfterAxelarFee)} ${
+                  asset?.symbol
+                }`}
               </StyledAmountText>
             </div>
           )}
