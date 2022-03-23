@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { COLOR } from 'consts'
-import MetamaskImg from '../../../images/Metamask.png'
+import MetamaskImg from '../../../images/metamask.svg'
 
 const StyledButton = styled.button`
   border: 0;

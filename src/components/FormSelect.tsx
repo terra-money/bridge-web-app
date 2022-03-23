@@ -3,9 +3,10 @@ import _ from 'lodash'
 import styled from 'styled-components'
 import { Dropdown } from 'react-bootstrap'
 import { CaretDownFill } from 'react-bootstrap-icons'
-
+import NETWORK from '../consts/network'
 import { COLOR, STYLE } from 'consts'
 import Text from './Text'
+import { BlockChainType } from 'types'
 
 type FormSelectProps<T> = {
   selectedValue: T
@@ -15,6 +16,8 @@ type FormSelectProps<T> = {
   containerStyle?: React.CSSProperties
   menuContainerStyle?: React.CSSProperties
   selectedTextStyle?: React.CSSProperties
+  itemStyle?: React.CSSProperties
+  icons?: boolean
 }
 
 const StyledDropdown = styled(Dropdown)`
@@ -93,6 +96,13 @@ const StyledDropdownMenu = styled(StyledDropdown.Menu)`
   }
 `
 
+const BlockchainIcon = styled.img`
+  display: inline;
+  height: 16px;
+  width: 16px;
+  object-fit: contain;
+`
+
 const FormSelect = <T,>({
   selectedValue,
   optionList,
@@ -101,6 +111,8 @@ const FormSelect = <T,>({
   containerStyle,
   menuContainerStyle,
   selectedTextStyle,
+  itemStyle,
+  icons,
 }: FormSelectProps<T>): ReactElement => {
   return (
     <StyledDropdown>
@@ -109,14 +121,29 @@ const FormSelect = <T,>({
         size={size}
         style={containerStyle}
       >
-        <Text style={selectedTextStyle}>
-          {optionList.find((x) => x.value === selectedValue)?.label}
-        </Text>
-        <CaretDownFill style={{ fontSize: 8, marginTop: -2 }} />
+        <div style={{ display: 'flex' }}>
+          {icons && (
+            <BlockchainIcon
+              src={
+                NETWORK.blockChainImage[
+                  optionList.find((x) => x.value === selectedValue)
+                    ?.value as any as BlockChainType
+                ]
+              }
+              alt="Blockchain Icon"
+            />
+          )}
+
+          <Text style={{ ...selectedTextStyle, marginLeft: icons ? 8 : 0 }}>
+            {optionList.find((x) => x.value === selectedValue)?.label}
+          </Text>
+        </div>
+        <CaretDownFill style={{ fontSize: 9, paddingLeft: 6 }} />
       </StyledDropdownToggle>
       <StyledDropdownMenu style={menuContainerStyle}>
         {_.map(optionList, (option, i) => (
           <StyledDropdownItem
+            style={itemStyle}
             key={`option-${i}`}
             onClick={(): void => {
               if (option.isDisabled) {
@@ -125,14 +152,29 @@ const FormSelect = <T,>({
               onSelect(option.value)
             }}
           >
-            <Text
-              style={{
-                ...selectedTextStyle,
-                color: option.isDisabled ? COLOR.blueGray : COLOR.white,
-              }}
-            >
-              {option.label}
-            </Text>
+            <div style={{ display: 'flex' }}>
+              {icons && (
+                <BlockchainIcon
+                  src={
+                    NETWORK.blockChainImage[
+                      option.value as any as BlockChainType
+                    ]
+                  }
+                  alt="Blockchain Icon"
+                  style={{ opacity: option.isDisabled ? 0.8 : 1 }}
+                />
+              )}
+              <Text
+                style={{
+                  ...selectedTextStyle,
+                  marginLeft: icons ? 8 : 0,
+                  marginRight: 4,
+                  color: option.isDisabled ? COLOR.blueGray : COLOR.white,
+                }}
+              >
+                {option.label}
+              </Text>
+            </div>
           </StyledDropdownItem>
         ))}
       </StyledDropdownMenu>

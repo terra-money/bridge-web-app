@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { atom } from 'recoil'
 
 import { AssetNativeDenomEnum, AssetType } from 'types/asset'
-import { BlockChainType } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateResultType } from 'types/send'
 
 // Send Data Start
@@ -30,6 +30,10 @@ const fromBlockChain = atom<BlockChainType>({
 const toBlockChain = atom<BlockChainType>({
   key: 'sendToBlockChain',
   default: BlockChainType.ethereum,
+})
+const bridgeUsed = atom<BridgeType | undefined>({
+  key: 'bridgeUsed',
+  default: BridgeType.shuttle,
 })
 const fee = atom<Fee | undefined>({
   key: 'sendFee',
@@ -96,6 +100,7 @@ export default {
   memo,
   fromBlockChain,
   toBlockChain,
+  bridgeUsed,
   fee,
   gasPrices,
 

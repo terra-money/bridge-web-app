@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 
-import cautionPng from 'images/caution.png'
+import warningSvg from 'images/warning.svg'
 
 import { BlockChainType, isAxelarNetwork } from 'types/network'
 
@@ -14,10 +14,12 @@ import FormImage from 'components/FormImage'
 
 const StyledWarningInfo = styled.div`
   display: flex;
+  align-items: center;
   border-radius: 4px;
   padding: 16px 20px;
   margin-bottom: 40px;
-  background-color: #eda24d26;
+  background-color: #eca44d22;
+  border: 1px solid #eca44d40;
   white-space: pre-wrap;
   font-size: 12px;
 `
@@ -29,7 +31,7 @@ const StyledWarningInfoText = styled(Text)`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  color: #cccccc;
+  color: #eca44d;
 `
 
 const WarningInfo = (): ReactElement => {
@@ -59,14 +61,14 @@ const WarningInfo = (): ReactElement => {
     <>
       <StyledWarningInfo>
         <div style={{ paddingRight: 12 }}>
-          <FormImage src={cautionPng} size={16} />
+          <FormImage src={warningSvg} size={18} />
         </div>
         <StyledWarningInfoText>{infoText}</StyledWarningInfoText>
       </StyledWarningInfo>
       {isAxelarNetwork(toBlockChain) && (
         <StyledWarningInfo style={{ marginTop: '-20px' }}>
           <div style={{ paddingRight: 12 }}>
-            <FormImage src={cautionPng} size={16} />
+            <FormImage src={warningSvg} size={18} />
           </div>
           <StyledWarningInfoText>
             {asset?.symbol} will become Axelar Wrapped {asset?.symbol} after the

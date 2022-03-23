@@ -15,6 +15,31 @@ export enum BlockChainType {
   //cro = 'cronos',
 }
 
+export enum BridgeType {
+  shuttle = 'shuttle',
+  wormhole = 'wormhole',
+  ibc = 'ibc',
+  axelar = 'axelar',
+}
+
+export const availableBridges: Record<BlockChainType, BridgeType[]> = {
+  [BlockChainType.osmo]: [BridgeType.ibc],
+  [BlockChainType.scrt]: [BridgeType.ibc],
+  [BlockChainType.inj]: [BridgeType.ibc],
+  [BlockChainType.axelar]: [BridgeType.ibc],
+  [BlockChainType.cosmos]: [BridgeType.ibc],
+  [BlockChainType.ethereum]: [
+    BridgeType.shuttle,
+    BridgeType.wormhole,
+    BridgeType.axelar,
+  ],
+  [BlockChainType.bsc]: [BridgeType.shuttle],
+  [BlockChainType.hmy]: [BridgeType.shuttle],
+  [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.fantom]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.terra]: [],
+}
+
 export type ShuttleNetwork =
   | BlockChainType.ethereum
   | BlockChainType.bsc

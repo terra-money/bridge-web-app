@@ -1,8 +1,8 @@
 import { BlockChainType } from 'types/network'
-import BinanceChainPng from 'images/BinanceChain.png'
-import EthereumPng from 'images/Ethereum.png'
-import TerraPng from 'images/Terra.png'
-import HarmonyPng from 'images/harmony-one.png'
+import BinanceSvg from 'images/bsc.svg'
+import EthereumSvg from 'images/ethereum.svg'
+import TerraSvg from 'images/terra.svg'
+import HarmonySvg from 'images/harmony.svg'
 import OsmoSvg from 'images/osmo.svg'
 import AxelarSvg from 'images/axelar.svg'
 import InjectiveSvg from 'images/injective.svg'
@@ -15,10 +15,10 @@ import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
 const blockChainImage: Record<BlockChainType, string> = {
-  [BlockChainType.bsc]: BinanceChainPng,
-  [BlockChainType.ethereum]: EthereumPng,
-  [BlockChainType.terra]: TerraPng,
-  [BlockChainType.hmy]: HarmonyPng,
+  [BlockChainType.bsc]: BinanceSvg,
+  [BlockChainType.ethereum]: EthereumSvg,
+  [BlockChainType.terra]: TerraSvg,
+  [BlockChainType.hmy]: HarmonySvg,
   [BlockChainType.osmo]: OsmoSvg,
   [BlockChainType.scrt]: SecretSvg,
   [BlockChainType.inj]: InjectiveSvg,
