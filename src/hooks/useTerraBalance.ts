@@ -44,22 +44,18 @@ query {
 `
 
 const useTerraBalance = (): {
-  getTerraBalances: ({
-    terraWhiteList,
-  }: {
+  getTerraBalances: (
     terraWhiteList: {
       token: string
     }[]
-  }) => Promise<BalanceListType>
+  ) => Promise<BalanceListType>
 } => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const { fetchQuery } = useMantle()
 
-  const getTerraTokenBalances = async ({
-    terraWhiteList,
-  }: {
+  const getTerraTokenBalances = async (
     terraWhiteList: { token: string }[]
-  }): Promise<BalanceListType> => {
+  ): Promise<BalanceListType> => {
     // use to be 1 giant gql query for all tokens,
     // however it is likely to go timeout.
     //
@@ -129,13 +125,11 @@ const useTerraBalance = (): {
     }
   }
 
-  const getTerraBalances = async ({
-    terraWhiteList,
-  }: {
+  const getTerraBalances = async (
     terraWhiteList: { token: string }[]
-  }): Promise<BalanceListType> => {
+  ): Promise<BalanceListType> => {
     const bank = await getTerraBankBalances()
-    const token = await getTerraTokenBalances({ terraWhiteList })
+    const token = await getTerraTokenBalances(terraWhiteList)
     return {
       ...bank,
       ...token,

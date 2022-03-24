@@ -211,5 +211,5 @@ export default function useWhiteList(): Record<string, string> {
     fromBlockChain === BlockChainType.terra ? toBlockChain : fromBlockChain
 
   if (!bridgeUsed || chain === BlockChainType.terra) return {}
-  return whitelist[chain][bridgeUsed]
+  return whitelist[chain]?.[bridgeUsed] || {}
 }

@@ -53,8 +53,11 @@ const useAsset = (): {
       return _.reduce<AssetType, AssetType[]>(
         assetList,
         (arr, asset) => {
-          const tokenAddress = whiteList[asset.terraToken]
-          return tokenAddress
+          const tokenAddress =
+            fromBlockChain === BlockChainType.terra
+              ? asset.terraToken
+              : whiteList[asset.terraToken]
+          return whiteList[asset.terraToken]
             ? [
                 ...arr,
                 {
@@ -67,22 +70,32 @@ const useAsset = (): {
         []
       )
     }
-    return assetList
+    return _.reduce<AssetType, AssetType[]>(
+      assetList,
+      (arr, asset) => {
+        return whiteList[asset.terraToken]
+          ? [
+              ...arr,
+              {
+                ...asset,
+              },
+            ]
+          : arr
+      },
+      []
+    )
   }
 
   const getAssetList = async (): Promise<void> => {
     let balanceList: BalanceListType = {}
-    if (isLoggedIn) {
+    if (isLoggedIn && whiteList) {
       if (fromBlockChain === BlockChainType.terra) {
         let balanceWhiteList = _.map(terraWhiteList, (token) => ({ token }))
 
-        balanceWhiteList = balanceWhiteList.filter(
-          ({ token }): boolean =>
-            token.startsWith('terra1') && !!whiteList[token]
-        )
-        balanceList = await getTerraBalances({
-          terraWhiteList: balanceWhiteList,
+        balanceWhiteList = balanceWhiteList.filter(({ token }): boolean => {
+          return token.startsWith('terra1') && !!whiteList[token]
         })
+        balanceList = await getTerraBalances(balanceWhiteList)
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
         balanceList = await getEtherBalances({ whiteList })
       } else if (isIbcNetwork(fromBlockChain)) {
@@ -95,13 +108,11 @@ const useAsset = (): {
       whiteList,
       balanceList,
     })
-
     if (
       fromBlockChain !== toBlockChain &&
       NETWORK.isEtherBaseBlockChain(toBlockChain)
     ) {
       const pairList = _.map(fromList, (item) => {
-        console.log(whiteList)
         const disabled = _.isEmpty(whiteList[item.terraToken])
         return {
           ...item,
