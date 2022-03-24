@@ -74,10 +74,6 @@ export function isIbcNetwork(network: BlockChainType): boolean {
   ].includes(network)
 }
 
-export function isAxelarNetwork(network: BlockChainType): boolean {
-  return [BlockChainType.avalanche, BlockChainType.fantom].includes(network)
-}
-
 // channels Terra -> IBC chain
 export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-1',

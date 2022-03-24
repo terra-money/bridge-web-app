@@ -49,13 +49,17 @@ const isTestnet = selector<boolean>({
         return false
       }
 
-      const _etherBaseExt = get(etherBaseExt)
-      if (fromBlockChain === BlockChainType.ethereum) {
-        return _etherBaseExt?.name !== 'homestead'
-      } else if (fromBlockChain === BlockChainType.hmy) {
-        return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.HMY_MAIN
-      } else {
-        return _etherBaseExt?.chainId !== NETWORK.ETH_CHAINID.BSC_MAIN
+      if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
+        const _etherBaseExt = get(etherBaseExt)
+
+        return (
+          !!_etherBaseExt?.chainId &&
+          [
+            NETWORK.ETH_CHAINID.HMY_TEST,
+            NETWORK.ETH_CHAINID.BSC_TEST,
+            NETWORK.ETH_CHAINID.ETH_ROPSTEN,
+          ].includes(_etherBaseExt.chainId)
+        )
       }
     }
     return false

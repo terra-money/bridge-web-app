@@ -35,7 +35,7 @@ import {
   ibcChannels,
   IbcNetwork,
   ibcChainId,
-  isAxelarNetwork,
+  BridgeType,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -109,6 +109,7 @@ const useSend = (): UseSendType => {
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const [fee, setFee] = useRecoilState(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
@@ -255,83 +256,99 @@ const useSend = (): UseSendType => {
     isSimulation?: boolean
   ): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
-      const recipient =
-        toBlockChain === BlockChainType.terra
-          ? (await getAddress(toAddress)) || toAddress
-          : terraLocal.shuttle[toBlockChain as ShuttleNetwork]
+      switch (bridgeUsed) {
+        case BridgeType.shuttle:
+          const shuttleAddress =
+            terraLocal.shuttle[toBlockChain as ShuttleNetwork]
+          if (
+            etherVaultTokenList[asset.terraToken] &&
+            toBlockChain === BlockChainType.ethereum
+          ) {
+            return [
+              new MsgExecuteContract(
+                loginUser.address,
+                asset.terraToken,
+                { burn: { amount: sendAmount } },
+                new Coins([])
+              ),
+            ]
+          } else {
+            return UTIL.isNativeDenom(asset.terraToken)
+              ? [
+                  new MsgSend(loginUser.address, shuttleAddress, [
+                    new Coin(asset.terraToken, sendAmount),
+                  ]),
+                ]
+              : [
+                  new MsgExecuteContract(
+                    loginUser.address,
+                    asset.terraToken,
+                    {
+                      transfer: {
+                        recipient: shuttleAddress,
+                        amount: sendAmount,
+                      },
+                    },
+                    new Coins([])
+                  ),
+                ]
+          }
 
-      if (
-        etherVaultTokenList[asset.terraToken] &&
-        toBlockChain === BlockChainType.ethereum
-      ) {
-        return [
-          new MsgExecuteContract(
-            loginUser.address,
-            asset.terraToken,
-            { burn: { amount: sendAmount } },
-            new Coins([])
-          ),
-        ]
-      }
-
-      if (
-        (UTIL.isNativeDenom(asset.terraToken) ||
-          asset.terraToken.startsWith('ibc/')) &&
-        isIbcNetwork(toBlockChain)
-      ) {
-        return [
-          new MsgTransfer(
-            'transfer',
-            terraIbcChannels[toBlockChain as IbcNetwork],
-            new Coin(asset.terraToken, sendAmount),
-            loginUser.address,
-            toAddress,
-            undefined,
-            (Date.now() + 120 * 1000) * 1e6
-          ),
-        ]
-      }
-
-      if (
-        UTIL.isNativeDenom(asset.terraToken) &&
-        isAxelarNetwork(toBlockChain)
-      ) {
-        // in the fee simulation use the user address
-        const axelarAddress = isSimulation
-          ? loginUser.address
-          : await getAxelarAddress(
-              toAddress,
-              toBlockChain as 'avalanche' | 'fantom',
-              asset.terraToken as 'uusd' | 'uluna'
-            )
-
-        return [
-          new MsgTransfer(
-            'transfer',
-            terraIbcChannels[BlockChainType.axelar],
-            new Coin(asset.terraToken, sendAmount),
-            loginUser.address,
-            axelarAddress || '',
-            undefined,
-            (Date.now() + 300 * 1000) * 1e6
-          ),
-        ]
-      }
-
-      return UTIL.isNativeDenom(asset.terraToken)
-        ? [
-            new MsgSend(loginUser.address, recipient, [
+        case BridgeType.ibc:
+          return [
+            new MsgTransfer(
+              'transfer',
+              terraIbcChannels[toBlockChain as IbcNetwork],
               new Coin(asset.terraToken, sendAmount),
-            ]),
-          ]
-        : [
-            new MsgExecuteContract(
               loginUser.address,
-              asset.terraToken,
-              { transfer: { recipient, amount: sendAmount } },
-              new Coins([])
+              toAddress,
+              undefined,
+              (Date.now() + 120 * 1000) * 1e6
             ),
           ]
+
+        case BridgeType.axelar:
+          // in the fee simulation use the user address
+          const axelarAddress = isSimulation
+            ? loginUser.address
+            : await getAxelarAddress(
+                toAddress,
+                toBlockChain as 'avalanche' | 'fantom',
+                asset.terraToken as 'uusd' | 'uluna'
+              )
+
+          return [
+            new MsgTransfer(
+              'transfer',
+              terraIbcChannels[BlockChainType.axelar],
+              new Coin(asset.terraToken, sendAmount),
+              loginUser.address,
+              axelarAddress || '',
+              undefined,
+              (Date.now() + 300 * 1000) * 1e6
+            ),
+          ]
+        case BridgeType.wormhole:
+          // TODO: handle wormhole transfer
+          return []
+        // terra -> terra
+        case undefined:
+          const recipient = (await getAddress(toAddress)) || toAddress
+          return UTIL.isNativeDenom(asset.terraToken)
+            ? [
+                new MsgSend(loginUser.address, recipient, [
+                  new Coin(asset.terraToken, sendAmount),
+                ]),
+              ]
+            : [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  asset.terraToken,
+                  { transfer: { recipient, amount: sendAmount } },
+                  new Coins([])
+                ),
+              ]
+      }
     }
     return []
   }

@@ -49,6 +49,8 @@ const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {
     BlockChainType.ethereum,
     BlockChainType.bsc,
     BlockChainType.hmy,
+    BlockChainType.avalanche,
+    BlockChainType.fantom,
   ].includes(bc)
 }
 
@@ -61,6 +63,8 @@ const ETH_CHAINID = {
   BSC_TEST: 97,
   HMY_MAIN: 1666600000,
   HMY_TEST: 1666700000,
+  AVAX_MAIN: 43114,
+  FTM_MAIN: 250,
 }
 
 const INFURAID =

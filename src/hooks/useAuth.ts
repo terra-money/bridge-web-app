@@ -1,5 +1,4 @@
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { Network } from '@ethersproject/networks'
 import _ from 'lodash'
 
 import { NETWORK } from 'consts'
@@ -59,26 +58,6 @@ const useAuth = (): {
     SendStore.fromBlockChain
   )
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
-
-  const checkIsValidEtherNetwork = ({
-    network,
-  }: {
-    network?: Network
-  }): boolean => {
-    if (network) {
-      const { ETH_CHAINID } = NETWORK
-      return [
-        ETH_CHAINID.ETH_MAIN,
-        ETH_CHAINID.ETH_ROPSTEN,
-        ETH_CHAINID.BSC_MAIN,
-        ETH_CHAINID.BSC_TEST,
-        ETH_CHAINID.HMY_MAIN,
-        ETH_CHAINID.HMY_TEST,
-      ].includes(network.chainId)
-    }
-
-    return false
-  }
 
   const login = async ({ user }: { user: User }): Promise<void> => {
     if (fromBlockChain === BlockChainType.terra) {
@@ -142,11 +121,10 @@ const useAuth = (): {
     // ethereum, bsc, hmy are ethereum base blockchain
     else {
       const network = await user.provider?.getNetwork()
-      const isValidEtherNetwork = checkIsValidEtherNetwork({ network })
-      if (network && isValidEtherNetwork) {
+      if (network) {
         const { ETH_CHAINID } = NETWORK
 
-        let reSelectFromBlockChain = BlockChainType.bsc
+        let reSelectFromBlockChain: BlockChainType
         if (
           [ETH_CHAINID.ETH_MAIN, ETH_CHAINID.ETH_ROPSTEN].includes(
             network.chainId
@@ -157,6 +135,22 @@ const useAuth = (): {
           [ETH_CHAINID.HMY_MAIN, ETH_CHAINID.HMY_TEST].includes(network.chainId)
         ) {
           reSelectFromBlockChain = BlockChainType.hmy
+        } else if (
+          [ETH_CHAINID.BSC_MAIN, ETH_CHAINID.BSC_TEST].includes(network.chainId)
+        ) {
+          reSelectFromBlockChain = BlockChainType.bsc
+        } else if (network.chainId === ETH_CHAINID.AVAX_MAIN) {
+          reSelectFromBlockChain = BlockChainType.avalanche
+        } else if (network.chainId === ETH_CHAINID.FTM_MAIN) {
+          reSelectFromBlockChain = BlockChainType.fantom
+        } else {
+          setIsVisibleNotSupportNetworkModal(true)
+          setTriedNotSupportNetwork({
+            blockChain: BlockChainType.ethereum,
+            name: network.name,
+            chainId: network.chainId,
+          })
+          return
         }
 
         setFromBlockChain(reSelectFromBlockChain)
@@ -168,12 +162,6 @@ const useAuth = (): {
         })
       } else {
         setIsVisibleNotSupportNetworkModal(true)
-        network &&
-          setTriedNotSupportNetwork({
-            blockChain: BlockChainType.ethereum,
-            name: network.name,
-            chainId: network.chainId,
-          })
         return
       }
     }

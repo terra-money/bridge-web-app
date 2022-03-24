@@ -7,13 +7,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import { AssetType, WhiteListType, BalanceListType } from 'types/asset'
-import {
-  BlockChainType,
-  isIbcNetwork,
-  isAxelarNetwork,
-  allowedCoins,
-  IbcNetwork,
-} from 'types/network'
+import { BlockChainType, isIbcNetwork } from 'types/network'
 
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
@@ -27,7 +21,6 @@ const useAsset = (): {
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
 
   const assetList = useRecoilValue(ContractStore.assetList)
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
@@ -108,39 +101,15 @@ const useAsset = (): {
       whiteList,
       balanceList,
     })
-    if (
-      fromBlockChain !== toBlockChain &&
-      NETWORK.isEtherBaseBlockChain(toBlockChain)
-    ) {
-      const pairList = _.map(fromList, (item) => {
-        const disabled = _.isEmpty(whiteList[item.terraToken])
-        return {
-          ...item,
-          disabled,
-        }
-      }).filter((item) => !item.disabled)
-      setAssetList(pairList)
-    } else if (
-      fromBlockChain === BlockChainType.terra &&
-      isIbcNetwork(toBlockChain)
-    ) {
-      const allowed = allowedCoins[toBlockChain as IbcNetwork] as string[]
-      const filteredList = fromList.filter((item) =>
-        allowed.includes(item.terraToken)
-      )
-      setAssetList(filteredList)
-    } else if (
-      fromBlockChain === BlockChainType.terra &&
-      isAxelarNetwork(toBlockChain)
-    ) {
-      const allowed = allowedCoins[BlockChainType.axelar] as string[]
-      const filteredList = fromList.filter((item) =>
-        allowed.includes(item.terraToken)
-      )
-      setAssetList(filteredList)
-    } else {
-      setAssetList(fromList)
-    }
+
+    const pairList = _.map(fromList, (item) => {
+      const disabled = _.isEmpty(whiteList[item.terraToken])
+      return {
+        ...item,
+        disabled,
+      }
+    }).filter((item) => !item.disabled)
+    setAssetList(pairList)
   }
 
   const formatBalance = (balance: string | BigNumber): string => {

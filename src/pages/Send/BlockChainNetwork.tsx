@@ -121,6 +121,16 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.cosmos,
                 isDisabled: fromBlockChain === BlockChainType.cosmos,
               },
+              {
+                label: NETWORK.blockChainName[BlockChainType.avalanche],
+                value: BlockChainType.avalanche,
+                isDisabled: fromBlockChain === BlockChainType.avalanche,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.fantom],
+                value: BlockChainType.fantom,
+                isDisabled: fromBlockChain === BlockChainType.fantom,
+              },
             ],
             label: 'FROM',
           }}
