@@ -6,6 +6,7 @@ import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
 
 import { BlockChainType } from 'types/network'
+import useWhiteList from './useWhiteList'
 
 const useNetwork = (): {
   getScannerLink: (props: { address: string; type: 'tx' | 'address' }) => string
@@ -21,15 +22,7 @@ const useNetwork = (): {
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
-  const ethWhiteList = useRecoilValue(ContractStore.ethWhiteList)
-  const bscWhiteList = useRecoilValue(ContractStore.bscWhiteList)
-  const hmyWhiteList = useRecoilValue(ContractStore.hmyWhiteList)
-  const osmoWhiteList = useRecoilValue(ContractStore.osmoWhiteList)
-  const scrtWhiteList = useRecoilValue(ContractStore.scrtWhiteList)
-  const injWhiteList = useRecoilValue(ContractStore.injWhiteList)
-  const cosmosWhiteList = useRecoilValue(ContractStore.cosmosWhiteList)
-  const avalancheWhiteList = useRecoilValue(ContractStore.avalancheWhiteList)
-  const fantomWhiteList = useRecoilValue(ContractStore.fantomWhiteList)
+  const whiteList = useWhiteList()
 
   const getScannerLink = ({
     address,
@@ -79,26 +72,8 @@ const useNetwork = (): {
     switch (blockChain) {
       case BlockChainType.terra:
         return terraWhiteList[tokenAddress]
-      case BlockChainType.ethereum:
-        return ethWhiteList[tokenAddress]
-      case BlockChainType.bsc:
-        return bscWhiteList[tokenAddress]
-      case BlockChainType.hmy:
-        return hmyWhiteList[tokenAddress]
-      case BlockChainType.osmo:
-        return osmoWhiteList[tokenAddress]
-      case BlockChainType.scrt:
-        return scrtWhiteList[tokenAddress]
-      case BlockChainType.inj:
-        return injWhiteList[tokenAddress]
-      case BlockChainType.cosmos:
-        return cosmosWhiteList[tokenAddress]
-      case BlockChainType.avalanche:
-        return avalancheWhiteList[tokenAddress]
-      case BlockChainType.fantom:
-        return fantomWhiteList[tokenAddress]
       default:
-        return terraWhiteList[tokenAddress]
+        return whiteList[tokenAddress]
     }
   }
 

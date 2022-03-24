@@ -253,6 +253,8 @@ const SendForm = ({
     loginUser,
     // to check if asset valid by network
     toBlockChain,
+    fromBlockChain,
+    bridgeUsed,
   ])
 
   return (
