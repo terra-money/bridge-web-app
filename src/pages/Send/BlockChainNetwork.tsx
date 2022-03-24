@@ -7,7 +7,7 @@ import shuttleGif from 'images/shuttle.gif'
 
 import { NETWORK } from 'consts'
 
-import { BlockChainType, BridgeType } from 'types/network'
+import { BlockChainType, BridgeType, getDefaultBridge } from 'types/network'
 
 import useAuth from 'hooks/useAuth'
 
@@ -48,6 +48,7 @@ const BlockChainNetwork = (): ReactElement => {
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   useUpdateBridgeType()
+  const { setBlockchainStorage } = useAuth()
 
   return (
     <StyledNetworkBox>
@@ -73,6 +74,11 @@ const BlockChainNetwork = (): ReactElement => {
               logout()
               setFromBlockChain(value)
               setToBlockChain(BlockChainType.terra)
+              setBlockchainStorage({
+                fromBlockChain: value,
+                toBlockChain: BlockChainType.terra,
+                bridgeUsed: getDefaultBridge(value, BlockChainType.terra),
+              })
             },
             optionList: [
               {
@@ -131,6 +137,11 @@ const BlockChainNetwork = (): ReactElement => {
                 setFromBlockChain(BlockChainType.terra)
                 logout()
               }
+              setBlockchainStorage({
+                fromBlockChain: BlockChainType.terra,
+                toBlockChain: b,
+                bridgeUsed: getDefaultBridge(BlockChainType.terra, b),
+              })
             },
             optionList: [
               {

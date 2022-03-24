@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
 import loading from 'images/loading.gif'
@@ -80,6 +80,7 @@ const Send = (): ReactElement => {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
+  const setBridgeUsed = useSetRecoilState(SendStore.bridgeUsed)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const { validateFee } = useSendValidate()
@@ -132,7 +133,8 @@ const Send = (): ReactElement => {
 
   useEffect(() => {
     setInitPage(true)
-    const { lastFromBlockChain } = getLoginStorage()
+    const { lastFromBlockChain, lastToBlockChain, bridgeUsed } =
+      getLoginStorage()
 
     if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
@@ -141,6 +143,10 @@ const Send = (): ReactElement => {
       } else {
         setFromBlockChain(lastFromBlockChain)
       }
+      lastToBlockChain && setToBlockChain(lastToBlockChain)
+      bridgeUsed &&
+        lastToBlockChain !== lastFromBlockChain &&
+        setBridgeUsed(bridgeUsed)
     }
   }, [])
 

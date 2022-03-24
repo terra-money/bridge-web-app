@@ -40,6 +40,14 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.terra]: [],
 }
 
+export function getDefaultBridge(
+  from: BlockChainType,
+  to: BlockChainType
+): BridgeType | undefined {
+  const chain = from === BlockChainType.terra ? to : from
+  return availableBridges[chain][0]
+}
+
 export type ShuttleNetwork =
   | BlockChainType.ethereum
   | BlockChainType.bsc
