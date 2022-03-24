@@ -165,7 +165,7 @@ const LoginUserInfo = (): ReactElement => {
             size={16}
           />
           <StyledAddress>
-            {UTIL.truncate(tnsName || loginUser.address, [8, 12])}
+            {UTIL.truncate(tnsName || loginUser.address)}
           </StyledAddress>
         </StyledLoginUserInfoBox>
 

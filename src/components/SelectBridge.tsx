@@ -68,7 +68,7 @@ const SelectBridge = (): ReactElement => {
               fontWeight: '500',
             }}
           >
-            {bridgesList[0]?.label}
+            {bridgeUsed?.toUpperCase()}
           </Text>
         )}
       </div>

@@ -5,11 +5,7 @@ import { useRecoilValue } from 'recoil'
 import warningSvg from 'images/warning.svg'
 import infoSvg from 'images/info.svg'
 
-import {
-  BlockChainType,
-  isAxelarNetwork,
-  availableBridges,
-} from 'types/network'
+import { BlockChainType, availableBridges } from 'types/network'
 
 import SendStore from 'store/SendStore'
 
@@ -17,19 +13,19 @@ import { Text } from 'components'
 
 import FormImage from 'components/FormImage'
 
-const StyledWarningInfo = styled.div`
+const StyledWarning = styled.div`
   display: flex;
   align-items: center;
   border-radius: 4px;
   padding: 16px 20px;
-  margin-bottom: 40px;
+  margin-bottom: 15px;
   background-color: #eca44d22;
   border: 1px solid #eca44d40;
   white-space: pre-wrap;
   font-size: 12px;
 `
 
-const StyledWarningInfoText = styled(Text)`
+const StyledWarningText = styled(Text)`
   font-size: 14px;
   font-weight: normal;
   font-stretch: normal;
@@ -90,7 +86,7 @@ const WarningInfo = (): ReactElement => {
   }, [toBlockChain, fromBlockChain, asset])
 
   return infoText ? (
-    <>
+    <div style={{ marginBottom: '40px' }}>
       {bridgesList[0] !== bridgeUsed && (
         <StyledInfo>
           <div style={{ paddingRight: 12 }}>
@@ -102,24 +98,13 @@ const WarningInfo = (): ReactElement => {
         </StyledInfo>
       )}
 
-      <StyledWarningInfo>
+      <StyledWarning>
         <div style={{ paddingRight: 12 }}>
           <FormImage src={warningSvg} size={18} />
         </div>
-        <StyledWarningInfoText>{infoText}</StyledWarningInfoText>
-      </StyledWarningInfo>
-      {isAxelarNetwork(toBlockChain) && (
-        <StyledWarningInfo style={{ marginTop: '-20px' }}>
-          <div style={{ paddingRight: 12 }}>
-            <FormImage src={warningSvg} size={18} />
-          </div>
-          <StyledWarningInfoText>
-            {asset?.symbol} will become Axelar Wrapped {asset?.symbol} after the
-            transfer is completed
-          </StyledWarningInfoText>
-        </StyledWarningInfo>
-      )}
-    </>
+        <StyledWarningText>{infoText}</StyledWarningText>
+      </StyledWarning>
+    </div>
   ) : (
     <></>
   )

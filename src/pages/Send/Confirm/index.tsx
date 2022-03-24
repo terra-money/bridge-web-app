@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 
-import { ASSET, UTIL, COLOR, NETWORK } from 'consts'
+import { ASSET, UTIL, COLOR } from 'consts'
 
 import { ExtLink, Text } from 'components'
 import FormImage from 'components/FormImage'
@@ -12,7 +12,7 @@ import SendStore from 'store/SendStore'
 
 import useAsset from 'hooks/useAsset'
 
-import { BlockChainType, isAxelarNetwork } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import SendProcessStore from 'store/SendProcessStore'
 import useNetwork from 'hooks/useNetwork'
@@ -95,6 +95,8 @@ const Confirm = (): ReactElement => {
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const axelarFee = useRecoilValue(SendStore.axelarFee)
   const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  console.log(bridgeUsed)
 
   const requestTxResult = useRecoilValue(SendProcessStore.requestTxResult)
 
@@ -141,7 +143,7 @@ const Confirm = (): ReactElement => {
             </StyledSecD>
           </StyledSpaceBetween>
 
-          {shuttleFee && NETWORK.isEtherBaseBlockChain(toBlockChain) && (
+          {shuttleFee && bridgeUsed === BridgeType.shuttle && (
             <StyledSpaceBetween style={{ marginBottom: 16 }}>
               <StyledSecH>Shuttle fee (estimated)</StyledSecH>
               <StyledSecD>
@@ -152,7 +154,7 @@ const Confirm = (): ReactElement => {
             </StyledSpaceBetween>
           )}
 
-          {axelarFee && isAxelarNetwork(toBlockChain) && (
+          {axelarFee && bridgeUsed === BridgeType.axelar && (
             <StyledSpaceBetween style={{ marginBottom: 16 }}>
               <StyledSecH>Axelar fee</StyledSecH>
               <StyledSecD>
@@ -166,26 +168,25 @@ const Confirm = (): ReactElement => {
       )}
 
       <StyledSection>
-        {(fromBlockChain === BlockChainType.terra &&
-          NETWORK.isEtherBaseBlockChain(toBlockChain)) ||
-        isAxelarNetwork(toBlockChain) ? (
+        {bridgeUsed === BridgeType.shuttle ||
+        bridgeUsed === BridgeType.axelar ? (
           <StyledSpaceBetween>
             <StyledSecH>
               After{' '}
-              {isAxelarNetwork(toBlockChain)
+              {bridgeUsed === BridgeType.axelar
                 ? 'Axelar Fee'
                 : 'Shuttle Fee (estimated)'}
             </StyledSecH>
             <StyledSecD>
               <StyledSecDText
                 isError={
-                  isAxelarNetwork(toBlockChain)
+                  bridgeUsed === BridgeType.axelar
                     ? amountAfterAxelarFee.isLessThanOrEqualTo(0)
                     : amountAfterShuttleFee.isLessThanOrEqualTo(0)
                 }
               >
                 {`${formatBalance(
-                  isAxelarNetwork(toBlockChain)
+                  bridgeUsed === BridgeType.axelar
                     ? amountAfterAxelarFee
                     : amountAfterShuttleFee
                 )} ${asset?.symbol}`}

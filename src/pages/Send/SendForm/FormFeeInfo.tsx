@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
-import { ASSET, COLOR, NETWORK, UTIL } from 'consts'
+import { ASSET, COLOR, UTIL } from 'consts'
 
-import { BlockChainType, isAxelarNetwork } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
@@ -32,7 +32,6 @@ const FormFeeInfo = ({
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
-  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
 
   // Computed data from Send data
   const gasFeeList = useRecoilValue(SendStore.gasFeeList)
@@ -48,14 +47,16 @@ const FormFeeInfo = ({
   const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
-  const bridgeName = isAxelarNetwork(toBlockChain) ? 'Axelar' : 'Shuttle'
-  const bridgeFee = isAxelarNetwork(toBlockChain) ? axelarFee : shuttleFee
-  const amountAfterFee = isAxelarNetwork(toBlockChain)
-    ? amountAfterAxelarFee
-    : amountAfterShuttleFee
+  const bridgeName = bridgeUsed === BridgeType.axelar ? 'Axelar' : 'Shuttle'
+  const bridgeFee = bridgeUsed === BridgeType.axelar ? axelarFee : shuttleFee
+  const amountAfterFee =
+    bridgeUsed === BridgeType.axelar
+      ? amountAfterAxelarFee
+      : amountAfterShuttleFee
 
   const { formatBalance } = useAsset()
 
@@ -198,8 +199,8 @@ const FormFeeInfo = ({
                 />
               </View>
 
-              {(NETWORK.isEtherBaseBlockChain(toBlockChain) ||
-                isAxelarNetwork(toBlockChain)) && (
+              {(bridgeUsed === BridgeType.shuttle ||
+                bridgeUsed === BridgeType.axelar) && (
                 <>
                   <Row
                     style={{

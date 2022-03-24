@@ -6,9 +6,9 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR, NETWORK } from 'consts'
+import { ASSET, COLOR } from 'consts'
 
-import { BlockChainType, isIbcNetwork, isAxelarNetwork } from 'types/network'
+import { BlockChainType, isIbcNetwork, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { AxelarAPI } from 'packages/axelar/axelarAPI'
@@ -133,6 +133,8 @@ const SendForm = ({
     SendStore.amountAfterAxelarFee
   )
 
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
   )
@@ -177,7 +179,7 @@ const SendForm = ({
 
   const setBridgeFee = async (): Promise<void> => {
     // shuttle fee
-    if (NETWORK.isEtherBaseBlockChain(toBlockChain)) {
+    if (bridgeUsed === BridgeType.shuttle) {
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {
         getTerraShuttleFee({
@@ -191,7 +193,7 @@ const SendForm = ({
           )
         })
       }
-    } else if (isAxelarNetwork(toBlockChain)) {
+    } else if (bridgeUsed === BridgeType.axelar) {
       const api = new AxelarAPI('mainnet')
       const fee = await api.getTransferFee(
         fromBlockChain,
@@ -239,7 +241,7 @@ const SendForm = ({
     return (): void => {
       dbcGetFeeInfoWithValidation.cancel()
     }
-  }, [amount, toAddress, toBlockChain, memo, asset])
+  }, [amount, toAddress, toBlockChain, memo, asset, bridgeUsed])
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })

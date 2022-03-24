@@ -16,7 +16,7 @@ import SendProcessStore from 'store/SendProcessStore'
 import useNetwork from 'hooks/useNetwork'
 import AuthStore from 'store/AuthStore'
 import FormImage from 'components/FormImage'
-import { BlockChainType, isAxelarNetwork } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import MetamaskButton from './MetamaskButton'
 
 const StyledContainer = styled.div`
@@ -96,6 +96,7 @@ const Finish = (): ReactElement => {
 
   const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
   const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const { getScannerLink, toTokenAddress } = useNetwork()
 
@@ -166,7 +167,7 @@ const Finish = (): ReactElement => {
           </Text>
         </div>
         {fromBlockChain === BlockChainType.terra &&
-          NETWORK.isEtherBaseBlockChain(toBlockChain) && (
+          bridgeUsed === BridgeType.shuttle && (
             <div
               style={{
                 fontSize: 12,
@@ -185,25 +186,24 @@ const Finish = (): ReactElement => {
             </div>
           )}
 
-        {fromBlockChain === BlockChainType.terra &&
-          isAxelarNetwork(toBlockChain) && (
-            <div
-              style={{
-                fontSize: 12,
-                textAlign: 'center',
-                marginBottom: 20,
-                marginTop: 10,
-              }}
+        {bridgeUsed === BridgeType.axelar && (
+          <div
+            style={{
+              fontSize: 12,
+              textAlign: 'center',
+              marginBottom: 20,
+              marginTop: 10,
+            }}
+          >
+            <StyledAmountText
+              isError={amountAfterAxelarFee.isLessThanOrEqualTo(0)}
             >
-              <StyledAmountText
-                isError={amountAfterAxelarFee.isLessThanOrEqualTo(0)}
-              >
-                {`After Axelar Fee : ${formatBalance(amountAfterAxelarFee)} ${
-                  asset?.symbol
-                }`}
-              </StyledAmountText>
-            </div>
-          )}
+              {`After Axelar Fee : ${formatBalance(amountAfterAxelarFee)} ${
+                asset?.symbol
+              }`}
+            </StyledAmountText>
+          </div>
+        )}
       </div>
       <StyledSection>
         <StyledSecH>Destination Address</StyledSecH>
