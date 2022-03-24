@@ -87,7 +87,7 @@ const WarningInfo = (): ReactElement => {
 
   return infoText ? (
     <div style={{ marginBottom: '40px' }}>
-      {bridgesList[0] !== bridgeUsed && (
+      {bridgesList[0] && bridgesList[0] !== bridgeUsed && (
         <StyledInfo>
           <div style={{ paddingRight: 12 }}>
             <FormImage src={infoSvg} size={18} />

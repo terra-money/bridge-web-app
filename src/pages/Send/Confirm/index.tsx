@@ -96,7 +96,6 @@ const Confirm = (): ReactElement => {
   const axelarFee = useRecoilValue(SendStore.axelarFee)
   const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
-  console.log(bridgeUsed)
 
   const requestTxResult = useRecoilValue(SendProcessStore.requestTxResult)
 
