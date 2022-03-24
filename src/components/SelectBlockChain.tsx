@@ -16,13 +16,18 @@ import bridgeFrom from 'images/bridgeFrom.svg'
 import bridgeTo from 'images/bridgeTo.svg'
 
 const StyledContainer = styled.div`
-  width: 128px;
+  width: 160px;
   position: relative;
+
+  @media only screen and (max-width: 450px) {
+    width: 140px;
+  }
 `
 
 const StyledCircle = styled.div`
-  height: 128px;
-  width: 128px;
+  height: 140px;
+  width: 140px;
+  margin: 0 auto;
   justify-content: center;
   align-items: flex-start;
   display: flex;
@@ -32,22 +37,32 @@ const StyledCircle = styled.div`
   background-color: ${COLOR.darkGray};
   border-radius: 50%;
   border: 1px solid #4abcf0;
+
+  @media only screen and (max-width: 450px) {
+    height: 110px;
+    width: 110px;
+  }
 `
 
 const StyledLabel = styled(Text)`
   padding-top: 12px;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
   color: white;
   justify-content: center;
+
+  @media only screen and (max-width: 450px) {
+    padding-top: 4px;
+    font-size: 11px;
+  }
 `
 
 const StyledBlockChainLabel = styled(Text)`
   padding-top: 6px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
@@ -87,16 +102,17 @@ const SelectBlockChain = ({
         }}
       >
         <div style={{ paddingTop: 28 }}>
-          <FormImage src={NETWORK.blockChainImage[blockChain]} size={46} />
-          <div>
-            {status === ProcessStatus.Input ? (
-              <StyledLabel>{label}</StyledLabel>
-            ) : (
-              <StyledBlockChainLabel>
-                {NETWORK.blockChainName[blockChain]}
-              </StyledBlockChainLabel>
-            )}
-          </div>
+          <FormImage
+            src={NETWORK.blockChainImage[blockChain]}
+            size={window.innerWidth > 450 ? 54 : 38}
+          />
+          {status === ProcessStatus.Input ? (
+            <StyledLabel>{label}</StyledLabel>
+          ) : (
+            <StyledBlockChainLabel>
+              {NETWORK.blockChainName[blockChain]}
+            </StyledBlockChainLabel>
+          )}
         </div>
       </StyledCircle>
 
@@ -113,7 +129,7 @@ const SelectBlockChain = ({
                 textAlign: 'left',
               }}
               selectedTextStyle={{
-                fontSize: '14px',
+                fontSize: window.innerWidth > 450 ? '16px' : '14px',
                 fontWeight: '400',
               }}
             />
