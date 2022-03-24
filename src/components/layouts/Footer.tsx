@@ -36,6 +36,10 @@ const Footer = (): ReactElement => {
       title: 'DOCS',
     },
     {
+      href: `https://discord.gg/EuKCeGFb93`,
+      title: 'Discord',
+    },
+    {
       href: `https://github.com/terra-project/bridge-web-app`,
       title: 'Github',
     },

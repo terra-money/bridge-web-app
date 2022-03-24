@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Dropdown } from 'react-bootstrap'
 import { CaretDownFill } from 'react-bootstrap-icons'
 import NETWORK from '../consts/network'
-import { COLOR, STYLE } from 'consts'
+import { COLOR } from 'consts'
 import Text from './Text'
 import { BlockChainType } from 'types'
 
@@ -86,7 +86,7 @@ const StyledDropdownMenu = styled(StyledDropdown.Menu)`
   border-radius: 10px;
   box-shadow: 0 12px 7px -7px rgba(0, 0, 0, 0.34);
   background-color: #2e2e2e;
-  transform: translate(0px, 0px) !important;
+  transform: translate(0, 0) !important;
   a {
     display: block;
     color: ${COLOR.white};
@@ -97,7 +97,6 @@ const StyledDropdownMenu = styled(StyledDropdown.Menu)`
     font-style: normal;
     line-height: normal;
     letter-spacing: -0.25px;
-    border-radius: ${STYLE.css.borderRadius};
     text-decoration: none;
     :hover {
       color: ${COLOR.white};

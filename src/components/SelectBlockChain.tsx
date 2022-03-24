@@ -51,7 +51,7 @@ const StyledLabel = styled(Text)`
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: white;
+  color: #a3a3a3;
   justify-content: center;
 
   @media only screen and (max-width: 450px) {

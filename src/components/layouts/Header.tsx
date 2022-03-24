@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { useRecoilValue } from 'recoil'
-import { isBrowser, isMobile } from 'react-device-detect'
 import ClickAwayListener from 'react-click-away-listener'
 
 import { COLOR, UTIL, STYLE } from 'consts'
@@ -12,14 +11,9 @@ import useAuth from 'hooks/useAuth'
 import useSelectWallet from 'hooks/useSelectWallet'
 
 import AuthStore from 'store/AuthStore'
-import NetworkStore from 'store/NetworkStore'
 
 import bridgeLogo from 'images/bridge_logo.png'
-import testnetLabel from 'images/testnet_label.png'
 import WalletLogo from 'components/WalletLogo'
-import FormImage from 'components/FormImage'
-import SendStore from 'store/SendStore'
-import { BlockChainType } from 'types'
 import useTns from 'packages/tns/useTns'
 
 const StyledContainer = styled(Container)`
@@ -137,28 +131,8 @@ const StyledDropdownMenu = styled(View)`
   }
 `
 
-const StyledConnectedText = styled(Text)`
-  font-size: 12px;
-  font-weight: 500;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: -0.19px;
-  color: ${COLOR.terraSky};
-`
-
-const StyledTestnetLabel = styled(View)`
-  position: absolute;
-  top: 0;
-  right: 0;
-`
-
 const LoginUserInfo = (): ReactElement => {
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
-  const terraLocal = useRecoilValue(NetworkStore.terraLocal)
   const loginUser = useRecoilValue(AuthStore.loginUser)
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
   const [isOpen, setIsOpen] = useState(false)
   const [tnsName, setTnsName] = useState<undefined | string>(undefined)
 
@@ -191,43 +165,8 @@ const LoginUserInfo = (): ReactElement => {
             size={16}
           />
           <StyledAddress>
-            {UTIL.truncate(tnsName || loginUser.address)}
+            {UTIL.truncate(tnsName || loginUser.address, [8, 12])}
           </StyledAddress>
-
-          {isBrowser && (
-            <>
-              <View
-                style={{
-                  display: 'inline-block',
-                  width: 1,
-                  height: 14,
-                  backgroundColor: 'white',
-                  opacity: 0.4,
-                  margin: '0 8px',
-                }}
-              />
-              <View
-                style={{
-                  display: 'inline-block',
-                  textAlign: 'center',
-                }}
-              >
-                {isTestnet ? (
-                  <>
-                    <StyledConnectedText style={{ color: '#DD794A' }}>
-                      {fromBlockChain === BlockChainType.terra
-                        ? `Connected to ${terraLocal.name.toUpperCase()}`
-                        : `Connected to ${
-                            etherBaseExt?.name.toUpperCase() || 'TESTNET'
-                          }`}
-                    </StyledConnectedText>
-                  </>
-                ) : (
-                  <StyledConnectedText>Connected</StyledConnectedText>
-                )}
-              </View>
-            </>
-          )}
         </StyledLoginUserInfoBox>
 
         {isOpen && (
@@ -243,7 +182,6 @@ const LoginUserInfo = (): ReactElement => {
 const Header = (): ReactElement => {
   const selectWallet = useSelectWallet()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   return (
     <StyledContainer>
@@ -263,12 +201,6 @@ const Header = (): ReactElement => {
           )}
         </StyledNav>
       </StyledNavContainer>
-
-      {isMobile && isTestnet && (
-        <StyledTestnetLabel>
-          <FormImage src={testnetLabel} style={{ width: 60, height: 60 }} />
-        </StyledTestnetLabel>
-      )}
     </StyledContainer>
   )
 }

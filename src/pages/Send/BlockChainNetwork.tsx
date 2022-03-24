@@ -1,9 +1,9 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import bridgeMiddle from 'images/bridgeMiddle.svg'
-import bridgeIbc from 'images/bridgeIbc.jpg'
-import bridgeShuttle from 'images/electric.gif'
+import wormholeGif from 'images/wormhole.gif'
+import ibcGif from 'images/ibc.gif'
+import shuttleGif from 'images/shuttle.gif'
 
 import { NETWORK } from 'consts'
 
@@ -34,7 +34,7 @@ const BackgroundImg = styled.div`
   width: 100%;
 
   background-repeat: no-repeat;
-  background-size: 75%;
+  background-size: 60%;
   background-position: 50% 50%;
 `
 
@@ -56,11 +56,12 @@ const BlockChainNetwork = (): ReactElement => {
           backgroundImage: ((): string => {
             switch (bridgeUsed) {
               case BridgeType.wormhole:
-                return `url('${bridgeMiddle}')`
+                return `url('${wormholeGif}')`
               case BridgeType.ibc:
-                return `url('${bridgeIbc}')`
+              case BridgeType.axelar:
+                return `url('${ibcGif}')`
               default:
-                return `url('${bridgeShuttle}')`
+                return `url('${shuttleGif}')`
             }
           })(),
         }}
