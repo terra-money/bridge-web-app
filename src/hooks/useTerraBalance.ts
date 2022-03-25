@@ -61,8 +61,6 @@ const useTerraBalance = (): {
     //
     // prevent timeout by chunking it by 1 tokens, and
     // make parallel requests
-    //
-    // TODO: fix this for good, where users add their own tokens rather than scanning through the entire list of tokens
     const terraWhiteListInChunks = _.chunk(terraWhiteList, 10)
 
     // concurrency = len(terraWhiteList) / 10

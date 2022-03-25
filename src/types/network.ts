@@ -172,17 +172,5 @@ export enum TerraAssetsPathEnum {
   cw20_pairs = '/cw20/pairs.json',
   cw20_tokens = '/cw20/tokens.json',
 
-  shuttle_eth = '/shuttle/eth.json',
-  shuttle_bsc = '/shuttle/bsc.json',
-  shuttle_hmy = '/shuttle/hmy.json',
-
   ibc_tokens = '/ibc/tokens.json',
-  osmo_tokens = '/ibc/osmo.json',
-  scrt_tokens = '/ibc/scrt.json',
-  axelar_tokens = '/ibc/axelar.json',
-  inj_tokens = '/ibc/inj.json',
-  cosmos_tokens = '/ibc/cosmos.json',
-
-  avalanche_tokens = '/ibc/axelar/avalanche.json',
-  fantom_tokens = '/ibc/axelar/fantom.json',
 }

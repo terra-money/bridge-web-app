@@ -5,7 +5,6 @@ import _ from 'lodash'
 
 import { COLOR } from 'consts'
 import { Button, Text, Container } from 'components'
-import NetworkStore from 'store/NetworkStore'
 import ContractStore from 'store/ContractStore'
 
 import { ExclamationCircle } from 'react-bootstrap-icons'
@@ -70,18 +69,8 @@ const RefreshButton = ({ isOnline }: { isOnline: boolean }): ReactElement => (
 )
 
 const NetworkErrorScreen = (): ReactElement => {
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const shuttlePairs = useRecoilValue(ContractStore.initOnlyShuttlePairs)
   const terraWhiteList = useRecoilValue(ContractStore.initOnlyTerraWhiteList)
-  const ethWhiteList = useRecoilValue(ContractStore.initOnlyEthWhiteList)
-  const bscWhiteList = useRecoilValue(ContractStore.initOnlyBscWhiteList)
-  const hmyWhiteList = useRecoilValue(ContractStore.initOnlyHmyWhiteList)
-  const osmoWhiteList = useRecoilValue(ContractStore.initOnlyOsmoWhiteList)
-  const scrtWhiteList = useRecoilValue(ContractStore.initOnlyScrtWhiteList)
-  const injWhiteList = useRecoilValue(ContractStore.initOnlyInjWhiteList)
-  const cosmosWhiteList = useRecoilValue(ContractStore.initOnlyCosmosWhiteList)
-  const avalancheWhiteList = useRecoilValue(ContractStore.avalancheWhiteList)
-  const fantomWhiteList = useRecoilValue(ContractStore.fantomWhiteList)
 
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [showError, setShowError] = useState(false)
@@ -109,21 +98,6 @@ const NetworkErrorScreen = (): ReactElement => {
         [
           { name: 'Shuttle Pairs Json', value: shuttlePairs },
           { name: 'Terra Whitelist Json', value: terraWhiteList },
-          { name: 'Ethereum Whitelist Json', value: ethWhiteList },
-          { name: 'BSC Whitelist Json', value: bscWhiteList },
-          { name: 'Harmony Whitelist Json', value: hmyWhiteList },
-          { name: 'Osmo Whitelist Json', value: osmoWhiteList },
-          { name: 'Secret Whitelist Json', value: scrtWhiteList },
-          { name: 'Injective Whitelist Json', value: injWhiteList },
-          { name: 'Cosmos Whitelist Json', value: cosmosWhiteList },
-          {
-            name: 'Avalanche Whitelist Json',
-            value: isTestnet ? 'testnet' : avalancheWhiteList,
-          },
-          {
-            name: 'Fantom Whitelist Json',
-            value: isTestnet ? 'testnet' : fantomWhiteList,
-          },
         ],
         (item) => {
           if (_.isEmpty(item.value)) {
@@ -156,7 +130,7 @@ const NetworkErrorScreen = (): ReactElement => {
     } else {
       onOffline()
     }
-  }, [isOnline, isTestnet])
+  }, [isOnline])
 
   useEffect(() => {
     window.addEventListener('offline', onOffline)

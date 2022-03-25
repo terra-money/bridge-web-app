@@ -1,6 +1,7 @@
 import SendStore from 'store/SendStore'
 import { useRecoilValue } from 'recoil'
 import { BlockChainType, BridgeType } from 'types'
+import NetworkStore from 'store/NetworkStore'
 
 const whitelist: Record<
   BlockChainType,
@@ -201,15 +202,96 @@ const whitelist: Record<
   [BlockChainType.terra]: {},
 }
 
+const testnetWhitelist: Record<
+  BlockChainType,
+  Record<string, Record<string, string>>
+> = {
+  [BlockChainType.bsc]: {
+    [BridgeType.wormhole]: {},
+    [BridgeType.shuttle]: {
+      uluna: '0xA1B4Aa780713df91e9Fa0FAa415ce49756D81E3b',
+      uusd: '0x66BDf3Bd407A63eAB5eAF5eCE69f2D7bb403EfC9',
+      ukrw: '0x59a870b16adE2A152815Ba0d4Fa074fc3F71A828',
+      usdr: '0x5e2c2088d3fB10aAb25a0D323CdBEc5147232B1a',
+      umnt: '0x1449D1Ba8FB922E74F7761F077e77EAe66A0f8DA',
+      terra10llyp6v3j3her8u3ce66ragytu45kcmd9asj3u:
+        '0x320106A19C934ab8dbdde8056Ebae5A6f340720e',
+      terra16vfxm98rxlc8erj4g0sj5932dvylgmdufnugk0:
+        '0x0dFa0F08136DA5d28618E7E31A7e24b01a95bB69',
+      terra1qg9ugndl25567u03jrr79xur2yk9d632fke3h2:
+        '0x56a31ea21862447E3Af9bfe76A45679E44103274',
+      terra1nslem9lgwx53rvgqwd8hgq7pepsry6yr3wsen4:
+        '0xA2a42F0deB45ca7310a3C02A70fb569d5d5248FA',
+      terra1djnlav60utj06kk9dl7defsv8xql5qpryzvm3h:
+        '0xc6F5e6476958cA81eC8FC68A1ea7c68206b0e501',
+      terra18yx7ff8knc98p07pdkhm3u36wufaeacv47fuha:
+        '0x1Ad3354B2E7C0F7D5A370a03CAf439DD345437a9',
+      terra1ax7mhqahj6vcqnnl675nqq2g9wghzuecy923vy:
+        '0x5C4273b1B20112321f0951D0bC2d5eD40c800226',
+      terra12s2h8vlztjwu440khpc0063p34vm7nhu25w4p9:
+        '0xE4f2C30E938c24ee874dfDFAb20fFFBA81323457',
+      terra12saaecsqwxj04fn0jsv4jmdyp6gylptf5tksge:
+        '0xfBC94545AD2ff3F7B009258FB43F2EAb46744767',
+      terra15dr4ah3kha68kam7a907pje9w6z2lpjpnrkd06:
+        '0xFc78bf14Dc997e681dAc4b4D811B45026d04123F',
+      terra19dl29dpykvzej8rg86mjqg8h63s9cqvkknpclr:
+        '0xeff3b95faC30230D30F8c8222670A3812D79857B',
+      terra1fdkfhgk433tar72t4edh6p6y9rmjulzc83ljuw:
+        '0x662DDF725F5BDE9b31BBD16793Fd0c234F67979B',
+      terra1fucmfp8x4mpzsydjaxyv26hrkdg4vpdzdvf647:
+        '0x5D428492846bd05D8137e56Fe806D28606453cbf',
+      terra1z0k7nx0vl85hwpv3e3hu2cyfkwq07fl7nqchvd:
+        '0x57986628daaDC418E09A2917D6c8b793B7dC1ACD',
+      terra14gq9wj0tt6vu0m4ec2tkkv4ln3qrtl58lgdl2c:
+        '0x354CA25cf8eB08537f6047e9daF02Eb02222C1D5',
+      terra1qre9crlfnulcg0m68qqywqqstplgvrzywsg3am:
+        '0x24fE38158A7550bEd9A451CBeA67dA4BdC920E95',
+    },
+  },
+  [BlockChainType.ethereum]: {
+    [BridgeType.shuttle]: {
+      uluna: '0xbf51453468771D14cEbdF8856cC5D5145364Cd6F',
+      uusd: '0x6cA13a4ab78dd7D657226b155873A04DB929A3A4',
+    },
+    [BridgeType.wormhole]: {},
+  },
+  [BlockChainType.hmy]: {
+    [BridgeType.shuttle]: {
+      uluna: '0xdfe87bF751D4abEb3E4926DdAa1e6736B07d8FF4',
+      uusd: '0x0C096AdFdA2a3Bf74e6Ca33c05eD0b472b622247',
+    },
+  },
+  // only wormhole
+  [BlockChainType.avalanche]: {
+    [BridgeType.wormhole]: {},
+  },
+  [BlockChainType.fantom]: {
+    [BridgeType.wormhole]: {},
+  },
+  // ibc chains (not supported on testnet)
+  [BlockChainType.cosmos]: {},
+  [BlockChainType.inj]: {},
+  [BlockChainType.osmo]: {},
+  [BlockChainType.scrt]: {},
+  // other chains
+  [BlockChainType.axelar]: {},
+  [BlockChainType.terra]: {},
+}
+
 export default function useWhiteList(): Record<string, string> {
-  // TODO: testnet whitelist
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const chain =
     fromBlockChain === BlockChainType.terra ? toBlockChain : fromBlockChain
 
   if (!bridgeUsed || chain === BlockChainType.terra) return {}
-  return whitelist[chain]?.[bridgeUsed] || {}
+
+  return (
+    (isTestnet
+      ? whitelist[chain]?.[bridgeUsed]
+      : testnetWhitelist[chain]?.[bridgeUsed]) || {}
+  )
 }

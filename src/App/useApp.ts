@@ -82,27 +82,6 @@ const useApp = (): {
   const setTerraWhiteList = useSetRecoilState(
     ContractStore.initOnlyTerraWhiteList
   )
-  const setEthWhiteList = useSetRecoilState(ContractStore.initOnlyEthWhiteList)
-  const setBscWhiteList = useSetRecoilState(ContractStore.initOnlyBscWhiteList)
-  const setHmyWhiteList = useSetRecoilState(ContractStore.initOnlyHmyWhiteList)
-  const setIbcWhiteList = useSetRecoilState(ContractStore.initOnlyIbcWhiteList)
-  const setOsmoWhiteList = useSetRecoilState(
-    ContractStore.initOnlyOsmoWhiteList
-  )
-  const setScrtWhiteList = useSetRecoilState(
-    ContractStore.initOnlyScrtWhiteList
-  )
-  const setInjWhiteList = useSetRecoilState(ContractStore.initOnlyInjWhiteList)
-  const setCosmosWhiteList = useSetRecoilState(
-    ContractStore.initOnlyCosmosWhiteList
-  )
-  const setAvalancheWhiteList = useSetRecoilState(
-    ContractStore.initOnlyAvalancheWhiteList
-  )
-  const setFantomWhiteList = useSetRecoilState(
-    ContractStore.initOnlyFantomWhiteList
-  )
-
   const fetchAssets = async (path: TerraAssetsPathEnum): Promise<any> => {
     return (await fetch(`${NETWORK.TERRA_ASSETS_URL}${path}`)).json()
   }
@@ -215,42 +194,6 @@ const useApp = (): {
         {}
       )
       setTerraWhiteList(formattedTerraListJson)
-
-      const ethListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_eth)
-      setEthWhiteList(ethListJson)
-
-      const bscListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_bsc)
-      setBscWhiteList(bscListJson)
-
-      const hmyListJson = await fetchAssets(TerraAssetsPathEnum.shuttle_hmy)
-      setHmyWhiteList(hmyListJson)
-
-      const osmoListJson = await fetchAssets(TerraAssetsPathEnum.osmo_tokens)
-      setOsmoWhiteList(osmoListJson)
-
-      const scrtListJson = await fetchAssets(TerraAssetsPathEnum.scrt_tokens)
-      setScrtWhiteList(scrtListJson)
-
-      const injListJson = await fetchAssets(TerraAssetsPathEnum.inj_tokens)
-      setInjWhiteList(injListJson)
-
-      const cosmosListJson = await fetchAssets(
-        TerraAssetsPathEnum.cosmos_tokens
-      )
-      setCosmosWhiteList(cosmosListJson)
-
-      const avalancheListJson = await fetchAssets(
-        TerraAssetsPathEnum.avalanche_tokens
-      )
-      setAvalancheWhiteList(avalancheListJson)
-
-      const fantomListJson = await fetchAssets(
-        TerraAssetsPathEnum.fantom_tokens
-      )
-      setFantomWhiteList(fantomListJson)
-
-      const ibcTokensJson = await fetchAssets(TerraAssetsPathEnum.ibc_tokens)
-      setIbcWhiteList(ibcTokensJson)
     } catch {}
   }
 

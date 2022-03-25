@@ -113,8 +113,6 @@ const Finish = (): ReactElement => {
     setWaitForReceiptError('')
   }, [])
 
-  // TODO: Add token to Metamask
-
   return (
     <StyledContainer>
       {_.some(displayErrorMessage) ? (

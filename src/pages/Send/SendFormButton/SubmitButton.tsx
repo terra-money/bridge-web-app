@@ -53,7 +53,7 @@ const SubmitButton = (): ReactElement => {
           }
         }, 500)
       } else if (isIbcNetwork(fromBlockChain)) {
-        // todo implement broadcast sync
+        // TODO: implement broadcast sync
         setStatus(ProcessStatus.Done)
       } else {
         try {

@@ -124,8 +124,6 @@ const useAuth = (): {
       const network = await user.provider?.getNetwork()
       if (network) {
         const { ETH_CHAINID } = NETWORK
-
-        // TODO: Suggest chain on Metamask
         try {
           await metaMaskService.switchNetwork(fromBlockChain)
           setEtherBaseExt(network)
