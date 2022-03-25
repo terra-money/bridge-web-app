@@ -8,7 +8,7 @@ import { ArrowClockwise } from 'react-bootstrap-icons'
 
 import { ASSET, COLOR } from 'consts'
 
-import { BlockChainType, isIbcNetwork, BridgeType } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { AxelarAPI } from 'packages/axelar/axelarAPI'
@@ -163,7 +163,9 @@ const SendForm = ({
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
       const decimalSize = new BigNumber(
-        fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain)
+        fromBlockChain === BlockChainType.terra ||
+        bridgeUsed === BridgeType.ibc ||
+        bridgeUsed === BridgeType.axelar
           ? ASSET.TERRA_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
       )

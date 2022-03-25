@@ -116,7 +116,7 @@ const useSend = (): UseSendType => {
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
-  const { fromTokenAddress } = useNetwork()
+  const { fromTokenAddress, toTokenAddress } = useNetwork()
   const { getAddress } = useTns()
 
   const {
@@ -471,20 +471,19 @@ const useSend = (): UseSendType => {
               return { success: true, hash }
 
             case BridgeType.axelar:
-              // TODO: test axelar txs
               const axelarAddress = await getAxelarAddress(
                 toAddress,
                 fromBlockChain,
                 toBlockChain,
-                fromTokenAddress
+                toTokenAddress as string
               )
-              const { txhash } = await withSigner.transfer(
+              const result = await withSigner.transfer(
                 axelarAddress,
                 sendAmount
               )
-              await waitForEtherBaseTransaction({ hash: txhash })
+              await waitForEtherBaseTransaction({ hash: result.hash })
               refetchAllowanceOfSelectedAsset()
-              return { success: true, hash: txhash }
+              return { success: true, hash: result.hash }
 
             case BridgeType.wormhole:
               // TODO: handle wormhole txs
@@ -519,27 +518,52 @@ const useSend = (): UseSendType => {
           const isTerra = toBlockChain === BlockChainType.terra
           const decoded = decodeTerraAddressOnEtherBase(terraAddress)
           try {
-            const etherVaultToken = etherVaultTokenList[asset.terraToken]
+            switch (bridgeUsed) {
+              case BridgeType.shuttle:
+                const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
-            if (etherVaultToken && fromBlockChain === BlockChainType.ethereum) {
-              const vaultContract = getEtherBaseContract({
-                token: etherVaultToken.vault,
-              })!
-              const vaultContractSigner = vaultContract.connect(signer)
+                // TODO: cleanup can't send ETH -> ETH
+                if (
+                  etherVaultToken &&
+                  fromBlockChain === BlockChainType.ethereum
+                ) {
+                  const vaultContract = getEtherBaseContract({
+                    token: etherVaultToken.vault,
+                  })!
+                  const vaultContractSigner = vaultContract.connect(signer)
 
-              const tx = isTerra
-                ? vaultContractSigner?.burn(sendAmount, decoded.padEnd(66, '0'))
-                : withSigner.transfer(terraAddress, sendAmount)
+                  const tx = isTerra
+                    ? vaultContractSigner?.burn(
+                        sendAmount,
+                        decoded.padEnd(66, '0')
+                      )
+                    : withSigner.transfer(terraAddress, sendAmount)
 
-              const { hash } = await tx
-              return { success: true, hash }
-            } else {
-              const tx = isTerra
-                ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
-                : withSigner.transfer(terraAddress, sendAmount)
+                  const { hash } = await tx
+                  return { success: true, hash }
+                } else {
+                  const tx = isTerra
+                    ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
+                    : withSigner.transfer(terraAddress, sendAmount)
 
-              const { hash } = await tx
-              return { success: true, hash }
+                  const { hash } = await tx
+                  return { success: true, hash }
+                }
+              case BridgeType.axelar:
+                const axelarAddress = await getAxelarAddress(
+                  toAddress,
+                  fromBlockChain,
+                  toBlockChain,
+                  toTokenAddress as string
+                )
+                const result = await withSigner.transfer(
+                  axelarAddress,
+                  sendAmount
+                )
+                return { success: true, hash: result.hash }
+              case BridgeType.wormhole:
+                // TODO: handle wormhole txs
+                return { success: false }
             }
           } catch (error) {
             return handleTxErrorFromEtherBase(error)

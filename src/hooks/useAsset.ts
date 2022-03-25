@@ -7,7 +7,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import { AssetType, WhiteListType, BalanceListType } from 'types/asset'
-import { BlockChainType, isIbcNetwork } from 'types/network'
+import { BlockChainType, BridgeType, isIbcNetwork } from 'types/network'
 
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
@@ -21,6 +21,7 @@ const useAsset = (): {
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const assetList = useRecoilValue(ContractStore.assetList)
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
@@ -118,7 +119,8 @@ const useAsset = (): {
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
       return fromBlockChain === BlockChainType.terra ||
-        isIbcNetwork(fromBlockChain)
+        bridgeUsed === BridgeType.ibc ||
+        bridgeUsed === BridgeType.axelar
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)

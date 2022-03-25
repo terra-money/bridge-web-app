@@ -12,6 +12,7 @@ import {
   isIbcNetwork,
   ibcPrefix,
   IbcNetwork,
+  BridgeType,
 } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
@@ -34,6 +35,7 @@ const useSendValidate = (): {
   const memo = useRecoilValue(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
   const feeDenom = useRecoilValue(SendStore.feeDenom)
@@ -144,7 +146,9 @@ const useSendValidate = (): {
     }
 
     const rebalanceDecimal =
-      fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain)
+      fromBlockChain === BlockChainType.terra ||
+      bridgeUsed === BridgeType.ibc ||
+      bridgeUsed === BridgeType.axelar
         ? 1
         : 1e12
 
