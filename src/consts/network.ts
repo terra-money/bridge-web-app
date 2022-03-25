@@ -58,7 +58,10 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
     'https://bsc-dataseed1.ninicoin.io/',
     'https://bscrpc.com',
   ],
-  [BlockChainType.avalanche]: ['https://avalanche.public-rpc.com/'],
+  [BlockChainType.avalanche]: [
+    'https://api.avax.network/ext/bc/C/rpc',
+    'https://avalanche.public-rpc.com/',
+  ],
   [BlockChainType.fantom]: ['https://rpc.ftm.tools/'],
   [BlockChainType.hmy]: [
     'https://api.harmony.one',

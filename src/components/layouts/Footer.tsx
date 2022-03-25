@@ -46,11 +46,26 @@ const Footer = (): ReactElement => {
   ]
   return (
     <StyledContainer>
-      <Row style={{ justifyContent: 'space-between', flex: 1 }}>
+      <Row
+        style={{
+          justifyContent: window.innerWidth > 575 ? 'space-between' : 'center',
+          flex: 1,
+          display: window.innerWidth > 575 ? 'flex' : 'block',
+          textAlign: window.innerWidth > 575 ? 'initial' : 'center',
+          marginTop: -5,
+        }}
+      >
         <View>
           <StyledText>© Terraform Labs.</StyledText>
         </View>
-        <Row>
+        <Row
+          style={{
+            justifyContent: 'center',
+            display: window.innerWidth > 575 ? 'block' : 'flex',
+            marginLeft: -30,
+            marginTop: 12,
+          }}
+        >
           {community.map(
             ({ href, title }) =>
               href && (
@@ -58,7 +73,7 @@ const Footer = (): ReactElement => {
                   <ExtLink
                     href={href}
                     style={{
-                      paddingLeft: 30,
+                      paddingLeft: window.innerWidth > 575 ? 30 : 30,
                       fontSize: 13,
                       textTransform: 'uppercase',
                     }}
