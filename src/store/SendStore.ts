@@ -81,7 +81,7 @@ const axelarFee = atom<BigNumber>({
   default: new BigNumber(0),
 })
 const amountAfterAxelarFee = atom<BigNumber>({
-  key: 'sendAmountAfterShuttleFee',
+  key: 'sendAmountAfterAxelarFee',
   default: new BigNumber(0),
 })
 // Computed data from Send data End
