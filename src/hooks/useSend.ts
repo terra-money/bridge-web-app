@@ -313,7 +313,8 @@ const useSend = (): UseSendType => {
             ? loginUser.address
             : await getAxelarAddress(
                 toAddress,
-                toBlockChain as 'avalanche' | 'fantom',
+                fromBlockChain,
+                toBlockChain,
                 asset.terraToken as 'uusd' | 'uluna'
               )
 
@@ -458,19 +459,37 @@ const useSend = (): UseSendType => {
         const withSigner = contract.connect(signer)
 
         try {
-          const etherVaultToken = etherVaultTokenList[asset.terraToken]
+          switch (bridgeUsed) {
+            case BridgeType.shuttle:
+              const etherVaultToken = etherVaultTokenList[asset.terraToken]
+              const { hash } = await withSigner.approve(
+                etherVaultToken.vault,
+                sendAmount
+              )
+              await waitForEtherBaseTransaction({ hash })
+              refetchAllowanceOfSelectedAsset()
+              return { success: true, hash }
 
-          const { hash } = await withSigner.approve(
-            etherVaultToken.vault,
-            sendAmount
-          )
+            case BridgeType.axelar:
+              // TODO: test axelar txs
+              const axelarAddress = await getAxelarAddress(
+                toAddress,
+                fromBlockChain,
+                toBlockChain,
+                fromTokenAddress
+              )
+              const { txhash } = await withSigner.transfer(
+                axelarAddress,
+                sendAmount
+              )
+              await waitForEtherBaseTransaction({ hash: txhash })
+              refetchAllowanceOfSelectedAsset()
+              return { success: true, hash: txhash }
 
-          await waitForEtherBaseTransaction({
-            hash,
-          })
-          refetchAllowanceOfSelectedAsset()
-
-          return { success: true, hash }
+            case BridgeType.wormhole:
+              // TODO: handle wormhole txs
+              return { success: false }
+          }
         } catch (error) {
           return handleTxErrorFromEtherBase(error)
         }

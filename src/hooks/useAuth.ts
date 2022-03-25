@@ -124,6 +124,7 @@ const useAuth = (): {
       if (network) {
         const { ETH_CHAINID } = NETWORK
 
+        // TODO: Suggest chain on Metamask
         let reSelectFromBlockChain: BlockChainType
         if (
           [ETH_CHAINID.ETH_MAIN, ETH_CHAINID.ETH_ROPSTEN].includes(
