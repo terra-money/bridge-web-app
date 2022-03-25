@@ -19,6 +19,7 @@ import {
 import { WalletEnum } from 'types/wallet'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import useTerraNetwork from './useTerraNetwork'
+import metaMaskService from 'services/metaMaskService'
 
 const useAuth = (): {
   login: ({ user }: { user: User }) => Promise<void>
@@ -125,42 +126,56 @@ const useAuth = (): {
         const { ETH_CHAINID } = NETWORK
 
         // TODO: Suggest chain on Metamask
-        let reSelectFromBlockChain: BlockChainType
-        if (
-          [ETH_CHAINID.ETH_MAIN, ETH_CHAINID.ETH_ROPSTEN].includes(
-            network.chainId
-          )
-        ) {
-          reSelectFromBlockChain = BlockChainType.ethereum
-        } else if (
-          [ETH_CHAINID.HMY_MAIN, ETH_CHAINID.HMY_TEST].includes(network.chainId)
-        ) {
-          reSelectFromBlockChain = BlockChainType.hmy
-        } else if (
-          [ETH_CHAINID.BSC_MAIN, ETH_CHAINID.BSC_TEST].includes(network.chainId)
-        ) {
-          reSelectFromBlockChain = BlockChainType.bsc
-        } else if (network.chainId === ETH_CHAINID.AVAX_MAIN) {
-          reSelectFromBlockChain = BlockChainType.avalanche
-        } else if (network.chainId === ETH_CHAINID.FTM_MAIN) {
-          reSelectFromBlockChain = BlockChainType.fantom
-        } else {
-          setIsVisibleNotSupportNetworkModal(true)
-          setTriedNotSupportNetwork({
-            blockChain: BlockChainType.ethereum,
-            name: network.name,
-            chainId: network.chainId,
+        try {
+          await metaMaskService.switchNetwork(fromBlockChain)
+          setEtherBaseExt(network)
+          setLoginStorage({
+            blockChain: fromBlockChain,
+            walletType: user.walletType,
           })
-          return
+        } catch (e) {
+          console.log(e)
+          let reSelectFromBlockChain: BlockChainType
+          if (
+            [ETH_CHAINID.ETH_MAIN, ETH_CHAINID.ETH_ROPSTEN].includes(
+              network.chainId
+            )
+          ) {
+            reSelectFromBlockChain = BlockChainType.ethereum
+          } else if (
+            [ETH_CHAINID.HMY_MAIN, ETH_CHAINID.HMY_TEST].includes(
+              network.chainId
+            )
+          ) {
+            reSelectFromBlockChain = BlockChainType.hmy
+          } else if (
+            [ETH_CHAINID.BSC_MAIN, ETH_CHAINID.BSC_TEST].includes(
+              network.chainId
+            )
+          ) {
+            reSelectFromBlockChain = BlockChainType.bsc
+          } else if (network.chainId === ETH_CHAINID.AVAX_MAIN) {
+            reSelectFromBlockChain = BlockChainType.avalanche
+          } else if (network.chainId === ETH_CHAINID.FTM_MAIN) {
+            reSelectFromBlockChain = BlockChainType.fantom
+          } else {
+            setIsVisibleNotSupportNetworkModal(true)
+            setTriedNotSupportNetwork({
+              blockChain: BlockChainType.ethereum,
+              name: network.name,
+              chainId: network.chainId,
+            })
+            return
+          }
+
+          setFromBlockChain(reSelectFromBlockChain)
+          setEtherBaseExt(network)
+
+          setLoginStorage({
+            blockChain: reSelectFromBlockChain,
+            walletType: user.walletType,
+          })
         }
-
-        setFromBlockChain(reSelectFromBlockChain)
-        setEtherBaseExt(network)
-
-        setLoginStorage({
-          blockChain: reSelectFromBlockChain,
-          walletType: user.walletType,
-        })
       } else {
         setIsVisibleNotSupportNetworkModal(true)
         return

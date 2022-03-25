@@ -44,6 +44,35 @@ const blockChainName: Record<BlockChainType, string> = {
   //[BlockChainType.cro]: 'Cronos',
 }
 
+const metamaskRpc: Record<BlockChainType, string[]> = {
+  // used only for EVM on suugest chain
+  [BlockChainType.bsc]: [
+    'https://bsc-dataseed.binance.org/',
+    'https://bsc-dataseed1.defibit.io/',
+    'https://bsc-dataseed1.ninicoin.io/',
+    'https://bscrpc.com',
+  ],
+  [BlockChainType.avalanche]: [
+    'https://api.avax.network/ext/bc/C/rpc',
+    'https://avalanche.public-rpc.com/',
+  ],
+  [BlockChainType.fantom]: ['https://rpc.ftm.tools/'],
+  [BlockChainType.hmy]: [
+    'https://api.harmony.one',
+    'https://s3.api.harmony.one',
+    'https://harmony.public-rpc.com',
+  ],
+  [BlockChainType.ethereum]: [],
+  // non EVM chains
+  [BlockChainType.osmo]: [],
+  [BlockChainType.scrt]: [],
+  [BlockChainType.inj]: [],
+  [BlockChainType.axelar]: [],
+  [BlockChainType.terra]: [],
+  [BlockChainType.cosmos]: [],
+  //[BlockChainType.cro]: '[],
+}
+
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {
   return [
     BlockChainType.ethereum,
@@ -124,6 +153,7 @@ export default {
   blockChainImage,
   blockChainName,
   isEtherBaseBlockChain,
+  metamaskRpc,
   INFURAID,
   TERRA_ASSETS_URL,
   TERRA_EXTENSION,
