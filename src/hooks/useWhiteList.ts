@@ -291,7 +291,7 @@ export default function useWhiteList(): Record<string, string> {
 
   return (
     (isTestnet
-      ? whitelist[chain]?.[bridgeUsed]
-      : testnetWhitelist[chain]?.[bridgeUsed]) || {}
+      ? testnetWhitelist[chain]?.[bridgeUsed]
+      : whitelist[chain]?.[bridgeUsed]) || {}
   )
 }

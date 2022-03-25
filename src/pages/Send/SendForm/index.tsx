@@ -29,6 +29,7 @@ import AssetList from './AssetList'
 import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import WarningInfo from './WarningInfo'
+import NetworkStore from 'store/NetworkStore'
 
 const StyledContainer = styled.div``
 
@@ -138,6 +139,8 @@ const SendForm = ({
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
   )
+
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const [inputAmount, setInputAmount] = useState('')
 
@@ -255,6 +258,7 @@ const SendForm = ({
     toBlockChain,
     fromBlockChain,
     bridgeUsed,
+    isTestnet,
   ])
 
   return (
