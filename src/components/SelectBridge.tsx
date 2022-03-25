@@ -3,19 +3,21 @@ import { ReactElement } from 'react'
 
 import { COLOR } from 'consts'
 
-import { availableBridges, BlockChainType } from 'types/network'
+import { availableBridges, BlockChainType, BridgeType } from 'types/network'
 
 import { Text } from 'components'
 import FormSelect from 'components/FormSelect'
 import { useRecoilValue, useRecoilState } from 'recoil'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import SendStore from 'store/SendStore'
+import NetworkStore from 'store/NetworkStore'
 
 const SelectBridge = (): ReactElement => {
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const bridges =
     availableBridges[
@@ -23,7 +25,11 @@ const SelectBridge = (): ReactElement => {
     ]
 
   const bridgesList = bridges.map((b) => {
-    return { value: b, isDisabled: false, label: (b as string).toUpperCase() }
+    return {
+      value: b,
+      isDisabled: b === BridgeType.axelar && isTestnet,
+      label: (b as string).toUpperCase(),
+    }
   })
 
   return (
