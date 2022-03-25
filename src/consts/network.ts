@@ -11,6 +11,8 @@ import FantomSvg from 'images/fantom.svg'
 import CosmosSvg from 'images/cosmos.svg'
 //import CronosSvg from 'images/cronos.svg'
 import SecretSvg from 'images/secret.svg'
+import PolygonSvg from 'images/polygon.svg'
+import MoonbeamSvg from 'images/moonbeam.svg'
 import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
@@ -26,6 +28,8 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.avalanche]: AvalancheSvg,
   [BlockChainType.fantom]: FantomSvg,
   [BlockChainType.cosmos]: CosmosSvg,
+  [BlockChainType.polygon]: PolygonSvg,
+  [BlockChainType.moonbeam]: MoonbeamSvg,
   //[BlockChainType.cro]: CronosSvg,
 }
 
@@ -41,6 +45,8 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.avalanche]: 'Avalanche',
   [BlockChainType.fantom]: 'Fantom',
   [BlockChainType.cosmos]: 'Cosmos',
+  [BlockChainType.polygon]: 'Polygon',
+  [BlockChainType.moonbeam]: 'Moonbeam',
   //[BlockChainType.cro]: 'Cronos',
 }
 
@@ -62,6 +68,8 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
     'https://s3.api.harmony.one',
     'https://harmony.public-rpc.com',
   ],
+  [BlockChainType.polygon]: ['https://polygon-rpc.com/'],
+  [BlockChainType.moonbeam]: ['https://rpc.api.moonbeam.network'],
   [BlockChainType.ethereum]: [],
   // non EVM chains
   [BlockChainType.osmo]: [],
@@ -80,6 +88,8 @@ const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {
     BlockChainType.hmy,
     BlockChainType.avalanche,
     BlockChainType.fantom,
+    BlockChainType.polygon,
+    BlockChainType.moonbeam,
   ].includes(bc)
 }
 
@@ -94,6 +104,8 @@ const ETH_CHAINID = {
   HMY_TEST: 1666700000,
   AVAX_MAIN: 43114,
   FTM_MAIN: 250,
+  POLY_MAIN: 137,
+  MOON_MAIN: 1284,
 }
 
 const INFURAID =

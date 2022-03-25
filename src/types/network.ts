@@ -1,5 +1,3 @@
-import { AssetNativeDenomEnum } from './asset'
-
 export enum BlockChainType {
   terra = 'terra',
   ethereum = 'ethereum',
@@ -12,6 +10,8 @@ export enum BlockChainType {
   avalanche = 'avalanche',
   fantom = 'fantom',
   cosmos = 'cosmos',
+  polygon = 'polygon',
+  moonbeam = 'moonbeam',
   //cro = 'cronos',
 }
 
@@ -37,6 +37,8 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.hmy]: [BridgeType.shuttle],
   [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.fantom]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.polygon]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.moonbeam]: [BridgeType.axelar],
   [BlockChainType.terra]: [],
 }
 
@@ -119,31 +121,6 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   [BlockChainType.cosmos]: 'https://cosmoshub.validator.network/',
   //[BlockChainType.cro]: '',
-}
-
-export const allowedCoins: Record<IbcNetwork, string[]> = {
-  [BlockChainType.osmo]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-    AssetNativeDenomEnum.ukrw,
-    'ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B',
-  ],
-  [BlockChainType.scrt]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-    'ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09',
-  ],
-  [BlockChainType.inj]: [AssetNativeDenomEnum.uusd, AssetNativeDenomEnum.uluna],
-  [BlockChainType.axelar]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-  ],
-  [BlockChainType.cosmos]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-    'ibc/18ABA66B791918D51D33415DA173632735D830E2E77E63C91C11D3008CFD5262',
-  ],
-  //[BlockChainType.cro]: ['uusd', 'uluna'],
 }
 
 export interface ExtTerraNetwork {

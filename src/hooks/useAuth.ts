@@ -156,6 +156,10 @@ const useAuth = (): {
             reSelectFromBlockChain = BlockChainType.avalanche
           } else if (network.chainId === ETH_CHAINID.FTM_MAIN) {
             reSelectFromBlockChain = BlockChainType.fantom
+          } else if (network.chainId === ETH_CHAINID.POLY_MAIN) {
+            reSelectFromBlockChain = BlockChainType.polygon
+          } else if (network.chainId === ETH_CHAINID.MOON_MAIN) {
+            reSelectFromBlockChain = BlockChainType.moonbeam
           } else {
             setIsVisibleNotSupportNetworkModal(true)
             setTriedNotSupportNetwork({

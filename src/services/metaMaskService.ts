@@ -100,6 +100,12 @@ const switchNetwork = async (network: BlockChainType): Promise<void> => {
     case BlockChainType.fantom:
       await addNetworkAndSwitch(network, ETH_CHAINID.FTM_MAIN)
       return
+    case BlockChainType.polygon:
+      await addNetworkAndSwitch(network, ETH_CHAINID.POLY_MAIN)
+      return
+    case BlockChainType.moonbeam:
+      await addNetworkAndSwitch(network, ETH_CHAINID.MOON_MAIN)
+      return
   }
 }
 

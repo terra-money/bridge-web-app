@@ -197,6 +197,22 @@ const whitelist: Record<
         'uscrt',
     },
   },
+  [BlockChainType.polygon]: {
+    [BridgeType.wormhole]: {
+      uluna: '0x9cd6746665D9557e1B9a775819625711d0693439',
+      uusd: '0xE6469Ba6D2fD6130788E0eA9C0a0515900563b59',
+    },
+    [BridgeType.axelar]: {
+      uusd: '0xeDDc6eDe8F3AF9B4971e1Fa9639314905458bE87',
+      uluna: '0xa17927fB75E9faEA10C08259902d0468b3DEad88',
+    },
+  },
+  [BlockChainType.moonbeam]: {
+    [BridgeType.axelar]: {
+      uusd: '0x085416975fe14C2A731a97eC38B9bF8135231F62',
+      uluna: '0x31DAB3430f3081dfF3Ccd80F17AD98583437B213',
+    },
+  },
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.terra]: {},
@@ -268,7 +284,11 @@ const testnetWhitelist: Record<
   [BlockChainType.fantom]: {
     [BridgeType.wormhole]: {},
   },
-  // ibc chains (not supported on testnet)
+  [BlockChainType.polygon]: {
+    [BridgeType.wormhole]: {},
+  },
+  // axelar-ibc chains (not supported on testnet)
+  [BlockChainType.moonbeam]: {},
   [BlockChainType.cosmos]: {},
   [BlockChainType.inj]: {},
   [BlockChainType.osmo]: {},
