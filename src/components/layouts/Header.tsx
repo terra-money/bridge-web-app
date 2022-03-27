@@ -65,7 +65,7 @@ const StyledConnectWallet = styled(View)`
   cursor: pointer;
   white-space: nowrap;
   :hover {
-    opacity: 0.8;
+    background-color: #4983e5;
   }
 `
 const StyledLoginUserInfoBox = styled(Row)`
@@ -73,7 +73,7 @@ const StyledLoginUserInfoBox = styled(Row)`
   border-radius: ${STYLE.css.borderRadius};
   border: solid 1px ${COLOR.terraSky};
   font-size: 12px;
-  padding: 8px 12px;
+  padding: 7px 15px;
   cursor: pointer;
   :hover {
     opacity: 0.8;
@@ -101,7 +101,7 @@ const StyledDropdownMenu = styled(View)`
   cursor: pointer;
   bottom: 0;
   height: 40px;
-  margin-bottom: -40px;
+  margin-bottom: -43px;
   justify-content: center;
   animation: ${dropdownKeyframes} 0.3s ease;
   background-color: #484848;
@@ -110,8 +110,9 @@ const StyledDropdownMenu = styled(View)`
   padding: 0;
   text-align: center;
   :hover {
-    opacity: 0.8;
+    background-color: #494f5a;
   }
+  z-index: 1;
   a {
     display: block;
     color: ${COLOR.white};

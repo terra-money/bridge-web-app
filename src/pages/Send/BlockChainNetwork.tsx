@@ -34,7 +34,7 @@ const BackgroundImg = styled.div`
   width: 100%;
 
   background-repeat: no-repeat;
-  background-size: 60%;
+  background-size: 40% 60%;
   background-position: 50% 50%;
 `
 

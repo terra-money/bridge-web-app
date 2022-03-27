@@ -63,8 +63,6 @@ export type IbcNetwork =
   | BlockChainType.cosmos
 //| BlockChainType.cro
 
-export type AxelarNetwork = BlockChainType.avalanche | BlockChainType.fantom
-
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
     BlockChainType.osmo,

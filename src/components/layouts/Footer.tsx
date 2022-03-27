@@ -52,6 +52,7 @@ const Footer = (): ReactElement => {
           flex: 1,
           display: window.innerWidth > 575 ? 'flex' : 'block',
           textAlign: window.innerWidth > 575 ? 'initial' : 'center',
+          alignItems: 'center',
           marginTop: -5,
         }}
       >
@@ -61,9 +62,10 @@ const Footer = (): ReactElement => {
         <Row
           style={{
             justifyContent: 'center',
-            display: window.innerWidth > 575 ? 'block' : 'flex',
+            alignItems: 'center',
+            display: 'flex',
             marginLeft: -30,
-            marginTop: 12,
+            marginTop: window.innerWidth > 575 ? 0 : 12,
           }}
         >
           {community.map(

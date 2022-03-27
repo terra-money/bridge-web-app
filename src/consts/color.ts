@@ -1,5 +1,7 @@
 const white = '#FFFFFF'
 const terraSky = '#5493F7'
+const bg = '#0D0D0D'
+
 const darkGray = '#202020'
 const darkGray2 = '#2e2e2e'
 const skyGray = '#727e8b'
@@ -22,6 +24,7 @@ export default {
   black,
   red,
   orange,
+  bg,
 
   primary,
   text,

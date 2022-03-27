@@ -63,7 +63,7 @@ const StyledDropdownToggle = styled(StyledDropdown.Toggle)`
     display: none;
   }
   :hover {
-    background-color: #494e59;
+    background-color: #323842;
   }
   :focus {
     box-shadow: none !important;
@@ -158,7 +158,15 @@ const FormSelect = <T,>({
       <StyledDropdownMenu style={menuContainerStyle}>
         {_.map(optionList, (option, i) => (
           <StyledDropdownItem
-            style={itemStyle}
+            style={{
+              ...itemStyle,
+              borderTopLeftRadius: i === 0 ? '10px' : '0',
+              borderTopRightRadius: i === 0 ? '10px' : '0',
+              borderBottomLeftRadius:
+                i === optionList.length - 1 ? '10px' : '0',
+              borderBottomRightRadius:
+                i === optionList.length - 1 ? '10px' : '0',
+            }}
             key={`option-${i}`}
             onClick={(): void => {
               if (option.isDisabled) {
