@@ -374,7 +374,49 @@ const useSend = (): UseSendType => {
                   }
                 ),
               ]
-            : [] // TODO: wormhole CW20
+            : [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  fromTokenAddress || '',
+                  {
+                    increase_allowance: {
+                      amount: sendAmount.toString(),
+                      expires: {
+                        never: {},
+                      },
+                      spender:
+                        NETWORK.wormholeContracts[BlockChainType.terra][
+                          isTestnet ? 'testnet' : 'mainnet'
+                        ]?.tokenBridge || 0,
+                    },
+                  }
+                ),
+                new MsgExecuteContract(
+                  loginUser.address,
+                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  {
+                    initiate_transfer: {
+                      asset: {
+                        amount: sendAmount.toString(),
+                        info: {
+                          token: {
+                            contract_addr: fromTokenAddress || '',
+                          },
+                        },
+                      },
+                      recipient_chain:
+                        NETWORK.wormholeContracts[toBlockChain][
+                          isTestnet ? 'testnet' : 'mainnet'
+                        ]?.chainid || 0,
+                      recipient: pubKey.toString('base64'),
+                      fee: '0',
+                      nonce: Math.round(Math.round(Math.random() * 100000)),
+                    },
+                  }
+                ),
+              ]
         // terra -> terra
         case undefined:
           const recipient = (await getAddress(toAddress)) || toAddress
