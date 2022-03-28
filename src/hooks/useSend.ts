@@ -20,7 +20,7 @@ import { isMobile } from 'react-device-detect'
 import { useQuery } from 'react-query'
 import { useDebouncedCallback } from 'use-debounce/lib'
 
-import { UTIL } from 'consts'
+import { UTIL, NETWORK } from 'consts'
 
 import terraService from 'services/terraService'
 import AuthStore from 'store/AuthStore'
@@ -113,6 +113,7 @@ const useSend = (): UseSendType => {
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const [fee, setFee] = useRecoilState(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
@@ -330,8 +331,50 @@ const useSend = (): UseSendType => {
             ),
           ]
         case BridgeType.wormhole:
-          // TODO: handle wormhole transfer
-          return []
+          const pubKey = Buffer.concat([
+            Buffer.alloc(12),
+            Buffer.from(toAddress.substring(2), 'hex'),
+          ])
+          console.log(pubKey)
+          return UTIL.isNativeDenom(asset.terraToken)
+            ? [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  NETWORK.wormholeContracts[BlockChainType.terra][
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  {
+                    deposit_tokens: {},
+                  },
+                  { [asset.terraToken]: sendAmount }
+                ),
+                new MsgExecuteContract(
+                  loginUser.address,
+                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  {
+                    initiate_transfer: {
+                      asset: {
+                        amount: sendAmount.toString(),
+                        info: {
+                          native_token: {
+                            denom: asset.terraToken,
+                          },
+                        },
+                      },
+                      recipient_chain:
+                        NETWORK.wormholeContracts[toBlockChain][
+                          isTestnet ? 'testnet' : 'mainnet'
+                        ]?.chainid || 0,
+                      recipient: pubKey.toString('base64'),
+                      fee: '0',
+                      nonce: Math.round(Math.round(Math.random() * 100000)),
+                    },
+                  }
+                ),
+              ]
+            : [] // TODO: wormhole CW20
         // terra -> terra
         case undefined:
           const recipient = (await getAddress(toAddress)) || toAddress
