@@ -148,7 +148,8 @@ const useSendValidate = (): {
     const rebalanceDecimal =
       fromBlockChain === BlockChainType.terra ||
       bridgeUsed === BridgeType.ibc ||
-      bridgeUsed === BridgeType.axelar
+      bridgeUsed === BridgeType.axelar ||
+      bridgeUsed === BridgeType.wormhole
         ? 1
         : 1e12
 

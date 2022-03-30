@@ -93,7 +93,7 @@ const WarningInfo = (): ReactElement => {
             <FormImage src={infoSvg} size={18} />
           </div>
           <StyledInfoText>
-            The deafult bridge for this route is {bridgesList[0].toUpperCase()}
+            The default bridge for this route is {bridgesList[0].toUpperCase()}
           </StyledInfoText>
         </StyledInfo>
       )}

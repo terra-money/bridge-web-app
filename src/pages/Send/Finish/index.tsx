@@ -94,8 +94,7 @@ const Finish = (): ReactElement => {
     SendProcessStore.waitForReceiptError
   )
 
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const { getScannerLink, toTokenAddress } = useNetwork()
@@ -165,7 +164,9 @@ const Finish = (): ReactElement => {
           </Text>
         </div>
         {fromBlockChain === BlockChainType.terra &&
-          bridgeUsed === BridgeType.shuttle && (
+          (bridgeUsed === BridgeType.shuttle ||
+            bridgeUsed === BridgeType.axelar ||
+            bridgeUsed === BridgeType.wormhole) && (
             <div
               style={{
                 fontSize: 12,
@@ -175,33 +176,16 @@ const Finish = (): ReactElement => {
               }}
             >
               <StyledAmountText
-                isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
+                isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
               >
-                {`After Shuttle Fee : (estimated) ${formatBalance(
-                  amountAfterShuttleFee
-                )} ${asset?.symbol}`}
+                {`After ${
+                  bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)
+                } Fee : (estimated) ${formatBalance(amountAfterBridgeFee)} ${
+                  asset?.symbol
+                }`}
               </StyledAmountText>
             </div>
           )}
-
-        {bridgeUsed === BridgeType.axelar && (
-          <div
-            style={{
-              fontSize: 12,
-              textAlign: 'center',
-              marginBottom: 20,
-              marginTop: 10,
-            }}
-          >
-            <StyledAmountText
-              isError={amountAfterAxelarFee.isLessThanOrEqualTo(0)}
-            >
-              {`After Axelar Fee : ${formatBalance(amountAfterAxelarFee)} ${
-                asset?.symbol
-              }`}
-            </StyledAmountText>
-          </div>
-        )}
       </div>
       <StyledSection>
         <StyledSecH>Destination Address</StyledSecH>

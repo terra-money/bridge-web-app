@@ -21,6 +21,7 @@ const whitelist: Record<
     [BridgeType.wormhole]: {
       uluna: '0x156ab3346823B651294766e23e6Cf87254d68962',
       uusd: '0x3d4350cD54aeF9f9b2C29435e0fa809957B3F30a',
+      /*
       // aUST
       terra1hzh9vpxhsk8253se0vv5jj6etdvxu3nv8z07zu:
         '0x8b04E56A8cd5f4D465b784ccf564899F30Aaf88C',
@@ -33,6 +34,7 @@ const whitelist: Record<
       // USDT
       terra1vlqeghv5mt5udh96kt5zxlh2wkh8q4kewkr0dd:
         '0x55d398326f99059fF775485246999027B3197955',
+      */
     },
     [BridgeType.shuttle]: {
       uluna: '0xECCF35F941Ab67FfcAA9A1265C2fF88865caA005',
@@ -130,6 +132,7 @@ const whitelist: Record<
     [BridgeType.wormhole]: {
       uluna: '0xbd31ea8212119f94a611fa969881cba3ea06fa3d',
       uusd: '0xa693B19d2931d498c5B318dF961919BB4aee87a5',
+      /*
       // wETH
       terra14tl83xcwqjy0ken9peu4pjjuu755lrry2uy25r:
         '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -148,6 +151,7 @@ const whitelist: Record<
       // bETH
       terra1u5szg038ur9kzuular3cae8hq6q5rk5u27tuvz:
         '0x707f9118e33a9b8998bea41dd0d46f38bb963fc8',
+      */
     },
     [BridgeType.axelar]: {
       uluna: '0x31DAB3430f3081dfF3Ccd80F17AD98583437B213',

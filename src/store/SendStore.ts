@@ -68,20 +68,12 @@ const gasFee = atom<BigNumber>({
   key: 'sendGasFee',
   default: new BigNumber(0),
 })
-const shuttleFee = atom<BigNumber>({
-  key: 'sendShuttleFee',
+const bridgeFee = atom<BigNumber>({
+  key: 'sendBridgeFee',
   default: new BigNumber(0),
 })
-const amountAfterShuttleFee = atom<BigNumber>({
-  key: 'sendAmountAfterShuttleFee',
-  default: new BigNumber(0),
-})
-const axelarFee = atom<BigNumber>({
-  key: 'sendAxelarFee',
-  default: new BigNumber(0),
-})
-const amountAfterAxelarFee = atom<BigNumber>({
-  key: 'sendAmountAfterAxelarFee',
+const amountAfterBridgeFee = atom<BigNumber>({
+  key: 'sendAmountAfterBridgeFee',
   default: new BigNumber(0),
 })
 // Computed data from Send data End
@@ -108,10 +100,8 @@ export default {
   feeDenom,
   gasFeeList,
   gasFee,
-  shuttleFee,
-  amountAfterShuttleFee,
-  axelarFee,
-  amountAfterAxelarFee,
+  bridgeFee,
+  amountAfterBridgeFee,
 
   validationResult,
 }

@@ -41,22 +41,13 @@ const FormFeeInfo = ({
   const [feeDenom, setFeeDenom] = useRecoilState<AssetNativeDenomEnum>(
     SendStore.feeDenom
   )
-  const shuttleFee = useRecoilValue(SendStore.shuttleFee)
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const axelarFee = useRecoilValue(SendStore.axelarFee)
-  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
+  const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
-
-  const bridgeName = bridgeUsed === BridgeType.axelar ? 'Axelar' : 'Shuttle'
-  const bridgeFee = bridgeUsed === BridgeType.axelar ? axelarFee : shuttleFee
-  const amountAfterFee =
-    bridgeUsed === BridgeType.axelar
-      ? amountAfterAxelarFee
-      : amountAfterShuttleFee
 
   const { formatBalance } = useAsset()
 
@@ -212,7 +203,9 @@ const FormFeeInfo = ({
                   >
                     <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                        {bridgeName} fee (estimated)
+                        {bridgeUsed.charAt(0).toUpperCase() +
+                          bridgeUsed.slice(1)}{' '}
+                        fee (estimated)
                       </Text>
                     </View>
                     <View>
@@ -233,7 +226,10 @@ const FormFeeInfo = ({
                   >
                     <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                        Amount after {bridgeName} fee (estimated){' '}
+                        Amount after{' '}
+                        {bridgeUsed.charAt(0).toUpperCase() +
+                          bridgeUsed.slice(1)}{' '}
+                        fee (estimated){' '}
                       </Text>
                     </View>
                     <View style={{ padding: 0, alignItems: 'flex-start' }}>
@@ -241,12 +237,14 @@ const FormFeeInfo = ({
                         style={{
                           justifyContent: 'flex-end',
                           opacity: '0.8',
-                          color: amountAfterFee.isLessThanOrEqualTo(0)
+                          color: amountAfterBridgeFee.isLessThanOrEqualTo(0)
                             ? COLOR.red
                             : COLOR.text,
                         }}
                       >
-                        {`${formatBalance(amountAfterFee)} ${asset?.symbol}`}
+                        {`${formatBalance(amountAfterBridgeFee)} ${
+                          asset?.symbol
+                        }`}
                       </Text>
                     </View>
                   </Row>

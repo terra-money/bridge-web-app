@@ -30,6 +30,7 @@ import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import WarningInfo from './WarningInfo'
 import NetworkStore from 'store/NetworkStore'
+import getWormholeFees from 'packages/wormhole/fees'
 
 const StyledContainer = styled.div``
 
@@ -125,13 +126,9 @@ const SendForm = ({
   // Computed data from Send data
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
-  const setShuttleFee = useSetRecoilState(SendStore.shuttleFee)
-  const setAmountAfterShuttleFee = useSetRecoilState(
-    SendStore.amountAfterShuttleFee
-  )
-  const setAxelarFee = useSetRecoilState(SendStore.axelarFee)
-  const setAmountAfterAxelarFee = useSetRecoilState(
-    SendStore.amountAfterAxelarFee
+  const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
+  const setAmountAfterBridgeFee = useSetRecoilState(
+    SendStore.amountAfterBridgeFee
   )
 
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
@@ -165,7 +162,8 @@ const SendForm = ({
       const decimalSize = new BigNumber(
         fromBlockChain === BlockChainType.terra ||
         bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar
+        bridgeUsed === BridgeType.axelar ||
+        bridgeUsed === BridgeType.wormhole
           ? ASSET.TERRA_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
       )
@@ -191,9 +189,9 @@ const SendForm = ({
           denom: asset?.terraToken || '',
           amount: sendAmount,
         }).then((shuttleFee) => {
-          setShuttleFee(shuttleFee)
+          setBridgeFeeAmount(shuttleFee)
           const computedAmount = sendAmount.minus(shuttleFee)
-          setAmountAfterShuttleFee(
+          setAmountAfterBridgeFee(
             computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
           )
         })
@@ -205,14 +203,24 @@ const SendForm = ({
         toBlockChain,
         asset?.terraToken || ''
       )
-      setAxelarFee(new BigNumber(fee))
+      setBridgeFeeAmount(new BigNumber(fee))
       const computedAmount = new BigNumber(amount).minus(fee)
-      setAmountAfterAxelarFee(
+      setAmountAfterBridgeFee(
+        computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
+      )
+    }
+    if (bridgeUsed === BridgeType.wormhole) {
+      const wormholeFee = new BigNumber(
+        await getWormholeFees(toBlockChain, asset?.terraToken || '')
+      )
+      setBridgeFeeAmount(wormholeFee)
+      const computedAmount = new BigNumber(amount).minus(wormholeFee)
+      setAmountAfterBridgeFee(
         computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
       )
     } else {
-      setShuttleFee(new BigNumber(0))
-      setAxelarFee(new BigNumber(0))
+      setBridgeFeeAmount(new BigNumber(0))
+      setAmountAfterBridgeFee(new BigNumber(amount))
     }
   }
 

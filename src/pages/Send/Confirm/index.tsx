@@ -91,10 +91,8 @@ const Confirm = (): ReactElement => {
   // Computed data from Send data
   const gasFee = useRecoilValue(SendStore.gasFee)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
-  const shuttleFee = useRecoilValue(SendStore.shuttleFee)
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const axelarFee = useRecoilValue(SendStore.axelarFee)
-  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
+  const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const requestTxResult = useRecoilValue(SendProcessStore.requestTxResult)
@@ -141,58 +139,44 @@ const Confirm = (): ReactElement => {
               </StyledSecDText2>
             </StyledSecD>
           </StyledSpaceBetween>
-
-          {shuttleFee && bridgeUsed === BridgeType.shuttle && (
-            <StyledSpaceBetween style={{ marginBottom: 16 }}>
-              <StyledSecH>Shuttle fee (estimated)</StyledSecH>
-              <StyledSecD>
-                <StyledSecDText2>
-                  {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
-                </StyledSecDText2>
-              </StyledSecD>
-            </StyledSpaceBetween>
-          )}
-
-          {axelarFee && bridgeUsed === BridgeType.axelar && (
-            <StyledSpaceBetween style={{ marginBottom: 16 }}>
-              <StyledSecH>Axelar fee</StyledSecH>
-              <StyledSecD>
-                <StyledSecDText2>
-                  {`${formatBalance(axelarFee)} ${asset?.symbol}`}
-                </StyledSecDText2>
-              </StyledSecD>
-            </StyledSpaceBetween>
-          )}
         </StyledSection>
       )}
 
-      <StyledSection>
-        {bridgeUsed === BridgeType.shuttle ||
-        bridgeUsed === BridgeType.axelar ? (
-          <StyledSpaceBetween>
-            <StyledSecH>
-              After{' '}
-              {bridgeUsed === BridgeType.axelar
-                ? 'Axelar Fee'
-                : 'Shuttle Fee (estimated)'}
-            </StyledSecH>
-            <StyledSecD>
-              <StyledSecDText
-                isError={
-                  bridgeUsed === BridgeType.axelar
-                    ? amountAfterAxelarFee.isLessThanOrEqualTo(0)
-                    : amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                }
-              >
-                {`${formatBalance(
-                  bridgeUsed === BridgeType.axelar
-                    ? amountAfterAxelarFee
-                    : amountAfterShuttleFee
-                )} ${asset?.symbol}`}
-              </StyledSecDText>
-            </StyledSecD>
-          </StyledSpaceBetween>
-        ) : (
+      {bridgeUsed === BridgeType.shuttle ||
+      bridgeUsed === BridgeType.axelar ||
+      bridgeUsed === BridgeType.wormhole ? (
+        <>
+          <StyledSection>
+            <StyledSpaceBetween>
+              <StyledSecH>
+                {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)} fee
+                (estimated)
+              </StyledSecH>
+              <StyledSecD>
+                <StyledSecDText2>
+                  {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
+                </StyledSecDText2>
+              </StyledSecD>
+            </StyledSpaceBetween>
+          </StyledSection>
+          <StyledSection>
+            <StyledSpaceBetween>
+              <StyledSecH>
+                After {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)}{' '}
+                fee
+              </StyledSecH>
+              <StyledSecD>
+                <StyledSecDText
+                  isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
+                >
+                  {`${formatBalance(amountAfterBridgeFee)} ${asset?.symbol}`}
+                </StyledSecDText>
+              </StyledSecD>
+            </StyledSpaceBetween>
+          </StyledSection>
+        </>
+      ) : (
+        <StyledSection>
           <StyledSpaceBetween>
             <StyledSecH>Receive amount</StyledSecH>
             <StyledSecD>
@@ -201,8 +185,8 @@ const Confirm = (): ReactElement => {
               }`}</StyledSecDText>
             </StyledSecD>
           </StyledSpaceBetween>
-        )}
-      </StyledSection>
+        </StyledSection>
+      )}
 
       {requestTxResult?.success && (
         <StyledSection>

@@ -22,6 +22,13 @@ import { useDebouncedCallback } from 'use-debounce/lib'
 
 import { UTIL, NETWORK } from 'consts'
 
+import {
+  ChainId,
+  hexToUint8Array,
+  nativeToHexString,
+  transferFromEth,
+} from '@certusone/wormhole-sdk'
+
 import terraService from 'services/terraService'
 import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
@@ -114,6 +121,7 @@ const useSend = (): UseSendType => {
   const [fee, setFee] = useRecoilState(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
+  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
@@ -134,29 +142,51 @@ const useSend = (): UseSendType => {
     ],
     async (): Promise<AllowanceOfSelectedAssetType> => {
       if (
-        fromBlockChain !== BlockChainType.terra &&
+        NETWORK.isEtherBaseBlockChain(fromBlockChain) &&
         asset &&
         fromTokenAddress
       ) {
         const contract = getEtherBaseContract({ token: fromTokenAddress })
 
         if (contract && loginUser.provider) {
-          const signer = loginUser.provider.getSigner()
-          const withSigner = contract.connect(signer)
-          const etherVaultToken = etherVaultTokenList[asset.terraToken]
-          if (etherVaultToken) {
-            const res: BigNumber = await withSigner.allowance(
-              loginUser.address,
-              etherVaultToken.vault
-            )
+          if (bridgeUsed === BridgeType.shuttle) {
+            const signer = loginUser.provider.getSigner()
+            const withSigner = contract.connect(signer)
+            const etherVaultToken = etherVaultTokenList[asset.terraToken]
+            if (etherVaultToken) {
+              const res: BigNumber = await withSigner.allowance(
+                loginUser.address,
+                etherVaultToken.vault
+              )
 
-            return {
-              isNeedApprove: true,
-              allowance: UTIL.toBignumber(res.toString()),
+              return {
+                isNeedApprove: true,
+                allowance: UTIL.toBignumber(res.toString()),
+              }
+            }
+          } else if (bridgeUsed === BridgeType.wormhole) {
+            const signer = loginUser.provider.getSigner()
+            const withSigner = contract.connect(signer)
+            const wormholeBridge =
+              NETWORK.wormholeContracts[fromBlockChain][
+                isTestnet ? 'testnet' : 'mainnet'
+              ]?.tokenBridge
+
+            if (wormholeBridge) {
+              const res: BigNumber = await withSigner.allowance(
+                loginUser.address,
+                wormholeBridge
+              )
+
+              return {
+                isNeedApprove: true,
+                allowance: UTIL.toBignumber(res.toString()),
+              }
             }
           }
         }
       }
+
       return {
         isNeedApprove: false,
       }
@@ -368,7 +398,7 @@ const useSend = (): UseSendType => {
                           isTestnet ? 'testnet' : 'mainnet'
                         ]?.chainid || 0,
                       recipient: pubKey.toString('base64'),
-                      fee: '0',
+                      fee: bridgeFee.toString(),
                       nonce: Math.round(Math.round(Math.random() * 100000)),
                     },
                   }
@@ -387,7 +417,7 @@ const useSend = (): UseSendType => {
                       spender:
                         NETWORK.wormholeContracts[BlockChainType.terra][
                           isTestnet ? 'testnet' : 'mainnet'
-                        ]?.tokenBridge || 0,
+                        ]?.tokenBridge || '',
                     },
                   }
                 ),
@@ -411,7 +441,7 @@ const useSend = (): UseSendType => {
                           isTestnet ? 'testnet' : 'mainnet'
                         ]?.chainid || 0,
                       recipient: pubKey.toString('base64'),
-                      fee: '0',
+                      fee: bridgeFee.toString(),
                       nonce: Math.round(Math.round(Math.random() * 100000)),
                     },
                   }
@@ -535,6 +565,7 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // increase the allowance
   const approveTxFromEtherBase = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain !== BlockChainType.terra && asset && fromTokenAddress) {
       const contract = getEtherBaseContract({ token: fromTokenAddress })
@@ -544,35 +575,27 @@ const useSend = (): UseSendType => {
         const withSigner = contract.connect(signer)
 
         try {
-          switch (bridgeUsed) {
-            case BridgeType.shuttle:
-              const etherVaultToken = etherVaultTokenList[asset.terraToken]
-              const { hash } = await withSigner.approve(
-                etherVaultToken.vault,
-                sendAmount
-              )
-              await waitForEtherBaseTransaction({ hash })
-              refetchAllowanceOfSelectedAsset()
-              return { success: true, hash }
-
-            case BridgeType.axelar:
-              const axelarAddress = await getAxelarAddress(
-                toAddress,
-                fromBlockChain,
-                toBlockChain,
-                toTokenAddress as string
-              )
-              const result = await withSigner.transfer(
-                axelarAddress,
-                sendAmount
-              )
-              await waitForEtherBaseTransaction({ hash: result.hash })
-              refetchAllowanceOfSelectedAsset()
-              return { success: true, hash: result.hash }
-
-            case BridgeType.wormhole:
-              // TODO: handle wormhole txs
-              return { success: false }
+          if (bridgeUsed === BridgeType.shuttle) {
+            const etherVaultToken = etherVaultTokenList[asset.terraToken]
+            let { hash } = await withSigner.approve(
+              etherVaultToken.vault,
+              sendAmount
+            )
+            await waitForEtherBaseTransaction({ hash })
+            refetchAllowanceOfSelectedAsset()
+            return { success: true, hash }
+          } else if (bridgeUsed === BridgeType.wormhole) {
+            let { hash } = await withSigner.approve(
+              NETWORK.wormholeContracts[fromBlockChain][
+                isTestnet ? 'testnet' : 'mainnet'
+              ]?.tokenBridge || '',
+              sendAmount
+            )
+            await waitForEtherBaseTransaction({ hash })
+            refetchAllowanceOfSelectedAsset()
+            return { success: true, hash }
+          } else {
+            return { success: false }
           }
         } catch (error) {
           return handleTxErrorFromEtherBase(error)
@@ -647,8 +670,27 @@ const useSend = (): UseSendType => {
                 )
                 return { success: true, hash: result.hash }
               case BridgeType.wormhole:
-                // TODO: handle wormhole txs
-                return { success: false }
+                const receipt = await transferFromEth(
+                  NETWORK.wormholeContracts[fromBlockChain][
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  signer,
+                  fromTokenAddress,
+                  sendAmount,
+                  (NETWORK.wormholeContracts[toBlockChain][
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.chainid || 3) as ChainId,
+                  hexToUint8Array(
+                    nativeToHexString(
+                      toAddress,
+                      (NETWORK.wormholeContracts[toBlockChain][
+                        isTestnet ? 'testnet' : 'mainnet'
+                      ]?.chainid || 3) as ChainId
+                    ) || ''
+                  ),
+                  BigInt(bridgeFee.toNumber())
+                )
+                return { success: true, hash: receipt.transactionHash }
             }
           } catch (error) {
             return handleTxErrorFromEtherBase(error)

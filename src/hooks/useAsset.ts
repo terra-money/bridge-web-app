@@ -92,6 +92,7 @@ const useAsset = (): {
         balanceList = await getTerraBalances(balanceWhiteList)
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
         balanceList = await getEtherBalances({ whiteList })
+        console.log(balanceList)
       } else if (isIbcNetwork(fromBlockChain)) {
         balanceList = await getKeplrBalances({ whiteList })
       }
@@ -120,7 +121,8 @@ const useAsset = (): {
 
       return fromBlockChain === BlockChainType.terra ||
         bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar
+        bridgeUsed === BridgeType.axelar ||
+        bridgeUsed === BridgeType.wormhole
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
