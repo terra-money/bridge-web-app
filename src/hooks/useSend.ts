@@ -365,7 +365,6 @@ const useSend = (): UseSendType => {
             Buffer.alloc(12),
             Buffer.from(toAddress.substring(2), 'hex'),
           ])
-          console.log(pubKey)
           return UTIL.isNativeDenom(asset.terraToken)
             ? [
                 new MsgExecuteContract(

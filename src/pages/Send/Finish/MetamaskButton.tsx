@@ -31,12 +31,14 @@ interface MetamaskTokenProps {
   name: string
   imgUrl: string
   token: string
+  decimals: number
 }
 
 export default function MetamaskButton({
   name,
   imgUrl,
   token,
+  decimals,
 }: MetamaskTokenProps): ReactElement {
   return (
     <StyledButton
@@ -48,7 +50,7 @@ export default function MetamaskButton({
             options: {
               address: token,
               symbol: name,
-              decimals: 18,
+              decimals,
               image: imgUrl,
             },
           },

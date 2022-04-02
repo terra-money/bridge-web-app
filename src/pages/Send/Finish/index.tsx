@@ -128,6 +128,12 @@ const Finish = (): ReactElement => {
                   name={asset?.symbol || ''}
                   token={toTokenAddress}
                   imgUrl={asset?.logoURI || ''}
+                  decimals={
+                    bridgeUsed === BridgeType.wormhole ||
+                    bridgeUsed === BridgeType.axelar
+                      ? 6
+                      : 18
+                  }
                 />
               )
             }

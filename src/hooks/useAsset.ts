@@ -92,7 +92,6 @@ const useAsset = (): {
         balanceList = await getTerraBalances(balanceWhiteList)
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
         balanceList = await getEtherBalances({ whiteList })
-        console.log(balanceList)
       } else if (isIbcNetwork(fromBlockChain)) {
         balanceList = await getKeplrBalances({ whiteList })
       }

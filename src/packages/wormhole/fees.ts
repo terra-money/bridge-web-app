@@ -18,8 +18,26 @@ export default async function getWormholeFees(
       feeUsd = 0.5
       break
     case BlockChainType.ethereum:
-      // TODO: calculate ethereum fees
-      feeUsd = 40
+      // fetch eth price
+      const {
+        data: { ethereum },
+      } = await axios.get(
+        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+      )
+      // eth gas price from alchemy
+      const {
+        data: { result: gas_price },
+      } = await axios.post(
+        'https://eth-mainnet.alchemyapi.io/v2/_9jvtNUzoLW1EHR380VZP7GUZaqXvmG3',
+        {
+          jsonrpc: '2.0',
+          method: 'eth_gasPrice',
+          params: [],
+          id: 1,
+        }
+      )
+
+      feeUsd = ((280_000 * gas_price) / 1e18) * ethereum.usd
   }
 
   // get transferred token exchange rate
