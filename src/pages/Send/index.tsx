@@ -56,7 +56,7 @@ const StyledForm = styled.div`
   position: relative;
   background-color: ${COLOR.black};
   padding: 60px;
-  border-radius: 1em;
+  border-radius: 2em;
   @media ${STYLE.media.mobile} {
     border-radius: 0;
     padding: 38px 24px 20px;
@@ -118,7 +118,7 @@ const Send = (): ReactElement => {
         )
       default:
         return (
-          <div style={{ marginBottom: 60 }}>
+          <div style={{ marginBottom: 100 }}>
             <BlockChainNetwork />
           </div>
         )

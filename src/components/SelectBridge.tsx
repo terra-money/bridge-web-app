@@ -52,7 +52,7 @@ const SelectBridge = (): ReactElement => {
               backgroundColor: COLOR.primary,
               color: COLOR.darkGray,
               padding: '.5rem .8rem',
-              marginTop: window.innerWidth > 450 ? '.6rem' : 0,
+              marginTop: window.innerWidth > 450 ? '.3rem' : 0,
             }}
             selectedTextStyle={{
               fontSize: '12px',

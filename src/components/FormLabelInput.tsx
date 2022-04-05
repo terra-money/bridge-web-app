@@ -38,7 +38,7 @@ const StyledLable = styled.label`
   font-style: normal;
   line-height: normal;
   letter-spacing: -0.37px;
-  color: #a3a3a3;
+  color: #737373;
   font-size: 16px;
   position: absolute;
   pointer-events: none;

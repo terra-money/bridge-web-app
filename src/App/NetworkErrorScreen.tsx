@@ -25,7 +25,7 @@ const StyledContainer = styled(Container)`
   background-color: ${COLOR.darkGray};
   max-width: 640px;
   padding: 40px;
-  border-radius: 1em;
+  border-radius: 2em;
   @media (max-width: 1199px) {
     padding: 40px;
   }

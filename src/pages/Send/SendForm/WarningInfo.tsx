@@ -19,8 +19,8 @@ const StyledWarning = styled.div`
   border-radius: 4px;
   padding: 16px 20px;
   margin-bottom: 15px;
-  background-color: #eca44d22;
-  border: 1px solid #eca44d40;
+  background-color: #eca44d18;
+  border: 1px solid #eca44d18;
   white-space: pre-wrap;
   font-size: 12px;
 `
@@ -41,8 +41,8 @@ const StyledInfo = styled.div`
   border-radius: 4px;
   padding: 16px 20px;
   margin-bottom: 15px;
-  background-color: #727e8b22;
-  border: 1px solid #727e8b40;
+  background-color: #727e8b18;
+  border: 1px solid #727e8b18;
   white-space: pre-wrap;
   font-size: 12px;
 `

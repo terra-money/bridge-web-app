@@ -20,7 +20,7 @@ import useUpdateBridgeType from 'hooks/useUpdateBridgeType'
 
 const StyledNetworkBox = styled.div`
   display: flex;
-  padding: 0 50px;
+  padding: 0 40px;
 
   @media (max-width: 575px) {
     padding: 0;

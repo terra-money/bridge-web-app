@@ -16,7 +16,7 @@ const StyledContainer = styled(Row)`
   cursor: pointer;
   padding: 3px 8px;
   border-radius: 10px;
-  background-color: #202020;
+  background-color: #2e2e2e;
   align-items: center;
   width: auto;
 `

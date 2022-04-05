@@ -24,6 +24,7 @@ const useNetwork = (): {
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
   const whiteList = useWhiteList()
 
+  // get the explorer link based on the current chain
   const getScannerLink = ({
     address,
     type,

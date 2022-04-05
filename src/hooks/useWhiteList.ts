@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil'
 import { BlockChainType, BridgeType } from 'types'
 import NetworkStore from 'store/NetworkStore'
 
+// full whitelist
 const whitelist: Record<
   BlockChainType,
   Record<string, Record<string, string>>
@@ -302,6 +303,7 @@ const testnetWhitelist: Record<
   [BlockChainType.terra]: {},
 }
 
+// return current whitelist
 export default function useWhiteList(): Record<string, string> {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)

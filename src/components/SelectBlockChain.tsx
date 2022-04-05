@@ -117,7 +117,7 @@ const SelectBlockChain = ({
       </StyledCircle>
 
       {status === ProcessStatus.Input && (
-        <div style={{ position: 'absolute', width: '100%', marginTop: -20 }}>
+        <div style={{ position: 'absolute', width: '100%', marginTop: -24 }}>
           {setBlockChain && (
             <FormSelect
               icons={true}

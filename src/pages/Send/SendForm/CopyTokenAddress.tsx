@@ -23,7 +23,7 @@ const CopyTokenAddress = (): ReactElement => {
           }}
         >
           <Text
-            style={{ color: '#737373', fontSize: 11 }}
+            style={{ color: '#484848', fontSize: 11 }}
           >{`Copy ${asset.symbol} token address`}</Text>
           {fromTokenAddress && (
             <View style={{ paddingLeft: 4 }}>

@@ -283,6 +283,7 @@ const useSend = (): UseSendType => {
     return []
   }
 
+  // get terra msgs
   const getTerraMsgs = async (
     isSimulation?: boolean
   ): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
@@ -468,6 +469,7 @@ const useSend = (): UseSendType => {
     return []
   }
 
+  // sign Terra tx
   const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
     let errorMessage
     const memoOrToAddress =
@@ -564,7 +566,7 @@ const useSend = (): UseSendType => {
     }
   }
 
-  // increase the allowance
+  // increase allowance
   const approveTxFromEtherBase = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain !== BlockChainType.terra && asset && fromTokenAddress) {
       const contract = getEtherBaseContract({ token: fromTokenAddress })
@@ -607,7 +609,7 @@ const useSend = (): UseSendType => {
     }
   }
 
-  // Can't send tx between Ethereum <-> BSC
+  // Send tx from EVM chain to Terra
   const submitRequestTxFromEtherBase =
     async (): Promise<RequestTxResultType> => {
       const terraAddress = (await getAddress(toAddress)) || toAddress
@@ -622,14 +624,13 @@ const useSend = (): UseSendType => {
           const signer = loginUser.provider.getSigner()
           const withSigner = contract.connect(signer)
 
-          const isTerra = toBlockChain === BlockChainType.terra
           const decoded = decodeTerraAddressOnEtherBase(terraAddress)
           try {
             switch (bridgeUsed) {
+              // with shuttle
               case BridgeType.shuttle:
                 const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
-                // TODO: cleanup can't send ETH -> ETH
                 if (
                   etherVaultToken &&
                   fromBlockChain === BlockChainType.ethereum
@@ -639,23 +640,24 @@ const useSend = (): UseSendType => {
                   })!
                   const vaultContractSigner = vaultContract.connect(signer)
 
-                  const tx = isTerra
-                    ? vaultContractSigner?.burn(
-                        sendAmount,
-                        decoded.padEnd(66, '0')
-                      )
-                    : withSigner.transfer(terraAddress, sendAmount)
+                  const tx = vaultContractSigner?.burn(
+                    sendAmount,
+                    decoded.padEnd(66, '0')
+                  )
 
                   const { hash } = await tx
                   return { success: true, hash }
                 } else {
-                  const tx = isTerra
-                    ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
-                    : withSigner.transfer(terraAddress, sendAmount)
+                  const tx = withSigner.burn(
+                    sendAmount,
+                    decoded.padEnd(66, '0')
+                  )
 
                   const { hash } = await tx
                   return { success: true, hash }
                 }
+
+              // with axelar
               case BridgeType.axelar:
                 const axelarAddress = await getAxelarAddress(
                   toAddress,
@@ -668,6 +670,8 @@ const useSend = (): UseSendType => {
                   sendAmount
                 )
                 return { success: true, hash: result.hash }
+
+              // with wormhole
               case BridgeType.wormhole:
                 const receipt = await transferFromEth(
                   NETWORK.wormholeContracts[fromBlockChain][
@@ -702,6 +706,16 @@ const useSend = (): UseSendType => {
       }
     }
 
+  const waitForEtherBaseTransaction = async ({
+    hash,
+  }: {
+    hash: string
+  }): Promise<EtherBaseReceiptResultType | undefined> => {
+    if (fromBlockChain !== BlockChainType.terra && asset?.terraToken) {
+      return loginUser.provider?.waitForTransaction(hash)
+    }
+  }
+
   const handleTxErrorFromIbc = (error: any): RequestTxResultType => {
     let errorMessage = _.toString(error)
     return {
@@ -710,6 +724,7 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // IBC transfer with Keplr
   const submitRequestTxFromIbc = async (): Promise<RequestTxResultType> => {
     if (
       isIbcNetwork(fromBlockChain) &&
@@ -773,6 +788,7 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // get tx based on the fromBlockChain
   const submitRequestTx = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain === BlockChainType.terra) {
       return submitRequestTxFromTerra()
@@ -781,16 +797,6 @@ const useSend = (): UseSendType => {
       return submitRequestTxFromIbc()
     }
     return submitRequestTxFromEtherBase()
-  }
-
-  const waitForEtherBaseTransaction = async ({
-    hash,
-  }: {
-    hash: string
-  }): Promise<EtherBaseReceiptResultType | undefined> => {
-    if (fromBlockChain !== BlockChainType.terra && asset?.terraToken) {
-      return loginUser.provider?.waitForTransaction(hash)
-    }
   }
 
   return {

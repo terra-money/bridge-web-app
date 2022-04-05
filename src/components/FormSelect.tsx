@@ -26,7 +26,7 @@ const StyledDropdown = styled(Dropdown)`
 
 const StyledDropdownItem = styled(StyledDropdown.Item)`
   border-top: solid 1px #292929;
-  padding: 8px 10px;
+  padding: 13px 12px 12px 15px;
   font-size: 13px;
   :hover {
     background-color: #323842;
@@ -113,8 +113,8 @@ const StyledDropdownMenu = styled(StyledDropdown.Menu)`
 
 const BlockchainIcon = styled.img`
   display: inline;
-  height: 16px;
-  width: 16px;
+  height: 18px;
+  width: 18px;
   object-fit: contain;
 `
 
@@ -136,7 +136,7 @@ const FormSelect = <T,>({
         size={size}
         style={containerStyle}
       >
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           {icons && (
             <BlockchainIcon
               src={
@@ -149,7 +149,14 @@ const FormSelect = <T,>({
             />
           )}
 
-          <Text style={{ ...selectedTextStyle, marginLeft: icons ? 8 : 0 }}>
+          <Text
+            style={{
+              ...selectedTextStyle,
+              marginLeft: icons ? 8 : 0,
+              fontWeight: 500,
+              lineHeight: 1.5,
+            }}
+          >
             {optionList.find((x) => x.value === selectedValue)?.label}
           </Text>
         </div>
@@ -175,7 +182,7 @@ const FormSelect = <T,>({
               onSelect(option.value)
             }}
           >
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               {icons && (
                 <BlockchainIcon
                   src={
@@ -192,7 +199,13 @@ const FormSelect = <T,>({
                   ...selectedTextStyle,
                   marginLeft: icons ? 8 : 0,
                   marginRight: 4,
-                  color: option.isDisabled ? COLOR.blueGray : COLOR.white,
+                  color: option.isDisabled
+                    ? COLOR.blueGray
+                    : icons
+                    ? '#B9B9B9'
+                    : COLOR.white,
+                  fontWeight: 500,
+                  lineHeight: 1.5,
                 }}
               >
                 {option.label}
