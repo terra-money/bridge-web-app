@@ -21,6 +21,7 @@ const useAsset = (): {
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const assetList = useRecoilValue(ContractStore.assetList)
@@ -51,7 +52,7 @@ const useAsset = (): {
             fromBlockChain === BlockChainType.terra
               ? asset.terraToken
               : whiteList[asset.terraToken]
-          return whiteList[asset.terraToken]
+          return whiteList[asset.terraToken] || fromBlockChain === toBlockChain
             ? [
                 ...arr,
                 {
@@ -67,7 +68,7 @@ const useAsset = (): {
     return _.reduce<AssetType, AssetType[]>(
       assetList,
       (arr, asset) => {
-        return whiteList[asset.terraToken]
+        return whiteList[asset.terraToken] || fromBlockChain === toBlockChain
           ? [
               ...arr,
               {
@@ -87,8 +88,12 @@ const useAsset = (): {
         let balanceWhiteList = _.map(terraWhiteList, (token) => ({ token }))
 
         balanceWhiteList = balanceWhiteList.filter(({ token }): boolean => {
-          return token.startsWith('terra1') && !!whiteList[token]
+          return (
+            token.startsWith('terra1') &&
+            (!!whiteList[token] || fromBlockChain === toBlockChain)
+          )
         })
+
         balanceList = await getTerraBalances(balanceWhiteList)
       } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
         balanceList = await getEtherBalances({ whiteList })
@@ -104,12 +109,17 @@ const useAsset = (): {
     })
 
     const pairList = _.map(fromList, (item) => {
-      const disabled = _.isEmpty(whiteList[item.terraToken])
+      const disabled =
+        _.isEmpty(whiteList[item.terraToken]) && fromBlockChain !== toBlockChain
+      console.log(disabled)
       return {
         ...item,
         disabled,
       }
     }).filter((item) => !item.disabled)
+
+    console.log(pairList)
+
     setAssetList(pairList)
   }
 
