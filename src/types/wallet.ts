@@ -1,9 +1,4 @@
-import {
-  isBrowser,
-  isChrome,
-  isEdgeChromium,
-  isFirefox,
-} from 'react-device-detect'
+import { isBrowser, isChrome, isEdgeChromium } from 'react-device-detect'
 
 export enum WalletEnum {
   TerraExtension = 'TerraExtension',
@@ -30,7 +25,7 @@ export const WalletSupportBrowser: Record<
   { isSupport: boolean; errorMessage: string }
 > = {
   TerraExtension: {
-    isSupport: isBrowser && (isChrome || isEdgeChromium || isFirefox),
+    isSupport: isBrowser && (isChrome || isEdgeChromium),
     errorMessage: 'Available for desktop Chrome.',
   },
   // support all browser

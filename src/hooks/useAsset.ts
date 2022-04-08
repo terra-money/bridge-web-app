@@ -111,14 +111,11 @@ const useAsset = (): {
     const pairList = _.map(fromList, (item) => {
       const disabled =
         _.isEmpty(whiteList[item.terraToken]) && fromBlockChain !== toBlockChain
-      console.log(disabled)
       return {
         ...item,
         disabled,
       }
     }).filter((item) => !item.disabled)
-
-    console.log(pairList)
 
     setAssetList(pairList)
   }
