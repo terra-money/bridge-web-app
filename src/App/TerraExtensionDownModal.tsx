@@ -1,6 +1,12 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilState } from 'recoil'
+import {
+  isBrowser,
+  isChrome,
+  isEdgeChromium,
+  isFirefox,
+} from 'react-device-detect'
 
 import { NETWORK } from 'consts'
 
@@ -35,7 +41,7 @@ const TerraExtensionDownModal = (): ReactElement => {
       }}
     >
       <StyledContainer>
-        {!navigator.userAgent.includes('Chrome') ? (
+        {!(isBrowser && (isChrome || isEdgeChromium || isFirefox)) ? (
           <div style={{ textAlign: 'center' }}>
             <Text style={{ fontSize: 18 }}>
               {'Bridge currently\nonly supports desktop Chrome'}
@@ -57,7 +63,13 @@ const TerraExtensionDownModal = (): ReactElement => {
         ) : (
           <>
             <div>
-              <ExtLink href={NETWORK.TERRA_EXTENSION}>
+              <ExtLink
+                href={
+                  isFirefox
+                    ? NETWORK.TERRA_EXTENSION_FIREFOX
+                    : NETWORK.TERRA_EXTENSION
+                }
+              >
                 <Text style={{ color: 'inherit', fontSize: 18 }}>
                   Download Terra Station Extension
                 </Text>

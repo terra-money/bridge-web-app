@@ -66,7 +66,11 @@ const ETH_CHAINID = {
 const INFURAID =
   process.env.REACT_APP_INFURAID || 'a2efa9feabf84deb8f4dc696adf8f360'
 
-const TERRA_EXTENSION = 'https://terra.money/extension'
+const TERRA_EXTENSION =
+  'https://chrome.google.com/webstore/detail/terra-station-wallet/aiifbnbfobpmeekipheeijimdpnlpgpp'
+const TERRA_EXTENSION_FIREFOX =
+  'https://addons.mozilla.org/en-US/firefox/addon/terra-station-wallet/'
+
 const BSC_EXTENSION =
   'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp'
 const KEPLR_EXTENSION =
@@ -123,6 +127,7 @@ export default {
   INFURAID,
   TERRA_ASSETS_URL,
   TERRA_EXTENSION,
+  TERRA_EXTENSION_FIREFOX,
   BSC_EXTENSION,
   KEPLR_EXTENSION,
   CHROME,
