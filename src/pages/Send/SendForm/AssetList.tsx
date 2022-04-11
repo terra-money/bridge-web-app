@@ -198,10 +198,10 @@ const AssetList = ({
       if (selectedAsset) {
         setAsset(
           assetList.find((x) => x.terraToken === selectedAsset.terraToken) ||
-            assetList[1]
+            assetList.find((x) => x.terraToken === 'uusd')
         )
       } else {
-        setAsset(assetList[1])
+        setAsset(assetList.find((x) => x.terraToken === 'uusd'))
       }
     }
   }, [assetList])
