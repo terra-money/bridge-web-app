@@ -13,11 +13,9 @@ const useNetwork = (): {
   fromTokenAddress?: string
   toTokenAddress?: string
 } => {
-  const FINDER = 'https://finder.terra.money'
   const asset = useRecoilValue(SendStore.asset)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
-  const terraExt = useRecoilValue(NetworkStore.terraExt)
   const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
@@ -32,8 +30,10 @@ const useNetwork = (): {
     address: string
     type: 'tx' | 'address'
   }): string => {
-    if (fromBlockChain === BlockChainType.terra && terraExt) {
-      return `${FINDER}/${terraExt.chainID}/${type}/${address}`
+    if (fromBlockChain === BlockChainType.terra) {
+      return `https://terrasco.pe/${
+        isTestnet ? 'testnet' : 'mainnet'
+      }/${type}/${address}`
     } else if (etherBaseExt) {
       let subdomain = ''
 
@@ -59,6 +59,14 @@ const useNetwork = (): {
         return type === 'tx'
           ? `https://www.mintscan.io/cosmos/txs/${address}`
           : `https://www.mintscan.io/cosmos/account/${address}`
+      } else if (fromBlockChain === BlockChainType.polygon) {
+        return `https://polygonscan.com/${type}/${address}`
+      } else if (fromBlockChain === BlockChainType.avalanche) {
+        return `https://snowtrace.io/${type}/${address}`
+      } else if (fromBlockChain === BlockChainType.fantom) {
+        return `https://ftmscan.com/${type}/${address}`
+      } else if (fromBlockChain === BlockChainType.moonbeam) {
+        return `https://moonscan.io/${type}/${address}`
       }
       subdomain = isTestnet ? `${etherBaseExt.name}.` : ''
       return `https://${subdomain}etherscan.io/${type}/${address}`
