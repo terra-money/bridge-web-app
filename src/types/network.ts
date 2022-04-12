@@ -29,11 +29,11 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.axelar]: [BridgeType.ibc],
   [BlockChainType.cosmos]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [
-    BridgeType.wormhole,
     BridgeType.shuttle,
+    BridgeType.wormhole,
     BridgeType.axelar,
   ],
-  [BlockChainType.bsc]: [BridgeType.wormhole, BridgeType.shuttle],
+  [BlockChainType.bsc]: [BridgeType.shuttle, BridgeType.wormhole],
   [BlockChainType.hmy]: [BridgeType.shuttle],
   [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.fantom]: [BridgeType.wormhole, BridgeType.axelar],
