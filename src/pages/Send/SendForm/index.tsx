@@ -10,7 +10,6 @@ import { ASSET, COLOR } from 'consts'
 
 import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
-import { AssetNativeDenomEnum } from 'types/asset'
 import { AxelarAPI } from 'packages/axelar/axelarAPI'
 import { Text, Row } from 'components'
 import FormLabel from 'components/FormLabel'
@@ -125,7 +124,6 @@ const SendForm = ({
 
   // Computed data from Send data
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
-  const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
   const setAmountAfterBridgeFee = useSetRecoilState(
     SendStore.amountAfterBridgeFee
@@ -208,8 +206,7 @@ const SendForm = ({
       setAmountAfterBridgeFee(
         computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
       )
-    }
-    if (bridgeUsed === BridgeType.wormhole) {
+    } else if (bridgeUsed === BridgeType.wormhole) {
       const wormholeFee = new BigNumber(
         await getWormholeFees(toBlockChain, asset?.terraToken || '')
       )
@@ -231,12 +228,8 @@ const SendForm = ({
     const sendDataResult = await validateSendData()
     setValidationResult(sendDataResult)
 
-    const ableToGetFeeInfo =
-      isLoggedIn &&
-      fromBlockChain === BlockChainType.terra &&
-      amount &&
-      feeDenom &&
-      toAddress
+    const ableToGetFeeInfo = isLoggedIn && amount && toAddress
+
     if (asset?.terraToken && ableToGetFeeInfo) {
       if (sendDataResult.isValid) {
         // get terra Send Fee Info
@@ -254,7 +247,7 @@ const SendForm = ({
     return (): void => {
       dbcGetFeeInfoWithValidation.cancel()
     }
-  }, [amount, toAddress, toBlockChain, memo, asset, bridgeUsed])
+  }, [amount, toAddress, toBlockChain, fromBlockChain, memo, asset, bridgeUsed])
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })
