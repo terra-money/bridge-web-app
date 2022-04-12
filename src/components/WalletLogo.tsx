@@ -2,10 +2,10 @@ import { ComponentType, ReactElement, SVGAttributes } from 'react'
 
 import { COLOR } from 'consts'
 
-import TerraPng from 'images/Terra.png'
-import BinancePng from 'images/BinanceChain.png'
-import MetamaskPng from 'images/Metamask.png'
-import WalletConnectPng from 'images/WalletConnect.png'
+import TerraSvg from 'images/terra.svg'
+import BinanceSvg from 'images/bsc.svg'
+import MetamaskSvg from 'images/metamask.svg'
+import WalletConnectSvg from 'images/walletconnect.svg'
 import CoinbaseWalletPng from 'images/CoinbaseWallet.png'
 import KeplrPng from 'images/Keplr.png'
 import { WalletEnum } from 'types/wallet'
@@ -17,11 +17,11 @@ interface IconProps extends SVGAttributes<SVGElement> {
 }
 
 const walletLogo: Record<WalletEnum, string | ComponentType<IconProps>> = {
-  [WalletEnum.TerraExtension]: TerraPng,
-  [WalletEnum.Binance]: BinancePng,
-  [WalletEnum.MetaMask]: MetamaskPng,
-  [WalletEnum.WalletConnect]: WalletConnectPng,
-  [WalletEnum.TerraWalletConnect]: WalletConnectPng,
+  [WalletEnum.TerraExtension]: TerraSvg,
+  [WalletEnum.Binance]: BinanceSvg,
+  [WalletEnum.MetaMask]: MetamaskSvg,
+  [WalletEnum.WalletConnect]: WalletConnectSvg,
+  [WalletEnum.TerraWalletConnect]: WalletConnectSvg,
   [WalletEnum.CoinbaseWallet]: CoinbaseWalletPng,
   [WalletEnum.Keplr]: KeplrPng,
 }

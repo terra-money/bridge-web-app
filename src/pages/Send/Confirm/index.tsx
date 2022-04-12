@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 
-import { ASSET, UTIL, COLOR, NETWORK } from 'consts'
+import { ASSET, UTIL, COLOR } from 'consts'
 
 import { ExtLink, Text } from 'components'
 import FormImage from 'components/FormImage'
@@ -12,7 +12,7 @@ import SendStore from 'store/SendStore'
 
 import useAsset from 'hooks/useAsset'
 
-import { BlockChainType, isAxelarNetwork } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import SendProcessStore from 'store/SendProcessStore'
 import useNetwork from 'hooks/useNetwork'
@@ -91,10 +91,9 @@ const Confirm = (): ReactElement => {
   // Computed data from Send data
   const gasFee = useRecoilValue(SendStore.gasFee)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
-  const shuttleFee = useRecoilValue(SendStore.shuttleFee)
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const axelarFee = useRecoilValue(SendStore.axelarFee)
-  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
+  const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const requestTxResult = useRecoilValue(SendProcessStore.requestTxResult)
 
@@ -140,59 +139,44 @@ const Confirm = (): ReactElement => {
               </StyledSecDText2>
             </StyledSecD>
           </StyledSpaceBetween>
-
-          {shuttleFee && NETWORK.isEtherBaseBlockChain(toBlockChain) && (
-            <StyledSpaceBetween style={{ marginBottom: 16 }}>
-              <StyledSecH>Shuttle fee (estimated)</StyledSecH>
-              <StyledSecD>
-                <StyledSecDText2>
-                  {`${formatBalance(shuttleFee)} ${asset?.symbol}`}
-                </StyledSecDText2>
-              </StyledSecD>
-            </StyledSpaceBetween>
-          )}
-
-          {axelarFee && isAxelarNetwork(toBlockChain) && (
-            <StyledSpaceBetween style={{ marginBottom: 16 }}>
-              <StyledSecH>Axelar fee</StyledSecH>
-              <StyledSecD>
-                <StyledSecDText2>
-                  {`${formatBalance(axelarFee)} ${asset?.symbol}`}
-                </StyledSecDText2>
-              </StyledSecD>
-            </StyledSpaceBetween>
-          )}
         </StyledSection>
       )}
 
-      <StyledSection>
-        {(fromBlockChain === BlockChainType.terra &&
-          NETWORK.isEtherBaseBlockChain(toBlockChain)) ||
-        isAxelarNetwork(toBlockChain) ? (
-          <StyledSpaceBetween>
-            <StyledSecH>
-              After{' '}
-              {isAxelarNetwork(toBlockChain)
-                ? 'Axelar Fee'
-                : 'Shuttle Fee (estimated)'}
-            </StyledSecH>
-            <StyledSecD>
-              <StyledSecDText
-                isError={
-                  isAxelarNetwork(toBlockChain)
-                    ? amountAfterAxelarFee.isLessThanOrEqualTo(0)
-                    : amountAfterShuttleFee.isLessThanOrEqualTo(0)
-                }
-              >
-                {`${formatBalance(
-                  isAxelarNetwork(toBlockChain)
-                    ? amountAfterAxelarFee
-                    : amountAfterShuttleFee
-                )} ${asset?.symbol}`}
-              </StyledSecDText>
-            </StyledSecD>
-          </StyledSpaceBetween>
-        ) : (
+      {bridgeUsed === BridgeType.shuttle ||
+      bridgeUsed === BridgeType.axelar ||
+      bridgeUsed === BridgeType.wormhole ? (
+        <>
+          <StyledSection>
+            <StyledSpaceBetween>
+              <StyledSecH>
+                {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)} fee
+                (estimated)
+              </StyledSecH>
+              <StyledSecD>
+                <StyledSecDText2>
+                  {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
+                </StyledSecDText2>
+              </StyledSecD>
+            </StyledSpaceBetween>
+          </StyledSection>
+          <StyledSection>
+            <StyledSpaceBetween>
+              <StyledSecH>
+                After {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)}{' '}
+                fee
+              </StyledSecH>
+              <StyledSecD>
+                <StyledSecDText
+                  isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
+                >
+                  {`${formatBalance(amountAfterBridgeFee)} ${asset?.symbol}`}
+                </StyledSecDText>
+              </StyledSecD>
+            </StyledSpaceBetween>
+          </StyledSection>
+        </>
+      ) : (
+        <StyledSection>
           <StyledSpaceBetween>
             <StyledSecH>Receive amount</StyledSecH>
             <StyledSecD>
@@ -201,8 +185,8 @@ const Confirm = (): ReactElement => {
               }`}</StyledSecDText>
             </StyledSecD>
           </StyledSpaceBetween>
-        )}
-      </StyledSection>
+        </StyledSection>
+      )}
 
       {requestTxResult?.success && (
         <StyledSection>

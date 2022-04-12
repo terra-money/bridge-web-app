@@ -36,17 +36,38 @@ const Footer = (): ReactElement => {
       title: 'DOCS',
     },
     {
+      href: `https://discord.gg/EuKCeGFb93`,
+      title: 'Discord',
+    },
+    {
       href: `https://github.com/terra-project/bridge-web-app`,
       title: 'Github',
     },
   ]
   return (
     <StyledContainer>
-      <Row style={{ justifyContent: 'space-between', flex: 1 }}>
+      <Row
+        style={{
+          justifyContent: window.innerWidth > 575 ? 'space-between' : 'center',
+          flex: 1,
+          display: window.innerWidth > 575 ? 'flex' : 'block',
+          textAlign: window.innerWidth > 575 ? 'initial' : 'center',
+          alignItems: 'center',
+          marginTop: -5,
+        }}
+      >
         <View>
           <StyledText>© Terraform Labs.</StyledText>
         </View>
-        <Row>
+        <Row
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            marginLeft: -30,
+            marginTop: window.innerWidth > 575 ? 0 : 12,
+          }}
+        >
           {community.map(
             ({ href, title }) =>
               href && (
@@ -54,7 +75,7 @@ const Footer = (): ReactElement => {
                   <ExtLink
                     href={href}
                     style={{
-                      paddingLeft: 30,
+                      paddingLeft: window.innerWidth > 575 ? 30 : 30,
                       fontSize: 13,
                       textTransform: 'uppercase',
                     }}

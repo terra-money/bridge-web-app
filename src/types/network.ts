@@ -1,5 +1,3 @@
-import { AssetNativeDenomEnum } from './asset'
-
 export enum BlockChainType {
   terra = 'terra',
   ethereum = 'ethereum',
@@ -12,7 +10,44 @@ export enum BlockChainType {
   avalanche = 'avalanche',
   fantom = 'fantom',
   cosmos = 'cosmos',
+  polygon = 'polygon',
+  moonbeam = 'moonbeam',
   //cro = 'cronos',
+}
+
+export enum BridgeType {
+  shuttle = 'shuttle',
+  wormhole = 'wormhole',
+  ibc = 'ibc',
+  axelar = 'axelar',
+}
+
+export const availableBridges: Record<BlockChainType, BridgeType[]> = {
+  [BlockChainType.osmo]: [BridgeType.ibc],
+  [BlockChainType.scrt]: [BridgeType.ibc],
+  [BlockChainType.inj]: [BridgeType.ibc],
+  [BlockChainType.axelar]: [BridgeType.ibc],
+  [BlockChainType.cosmos]: [BridgeType.ibc],
+  [BlockChainType.ethereum]: [
+    BridgeType.shuttle,
+    BridgeType.wormhole,
+    BridgeType.axelar,
+  ],
+  [BlockChainType.bsc]: [BridgeType.shuttle, BridgeType.wormhole],
+  [BlockChainType.hmy]: [BridgeType.shuttle],
+  [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.fantom]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.polygon]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.moonbeam]: [BridgeType.axelar],
+  [BlockChainType.terra]: [],
+}
+
+export function getDefaultBridge(
+  from: BlockChainType,
+  to: BlockChainType
+): BridgeType | undefined {
+  const chain = from === BlockChainType.terra ? to : from
+  return availableBridges[chain][0]
 }
 
 export type ShuttleNetwork =
@@ -28,8 +63,6 @@ export type IbcNetwork =
   | BlockChainType.cosmos
 //| BlockChainType.cro
 
-export type AxelarNetwork = BlockChainType.avalanche | BlockChainType.fantom
-
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
     BlockChainType.osmo,
@@ -39,10 +72,6 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.cosmos,
     //  BlockChainType.cro,
   ].includes(network)
-}
-
-export function isAxelarNetwork(network: BlockChainType): boolean {
-  return [BlockChainType.avalanche, BlockChainType.fantom].includes(network)
 }
 
 // channels Terra -> IBC chain
@@ -92,31 +121,6 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   //[BlockChainType.cro]: '',
 }
 
-export const allowedCoins: Record<IbcNetwork, string[]> = {
-  [BlockChainType.osmo]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-    AssetNativeDenomEnum.ukrw,
-    'ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B',
-  ],
-  [BlockChainType.scrt]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-    'ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09',
-  ],
-  [BlockChainType.inj]: [AssetNativeDenomEnum.uusd, AssetNativeDenomEnum.uluna],
-  [BlockChainType.axelar]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-  ],
-  [BlockChainType.cosmos]: [
-    AssetNativeDenomEnum.uusd,
-    AssetNativeDenomEnum.uluna,
-    'ibc/18ABA66B791918D51D33415DA173632735D830E2E77E63C91C11D3008CFD5262',
-  ],
-  //[BlockChainType.cro]: ['uusd', 'uluna'],
-}
-
 export interface ExtTerraNetwork {
   name: TerraNetworkEnum
   chainID: string
@@ -143,17 +147,5 @@ export enum TerraAssetsPathEnum {
   cw20_pairs = '/cw20/pairs.json',
   cw20_tokens = '/cw20/tokens.json',
 
-  shuttle_eth = '/shuttle/eth.json',
-  shuttle_bsc = '/shuttle/bsc.json',
-  shuttle_hmy = '/shuttle/hmy.json',
-
   ibc_tokens = '/ibc/tokens.json',
-  osmo_tokens = '/ibc/osmo.json',
-  scrt_tokens = '/ibc/scrt.json',
-  axelar_tokens = '/ibc/axelar.json',
-  inj_tokens = '/ibc/inj.json',
-  cosmos_tokens = '/ibc/cosmos.json',
-
-  avalanche_tokens = '/ibc/axelar/avalanche.json',
-  fantom_tokens = '/ibc/axelar/fantom.json',
 }

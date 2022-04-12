@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { atom } from 'recoil'
 
 import { AssetNativeDenomEnum, AssetType } from 'types/asset'
-import { BlockChainType } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateResultType } from 'types/send'
 
 // Send Data Start
@@ -30,6 +30,10 @@ const fromBlockChain = atom<BlockChainType>({
 const toBlockChain = atom<BlockChainType>({
   key: 'sendToBlockChain',
   default: BlockChainType.ethereum,
+})
+const bridgeUsed = atom<BridgeType | undefined>({
+  key: 'bridgeUsed',
+  default: BridgeType.shuttle,
 })
 const fee = atom<Fee | undefined>({
   key: 'sendFee',
@@ -64,20 +68,12 @@ const gasFee = atom<BigNumber>({
   key: 'sendGasFee',
   default: new BigNumber(0),
 })
-const shuttleFee = atom<BigNumber>({
-  key: 'sendShuttleFee',
+const bridgeFee = atom<BigNumber>({
+  key: 'sendBridgeFee',
   default: new BigNumber(0),
 })
-const amountAfterShuttleFee = atom<BigNumber>({
-  key: 'sendAmountAfterShuttleFee',
-  default: new BigNumber(0),
-})
-const axelarFee = atom<BigNumber>({
-  key: 'sendAxelarFee',
-  default: new BigNumber(0),
-})
-const amountAfterAxelarFee = atom<BigNumber>({
-  key: 'sendAmountAfterShuttleFee',
+const amountAfterBridgeFee = atom<BigNumber>({
+  key: 'sendAmountAfterBridgeFee',
   default: new BigNumber(0),
 })
 // Computed data from Send data End
@@ -96,6 +92,7 @@ export default {
   memo,
   fromBlockChain,
   toBlockChain,
+  bridgeUsed,
   fee,
   gasPrices,
 
@@ -103,10 +100,8 @@ export default {
   feeDenom,
   gasFeeList,
   gasFee,
-  shuttleFee,
-  amountAfterShuttleFee,
-  axelarFee,
-  amountAfterAxelarFee,
+  bridgeFee,
+  amountAfterBridgeFee,
 
   validationResult,
 }

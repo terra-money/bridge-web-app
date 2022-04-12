@@ -20,7 +20,14 @@ import { isMobile } from 'react-device-detect'
 import { useQuery } from 'react-query'
 import { useDebouncedCallback } from 'use-debounce/lib'
 
-import { UTIL } from 'consts'
+import { UTIL, NETWORK } from 'consts'
+
+import {
+  ChainId,
+  hexToUint8Array,
+  nativeToHexString,
+  transferFromEth,
+} from '@certusone/wormhole-sdk'
 
 import terraService from 'services/terraService'
 import AuthStore from 'store/AuthStore'
@@ -35,7 +42,7 @@ import {
   ibcChannels,
   IbcNetwork,
   ibcChainId,
-  isAxelarNetwork,
+  BridgeType,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -109,13 +116,16 @@ const useSend = (): UseSendType => {
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const [fee, setFee] = useRecoilState(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
+  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
-  const { fromTokenAddress } = useNetwork()
+  const { fromTokenAddress, toTokenAddress } = useNetwork()
   const { getAddress } = useTns()
 
   const {
@@ -132,29 +142,51 @@ const useSend = (): UseSendType => {
     ],
     async (): Promise<AllowanceOfSelectedAssetType> => {
       if (
-        fromBlockChain !== BlockChainType.terra &&
+        NETWORK.isEtherBaseBlockChain(fromBlockChain) &&
         asset &&
         fromTokenAddress
       ) {
         const contract = getEtherBaseContract({ token: fromTokenAddress })
 
         if (contract && loginUser.provider) {
-          const signer = loginUser.provider.getSigner()
-          const withSigner = contract.connect(signer)
-          const etherVaultToken = etherVaultTokenList[asset.terraToken]
-          if (etherVaultToken) {
-            const res: BigNumber = await withSigner.allowance(
-              loginUser.address,
-              etherVaultToken.vault
-            )
+          if (bridgeUsed === BridgeType.shuttle) {
+            const signer = loginUser.provider.getSigner()
+            const withSigner = contract.connect(signer)
+            const etherVaultToken = etherVaultTokenList[asset.terraToken]
+            if (etherVaultToken) {
+              const res: BigNumber = await withSigner.allowance(
+                loginUser.address,
+                etherVaultToken.vault
+              )
 
-            return {
-              isNeedApprove: true,
-              allowance: UTIL.toBignumber(res.toString()),
+              return {
+                isNeedApprove: true,
+                allowance: UTIL.toBignumber(res.toString()),
+              }
+            }
+          } else if (bridgeUsed === BridgeType.wormhole) {
+            const signer = loginUser.provider.getSigner()
+            const withSigner = contract.connect(signer)
+            const wormholeBridge =
+              NETWORK.wormholeContracts[fromBlockChain][
+                isTestnet ? 'testnet' : 'mainnet'
+              ]?.tokenBridge
+
+            if (wormholeBridge) {
+              const res: BigNumber = await withSigner.allowance(
+                loginUser.address,
+                wormholeBridge
+              )
+
+              return {
+                isNeedApprove: true,
+                allowance: UTIL.toBignumber(res.toString()),
+              }
             }
           }
         }
       }
+
       return {
         isNeedApprove: false,
       }
@@ -251,91 +283,193 @@ const useSend = (): UseSendType => {
     return []
   }
 
+  // get terra msgs
   const getTerraMsgs = async (
     isSimulation?: boolean
   ): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
-      const recipient =
-        toBlockChain === BlockChainType.terra
-          ? (await getAddress(toAddress)) || toAddress
-          : terraLocal.shuttle[toBlockChain as ShuttleNetwork]
+      switch (bridgeUsed) {
+        case BridgeType.shuttle:
+          const shuttleAddress =
+            terraLocal.shuttle[toBlockChain as ShuttleNetwork]
+          if (
+            etherVaultTokenList[asset.terraToken] &&
+            toBlockChain === BlockChainType.ethereum
+          ) {
+            return [
+              new MsgExecuteContract(
+                loginUser.address,
+                asset.terraToken,
+                { burn: { amount: sendAmount } },
+                new Coins([])
+              ),
+            ]
+          } else {
+            return UTIL.isNativeDenom(asset.terraToken)
+              ? [
+                  new MsgSend(loginUser.address, shuttleAddress, [
+                    new Coin(asset.terraToken, sendAmount),
+                  ]),
+                ]
+              : [
+                  new MsgExecuteContract(
+                    loginUser.address,
+                    asset.terraToken,
+                    {
+                      transfer: {
+                        recipient: shuttleAddress,
+                        amount: sendAmount,
+                      },
+                    },
+                    new Coins([])
+                  ),
+                ]
+          }
 
-      if (
-        etherVaultTokenList[asset.terraToken] &&
-        toBlockChain === BlockChainType.ethereum
-      ) {
-        return [
-          new MsgExecuteContract(
-            loginUser.address,
-            asset.terraToken,
-            { burn: { amount: sendAmount } },
-            new Coins([])
-          ),
-        ]
-      }
-
-      if (
-        (UTIL.isNativeDenom(asset.terraToken) ||
-          asset.terraToken.startsWith('ibc/')) &&
-        isIbcNetwork(toBlockChain)
-      ) {
-        return [
-          new MsgTransfer(
-            'transfer',
-            terraIbcChannels[toBlockChain as IbcNetwork],
-            new Coin(asset.terraToken, sendAmount),
-            loginUser.address,
-            toAddress,
-            undefined,
-            (Date.now() + 120 * 1000) * 1e6
-          ),
-        ]
-      }
-
-      if (
-        UTIL.isNativeDenom(asset.terraToken) &&
-        isAxelarNetwork(toBlockChain)
-      ) {
-        // in the fee simulation use the user address
-        const axelarAddress = isSimulation
-          ? loginUser.address
-          : await getAxelarAddress(
-              toAddress,
-              toBlockChain as 'avalanche' | 'fantom',
-              asset.terraToken as 'uusd' | 'uluna'
-            )
-
-        return [
-          new MsgTransfer(
-            'transfer',
-            terraIbcChannels[BlockChainType.axelar],
-            new Coin(asset.terraToken, sendAmount),
-            loginUser.address,
-            axelarAddress || '',
-            undefined,
-            (Date.now() + 300 * 1000) * 1e6
-          ),
-        ]
-      }
-
-      return UTIL.isNativeDenom(asset.terraToken)
-        ? [
-            new MsgSend(loginUser.address, recipient, [
+        case BridgeType.ibc:
+          return [
+            new MsgTransfer(
+              'transfer',
+              terraIbcChannels[toBlockChain as IbcNetwork],
               new Coin(asset.terraToken, sendAmount),
-            ]),
-          ]
-        : [
-            new MsgExecuteContract(
               loginUser.address,
-              asset.terraToken,
-              { transfer: { recipient, amount: sendAmount } },
-              new Coins([])
+              toAddress,
+              undefined,
+              (Date.now() + 120 * 1000) * 1e6
             ),
           ]
+
+        case BridgeType.axelar:
+          // in the fee simulation use the user address
+          const axelarAddress = isSimulation
+            ? loginUser.address
+            : await getAxelarAddress(
+                toAddress,
+                fromBlockChain,
+                toBlockChain,
+                asset.terraToken as 'uusd' | 'uluna'
+              )
+
+          return [
+            new MsgTransfer(
+              'transfer',
+              terraIbcChannels[BlockChainType.axelar],
+              new Coin(asset.terraToken, sendAmount),
+              loginUser.address,
+              axelarAddress || '',
+              undefined,
+              (Date.now() + 300 * 1000) * 1e6
+            ),
+          ]
+        case BridgeType.wormhole:
+          const pubKey = Buffer.concat([
+            Buffer.alloc(12),
+            Buffer.from(toAddress.substring(2), 'hex'),
+          ])
+          return UTIL.isNativeDenom(asset.terraToken)
+            ? [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  NETWORK.wormholeContracts[BlockChainType.terra][
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  {
+                    deposit_tokens: {},
+                  },
+                  { [asset.terraToken]: sendAmount }
+                ),
+                new MsgExecuteContract(
+                  loginUser.address,
+                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  {
+                    initiate_transfer: {
+                      asset: {
+                        amount: sendAmount.toString(),
+                        info: {
+                          native_token: {
+                            denom: asset.terraToken,
+                          },
+                        },
+                      },
+                      recipient_chain:
+                        NETWORK.wormholeContracts[toBlockChain][
+                          isTestnet ? 'testnet' : 'mainnet'
+                        ]?.chainid || 0,
+                      recipient: pubKey.toString('base64'),
+                      fee: bridgeFee.toString(),
+                      nonce: Math.round(Math.round(Math.random() * 100000)),
+                    },
+                  }
+                ),
+              ]
+            : [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  fromTokenAddress || '',
+                  {
+                    increase_allowance: {
+                      amount: sendAmount.toString(),
+                      expires: {
+                        never: {},
+                      },
+                      spender:
+                        NETWORK.wormholeContracts[BlockChainType.terra][
+                          isTestnet ? 'testnet' : 'mainnet'
+                        ]?.tokenBridge || '',
+                    },
+                  }
+                ),
+                new MsgExecuteContract(
+                  loginUser.address,
+                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  {
+                    initiate_transfer: {
+                      asset: {
+                        amount: sendAmount.toString(),
+                        info: {
+                          token: {
+                            contract_addr: fromTokenAddress || '',
+                          },
+                        },
+                      },
+                      recipient_chain:
+                        NETWORK.wormholeContracts[toBlockChain][
+                          isTestnet ? 'testnet' : 'mainnet'
+                        ]?.chainid || 0,
+                      recipient: pubKey.toString('base64'),
+                      fee: bridgeFee.toString(),
+                      nonce: Math.round(Math.round(Math.random() * 100000)),
+                    },
+                  }
+                ),
+              ]
+        // terra -> terra
+        case undefined:
+          const recipient = (await getAddress(toAddress)) || toAddress
+          return UTIL.isNativeDenom(asset.terraToken)
+            ? [
+                new MsgSend(loginUser.address, recipient, [
+                  new Coin(asset.terraToken, sendAmount),
+                ]),
+              ]
+            : [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  asset.terraToken,
+                  { transfer: { recipient, amount: sendAmount } },
+                  new Coins([])
+                ),
+              ]
+      }
     }
     return []
   }
 
+  // sign Terra tx
   const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
     let errorMessage
     const memoOrToAddress =
@@ -432,6 +566,7 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // increase allowance
   const approveTxFromEtherBase = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain !== BlockChainType.terra && asset && fromTokenAddress) {
       const contract = getEtherBaseContract({ token: fromTokenAddress })
@@ -441,19 +576,28 @@ const useSend = (): UseSendType => {
         const withSigner = contract.connect(signer)
 
         try {
-          const etherVaultToken = etherVaultTokenList[asset.terraToken]
-
-          const { hash } = await withSigner.approve(
-            etherVaultToken.vault,
-            sendAmount
-          )
-
-          await waitForEtherBaseTransaction({
-            hash,
-          })
-          refetchAllowanceOfSelectedAsset()
-
-          return { success: true, hash }
+          if (bridgeUsed === BridgeType.shuttle) {
+            const etherVaultToken = etherVaultTokenList[asset.terraToken]
+            let { hash } = await withSigner.approve(
+              etherVaultToken.vault,
+              sendAmount
+            )
+            await waitForEtherBaseTransaction({ hash })
+            refetchAllowanceOfSelectedAsset()
+            return { success: true, hash }
+          } else if (bridgeUsed === BridgeType.wormhole) {
+            let { hash } = await withSigner.approve(
+              NETWORK.wormholeContracts[fromBlockChain][
+                isTestnet ? 'testnet' : 'mainnet'
+              ]?.tokenBridge || '',
+              sendAmount
+            )
+            await waitForEtherBaseTransaction({ hash })
+            refetchAllowanceOfSelectedAsset()
+            return { success: true, hash }
+          } else {
+            return { success: false }
+          }
         } catch (error) {
           return handleTxErrorFromEtherBase(error)
         }
@@ -465,7 +609,7 @@ const useSend = (): UseSendType => {
     }
   }
 
-  // Can't send tx between Ethereum <-> BSC
+  // Send tx from EVM chain to Terra
   const submitRequestTxFromEtherBase =
     async (): Promise<RequestTxResultType> => {
       const terraAddress = (await getAddress(toAddress)) || toAddress
@@ -480,30 +624,76 @@ const useSend = (): UseSendType => {
           const signer = loginUser.provider.getSigner()
           const withSigner = contract.connect(signer)
 
-          const isTerra = toBlockChain === BlockChainType.terra
           const decoded = decodeTerraAddressOnEtherBase(terraAddress)
           try {
-            const etherVaultToken = etherVaultTokenList[asset.terraToken]
+            switch (bridgeUsed) {
+              // with shuttle
+              case BridgeType.shuttle:
+                const etherVaultToken = etherVaultTokenList[asset.terraToken]
 
-            if (etherVaultToken && fromBlockChain === BlockChainType.ethereum) {
-              const vaultContract = getEtherBaseContract({
-                token: etherVaultToken.vault,
-              })!
-              const vaultContractSigner = vaultContract.connect(signer)
+                if (
+                  etherVaultToken &&
+                  fromBlockChain === BlockChainType.ethereum
+                ) {
+                  const vaultContract = getEtherBaseContract({
+                    token: etherVaultToken.vault,
+                  })!
+                  const vaultContractSigner = vaultContract.connect(signer)
 
-              const tx = isTerra
-                ? vaultContractSigner?.burn(sendAmount, decoded.padEnd(66, '0'))
-                : withSigner.transfer(terraAddress, sendAmount)
+                  const tx = vaultContractSigner?.burn(
+                    sendAmount,
+                    decoded.padEnd(66, '0')
+                  )
 
-              const { hash } = await tx
-              return { success: true, hash }
-            } else {
-              const tx = isTerra
-                ? withSigner.burn(sendAmount, decoded.padEnd(66, '0'))
-                : withSigner.transfer(terraAddress, sendAmount)
+                  const { hash } = await tx
+                  return { success: true, hash }
+                } else {
+                  const tx = withSigner.burn(
+                    sendAmount,
+                    decoded.padEnd(66, '0')
+                  )
 
-              const { hash } = await tx
-              return { success: true, hash }
+                  const { hash } = await tx
+                  return { success: true, hash }
+                }
+
+              // with axelar
+              case BridgeType.axelar:
+                const axelarAddress = await getAxelarAddress(
+                  toAddress,
+                  fromBlockChain,
+                  toBlockChain,
+                  toTokenAddress as string
+                )
+                const result = await withSigner.transfer(
+                  axelarAddress,
+                  sendAmount
+                )
+                return { success: true, hash: result.hash }
+
+              // with wormhole
+              case BridgeType.wormhole:
+                const receipt = await transferFromEth(
+                  NETWORK.wormholeContracts[fromBlockChain][
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.tokenBridge || '',
+                  signer,
+                  fromTokenAddress,
+                  sendAmount,
+                  (NETWORK.wormholeContracts[toBlockChain][
+                    isTestnet ? 'testnet' : 'mainnet'
+                  ]?.chainid || 3) as ChainId,
+                  hexToUint8Array(
+                    nativeToHexString(
+                      toAddress,
+                      (NETWORK.wormholeContracts[toBlockChain][
+                        isTestnet ? 'testnet' : 'mainnet'
+                      ]?.chainid || 3) as ChainId
+                    ) || ''
+                  ),
+                  BigInt(bridgeFee.toNumber())
+                )
+                return { success: true, hash: receipt.transactionHash }
             }
           } catch (error) {
             return handleTxErrorFromEtherBase(error)
@@ -516,6 +706,16 @@ const useSend = (): UseSendType => {
       }
     }
 
+  const waitForEtherBaseTransaction = async ({
+    hash,
+  }: {
+    hash: string
+  }): Promise<EtherBaseReceiptResultType | undefined> => {
+    if (fromBlockChain !== BlockChainType.terra && asset?.terraToken) {
+      return loginUser.provider?.waitForTransaction(hash)
+    }
+  }
+
   const handleTxErrorFromIbc = (error: any): RequestTxResultType => {
     let errorMessage = _.toString(error)
     return {
@@ -524,6 +724,7 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // IBC transfer with Keplr
   const submitRequestTxFromIbc = async (): Promise<RequestTxResultType> => {
     if (
       isIbcNetwork(fromBlockChain) &&
@@ -587,6 +788,7 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // get tx based on the fromBlockChain
   const submitRequestTx = async (): Promise<RequestTxResultType> => {
     if (fromBlockChain === BlockChainType.terra) {
       return submitRequestTxFromTerra()
@@ -595,16 +797,6 @@ const useSend = (): UseSendType => {
       return submitRequestTxFromIbc()
     }
     return submitRequestTxFromEtherBase()
-  }
-
-  const waitForEtherBaseTransaction = async ({
-    hash,
-  }: {
-    hash: string
-  }): Promise<EtherBaseReceiptResultType | undefined> => {
-    if (fromBlockChain !== BlockChainType.terra && asset?.terraToken) {
-      return loginUser.provider?.waitForTransaction(hash)
-    }
   }
 
   return {

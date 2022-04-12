@@ -28,7 +28,7 @@ const StyledContainer = styled(View)`
   align-items: center;
   max-width: 640px;
   padding: 40px;
-  border-radius: 1em;
+  border-radius: 2em;
   @media (max-width: 1199px) {
     padding: 40px;
   }

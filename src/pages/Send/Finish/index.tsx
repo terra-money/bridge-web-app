@@ -16,7 +16,7 @@ import SendProcessStore from 'store/SendProcessStore'
 import useNetwork from 'hooks/useNetwork'
 import AuthStore from 'store/AuthStore'
 import FormImage from 'components/FormImage'
-import { BlockChainType, isAxelarNetwork } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import MetamaskButton from './MetamaskButton'
 
 const StyledContainer = styled.div`
@@ -94,8 +94,8 @@ const Finish = (): ReactElement => {
     SendProcessStore.waitForReceiptError
   )
 
-  const amountAfterShuttleFee = useRecoilValue(SendStore.amountAfterShuttleFee)
-  const amountAfterAxelarFee = useRecoilValue(SendStore.amountAfterAxelarFee)
+  const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const { getScannerLink, toTokenAddress } = useNetwork()
 
@@ -111,8 +111,6 @@ const Finish = (): ReactElement => {
     setRequestTxResult({ success: false })
     setWaitForReceiptError('')
   }, [])
-
-  // TODO: Add token to Metamask
 
   return (
     <StyledContainer>
@@ -130,6 +128,12 @@ const Finish = (): ReactElement => {
                   name={asset?.symbol || ''}
                   token={toTokenAddress}
                   imgUrl={asset?.logoURI || ''}
+                  decimals={
+                    bridgeUsed === BridgeType.wormhole ||
+                    bridgeUsed === BridgeType.axelar
+                      ? 6
+                      : 18
+                  }
                 />
               )
             }
@@ -166,7 +170,9 @@ const Finish = (): ReactElement => {
           </Text>
         </div>
         {fromBlockChain === BlockChainType.terra &&
-          NETWORK.isEtherBaseBlockChain(toBlockChain) && (
+          (bridgeUsed === BridgeType.shuttle ||
+            bridgeUsed === BridgeType.axelar ||
+            bridgeUsed === BridgeType.wormhole) && (
             <div
               style={{
                 fontSize: 12,
@@ -176,29 +182,11 @@ const Finish = (): ReactElement => {
               }}
             >
               <StyledAmountText
-                isError={amountAfterShuttleFee.isLessThanOrEqualTo(0)}
+                isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
               >
-                {`After Shuttle Fee : (estimated) ${formatBalance(
-                  amountAfterShuttleFee
-                )} ${asset?.symbol}`}
-              </StyledAmountText>
-            </div>
-          )}
-
-        {fromBlockChain === BlockChainType.terra &&
-          isAxelarNetwork(toBlockChain) && (
-            <div
-              style={{
-                fontSize: 12,
-                textAlign: 'center',
-                marginBottom: 20,
-                marginTop: 10,
-              }}
-            >
-              <StyledAmountText
-                isError={amountAfterAxelarFee.isLessThanOrEqualTo(0)}
-              >
-                {`After Axelar Fee : ${formatBalance(amountAfterAxelarFee)} ${
+                {`After ${
+                  bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)
+                } Fee : (estimated) ${formatBalance(amountAfterBridgeFee)} ${
                   asset?.symbol
                 }`}
               </StyledAmountText>

@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { Lock } from 'react-bootstrap-icons'
+import { LockFill } from 'react-bootstrap-icons'
 import { CircularProgress } from '@material-ui/core'
 
 import { COLOR } from 'consts'
@@ -61,7 +61,7 @@ const NextOrApproveButton = ({
             <CircularProgress size={20} style={{ color: COLOR.darkGray2 }} />
           ) : (
             <Row style={{ justifyContent: 'center' }}>
-              <Lock style={{ paddingRight: 5 }} /> Unlock token to send
+              <LockFill style={{ paddingRight: 5 }} /> Unlock token to send
             </Row>
           )}
         </Button>

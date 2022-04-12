@@ -9,8 +9,8 @@ import {
 export const getParameters = (
   destinationAddress: string,
   sourceChainName: string, // = 'axelar',
-  destinationChainName: 'avalanche' | 'fantom',
-  asset_common_key: 'uusd' | 'uluna',
+  destinationChainName: string,
+  asset_common_key: string
 ): AssetTransferObject => {
   /*
       info for sourceChainInfo and destinationChainInfo fetched from the ChainList module. 

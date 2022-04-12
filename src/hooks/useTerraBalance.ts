@@ -44,29 +44,23 @@ query {
 `
 
 const useTerraBalance = (): {
-  getTerraBalances: ({
-    terraWhiteList,
-  }: {
+  getTerraBalances: (
     terraWhiteList: {
       token: string
     }[]
-  }) => Promise<BalanceListType>
+  ) => Promise<BalanceListType>
 } => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const { fetchQuery } = useMantle()
 
-  const getTerraTokenBalances = async ({
-    terraWhiteList,
-  }: {
+  const getTerraTokenBalances = async (
     terraWhiteList: { token: string }[]
-  }): Promise<BalanceListType> => {
+  ): Promise<BalanceListType> => {
     // use to be 1 giant gql query for all tokens,
     // however it is likely to go timeout.
     //
     // prevent timeout by chunking it by 1 tokens, and
     // make parallel requests
-    //
-    // TODO: fix this for good, where users add their own tokens rather than scanning through the entire list of tokens
     const terraWhiteListInChunks = _.chunk(terraWhiteList, 10)
 
     // concurrency = len(terraWhiteList) / 10
@@ -129,13 +123,11 @@ const useTerraBalance = (): {
     }
   }
 
-  const getTerraBalances = async ({
-    terraWhiteList,
-  }: {
+  const getTerraBalances = async (
     terraWhiteList: { token: string }[]
-  }): Promise<BalanceListType> => {
+  ): Promise<BalanceListType> => {
     const bank = await getTerraBankBalances()
-    const token = await getTerraTokenBalances({ terraWhiteList })
+    const token = await getTerraTokenBalances(terraWhiteList)
     return {
       ...bank,
       ...token,

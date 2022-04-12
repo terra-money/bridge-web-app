@@ -6,9 +6,9 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR, NETWORK } from 'consts'
+import { ASSET, COLOR } from 'consts'
 
-import { BlockChainType, isIbcNetwork, isAxelarNetwork } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { AxelarAPI } from 'packages/axelar/axelarAPI'
@@ -29,6 +29,8 @@ import AssetList from './AssetList'
 import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import WarningInfo from './WarningInfo'
+import NetworkStore from 'store/NetworkStore'
+import getWormholeFees from 'packages/wormhole/fees'
 
 const StyledContainer = styled.div``
 
@@ -124,18 +126,18 @@ const SendForm = ({
   // Computed data from Send data
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
-  const setShuttleFee = useSetRecoilState(SendStore.shuttleFee)
-  const setAmountAfterShuttleFee = useSetRecoilState(
-    SendStore.amountAfterShuttleFee
+  const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
+  const setAmountAfterBridgeFee = useSetRecoilState(
+    SendStore.amountAfterBridgeFee
   )
-  const setAxelarFee = useSetRecoilState(SendStore.axelarFee)
-  const setAmountAfterAxelarFee = useSetRecoilState(
-    SendStore.amountAfterAxelarFee
-  )
+
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
   )
+
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const [inputAmount, setInputAmount] = useState('')
 
@@ -158,7 +160,10 @@ const SendForm = ({
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
       const decimalSize = new BigNumber(
-        fromBlockChain === BlockChainType.terra || isIbcNetwork(fromBlockChain)
+        fromBlockChain === BlockChainType.terra ||
+        bridgeUsed === BridgeType.ibc ||
+        bridgeUsed === BridgeType.axelar ||
+        bridgeUsed === BridgeType.wormhole
           ? ASSET.TERRA_DECIMAL
           : ASSET.ETHER_BASE_DECIMAL
       )
@@ -177,35 +182,45 @@ const SendForm = ({
 
   const setBridgeFee = async (): Promise<void> => {
     // shuttle fee
-    if (NETWORK.isEtherBaseBlockChain(toBlockChain)) {
+    if (bridgeUsed === BridgeType.shuttle) {
       const sendAmount = new BigNumber(amount)
       if (sendAmount.isGreaterThan(0)) {
         getTerraShuttleFee({
           denom: asset?.terraToken || '',
           amount: sendAmount,
         }).then((shuttleFee) => {
-          setShuttleFee(shuttleFee)
+          setBridgeFeeAmount(shuttleFee)
           const computedAmount = sendAmount.minus(shuttleFee)
-          setAmountAfterShuttleFee(
+          setAmountAfterBridgeFee(
             computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
           )
         })
       }
-    } else if (isAxelarNetwork(toBlockChain)) {
+    } else if (bridgeUsed === BridgeType.axelar) {
       const api = new AxelarAPI('mainnet')
       const fee = await api.getTransferFee(
         fromBlockChain,
         toBlockChain,
         asset?.terraToken || ''
       )
-      setAxelarFee(new BigNumber(fee))
+      setBridgeFeeAmount(new BigNumber(fee))
       const computedAmount = new BigNumber(amount).minus(fee)
-      setAmountAfterAxelarFee(
+      setAmountAfterBridgeFee(
+        computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
+      )
+    }
+    if (bridgeUsed === BridgeType.wormhole) {
+      const wormholeFee = new BigNumber(
+        await getWormholeFees(toBlockChain, asset?.terraToken || '')
+      )
+      setBridgeFeeAmount(wormholeFee)
+      const computedAmount = new BigNumber(amount).minus(wormholeFee)
+      setAmountAfterBridgeFee(
         computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
       )
     } else {
-      setShuttleFee(new BigNumber(0))
-      setAxelarFee(new BigNumber(0))
+      setBridgeFeeAmount(new BigNumber(0))
+      setAmountAfterBridgeFee(new BigNumber(amount))
     }
   }
 
@@ -239,7 +254,7 @@ const SendForm = ({
     return (): void => {
       dbcGetFeeInfoWithValidation.cancel()
     }
-  }, [amount, toAddress, toBlockChain, memo, asset])
+  }, [amount, toAddress, toBlockChain, memo, asset, bridgeUsed])
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })
@@ -251,6 +266,9 @@ const SendForm = ({
     loginUser,
     // to check if asset valid by network
     toBlockChain,
+    fromBlockChain,
+    bridgeUsed,
+    isTestnet,
   ])
 
   return (
