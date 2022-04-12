@@ -83,7 +83,8 @@ const WarningInfo = (): ReactElement => {
 
     if (
       BlockChainType.polygon === fromBlockChain &&
-      BlockChainType.terra === toBlockChain
+      BlockChainType.terra === toBlockChain &&
+      bridgeUsed?.toUpperCase() === 'WORMHOLE'
     ) {
       setWarning(
         '512 block confirmation is required for this transfer. It may take more than 15 minutes to receive funds in the destination wallet'
