@@ -63,6 +63,7 @@ const WarningInfo = (): ReactElement => {
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const asset = useRecoilValue(SendStore.asset)
   const [infoText, setInfoText] = useState('')
+  const [warning, setWarning] = useState('')
 
   const chain =
     toBlockChain === BlockChainType.terra ? fromBlockChain : toBlockChain
@@ -80,6 +81,17 @@ const WarningInfo = (): ReactElement => {
       setInfoText("Don't use exchange addresses for cross-chain transfers")
     }
 
+    if (
+      BlockChainType.polygon === fromBlockChain &&
+      BlockChainType.terra === toBlockChain
+    ) {
+      setWarning(
+        '512 block confirmation is required for this transfer. It may take more than 15 minutes to receive funds in the destination wallet'
+      )
+    } else {
+      setWarning('')
+    }
+
     return (): void => {
       setInfoText('')
     }
@@ -95,6 +107,15 @@ const WarningInfo = (): ReactElement => {
           <StyledInfoText>
             The default bridge for this route is {bridgesList[0].toUpperCase()}
           </StyledInfoText>
+        </StyledInfo>
+      )}
+
+      {warning && (
+        <StyledInfo>
+          <div style={{ paddingRight: 12 }}>
+            <FormImage src={infoSvg} size={18} />
+          </div>
+          <StyledInfoText>{warning}</StyledInfoText>
         </StyledInfo>
       )}
 
