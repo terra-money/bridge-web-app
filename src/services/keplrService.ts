@@ -62,6 +62,9 @@ const connect = async (
     keplrOfflineSigner
   )
 
+  // @ts-expect-error
+  signingCosmosClient.chainId = CHAIN_ID
+
   return { address, signingCosmosClient }
 }
 
