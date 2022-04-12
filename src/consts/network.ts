@@ -13,6 +13,7 @@ import CosmosSvg from 'images/cosmos.svg'
 import SecretSvg from 'images/secret.svg'
 import PolygonSvg from 'images/polygon.svg'
 import MoonbeamSvg from 'images/moonbeam.svg'
+import SolanaSvg from 'images/solana.svg'
 import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
@@ -30,6 +31,7 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.cosmos]: CosmosSvg,
   [BlockChainType.polygon]: PolygonSvg,
   [BlockChainType.moonbeam]: MoonbeamSvg,
+  [BlockChainType.solana]: SolanaSvg,
   //[BlockChainType.cro]: CronosSvg,
 }
 
@@ -47,6 +49,7 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.cosmos]: 'Cosmos',
   [BlockChainType.polygon]: 'Polygon',
   [BlockChainType.moonbeam]: 'Moonbeam',
+  [BlockChainType.solana]: 'Solana',
   //[BlockChainType.cro]: 'Cronos',
 }
 
@@ -78,6 +81,7 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
   [BlockChainType.axelar]: [],
   [BlockChainType.terra]: [],
   [BlockChainType.cosmos]: [],
+  [BlockChainType.solana]: [],
   //[BlockChainType.cro]: '[],
 }
 
@@ -161,6 +165,7 @@ const wormholeContracts: Record<BlockChainType, WormholeConsts> = {
   [BlockChainType.scrt]: {},
   [BlockChainType.inj]: {},
   [BlockChainType.axelar]: {},
+  [BlockChainType.solana]: {},
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

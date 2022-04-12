@@ -141,6 +141,11 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.moonbeam,
                 isDisabled: fromBlockChain === BlockChainType.moonbeam,
               },
+              {
+                label: NETWORK.blockChainName[BlockChainType.solana],
+                value: BlockChainType.solana,
+                isDisabled: fromBlockChain === BlockChainType.solana,
+              },
             ],
             label: 'FROM',
           }}
@@ -226,6 +231,11 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.moonbeam,
                 isDisabled:
                   toBlockChain === BlockChainType.moonbeam || isTestnet,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.solana],
+                value: BlockChainType.solana,
+                isDisabled: toBlockChain === BlockChainType.solana || isTestnet,
               },
             ],
             label: 'TO',

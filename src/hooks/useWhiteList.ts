@@ -221,6 +221,7 @@ const whitelist: Record<
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.terra]: {},
+  [BlockChainType.solana]: {},
 }
 
 const testnetWhitelist: Record<
@@ -301,6 +302,7 @@ const testnetWhitelist: Record<
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.terra]: {},
+  [BlockChainType.solana]: {},
 }
 
 // return current whitelist
