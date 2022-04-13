@@ -70,7 +70,9 @@ const WarningInfo = (): ReactElement => {
   const bridgesList = availableBridges[chain]
 
   useEffect(() => {
-    if (
+    if (bridgeUsed === bridgesList[1]) {
+      setInfoText('Shuttle is scheduled to be deprecated - use at own risk.')
+    } else if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain
     ) {
