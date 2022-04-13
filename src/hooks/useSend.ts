@@ -763,7 +763,7 @@ const useSend = (): UseSendType => {
             [transferMsg],
             {
               amount: [],
-              gas: fromBlockChain === BlockChainType.inj ? '150000' : '100000',
+              gas: '150000',
             },
             '', // memo
             {
