@@ -33,7 +33,7 @@ const toBlockChain = atom<BlockChainType>({
 })
 const bridgeUsed = atom<BridgeType | undefined>({
   key: 'bridgeUsed',
-  default: BridgeType.shuttle,
+  default: BridgeType.wormhole,
 })
 const fee = atom<Fee | undefined>({
   key: 'sendFee',

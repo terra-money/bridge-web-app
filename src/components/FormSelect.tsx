@@ -172,7 +172,7 @@ const FormSelect = <T,>({
                   id="shuttle-warning"
                   style={{
                     color: 'rgb(250, 200, 0)',
-                    backgroundColor: 'rgba(150, 100, 0, 0.7)',
+                    backgroundColor: 'rgb(150, 100, 0)',
                     border: '1px solid rgb(200, 150, 0)',
                     padding: '10px',
                     borderRadius: '5px',
@@ -186,7 +186,7 @@ const FormSelect = <T,>({
                 <Tooltip id="no-warning"></Tooltip>
               )
             }
-            placement="right"
+            placement="top"
           >
             <StyledDropdownItem
               style={{
