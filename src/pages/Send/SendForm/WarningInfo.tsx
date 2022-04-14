@@ -3,15 +3,38 @@ import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 
 import warningSvg from 'images/warning.svg'
+import dangerSvg from 'images/danger.svg'
 import infoSvg from 'images/info.svg'
 
-import { BlockChainType, availableBridges } from 'types/network'
+import { BlockChainType, availableBridges, BridgeType } from 'types/network'
 
 import SendStore from 'store/SendStore'
 
 import { Text } from 'components'
 
 import FormImage from 'components/FormImage'
+
+const StyledDanger = styled.div`
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 15px;
+  background-color: #d64c5518;
+  border: 1px solid #d64c5518;
+  white-space: pre-wrap;
+  font-size: 12px;
+`
+
+const StyledDangerText = styled(Text)`
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #d64c55;
+`
 
 const StyledWarning = styled.div`
   display: flex;
@@ -77,7 +100,9 @@ const WarningInfo = (): ReactElement => {
         'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
       )
     } else if (fromBlockChain !== toBlockChain) {
-      setInfoText("Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges.")
+      setInfoText(
+        "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
+      )
     }
 
     return (): void => {
@@ -104,6 +129,19 @@ const WarningInfo = (): ReactElement => {
         </div>
         <StyledWarningText>{infoText}</StyledWarningText>
       </StyledWarning>
+
+      {bridgeUsed === BridgeType.wormhole &&
+        toBlockChain === BlockChainType.ethereum && (
+          <StyledDanger>
+            <div style={{ paddingRight: 12 }}>
+              <FormImage src={dangerSvg} size={18} />
+            </div>
+            <StyledDangerText>
+              Do not use Wormhole transfer to send funds to exchanges (Coinbase,
+              Gemini, etc.)
+            </StyledDangerText>
+          </StyledDanger>
+        )}
     </div>
   ) : (
     <></>
