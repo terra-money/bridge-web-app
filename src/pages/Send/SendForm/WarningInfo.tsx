@@ -151,7 +151,7 @@ const WarningInfo = (): ReactElement => {
         status === ProcessStatus.Confirm ||
         status === ProcessStatus.Done) && (
         <>
-          {bridgeUsed === BridgeType.shuttle && (
+          {bridgeUsed === BridgeType.wormhole && (
             <StyledWarning>
               <div style={{ paddingRight: 12 }}>
                 <FormImage src={warningSvg} size={18} />
