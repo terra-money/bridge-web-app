@@ -1,12 +1,14 @@
 import { ReactElement } from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { CaretDownFill } from 'react-bootstrap-icons'
 import NETWORK from '../consts/network'
 import { COLOR } from 'consts'
 import Text from './Text'
 import { BlockChainType } from 'types'
+import FormImage from 'components/FormImage'
+import warningSvg from 'images/warning.svg'
 
 type FormSelectProps<T> = {
   selectedValue: T
@@ -164,54 +166,89 @@ const FormSelect = <T,>({
       </StyledDropdownToggle>
       <StyledDropdownMenu style={menuContainerStyle}>
         {_.map(optionList, (option, i) => (
-          <StyledDropdownItem
-            style={{
-              ...itemStyle,
-              borderTopLeftRadius: i === 0 ? '10px' : '0',
-              borderTopRightRadius: i === 0 ? '10px' : '0',
-              borderBottomLeftRadius:
-                i === optionList.length - 1 ? '10px' : '0',
-              borderBottomRightRadius:
-                i === optionList.length - 1 ? '10px' : '0',
-            }}
-            key={`option-${i}`}
-            onClick={(): void => {
-              if (option.isDisabled) {
-                return
-              }
-              onSelect(option.value)
-            }}
+          <OverlayTrigger
+            delay={{ hide: 450, show: 300 }}
+            overlay={
+              option.label === 'SHUTTLE' ? (
+                <Tooltip
+                  id="shuttle-warning"
+                  style={{
+                    color: '#e0a44d',
+                    backgroundColor: '#312a22',
+                    border: '1px solid #433626',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    fontSize: '12px',
+                    maxWidth: '150px',
+                    marginLeft: '30px',
+                  }}
+                >
+                  Shuttle is scheduled to be deprecated - use at own risk.
+                </Tooltip>
+              ) : (
+                <Tooltip id="no-warning"></Tooltip>
+              )
+            }
+            placement="top"
           >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {icons && (
-                <BlockchainIcon
-                  src={
-                    NETWORK.blockChainImage[
-                      option.value as any as BlockChainType
-                    ]
-                  }
-                  alt="Blockchain Icon"
-                  style={{ opacity: option.isDisabled ? 0.8 : 1 }}
-                />
-              )}
-              <Text
-                style={{
-                  ...selectedTextStyle,
-                  marginLeft: icons ? 8 : 0,
-                  marginRight: 4,
-                  color: option.isDisabled
-                    ? COLOR.blueGray
-                    : icons
-                    ? '#B9B9B9'
-                    : COLOR.white,
-                  fontWeight: 500,
-                  lineHeight: 1.5,
-                }}
-              >
-                {option.label}
-              </Text>
-            </div>
-          </StyledDropdownItem>
+            <StyledDropdownItem
+              style={{
+                ...itemStyle,
+                borderTopLeftRadius: i === 0 ? '10px' : '0',
+                borderTopRightRadius: i === 0 ? '10px' : '0',
+                borderBottomLeftRadius:
+                  i === optionList.length - 1 ? '10px' : '0',
+                borderBottomRightRadius:
+                  i === optionList.length - 1 ? '10px' : '0',
+              }}
+              key={`option-${i}`}
+              onClick={(): void => {
+                if (option.isDisabled) {
+                  return
+                }
+                onSelect(option.value)
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {icons && (
+                  <BlockchainIcon
+                    src={
+                      NETWORK.blockChainImage[
+                        option.value as any as BlockChainType
+                      ]
+                    }
+                    alt="Blockchain Icon"
+                    style={{ opacity: option.isDisabled ? 0.8 : 1 }}
+                  />
+                )}
+                <>
+                  {option.label === 'SHUTTLE' && (
+                    <FormImage
+                      src={warningSvg}
+                      size={18}
+                      style={{ marginRight: '5px' }}
+                    />
+                  )}
+                  <Text
+                    style={{
+                      ...selectedTextStyle,
+                      marginLeft: icons ? 8 : 0,
+                      marginRight: 4,
+                      color: option.isDisabled
+                        ? COLOR.blueGray
+                        : icons
+                        ? '#B9B9B9'
+                        : COLOR.white,
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {option.label}
+                  </Text>
+                </>
+              </div>
+            </StyledDropdownItem>
+          </OverlayTrigger>
         ))}
       </StyledDropdownMenu>
     </StyledDropdown>
