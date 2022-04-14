@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useRecoilValue } from 'recoil'
 
@@ -7,6 +7,7 @@ import dangerSvg from 'images/danger.svg'
 import infoSvg from 'images/info.svg'
 
 import { BlockChainType, availableBridges, BridgeType } from 'types/network'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
 import SendStore from 'store/SendStore'
 
@@ -56,6 +57,12 @@ const StyledWarningText = styled(Text)`
   line-height: 1.5;
   letter-spacing: normal;
   color: #eca44d;
+  display: inline;
+  a {
+    font-weight: bold;
+    color: #eca44d;
+    text-decoration: underline;
+  }
 `
 
 const StyledInfo = styled.div`
@@ -84,67 +91,84 @@ const WarningInfo = (): ReactElement => {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
-  const asset = useRecoilValue(SendStore.asset)
-  const [infoText, setInfoText] = useState('')
+  const status = useRecoilValue(SendProcessStore.sendProcessStatus)
 
   const chain =
     toBlockChain === BlockChainType.terra ? fromBlockChain : toBlockChain
   const bridgesList = availableBridges[chain]
 
-  useEffect(() => {
+  function infoText(): string | undefined {
     if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain
     ) {
-      setInfoText(
-        'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
-      )
+      return 'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
     } else if (fromBlockChain !== toBlockChain) {
-      setInfoText(
-        "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
-      )
+      return "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
     }
+  }
 
-    return (): void => {
-      setInfoText('')
-    }
-  }, [toBlockChain, fromBlockChain, asset])
-
-  return infoText ? (
+  return (
     <div style={{ marginBottom: '40px' }}>
-      {bridgesList[0] && bridgesList[0] !== bridgeUsed && (
-        <StyledInfo>
-          <div style={{ paddingRight: 12 }}>
-            <FormImage src={infoSvg} size={18} />
-          </div>
-          <StyledInfoText>
-            The default bridge for this route is {bridgesList[0].toUpperCase()}
-          </StyledInfoText>
-        </StyledInfo>
+      {status === ProcessStatus.Input && (
+        <>
+          {bridgesList[0] && bridgesList[0] !== bridgeUsed && (
+            <StyledInfo>
+              <div style={{ paddingRight: 12 }}>
+                <FormImage src={infoSvg} size={18} />
+              </div>
+              <StyledInfoText>
+                The default bridge for this route is{' '}
+                {bridgesList[0].toUpperCase()}
+              </StyledInfoText>
+            </StyledInfo>
+          )}
+
+          {infoText() && (
+            <StyledWarning>
+              <div style={{ paddingRight: 12 }}>
+                <FormImage src={warningSvg} size={18} />
+              </div>
+              <StyledWarningText>{infoText()}</StyledWarningText>
+            </StyledWarning>
+          )}
+
+          {bridgeUsed === BridgeType.wormhole &&
+            toBlockChain === BlockChainType.ethereum && (
+              <StyledDanger>
+                <div style={{ paddingRight: 12 }}>
+                  <FormImage src={dangerSvg} size={18} />
+                </div>
+                <StyledDangerText>
+                  Do not use Wormhole transfer to send funds to exchanges
+                  (Coinbase, Gemini, etc.)
+                </StyledDangerText>
+              </StyledDanger>
+            )}
+        </>
       )}
-
-      <StyledWarning>
-        <div style={{ paddingRight: 12 }}>
-          <FormImage src={warningSvg} size={18} />
-        </div>
-        <StyledWarningText>{infoText}</StyledWarningText>
-      </StyledWarning>
-
-      {bridgeUsed === BridgeType.wormhole &&
-        toBlockChain === BlockChainType.ethereum && (
-          <StyledDanger>
-            <div style={{ paddingRight: 12 }}>
-              <FormImage src={dangerSvg} size={18} />
-            </div>
-            <StyledDangerText>
-              Do not use Wormhole transfer to send funds to exchanges (Coinbase,
-              Gemini, etc.)
-            </StyledDangerText>
-          </StyledDanger>
-        )}
+      {(status === ProcessStatus.Submit ||
+        status === ProcessStatus.Confirm ||
+        status === ProcessStatus.Done) && (
+        <>
+          {bridgeUsed === BridgeType.shuttle && (
+            <StyledWarning>
+              <div style={{ paddingRight: 12 }}>
+                <FormImage src={warningSvg} size={18} />
+              </div>
+              <StyledWarningText>
+                Funds are deposited into the destination wallet few minutes
+                after transfer. If funds are not received, go{' '}
+                <a href="https://portalbridge.com/#/redeem" target="blank">
+                  to Portal bridge
+                </a>{' '}
+                to redeem the funds by entering the transaction hash
+              </StyledWarningText>
+            </StyledWarning>
+          )}
+        </>
+      )}
     </div>
-  ) : (
-    <></>
   )
 }
 

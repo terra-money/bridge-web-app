@@ -29,6 +29,7 @@ import useSelectWallet from 'hooks/useSelectWallet'
 import { BlockChainType } from 'types/network'
 import testnetSvg from '../../images/testnet.svg'
 import NetworkStore from 'store/NetworkStore'
+import WarningInfo from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -192,6 +193,7 @@ const Send = (): ReactElement => {
         {[ProcessStatus.Done, ProcessStatus.Failed].includes(status) ? (
           <>
             <Finish />
+            <WarningInfo />
             <FinishButton />
           </>
         ) : (
@@ -207,6 +209,7 @@ const Send = (): ReactElement => {
                 <Confirm />
               </div>
             </div>
+            <WarningInfo />
 
             {[
               ProcessStatus.Input,
