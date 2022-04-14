@@ -7,6 +7,8 @@ import NETWORK from '../consts/network'
 import { COLOR } from 'consts'
 import Text from './Text'
 import { BlockChainType } from 'types'
+import FormImage from 'components/FormImage'
+import warningSvg from 'images/warning.svg'
 
 type FormSelectProps<T> = {
   selectedValue: T
@@ -167,17 +169,18 @@ const FormSelect = <T,>({
           <OverlayTrigger
             delay={{ hide: 450, show: 300 }}
             overlay={
-              i === 1 ? (
+              option.label === 'SHUTTLE' ? (
                 <Tooltip
                   id="shuttle-warning"
                   style={{
-                    color: 'rgb(250, 200, 0)',
-                    backgroundColor: 'rgb(150, 100, 0)',
-                    border: '1px solid rgb(200, 150, 0)',
+                    color: '#e0a44d',
+                    backgroundColor: '#312a22',
+                    border: '1px solid #433626',
                     padding: '10px',
                     borderRadius: '5px',
                     fontSize: '12px',
                     maxWidth: '150px',
+                    marginLeft: '30px',
                   }}
                 >
                   Shuttle is scheduled to be deprecated - use at own risk.
@@ -218,22 +221,31 @@ const FormSelect = <T,>({
                     style={{ opacity: option.isDisabled ? 0.8 : 1 }}
                   />
                 )}
-                <Text
-                  style={{
-                    ...selectedTextStyle,
-                    marginLeft: icons ? 8 : 0,
-                    marginRight: 4,
-                    color: option.isDisabled
-                      ? COLOR.blueGray
-                      : icons
-                      ? '#B9B9B9'
-                      : COLOR.white,
-                    fontWeight: 500,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {option.label}
-                </Text>
+                <>
+                  {option.label === 'SHUTTLE' && (
+                    <FormImage
+                      src={warningSvg}
+                      size={18}
+                      style={{ marginRight: '5px' }}
+                    />
+                  )}
+                  <Text
+                    style={{
+                      ...selectedTextStyle,
+                      marginLeft: icons ? 8 : 0,
+                      marginRight: 4,
+                      color: option.isDisabled
+                        ? COLOR.blueGray
+                        : icons
+                        ? '#B9B9B9'
+                        : COLOR.white,
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {option.label}
+                  </Text>
+                </>
               </div>
             </StyledDropdownItem>
           </OverlayTrigger>
