@@ -77,7 +77,7 @@ const WarningInfo = (): ReactElement => {
         'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
       )
     } else if (fromBlockChain !== toBlockChain) {
-      setInfoText("Don't use exchange addresses for cross-chain transfers")
+      setInfoText("Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges.")
     }
 
     return (): void => {
