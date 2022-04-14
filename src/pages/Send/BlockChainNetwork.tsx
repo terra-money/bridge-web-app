@@ -46,7 +46,7 @@ const BlockChainNetwork = (): ReactElement => {
     SendStore.fromBlockChain
   )
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
-  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
   useUpdateBridgeType()
   const { setBlockchainStorage } = useAuth()
 
@@ -74,6 +74,7 @@ const BlockChainNetwork = (): ReactElement => {
               logout()
               setFromBlockChain(value)
               setToBlockChain(BlockChainType.terra)
+              setBridgeUsed(getDefaultBridge(value, BlockChainType.terra))
               setBlockchainStorage({
                 fromBlockChain: value,
                 toBlockChain: BlockChainType.terra,
@@ -157,6 +158,7 @@ const BlockChainNetwork = (): ReactElement => {
                 setFromBlockChain(BlockChainType.terra)
                 logout()
               }
+              setBridgeUsed(getDefaultBridge(BlockChainType.terra, b))
               setBlockchainStorage({
                 fromBlockChain: BlockChainType.terra,
                 toBlockChain: b,

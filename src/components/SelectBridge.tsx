@@ -11,6 +11,7 @@ import { useRecoilValue, useRecoilState } from 'recoil'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 import SendStore from 'store/SendStore'
 import NetworkStore from 'store/NetworkStore'
+import useAuth from 'hooks/useAuth'
 
 const SelectBridge = (): ReactElement => {
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
@@ -18,6 +19,7 @@ const SelectBridge = (): ReactElement => {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
+  const { setBlockchainStorage } = useAuth()
 
   const bridges =
     availableBridges[
@@ -46,7 +48,14 @@ const SelectBridge = (): ReactElement => {
           <FormSelect
             selectedValue={bridgeUsed}
             optionList={bridgesList}
-            onSelect={(b): void => setBridgeUsed(b)}
+            onSelect={(b): void => {
+              setBlockchainStorage({
+                fromBlockChain,
+                toBlockChain,
+                bridgeUsed: b,
+              })
+              setBridgeUsed(b)
+            }}
             containerStyle={{
               width: '100%',
               backgroundColor: COLOR.primary,
