@@ -113,7 +113,7 @@ const StyledDropdownMenu = styled(StyledDropdown.Menu)`
 
   @media only screen and (max-width: 450px) {
     a {
-      font-size: 14px;
+      font-size: 10px;
     }
   }
 `
