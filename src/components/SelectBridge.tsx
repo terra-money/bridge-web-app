@@ -31,6 +31,10 @@ const SelectBridge = (): ReactElement => {
       value: b,
       isDisabled: b === BridgeType.axelar && isTestnet,
       label: (b as string).toUpperCase(),
+      warning:
+        b === BridgeType.shuttle
+          ? 'Shuttle is scheduled to be deprecated - use at own risk.'
+          : '',
     }
   })
 
@@ -64,7 +68,6 @@ const SelectBridge = (): ReactElement => {
               marginTop: window.innerWidth > 450 ? '.3rem' : 0,
             }}
             selectedTextStyle={{
-              fontSize: '12px',
               fontWeight: '500',
               color: COLOR.darkGray,
             }}
