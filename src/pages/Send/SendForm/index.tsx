@@ -27,7 +27,6 @@ import SendStore from 'store/SendStore'
 import AssetList from './AssetList'
 import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
-import WarningInfo from './WarningInfo'
 import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
 
@@ -343,9 +342,7 @@ const SendForm = ({
           </StyledFormSection>
         )}
 
-      {/* only if from terra */}
       <FormFeeInfo feeValidationResult={feeValidationResult} />
-      <WarningInfo />
     </StyledContainer>
   )
 }
