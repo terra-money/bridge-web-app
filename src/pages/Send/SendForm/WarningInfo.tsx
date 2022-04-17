@@ -35,6 +35,12 @@ const StyledDangerText = styled(Text)`
   line-height: 1.5;
   letter-spacing: normal;
   color: #d64c55;
+  display: inline;
+
+  span {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `
 
 const StyledWarning = styled.div`
@@ -87,7 +93,52 @@ const StyledInfoText = styled(Text)`
   color: #a3a3a3;
 `
 
-const WarningInfo = (): ReactElement => {
+export const DangerElement = ({
+  children,
+}: {
+  children: React.ReactNode
+}): ReactElement => {
+  return (
+    <StyledDanger>
+      <div style={{ paddingRight: 12 }}>
+        <FormImage src={dangerSvg} size={18} />
+      </div>
+      <StyledDangerText>{children}</StyledDangerText>
+    </StyledDanger>
+  )
+}
+
+export const WarningElement = ({
+  children,
+}: {
+  children: React.ReactNode
+}): ReactElement => {
+  return (
+    <StyledWarning>
+      <div style={{ paddingRight: 12 }}>
+        <FormImage src={warningSvg} size={18} />
+      </div>
+      <StyledWarningText>{children}</StyledWarningText>
+    </StyledWarning>
+  )
+}
+
+export const InfoElement = ({
+  children,
+}: {
+  children: React.ReactNode
+}): ReactElement => {
+  return (
+    <StyledInfo>
+      <div style={{ paddingRight: 12 }}>
+        <FormImage src={infoSvg} size={18} />
+      </div>
+      <StyledInfoText>{children}</StyledInfoText>
+    </StyledInfo>
+  )
+}
+
+export const WarningInfo = (): ReactElement => {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
@@ -120,38 +171,13 @@ const WarningInfo = (): ReactElement => {
       {status === ProcessStatus.Input && (
         <>
           {bridgesList[0] && bridgesList[0] !== bridgeUsed && (
-            <StyledInfo>
-              <div style={{ paddingRight: 12 }}>
-                <FormImage src={infoSvg} size={18} />
-              </div>
-              <StyledInfoText>
-                The default bridge for this route is{' '}
-                {bridgesList[0].toUpperCase()}
-              </StyledInfoText>
-            </StyledInfo>
+            <InfoElement>
+              The default bridge for this route is{' '}
+              {bridgesList[0].toUpperCase()}
+            </InfoElement>
           )}
 
-          {infoText() && (
-            <StyledWarning>
-              <div style={{ paddingRight: 12 }}>
-                <FormImage src={warningSvg} size={18} />
-              </div>
-              <StyledWarningText>{infoText()}</StyledWarningText>
-            </StyledWarning>
-          )}
-
-          {bridgeUsed === BridgeType.wormhole &&
-            toBlockChain === BlockChainType.ethereum && (
-              <StyledDanger>
-                <div style={{ paddingRight: 12 }}>
-                  <FormImage src={dangerSvg} size={18} />
-                </div>
-                <StyledDangerText>
-                  Do not use Wormhole transfer to send funds to exchanges
-                  (Coinbase, Gemini, etc.)
-                </StyledDangerText>
-              </StyledDanger>
-            )}
+          {infoText() && <WarningElement>{infoText()}</WarningElement>}
         </>
       )}
       {(status === ProcessStatus.Submit ||
@@ -159,24 +185,17 @@ const WarningInfo = (): ReactElement => {
         status === ProcessStatus.Done) && (
         <>
           {bridgeUsed === BridgeType.wormhole && (
-            <StyledWarning>
-              <div style={{ paddingRight: 12 }}>
-                <FormImage src={warningSvg} size={18} />
-              </div>
-              <StyledWarningText>
-                Funds are deposited into the destination wallet few minutes
-                after transfer. If funds are not received, go{' '}
-                <a href="https://portalbridge.com/#/redeem" target="blank">
-                  to Portal bridge
-                </a>{' '}
-                to redeem the funds by entering the transaction hash
-              </StyledWarningText>
-            </StyledWarning>
+            <WarningElement>
+              Funds are deposited into the destination wallet few minutes after
+              transfer. If funds are not received, go{' '}
+              <a href="https://portalbridge.com/#/redeem" target="blank">
+                to Portal bridge
+              </a>{' '}
+              to redeem the funds by entering the transaction hash
+            </WarningElement>
           )}
         </>
       )}
     </div>
   )
 }
-
-export default WarningInfo
