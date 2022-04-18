@@ -48,9 +48,12 @@ const SelectBridge = (): ReactElement => {
       }}
     >
       <div>
-        {bridges.length > 1 && status === ProcessStatus.Input ? (
+        {bridges.length > 1 &&
+        status === ProcessStatus.Input &&
+        bridgeUsed !== BridgeType.thorswap ? (
           <FormSelect
             selectedValue={bridgeUsed}
+            // @ts-expect-error
             optionList={bridgesList}
             onSelect={(b): void => {
               setBlockchainStorage({

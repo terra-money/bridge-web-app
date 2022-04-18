@@ -220,6 +220,7 @@ const whitelist: Record<
   },
   // other chains
   [BlockChainType.axelar]: {},
+  [BlockChainType.bitcoin]: {},
   [BlockChainType.terra]: {},
 }
 
@@ -300,6 +301,7 @@ const testnetWhitelist: Record<
   [BlockChainType.scrt]: {},
   // other chains
   [BlockChainType.axelar]: {},
+  [BlockChainType.bitcoin]: {},
   [BlockChainType.terra]: {},
 }
 

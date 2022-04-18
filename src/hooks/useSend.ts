@@ -694,6 +694,9 @@ const useSend = (): UseSendType => {
                   BigInt(bridgeFee.toNumber())
                 )
                 return { success: true, hash: receipt.transactionHash }
+              // with thorswap
+              case BridgeType.thorswap:
+              // TODO: implement thorswap swap
             }
           } catch (error) {
             return handleTxErrorFromEtherBase(error)

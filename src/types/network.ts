@@ -12,6 +12,7 @@ export enum BlockChainType {
   cosmos = 'cosmos',
   polygon = 'polygon',
   moonbeam = 'moonbeam',
+  bitcoin = 'bitcoin',
   //cro = 'cronos',
 }
 
@@ -41,6 +42,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.polygon]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.moonbeam]: [BridgeType.axelar],
   [BlockChainType.terra]: [],
+  [BlockChainType.bitcoin]: [],
 }
 
 export function getDefaultBridge(

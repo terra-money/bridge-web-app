@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { Text, View } from 'components'
 import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
@@ -8,7 +8,8 @@ import FormImage from 'components/FormImage'
 import btn_back from 'images/btn_back.png'
 import { COLOR } from 'consts'
 import SendStore from 'store/SendStore'
-import { BridgeType } from 'types'
+import { BlockChainType, BridgeType } from 'types'
+import useAuth from 'hooks/useAuth'
 
 const StyledContainer = styled(View)`
   position: relative;
@@ -45,7 +46,7 @@ const StyledSwitchButton = styled.div`
 
 const StyledSwitchSelector = styled.div`
   background: ${COLOR.darkGray};
-  border-radius: 30px;
+  border-radius: 25px;
   overflow: hidden;
   width: calc(50% - 8px);
   height: calc(100% - 8px);
@@ -108,8 +109,12 @@ const FormTitle = ({
 }: {
   onClickGoBackToSendInputButton: () => void
 }): ReactElement => {
+  const { setBlockchainStorage } = useAuth()
+
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
-  const [bridgeUsed] = useRecoilState(SendStore.bridgeUsed)
+  const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
+  const setFromBlockChain = useSetRecoilState(SendStore.fromBlockChain)
+  const setToBlockChain = useSetRecoilState(SendStore.toBlockChain)
   const [checked, setChecked] = useState(bridgeUsed === BridgeType.thorswap)
 
   const GoBackButton = (): ReactElement => {
@@ -143,7 +148,19 @@ const FormTitle = ({
               checked={checked}
               onChange={(): void => {
                 setChecked(!checked)
-                //setBridgeUsed(checked ? BridgeType.wormhole : BridgeType.thorswap)
+                setBridgeUsed(
+                  checked ? BridgeType.wormhole : BridgeType.thorswap
+                )
+                // TODO: check if current chains are supported
+                setFromBlockChain(BlockChainType.terra)
+                setToBlockChain(BlockChainType.ethereum)
+                setBlockchainStorage({
+                  fromBlockChain: BlockChainType.terra,
+                  toBlockChain: BlockChainType.ethereum,
+                  bridgeUsed: checked
+                    ? BridgeType.wormhole
+                    : BridgeType.thorswap,
+                })
               }}
             />
           </StyledSwitchCheckbox>

@@ -161,7 +161,10 @@ export const WarningInfo = (): ReactElement => {
       bridgeUsed === BridgeType.wormhole
     ) {
       return '512 block confirmation is required for this transfer. It may take more than 15 minutes to receive funds in the destination wallet'
-    } else if (fromBlockChain !== toBlockChain) {
+    } else if (
+      fromBlockChain !== toBlockChain &&
+      bridgeUsed !== BridgeType.thorswap
+    ) {
       return "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
     }
   }
@@ -170,12 +173,14 @@ export const WarningInfo = (): ReactElement => {
     <div style={{ marginBottom: '40px' }}>
       {status === ProcessStatus.Input && (
         <>
-          {bridgesList[0] && bridgesList[0] !== bridgeUsed && (
-            <InfoElement>
-              The default bridge for this route is{' '}
-              {bridgesList[0].toUpperCase()}
-            </InfoElement>
-          )}
+          {bridgesList[0] &&
+            bridgesList[0] !== bridgeUsed &&
+            bridgeUsed !== BridgeType.thorswap && (
+              <InfoElement>
+                The default bridge for this route is{' '}
+                {bridgesList[0].toUpperCase()}
+              </InfoElement>
+            )}
 
           {infoText() && <WarningElement>{infoText()}</WarningElement>}
         </>

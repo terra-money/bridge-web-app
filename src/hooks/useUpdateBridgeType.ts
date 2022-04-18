@@ -1,6 +1,6 @@
 import SendStore from 'store/SendStore'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { BlockChainType, availableBridges } from 'types'
+import { BlockChainType, availableBridges, BridgeType } from 'types'
 
 export default function useUpdateBridgeType(): void {
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
@@ -10,6 +10,10 @@ export default function useUpdateBridgeType(): void {
   const chain =
     toBlockChain === BlockChainType.terra ? fromBlockChain : toBlockChain
 
-  if (!bridgeUsed || !availableBridges[chain].includes(bridgeUsed))
+  if (
+    !bridgeUsed ||
+    (!availableBridges[chain].includes(bridgeUsed) &&
+      bridgeUsed !== BridgeType.thorswap)
+  )
     setBridgeUSed(availableBridges[chain][0])
 }
