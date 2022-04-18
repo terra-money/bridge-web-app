@@ -4,6 +4,7 @@ const bg = '#0D0D0D'
 
 const darkGray = '#202020'
 const darkGray2 = '#2e2e2e'
+const darkGray3 = '#171717'
 const skyGray = '#727e8b'
 const blueGray = '#474d57'
 const black = '#1E1E1E'
@@ -19,6 +20,7 @@ export default {
   terraSky,
   darkGray,
   darkGray2,
+  darkGray3,
   skyGray,
   blueGray,
   black,

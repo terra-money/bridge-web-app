@@ -20,6 +20,7 @@ export enum BridgeType {
   wormhole = 'wormhole',
   ibc = 'ibc',
   axelar = 'axelar',
+  thorswap = 'thorswap',
 }
 
 export const availableBridges: Record<BlockChainType, BridgeType[]> = {
