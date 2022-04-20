@@ -48,14 +48,14 @@ const StyledAssetItem = styled.div`
   }
 `
 
-const StyledSelectAssetButton = styled.div`
+const StyledSelectAssetButton = styled.div<{ enabled: boolean }>`
   cursor: pointer;
   border-bottom: 2px solid ${COLOR.darkGray2};
   padding: 12px 0 6px;
   font-size: 14px;
   font-weight: 500;
   :hover {
-    opacity: 0.8;
+    opacity: ${({ enabled }): string => (enabled ? '0.8' : '1')};
   }
 `
 
@@ -120,9 +120,13 @@ const AssetItem = ({
 const SelectAssetButton = ({
   asset,
   setShowModal,
+  multipleAssets,
+  swap,
 }: {
   asset?: AssetType
   setShowModal: (value: boolean) => void
+  multipleAssets: boolean
+  swap: boolean
 }): ReactElement => {
   const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
@@ -130,8 +134,9 @@ const SelectAssetButton = ({
   return (
     <StyledSelectAssetButton
       onClick={(): void => {
-        setShowModal(true)
+        multipleAssets && setShowModal(true)
       }}
+      enabled={multipleAssets}
     >
       {asset && (
         <Row>
@@ -144,7 +149,7 @@ const SelectAssetButton = ({
             <Text style={{ marginLeft: 10, fontSize: 16 }}>{asset.symbol}</Text>
           </Row>
           <Row style={{ alignItems: 'center' }}>
-            {isLoggedIn && (
+            {isLoggedIn && !swap && (
               <Text
                 style={{
                   justifyContent: 'flex-end',
@@ -156,7 +161,9 @@ const SelectAssetButton = ({
                 Available {asset.balance ? formatBalance(asset.balance) : '0'}
               </Text>
             )}
-            <CaretDownFill style={{ fontSize: 8, marginTop: -2 }} />
+            {multipleAssets && (
+              <CaretDownFill style={{ fontSize: 8, marginTop: -2 }} />
+            )}
           </Row>
         </Row>
       )}
@@ -167,9 +174,11 @@ const SelectAssetButton = ({
 const AssetList = ({
   selectedAsset,
   onChangeAmount,
+  swap,
 }: {
   selectedAsset?: AssetType
   onChangeAmount: ({ value }: { value: string }) => void
+  swap?: boolean
 }): ReactElement => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -209,7 +218,12 @@ const AssetList = ({
 
   return (
     <>
-      <SelectAssetButton asset={selectedAsset} setShowModal={setShowModal} />
+      <SelectAssetButton
+        swap={!!swap}
+        asset={selectedAsset}
+        setShowModal={setShowModal}
+        multipleAssets={assetList.length > 1}
+      />
       <DefaultModal
         {...{
           isOpen: showModal,

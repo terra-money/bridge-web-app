@@ -18,7 +18,7 @@ const StyledInput = styled.input`
   padding-left: 0;
   font-size: 16px;
   color: ${COLOR.text};
-  border-bottom: 1px solid ${COLOR.darkGray2};
+  border-bottom: 2px solid ${COLOR.darkGray2};
   background-color: transparent;
   :focus {
     outline: none;

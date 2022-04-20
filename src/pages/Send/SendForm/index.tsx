@@ -30,6 +30,8 @@ import FormFeeInfo from './FormFeeInfo'
 import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
 
+import swapArrowImg from '../../../images/swapArrow.svg'
+
 const StyledContainer = styled.div``
 
 const StyledFormSection = styled.div`
@@ -65,6 +67,12 @@ const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
   opacity: ${({ refreshing }): number => (refreshing ? 0.5 : 1)};
   cursor: ${({ refreshing }): string => (refreshing ? 'default' : 'pointer')};
   user-select: none;
+`
+
+const StyledSwitchSwapButton = styled.img`
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
 `
 
 const RefreshButton = (): ReactElement => {
@@ -105,7 +113,7 @@ const RefreshButton = (): ReactElement => {
   )
 }
 
-const SendForm = ({
+export const SendForm = ({
   feeValidationResult,
 }: {
   feeValidationResult: ValidateItemResultType
@@ -347,4 +355,248 @@ const SendForm = ({
   )
 }
 
-export default SendForm
+export const SwapForm = ({
+  feeValidationResult,
+}: {
+  feeValidationResult: ValidateItemResultType
+}): ReactElement => {
+  const loginUser = useRecoilValue(AuthStore.loginUser)
+  const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+
+  // Send Data
+  const asset = useRecoilValue(SendStore.asset)
+  const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
+  const [amount, setAmount] = useRecoilState(SendStore.amount)
+  const [memo, setMemo] = useRecoilState(SendStore.memo)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+
+  // Computed data from Send data
+  const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
+  /* TODO: save swap fee as bridge Fee
+  const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
+  const setAmountAfterBridgeFee = useSetRecoilState(
+    SendStore.amountAfterBridgeFee
+  )*/
+
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+
+  const [validationResult, setValidationResult] = useRecoilState(
+    SendStore.validationResult
+  )
+
+  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
+
+  const [inputAmount, setInputAmount] = useState('')
+
+  const { formatBalance, getAssetList } = useAsset()
+  const { getTerraFeeList } = useSend()
+  const { validateSendData } = useSendValidate()
+
+  const onChangeToAddress = ({ value }: { value: string }): void => {
+    setToAddress(value)
+  }
+
+  const onChangeAmount = ({ value }: { value: string }): void => {
+    if (_.isEmpty(value)) {
+      setInputAmount('')
+      setAmount('')
+      return
+    }
+
+    if (false === _.isNaN(_.toNumber(value))) {
+      setInputAmount(value)
+      const decimalSize = new BigNumber(
+        fromBlockChain === BlockChainType.terra ||
+        bridgeUsed === BridgeType.ibc ||
+        bridgeUsed === BridgeType.axelar ||
+        bridgeUsed === BridgeType.wormhole
+          ? ASSET.TERRA_DECIMAL
+          : ASSET.ETHER_BASE_DECIMAL
+      )
+      setAmount(new BigNumber(value).times(decimalSize).toString(10))
+    }
+  }
+
+  const onChangeMemo = ({ value }: { value: string }): void => {
+    setMemo(value)
+  }
+
+  const onClickMaxButton = async (): Promise<void> => {
+    const assetAmount = new BigNumber(asset?.balance || 0)
+    onChangeAmount({ value: formatBalance(assetAmount) })
+  }
+
+  const setBridgeFee = async (): Promise<void> => {
+    // TODO: calculate swap fee
+  }
+
+  // It's for Fee(gas) and ShuttleFee
+  const dbcGetFeeInfoWithValidation = useDebouncedCallback(async () => {
+    // set false while waiting for verification
+    setValidationResult({ isValid: false })
+    const sendDataResult = await validateSendData()
+    setValidationResult(sendDataResult)
+
+    const ableToGetFeeInfo = isLoggedIn && amount && toAddress
+
+    if (asset?.terraToken && ableToGetFeeInfo) {
+      if (sendDataResult.isValid) {
+        // get terra Send Fee Info
+        const terraFeeList = await getTerraFeeList()
+        setGasFeeList(terraFeeList)
+      }
+
+      setBridgeFee()
+    }
+  }, 300)
+
+  //get terra send fee info
+  useEffect(() => {
+    dbcGetFeeInfoWithValidation.callback()
+    return (): void => {
+      dbcGetFeeInfoWithValidation.cancel()
+    }
+  }, [amount, toAddress, toBlockChain, fromBlockChain, memo, asset, bridgeUsed])
+
+  useEffect(() => {
+    onChangeAmount({ value: inputAmount })
+    getAssetList().then((): void => {
+      dbcGetFeeInfoWithValidation.callback()
+    })
+  }, [
+    // to check decimal length by network
+    loginUser,
+    // to check if asset valid by network
+    toBlockChain,
+    fromBlockChain,
+    bridgeUsed,
+    isTestnet,
+  ])
+
+  return (
+    <StyledContainer>
+      <StyledFormSection style={{ marginBottom: 20 }}>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <FormLabel title={'From'} />
+
+          <Row style={{ justifyContent: 'flex-end' }}>
+            <FormLabel
+              title={'AVAILABLE   ' + formatBalance(asset?.balance || '0')}
+            />
+            <div style={{ width: '10px' }}></div>
+            <RefreshButton />
+          </Row>
+        </Row>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div style={{ width: '25%' }}>
+            <AssetList swap {...{ selectedAsset: asset, onChangeAmount }} />
+          </div>
+
+          <div style={{ position: 'relative', width: '75%' }}>
+            <FormLabelInput
+              inputProps={{
+                type: 'number',
+                value: inputAmount,
+                onChange: ({ target: { value } }): void => {
+                  onChangeAmount({ value })
+                },
+              }}
+              labelProps={{ children: '' }}
+            />
+            <StyledMaxButton onClick={onClickMaxButton}>Max</StyledMaxButton>
+          </div>
+        </div>
+        <FormErrorMessage
+          errorMessage={
+            validationResult.errorMessage?.asset ||
+            validationResult.errorMessage?.amount
+          }
+          style={{ marginBottom: 0 }}
+        />
+      </StyledFormSection>
+
+      <StyledSwitchSwapButton src={swapArrowImg} alt="Swap" />
+
+      <StyledFormSection style={{ marginBottom: 70, marginTop: -5 }}>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <FormLabel title={'To'} />
+        </Row>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div style={{ width: '25%' }}>
+            <AssetList swap {...{ selectedAsset: asset, onChangeAmount }} />
+          </div>
+
+          <div style={{ position: 'relative', width: '75%' }}>
+            <FormLabelInput
+              inputProps={{
+                type: 'number',
+                value: inputAmount,
+                onChange: ({ target: { value } }): void => {
+                  onChangeAmount({ value })
+                },
+              }}
+              labelProps={{ children: '' }}
+            />
+          </div>
+        </div>
+        <FormErrorMessage
+          errorMessage={
+            validationResult.errorMessage?.asset ||
+            validationResult.errorMessage?.amount
+          }
+          style={{ marginBottom: 0 }}
+        />
+      </StyledFormSection>
+
+      <StyledFormSection>
+        <FormLabelInput
+          inputProps={{
+            value: toAddress,
+            onChange: ({ target: { value } }): void => {
+              onChangeToAddress({ value })
+            },
+          }}
+          labelProps={{ children: 'Destination Address' }}
+        />
+        <FormErrorMessage
+          errorMessage={validationResult.errorMessage?.toAddress}
+        />
+      </StyledFormSection>
+
+      {fromBlockChain === BlockChainType.terra &&
+        toBlockChain === BlockChainType.terra && (
+          <StyledFormSection>
+            <FormLabelInput
+              inputProps={{
+                value: memo,
+                onChange: ({ target: { value } }): void => {
+                  onChangeMemo({ value })
+                },
+              }}
+              labelProps={{ children: 'Memo (optional)' }}
+            />
+            <FormErrorMessage
+              errorMessage={validationResult.errorMessage?.memo}
+            />
+          </StyledFormSection>
+        )}
+
+      <FormFeeInfo feeValidationResult={feeValidationResult} />
+    </StyledContainer>
+  )
+}

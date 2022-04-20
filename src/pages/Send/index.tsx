@@ -15,7 +15,7 @@ import useSendValidate from 'hooks/useSendValidate'
 
 import { Container } from 'components'
 import FormTitle from './FormTitle'
-import SendForm from './SendForm'
+import { SendForm, SwapForm } from './SendForm'
 import Confirm from './Confirm'
 import Finish from './Finish'
 import SendFormButton from './SendFormButton'
@@ -222,7 +222,11 @@ const Send = (): ReactElement => {
               style={{ display: 'flex', overflowX: 'hidden' }}
             >
               <div style={{ minWidth: '100%' }}>
-                <SendForm feeValidationResult={feeValidationResult} />
+                {bridgeUsed === BridgeType.thorswap ? (
+                  <SwapForm feeValidationResult={feeValidationResult} />
+                ) : (
+                  <SendForm feeValidationResult={feeValidationResult} />
+                )}
               </div>
               <div style={{ minWidth: '100%' }}>
                 <Confirm />

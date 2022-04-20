@@ -45,7 +45,7 @@ const StyledSwitchButton = styled.div`
 `
 
 const StyledSwitchSelector = styled.div`
-  background: ${COLOR.darkGray};
+  background: ${COLOR.darkGray2};
   border-radius: 25px;
   overflow: hidden;
   width: calc(50% - 8px);
@@ -76,7 +76,6 @@ const StyledSwitchCheckbox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
     pointer-events: none;
   }
 
@@ -90,7 +89,6 @@ const StyledSwitchCheckbox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
     pointer-events: none;
   }
 `
@@ -135,7 +133,7 @@ const FormTitle = ({
       ) : (
         <StyledSwitchButton>
           <StyledSwitchSelector
-            className="selector"
+            className={checked ? 'checked' : ''}
             style={{
               transform: `translateX(${checked ? '100%' : '0'})`,
               transition: 'transform 300ms',
