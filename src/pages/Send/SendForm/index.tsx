@@ -31,6 +31,7 @@ import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
 
 import swapArrowImg from '../../../images/swapArrow.svg'
+import SlippageInput from 'components/SlippageInput'
 
 const StyledContainer = styled.div``
 
@@ -505,6 +506,10 @@ export const SwapForm = ({
               inputProps={{
                 type: 'number',
                 value: inputAmount,
+                style: {
+                  textAlign: 'right',
+                  paddingRight: '55px',
+                },
                 onChange: ({ target: { value } }): void => {
                   onChangeAmount({ value })
                 },
@@ -525,7 +530,7 @@ export const SwapForm = ({
 
       <StyledSwitchSwapButton src={swapArrowImg} alt="Swap" />
 
-      <StyledFormSection style={{ marginBottom: 70, marginTop: -5 }}>
+      <StyledFormSection style={{ marginBottom: 10, marginTop: -5 }}>
         <Row style={{ justifyContent: 'space-between' }}>
           <FormLabel title={'To'} />
         </Row>
@@ -546,8 +551,9 @@ export const SwapForm = ({
               inputProps={{
                 type: 'number',
                 value: inputAmount,
-                onChange: ({ target: { value } }): void => {
-                  onChangeAmount({ value })
+                disabled: true,
+                style: {
+                  textAlign: 'right',
                 },
               }}
               labelProps={{ children: '' }}
@@ -555,13 +561,12 @@ export const SwapForm = ({
           </div>
         </div>
         <FormErrorMessage
-          errorMessage={
-            validationResult.errorMessage?.asset ||
-            validationResult.errorMessage?.amount
-          }
+          errorMessage={validationResult.errorMessage?.asset}
           style={{ marginBottom: 0 }}
         />
       </StyledFormSection>
+
+      <SlippageInput />
 
       <StyledFormSection>
         <FormLabelInput

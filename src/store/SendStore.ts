@@ -85,6 +85,11 @@ const validationResult = atom<ValidateResultType>({
   },
 })
 
+const slippageTolerance = atom<number>({
+  key: 'slippageTolerance',
+  default: 1,
+})
+
 export default {
   asset,
   toAddress,
@@ -104,4 +109,6 @@ export default {
   amountAfterBridgeFee,
 
   validationResult,
+
+  slippageTolerance,
 }
