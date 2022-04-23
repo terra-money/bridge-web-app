@@ -512,6 +512,10 @@ export const SwapForm = ({
     }
   }, [amount, toBlockChain, fromBlockChain, asset, bridgeUsed])
 
+  function formatSwapAmount(amount: number): string {
+    return amount ? amount.toFixed(6) : ''
+  }
+
   return (
     <StyledContainer>
       <StyledFormSection style={{ marginBottom: 20 }}>
@@ -587,7 +591,7 @@ export const SwapForm = ({
             <FormLabelInput
               inputProps={{
                 type: 'number',
-                value: amountAfterBridgeFee.toNumber().toFixed(8),
+                value: formatSwapAmount(amountAfterBridgeFee.toNumber()),
                 disabled: true,
                 style: {
                   textAlign: 'right',
