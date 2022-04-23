@@ -5,6 +5,7 @@ import { atom } from 'recoil'
 import { AssetNativeDenomEnum, AssetType } from 'types/asset'
 import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateResultType } from 'types/send'
+import { ThorAssetType } from 'packages/thorswap/getAssets'
 
 // Send Data Start
 const asset = atom<AssetType | undefined>({
@@ -89,6 +90,14 @@ const slippageTolerance = atom<number>({
   key: 'slippageTolerance',
   default: 1,
 })
+const toAssetList = atom<ThorAssetType[]>({
+  key: 'toAssetList',
+  default: [],
+})
+const toAsset = atom<ThorAssetType | undefined>({
+  key: 'toAsset',
+  default: undefined,
+})
 
 export default {
   asset,
@@ -111,4 +120,6 @@ export default {
   validationResult,
 
   slippageTolerance,
+  toAssetList,
+  toAsset,
 }

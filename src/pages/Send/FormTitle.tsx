@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
@@ -113,7 +113,12 @@ const FormTitle = ({
   const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
   const setFromBlockChain = useSetRecoilState(SendStore.fromBlockChain)
   const setToBlockChain = useSetRecoilState(SendStore.toBlockChain)
+
   const [checked, setChecked] = useState(bridgeUsed === BridgeType.thorswap)
+
+  useEffect(() => {
+    setChecked(bridgeUsed === BridgeType.thorswap)
+  }, [bridgeUsed])
 
   const GoBackButton = (): ReactElement => {
     return (

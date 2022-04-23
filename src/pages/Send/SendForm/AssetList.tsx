@@ -17,6 +17,8 @@ import useAsset from 'hooks/useAsset'
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
+import { ThorAssetType } from 'packages/thorswap/getAssets'
+
 const StyledContainer = styled.div`
   padding: 0 25px 40px;
   background-color: ${COLOR.darkGray2};
@@ -71,12 +73,15 @@ const AssetItem = ({
   asset,
   setShowModal,
   onChangeAmount,
+  to,
 }: {
   asset: AssetType
   setShowModal: (value: boolean) => void
-  onChangeAmount: ({ value }: { value: string }) => void
+  onChangeAmount?: ({ value }: { value: string }) => void
+  to: boolean
 }): ReactElement => {
   const [oriAsset, setAsset] = useRecoilState(SendStore.asset)
+  const setToAsset = useSetRecoilState(SendStore.toAsset)
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   const { formatBalance } = useAsset()
@@ -85,9 +90,9 @@ const AssetItem = ({
     <StyledAssetItem
       onClick={(): void => {
         if (oriAsset !== asset) {
-          onChangeAmount({ value: '' })
+          onChangeAmount && onChangeAmount({ value: '' })
         }
-        setAsset(asset)
+        to ? setToAsset(asset as ThorAssetType) : setAsset(asset)
         setShowModal(false)
       }}
     >
@@ -105,7 +110,7 @@ const AssetItem = ({
             </Text>
           </View>
         </Row>
-        {isLoggedIn && (
+        {isLoggedIn && !to && (
           <View style={{ justifyContent: 'center' }}>
             <Text style={{ fontSize: 14 }}>
               {asset.balance ? formatBalance(asset.balance) : '0'}{' '}
@@ -126,7 +131,7 @@ const SelectAssetButton = ({
   asset?: AssetType
   setShowModal: (value: boolean) => void
   multipleAssets: boolean
-  swap: boolean
+  swap?: boolean
 }): ReactElement => {
   const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
@@ -175,25 +180,37 @@ const AssetList = ({
   selectedAsset,
   onChangeAmount,
   swap,
+  to,
 }: {
   selectedAsset?: AssetType
-  onChangeAmount: ({ value }: { value: string }) => void
+  onChangeAmount?: ({ value }: { value: string }) => void
   swap?: boolean
+  to?: boolean
 }): ReactElement => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
+  const toAssetList = useRecoilValue(SendStore.toAssetList)
   const setAsset = useSetRecoilState(SendStore.asset)
+  const setToAsset = useSetRecoilState(SendStore.toAsset)
   const [showModal, setShowModal] = useState(false)
   const [inputFilter, setInputFilter] = useState('')
 
-  const filteredAssetList = assetList.filter((x) => {
-    const inputFilterLower = inputFilter.toLowerCase()
-    return inputFilterLower
-      ? x.name.toLowerCase().includes(inputFilterLower) ||
-          x.symbol.toLowerCase().includes(inputFilterLower)
-      : true
-  })
+  const filteredAssetList = to
+    ? toAssetList.filter((x) => {
+        const inputFilterLower = inputFilter.toLowerCase()
+        return inputFilterLower
+          ? x.name.toLowerCase().includes(inputFilterLower) ||
+              x.symbol.toLowerCase().includes(inputFilterLower)
+          : true
+      })
+    : assetList.filter((x) => {
+        const inputFilterLower = inputFilter.toLowerCase()
+        return inputFilterLower
+          ? x.name.toLowerCase().includes(inputFilterLower) ||
+              x.symbol.toLowerCase().includes(inputFilterLower)
+          : true
+      })
 
   useEffect(() => {
     if (showModal) {
@@ -203,7 +220,7 @@ const AssetList = ({
   }, [showModal])
 
   useEffect(() => {
-    if (_.some(assetList)) {
+    if (!to && _.some(assetList)) {
       if (selectedAsset) {
         setAsset(
           assetList.find((x) => x.terraToken === selectedAsset.terraToken) ||
@@ -214,7 +231,10 @@ const AssetList = ({
         setAsset(assetList.find((x) => x.terraToken === 'uusd') || assetList[0])
       }
     }
-  }, [assetList])
+    if (to) {
+      setToAsset(toAssetList[0])
+    }
+  }, [assetList, toAssetList])
 
   return (
     <>
@@ -271,6 +291,7 @@ const AssetList = ({
                   asset={asset}
                   setShowModal={setShowModal}
                   onChangeAmount={onChangeAmount}
+                  to={!!to}
                 />
               ))
             ) : (

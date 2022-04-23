@@ -317,6 +317,17 @@ export default function useWhiteList(): Record<string, string> {
 
   if (!bridgeUsed || chain === BlockChainType.terra) return {}
 
+  if (bridgeUsed === BridgeType.thorswap) {
+    // on thorswap whitelists work in a different way
+    // TODO: get whitelist from thorswap
+    if (fromBlockChain === BlockChainType.terra) {
+      return {
+        uusd: 'uusd',
+        uluna: 'uluna',
+      }
+    }
+  }
+
   return (
     (isTestnet
       ? testnetWhitelist[chain]?.[bridgeUsed]

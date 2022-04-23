@@ -16,7 +16,7 @@ export enum AssetSymbolEnum {
 }
 
 export type AssetType = {
-  symbol: AssetSymbolEnum
+  symbol: string
   name: string
   logoURI: string
   terraToken: string

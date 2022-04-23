@@ -62,9 +62,11 @@ const SlippageInput = (): ReactElement => {
           <StyledSlippageInput
             value={slippage}
             type="number"
-            onChange={({ target: { value } }): void =>
-              setSlippage(Number(value))
-            }
+            onChange={({ target: { value } }): void => {
+              if (Number(value) <= 0) setSlippage(0)
+              else if (Number(value) >= 15) setSlippage(15)
+              else setSlippage(Number(value))
+            }}
           />{' '}
           %
         </StyledSlippageInputContainer>

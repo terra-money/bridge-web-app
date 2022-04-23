@@ -32,6 +32,9 @@ import getWormholeFees from 'packages/wormhole/fees'
 
 import swapArrowImg from '../../../images/swapArrow.svg'
 import SlippageInput from 'components/SlippageInput'
+import { getThorAssets } from 'packages/thorswap/getAssets'
+import { thorChainName, ThorBlockChains } from 'packages/thorswap/thorNames'
+import getSwapOutput from 'packages/thorswap/getOutput'
 
 const StyledContainer = styled.div``
 
@@ -231,6 +234,8 @@ export const SendForm = ({
       setAmountAfterBridgeFee(
         computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
       )
+    } else if (bridgeUsed === BridgeType.thorswap) {
+      // leave as it is, we have already calculated it
     } else {
       setBridgeFeeAmount(new BigNumber(0))
       setAmountAfterBridgeFee(new BigNumber(amount))
@@ -372,6 +377,9 @@ export const SwapForm = ({
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
+  const setToAssetList = useSetRecoilState(SendStore.toAssetList)
+  const [toAsset, setToAsset] = useRecoilState(SendStore.toAsset)
+
   // Computed data from Send data
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
   /* TODO: save swap fee as bridge Fee
@@ -381,6 +389,10 @@ export const SwapForm = ({
   )*/
 
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
+  const [amountAfterBridgeFee, setAmountAfterBridgeFee] = useRecoilState(
+    SendStore.amountAfterBridgeFee
+  )
 
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
@@ -465,6 +477,13 @@ export const SwapForm = ({
     getAssetList().then((): void => {
       dbcGetFeeInfoWithValidation.callback()
     })
+
+    getThorAssets(thorChainName[toBlockChain as ThorBlockChains]).then(
+      (list): void => {
+        setToAssetList(list)
+        setToAsset(list[0])
+      }
+    )
   }, [
     // to check decimal length by network
     loginUser,
@@ -474,6 +493,24 @@ export const SwapForm = ({
     bridgeUsed,
     isTestnet,
   ])
+
+  useEffect(() => {
+    if (bridgeUsed === BridgeType.thorswap) {
+      setBridgeFeeAmount(new BigNumber(0))
+      ;(async (): Promise<void> => {
+        const estimatedResult = await getSwapOutput(
+          `${thorChainName[fromBlockChain as ThorBlockChains]}.${
+            asset?.symbol
+          }`,
+          toAsset?.thorId || '',
+          // TODO: use token decimals
+          parseInt(amount || '0') / 1e6
+        )
+        console.log(estimatedResult)
+        setAmountAfterBridgeFee(new BigNumber(estimatedResult as number))
+      })()
+    }
+  }, [amount, toBlockChain, fromBlockChain, asset, bridgeUsed])
 
   return (
     <StyledContainer>
@@ -543,14 +580,14 @@ export const SwapForm = ({
           }}
         >
           <div style={{ width: '25%' }}>
-            <AssetList swap {...{ selectedAsset: asset, onChangeAmount }} />
+            <AssetList swap {...{ selectedAsset: toAsset, to: true }} />
           </div>
 
           <div style={{ position: 'relative', width: '75%' }}>
             <FormLabelInput
               inputProps={{
                 type: 'number',
-                value: inputAmount,
+                value: amountAfterBridgeFee.toNumber().toFixed(8),
                 disabled: true,
                 style: {
                   textAlign: 'right',
