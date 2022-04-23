@@ -198,12 +198,7 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     }
   }
 
-  let buttons = [
-    WalletEnum.TerraExtension,
-    WalletEnum.TerraWalletConnect,
-    WalletEnum.MetaMask,
-    WalletEnum.Keplr,
-  ]
+  let buttons = [WalletEnum.TerraExtension, WalletEnum.TerraWalletConnect]
   if (
     fromBlockChain === BlockChainType.ethereum ||
     fromBlockChain === BlockChainType.hmy

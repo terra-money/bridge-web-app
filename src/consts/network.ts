@@ -165,7 +165,16 @@ const wormholeContracts: Record<BlockChainType, WormholeConsts> = {
   [BlockChainType.scrt]: {},
   [BlockChainType.inj]: {},
   [BlockChainType.axelar]: {},
-  [BlockChainType.solana]: {},
+  [BlockChainType.solana]: {
+    mainnet: {
+      chainid: 1,
+      tokenBridge: 'wormDTUJ6AWPNvk59vGQbDvGJmqbDTdgWgAqcLBCgUb',
+    },
+    testnet: {
+      chainid: 1,
+      tokenBridge: 'DZnkkTmCiFWfYTfT41X3Rd1kDgozqzxWaHqsw6W4x2oe',
+    },
+  },
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

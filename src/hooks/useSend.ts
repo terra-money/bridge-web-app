@@ -23,25 +23,10 @@ import { useDebouncedCallback } from 'use-debounce/lib'
 import { UTIL, NETWORK } from 'consts'
 
 import {
-	Token,
-	ASSOCIATED_TOKEN_PROGRAM_ID,
-	TOKEN_PROGRAM_ID
-} from '@solana/spl-token';
-
-import {
   ChainId,
-	getForeignAssetSolana,
   hexToUint8Array,
   nativeToHexString,
   transferFromEth,
-  transferFromTerra,
-  CHAIN_ID_TERRA,
-  CHAIN_ID_SOLANA,
-  getSignedVAA,
-  getEmitterAddressTerra,
-  parseSequenceFromLogTerra,
-  postVaaSolana,
-  redeemOnSolana
 } from '@certusone/wormhole-sdk'
 
 import terraService from 'services/terraService'
@@ -69,8 +54,6 @@ import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
 import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDepositAddress'
 import useTns from 'packages/tns/useTns'
-
-const solana_web3 = require('@solana/web3.js');
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -383,87 +366,105 @@ const useSend = (): UseSendType => {
             Buffer.alloc(12),
             Buffer.from(toAddress.substring(2), 'hex'),
           ])
-          return UTIL.isNativeDenom(asset.terraToken)
-            ? [
-                new MsgExecuteContract(
-                  loginUser.address,
-                  NETWORK.wormholeContracts[BlockChainType.terra][
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  {
-                    deposit_tokens: {},
-                  },
-                  { [asset.terraToken]: sendAmount }
-                ),
-                new MsgExecuteContract(
-                  loginUser.address,
-                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  {
-                    initiate_transfer: {
-                      asset: {
-                        amount: sendAmount.toString(),
-                        info: {
-                          native_token: {
-                            denom: asset.terraToken,
+          if (
+            etherVaultTokenList[asset.terraToken] &&
+            toBlockChain === BlockChainType.solana
+          ) {
+            return [
+              new MsgExecuteContract(
+                loginUser.address,
+                NETWORK.wormholeContracts[BlockChainType.solana][
+                  isTestnet ? 'testnet' : 'mainnet'
+                ]?.tokenBridge || '',
+                {
+                  deposit_tokens: {},
+                },
+                { [asset.terraToken]: sendAmount }
+              ),
+            ]
+          } else {
+            return UTIL.isNativeDenom(asset.terraToken)
+              ? [
+                  new MsgExecuteContract(
+                    loginUser.address,
+                    NETWORK.wormholeContracts[BlockChainType.terra][
+                      isTestnet ? 'testnet' : 'mainnet'
+                    ]?.tokenBridge || '',
+                    {
+                      deposit_tokens: {},
+                    },
+                    { [asset.terraToken]: sendAmount }
+                  ),
+                  new MsgExecuteContract(
+                    loginUser.address,
+                    NETWORK.wormholeContracts[BlockChainType.terra]?.[
+                      isTestnet ? 'testnet' : 'mainnet'
+                    ]?.tokenBridge || '',
+                    {
+                      initiate_transfer: {
+                        asset: {
+                          amount: sendAmount.toString(),
+                          info: {
+                            native_token: {
+                              denom: asset.terraToken,
+                            },
                           },
                         },
+                        recipient_chain:
+                          NETWORK.wormholeContracts[toBlockChain][
+                            isTestnet ? 'testnet' : 'mainnet'
+                          ]?.chainid || 0,
+                        recipient: pubKey.toString('base64'),
+                        fee: bridgeFee.toString(),
+                        nonce: Math.round(Math.round(Math.random() * 100000)),
                       },
-                      recipient_chain:
-                        NETWORK.wormholeContracts[toBlockChain][
-                          isTestnet ? 'testnet' : 'mainnet'
-                        ]?.chainid || 0,
-                      recipient: pubKey.toString('base64'),
-                      fee: bridgeFee.toString(),
-                      nonce: Math.round(Math.round(Math.random() * 100000)),
-                    },
-                  }
-                ),
-              ]
-            : [
-                new MsgExecuteContract(
-                  loginUser.address,
-                  fromTokenAddress || '',
-                  {
-                    increase_allowance: {
-                      amount: sendAmount.toString(),
-                      expires: {
-                        never: {},
-                      },
-                      spender:
-                        NETWORK.wormholeContracts[BlockChainType.terra][
-                          isTestnet ? 'testnet' : 'mainnet'
-                        ]?.tokenBridge || '',
-                    },
-                  }
-                ),
-                new MsgExecuteContract(
-                  loginUser.address,
-                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  {
-                    initiate_transfer: {
-                      asset: {
+                    }
+                  ),
+                ]
+              : [
+                  new MsgExecuteContract(
+                    loginUser.address,
+                    fromTokenAddress || '',
+                    {
+                      increase_allowance: {
                         amount: sendAmount.toString(),
-                        info: {
-                          token: {
-                            contract_addr: fromTokenAddress || '',
+                        expires: {
+                          never: {},
+                        },
+                        spender:
+                          NETWORK.wormholeContracts[BlockChainType.terra][
+                            isTestnet ? 'testnet' : 'mainnet'
+                          ]?.tokenBridge || '',
+                      },
+                    }
+                  ),
+                  new MsgExecuteContract(
+                    loginUser.address,
+                    NETWORK.wormholeContracts[BlockChainType.terra]?.[
+                      isTestnet ? 'testnet' : 'mainnet'
+                    ]?.tokenBridge || '',
+                    {
+                      initiate_transfer: {
+                        asset: {
+                          amount: sendAmount.toString(),
+                          info: {
+                            token: {
+                              contract_addr: fromTokenAddress || '',
+                            },
                           },
                         },
+                        recipient_chain:
+                          NETWORK.wormholeContracts[toBlockChain][
+                            isTestnet ? 'testnet' : 'mainnet'
+                          ]?.chainid || 0,
+                        recipient: pubKey.toString('base64'),
+                        fee: bridgeFee.toString(),
+                        nonce: Math.round(Math.round(Math.random() * 100000)),
                       },
-                      recipient_chain:
-                        NETWORK.wormholeContracts[toBlockChain][
-                          isTestnet ? 'testnet' : 'mainnet'
-                        ]?.chainid || 0,
-                      recipient: pubKey.toString('base64'),
-                      fee: bridgeFee.toString(),
-                      nonce: Math.round(Math.round(Math.random() * 100000)),
-                    },
-                  }
-                ),
-              ]
+                    }
+                  ),
+                ]
+          }
         // terra -> terra
         case undefined:
           const recipient = (await getAddress(toAddress)) || toAddress
@@ -489,9 +490,6 @@ const useSend = (): UseSendType => {
   // sign Terra tx
   const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
     let errorMessage
-    if (toBlockChain === BlockChainType.solana) {
-      transferFromTerraToSolana(fromTokenAddress || '', '', toAddress);
-    }
     const memoOrToAddress =
       toBlockChain === BlockChainType.terra
         ? // only terra network can get user's memo
@@ -817,72 +815,6 @@ const useSend = (): UseSendType => {
       return submitRequestTxFromIbc()
     }
     return submitRequestTxFromEtherBase()
-  }
-
-  const transferFromTerraToSolana = async (signer: string, amount: string, recipientWalletAddress: any): Promise<void> => {
-    // determine destination address - an associated token account
-    const SOL_TOKEN_BRIDGE_ADDRESS = "wormDTUJ6AWPNvk59vGQbDvGJmqbDTdgWgAqcLBCgUb";
-    const SOL_BRIDGE_ADDRESS = "worm2ZoG2kUd4vFXhvjh93UUH596ayRfgQ2MgjNMTth";
-    const TERRA_TOKEN_BRIDGE_ADDRESS = "terra10pyejy66429refv3g35g2t7am0was7ya7kz2a4";
-    const TERRA_BRIDGE_ADDRESS = "terra18vd8fpwxzck93qlwghaj6arh4p7c5n896xzem5";
-    const WORMHOLE_RPC_HOST = "https://wormhole-v2-mainnet-api.chainlayer.network"
-    const connection = new solana_web3.Connection(solana_web3.clusterApiUrl('mainnet'));
-    const isSolanaNative = true;
-    const solanaMintKey = new solana_web3.PublicKey(
-      (await getForeignAssetSolana(
-        connection,
-        SOL_TOKEN_BRIDGE_ADDRESS,
-        CHAIN_ID_TERRA,
-        hexToUint8Array(nativeToHexString(toTokenAddress, CHAIN_ID_TERRA) || "")
-      )) || ""
-    );
-    const recipientAddress = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
-      solanaMintKey,
-      recipientWalletAddress
-    );
-    // Submit transaction - results in a Wormhole message being published
-    const receipt = await transferFromTerra(
-      TERRA_TOKEN_BRIDGE_ADDRESS,
-      signer,
-      toTokenAddress || '',
-      amount,
-      CHAIN_ID_SOLANA,
-      hexToUint8Array(nativeToHexString(toTokenAddress, CHAIN_ID_TERRA) || "")
-    );
-    // Get the sequence number and emitter address required to fetch the signedVAA of our message
-    const sequence = parseSequenceFromLogTerra(receipt, TERRA_BRIDGE_ADDRESS);
-    const emitterAddress = await getEmitterAddressTerra(TERRA_TOKEN_BRIDGE_ADDRESS);
-    // Fetch the signedVAA from the Wormhole Network (this may require retries while you wait for confirmation)
-    const { signedVAA } = await getSignedVAA(
-      WORMHOLE_RPC_HOST,
-      CHAIN_ID_TERRA,
-      emitterAddress,
-      sequence
-    );
-    // On Solana, we have to post the signedVAA ourselves
-    await postVaaSolana(
-      connection,
-      wallet,
-      SOL_BRIDGE_ADDRESS,
-      payerAddress,
-      signedVAA
-    );
-    // Finally, redeem on Solana
-    const transaction = await redeemOnSolana(
-      connection,
-      SOL_BRIDGE_ADDRESS,
-      SOL_TOKEN_BRIDGE_ADDRESS,
-      payerAddress,
-      signedVAA,
-      isSolanaNative,
-      mintAddress
-    );
-    const connector = loginUser.terraWalletConnect
-    const signed = await connector?.signTransaction(transaction);
-    const txid = await connection.sendRawTransaction(signed.serialize());
-    await connection.confirmTransaction(txid);
   }
 
   return {
