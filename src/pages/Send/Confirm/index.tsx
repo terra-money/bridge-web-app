@@ -82,11 +82,13 @@ const Confirm = (): ReactElement => {
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
+  const toAsset = useRecoilValue(SendStore.toAsset)
   const toAddress = useRecoilValue(SendStore.toAddress)
   const amount = useRecoilValue(SendStore.amount)
   const memo = useRecoilValue(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const slippageTolerance = useRecoilValue(SendStore.slippageTolerance)
 
   // Computed data from Send data
   const gasFee = useRecoilValue(SendStore.gasFee)
@@ -110,6 +112,17 @@ const Confirm = (): ReactElement => {
             style={{ paddingRight: 5 }}
           />
           <StyledSecDText>{asset?.symbol}</StyledSecDText>
+          {bridgeUsed === BridgeType.thorswap && (
+            <>
+              <StyledSecH style={{ padding: '0 .6rem' }}>to</StyledSecH>
+              <FormImage
+                src={toAsset?.logoURI || ''}
+                size={18}
+                style={{ paddingRight: 5 }}
+              />
+              <StyledSecDText>{toAsset?.symbol}</StyledSecDText>
+            </>
+          )}
         </StyledSecD>
       </StyledSection>
 
@@ -132,7 +145,9 @@ const Confirm = (): ReactElement => {
       {fromBlockChain === BlockChainType.terra && (
         <StyledSection style={{ flexDirection: 'column', paddingBottom: 0 }}>
           <StyledSpaceBetween style={{ marginBottom: 16 }}>
-            <StyledSecH>GAS Fee</StyledSecH>
+            <StyledSecH>
+              Gas Fee {bridgeUsed === BridgeType.thorswap && ' on Terra'}
+            </StyledSecH>
             <StyledSecD>
               <StyledSecDText2>
                 {`${formatBalance(gasFee)} ${ASSET.symbolOfDenom[feeDenom]}`}
@@ -144,35 +159,76 @@ const Confirm = (): ReactElement => {
 
       {bridgeUsed === BridgeType.shuttle ||
       bridgeUsed === BridgeType.axelar ||
-      bridgeUsed === BridgeType.wormhole ? (
+      bridgeUsed === BridgeType.wormhole ||
+      bridgeUsed === BridgeType.thorswap ? (
         <>
           <StyledSection>
-            <StyledSpaceBetween>
-              <StyledSecH>
-                {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)} fee
-                (estimated)
-              </StyledSecH>
-              <StyledSecD>
-                <StyledSecDText2>
-                  {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
-                </StyledSecDText2>
-              </StyledSecD>
-            </StyledSpaceBetween>
+            {bridgeUsed === BridgeType.thorswap ? (
+              <StyledSpaceBetween>
+                <StyledSecH>Gas Fee on {toBlockChain} (estimated)</StyledSecH>
+                <StyledSecD>
+                  <StyledSecDText2>
+                    {`${bridgeFee.toFixed(6)} ${toAsset?.symbol}`}
+                  </StyledSecDText2>
+                </StyledSecD>
+              </StyledSpaceBetween>
+            ) : (
+              <StyledSpaceBetween>
+                <StyledSecH>
+                  {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)} fee
+                  (estimated)
+                </StyledSecH>
+                <StyledSecD>
+                  <StyledSecDText2>
+                    {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
+                  </StyledSecDText2>
+                </StyledSecD>
+              </StyledSpaceBetween>
+            )}
           </StyledSection>
+          {bridgeUsed === BridgeType.thorswap && (
+            <StyledSection>
+              <StyledSpaceBetween>
+                <StyledSecH>Slippage tolerance</StyledSecH>
+                <StyledSecD>
+                  <StyledSecDText2>{slippageTolerance} %</StyledSecDText2>
+                </StyledSecD>
+              </StyledSpaceBetween>
+            </StyledSection>
+          )}
           <StyledSection>
-            <StyledSpaceBetween>
-              <StyledSecH>
-                After {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)}{' '}
-                fee
-              </StyledSecH>
-              <StyledSecD>
-                <StyledSecDText
-                  isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
-                >
-                  {`${formatBalance(amountAfterBridgeFee)} ${asset?.symbol}`}
-                </StyledSecDText>
-              </StyledSecD>
-            </StyledSpaceBetween>
+            {bridgeUsed === BridgeType.thorswap ? (
+              <StyledSpaceBetween>
+                <StyledSecH>Minimum received</StyledSecH>
+                <StyledSecD>
+                  {amountAfterBridgeFee
+                    .minus(bridgeFee)
+                    .isLessThanOrEqualTo(0) ? (
+                    <StyledSecDText isError={true}>
+                      {`0 ${toAsset?.symbol}`}
+                    </StyledSecDText>
+                  ) : (
+                    <StyledSecDText isError={false}>
+                      {`${amountAfterBridgeFee} ${toAsset?.symbol}`}
+                    </StyledSecDText>
+                  )}
+                </StyledSecD>
+              </StyledSpaceBetween>
+            ) : (
+              <StyledSpaceBetween>
+                <StyledSecH>
+                  After{' '}
+                  {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)} fee
+                </StyledSecH>
+                <StyledSecD>
+                  <StyledSecDText
+                    isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
+                  >
+                    {`${formatBalance(amountAfterBridgeFee)} ${asset?.symbol}`}
+                  </StyledSecDText>
+                </StyledSecD>
+              </StyledSpaceBetween>
+            )}
           </StyledSection>
         </>
       ) : (

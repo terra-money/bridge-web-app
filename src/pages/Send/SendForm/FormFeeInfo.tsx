@@ -32,6 +32,7 @@ const FormFeeInfo = ({
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
+  const toAsset = useRecoilValue(SendStore.toAsset)
 
   // Computed data from Send data
   const gasFeeList = useRecoilValue(SendStore.gasFeeList)
@@ -44,6 +45,7 @@ const FormFeeInfo = ({
   const bridgeFee = useRecoilValue(SendStore.bridgeFee)
   const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
@@ -147,7 +149,7 @@ const FormFeeInfo = ({
               >
                 <View>
                   <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                    GAS Fee
+                    Gas Fee {bridgeUsed === BridgeType.thorswap && 'on Terra'}
                   </Text>
                 </View>
                 <Row style={{ alignItems: 'center' }}>
@@ -189,6 +191,73 @@ const FormFeeInfo = ({
                   errorMessage={feeValidationResult.errorMessage}
                 />
               </View>
+
+              {bridgeUsed === BridgeType.thorswap && (
+                <>
+                  <Row
+                    style={{
+                      paddingTop: 6,
+                      paddingBottom: 12,
+                      margin: 0,
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <View>
+                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                        Gas Fee on {toBlockChain} (estimated)
+                      </Text>
+                    </View>
+                    <View>
+                      <Text
+                        style={{ justifyContent: 'flex-end', opacity: '0.8' }}
+                      >
+                        {`${bridgeFee.toFixed(6)} ${toAsset?.symbol}`}
+                      </Text>
+                    </View>
+                  </Row>
+                  <Row
+                    style={{
+                      paddingTop: 12,
+                      margin: 0,
+                      borderTop: 'solid 1px #2e2e2e',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <View>
+                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                        Amount after swap (estimated)
+                      </Text>
+                    </View>
+                    <View style={{ padding: 0, alignItems: 'flex-start' }}>
+                      {amountAfterBridgeFee
+                        .minus(bridgeFee)
+                        .isLessThanOrEqualTo(0) ? (
+                        <Text
+                          style={{
+                            justifyContent: 'flex-end',
+                            opacity: '0.8',
+                            color: COLOR.red,
+                          }}
+                        >
+                          {`0 ${toAsset?.symbol}`}
+                        </Text>
+                      ) : (
+                        <Text
+                          style={{
+                            justifyContent: 'flex-end',
+                            opacity: '0.8',
+                            color: COLOR.text,
+                          }}
+                        >
+                          {`${amountAfterBridgeFee
+                            .minus(bridgeFee)
+                            .toFixed(6)} ${toAsset?.symbol}`}
+                        </Text>
+                      )}
+                    </View>
+                  </Row>
+                </>
+              )}
 
               {(bridgeUsed === BridgeType.shuttle ||
                 bridgeUsed === BridgeType.axelar ||

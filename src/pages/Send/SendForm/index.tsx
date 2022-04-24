@@ -35,6 +35,7 @@ import SlippageInput from 'components/SlippageInput'
 import { getThorAssets } from 'packages/thorswap/getAssets'
 import { thorChainName, ThorBlockChains } from 'packages/thorswap/thorNames'
 import getSwapOutput from 'packages/thorswap/getOutput'
+import { getThorOutboundFees } from 'packages/thorswap/getFees'
 
 const StyledContainer = styled.div``
 
@@ -496,21 +497,33 @@ export const SwapForm = ({
 
   useEffect(() => {
     if (bridgeUsed === BridgeType.thorswap) {
-      setBridgeFeeAmount(new BigNumber(0))
+      const thorAsset = `${
+        thorChainName[fromBlockChain as ThorBlockChains]
+      }.${asset?.symbol.toUpperCase()}`
       ;(async (): Promise<void> => {
         const estimatedResult = await getSwapOutput(
-          `${thorChainName[fromBlockChain as ThorBlockChains]}.${
-            asset?.symbol
-          }`,
+          thorAsset,
           toAsset?.thorId || '',
           // TODO: use token decimals
           parseInt(amount || '0') / 1e6
         )
-        console.log(estimatedResult)
-        setAmountAfterBridgeFee(new BigNumber(estimatedResult as number))
+        setAmountAfterBridgeFee(new BigNumber(estimatedResult))
       })()
     }
-  }, [amount, toBlockChain, fromBlockChain, asset, bridgeUsed])
+  }, [amount, toBlockChain, fromBlockChain, asset, toAsset, bridgeUsed])
+
+  useEffect(() => {
+    if (bridgeUsed === BridgeType.thorswap) {
+      ;(async (): Promise<void> => {
+        const estimatedResult = await getThorOutboundFees(
+          toBlockChain,
+          toAsset?.thorId || ''
+        )
+        console.log(estimatedResult)
+        setBridgeFeeAmount(new BigNumber(estimatedResult))
+      })()
+    }
+  }, [toBlockChain, asset, toAsset, bridgeUsed])
 
   function formatSwapAmount(amount: number): string {
     return amount ? amount.toFixed(6) : ''

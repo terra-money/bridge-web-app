@@ -36,32 +36,22 @@ export default async function getSwapOutput(
   from: string,
   to: string,
   amount: number
-): Promise<Number> {
-  const { data } = await axios.get('https://midgard.thorswap.net/v2/pools')
+): Promise<number> {
+  const { data: fromData }: { data: Pool } = await axios.get(
+    'https://midgard.thorchain.info/v2/pool/' + from
+  )
+  const { data: toData }: { data: Pool } = await axios.get(
+    'https://midgard.thorchain.info/v2/pool/' + to
+  )
 
-  const result = {
-    from: undefined as Pool | undefined,
-    to: undefined as Pool | undefined,
-  }
-
-  data.forEach((pool: Pool) => {
-    if (pool.asset === from && pool.status === 'available') {
-      result.from = pool
-    } else if (pool.asset === to && pool.status === 'available') {
-      result.to = pool
-    }
-  })
-
-  if (!result.from || !result.to) {
+  if (fromData.status !== 'available' || toData.status !== 'available') {
     // to or from pool not available
     return 0
   }
 
-  const runeAmount = calcSwapOutput(amount, result.from, true)
-  console.log(`${amount} ${from} -> ${runeAmount} RUNE`)
+  const runeAmount = calcSwapOutput(amount, fromData, true)
 
-  const simulationResult = calcSwapOutput(runeAmount, result.to, false)
-  console.log(`${runeAmount} RUNE -> ${simulationResult} ${to}`)
+  const simulationResult = calcSwapOutput(runeAmount, toData, false)
 
   return simulationResult
 }

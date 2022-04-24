@@ -13,6 +13,13 @@ export const thorChainName: Record<ThorBlockChains, string> = {
   [BlockChainType.bsc]: 'BNB',
 }
 
+export const nativeThorAsset: Record<ThorBlockChains, string> = {
+  [BlockChainType.bitcoin]: 'BTC.BTC',
+  [BlockChainType.ethereum]: 'ETH.ETH',
+  [BlockChainType.terra]: 'TERRA.LUNA',
+  [BlockChainType.bsc]: 'BNB.BNB',
+}
+
 export const thorAssets: Record<string, string> = {
   uusd: 'UST',
   uluna: 'LUNA',
