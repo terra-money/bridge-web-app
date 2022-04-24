@@ -37,6 +37,10 @@ export default async function getSwapOutput(
   to: string,
   amount: number
 ): Promise<number> {
+  if (!from || !to) {
+    // to or from pool not available
+    return 0
+  }
   const { data: fromData }: { data: Pool } = await axios.get(
     'https://midgard.thorchain.info/v2/pool/' + from
   )

@@ -30,7 +30,6 @@ export async function getThorOutboundFees(
     nativeThorAsset[blockchain as ThorBlockChains],
     toAsset
   )
-  console.log(exchangeRate)
 
   switch (blockchain) {
     case BlockChainType.bsc:

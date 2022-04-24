@@ -496,32 +496,46 @@ export const SwapForm = ({
   ])
 
   useEffect(() => {
+    let update = true
+    let interval: NodeJS.Timeout | null
     if (bridgeUsed === BridgeType.thorswap) {
       const thorAsset = `${
         thorChainName[fromBlockChain as ThorBlockChains]
       }.${asset?.symbol.toUpperCase()}`
-      ;(async (): Promise<void> => {
+
+      interval = setTimeout(async (): Promise<void> => {
         const estimatedResult = await getSwapOutput(
           thorAsset,
           toAsset?.thorId || '',
           // TODO: use token decimals
           parseInt(amount || '0') / 1e6
         )
-        setAmountAfterBridgeFee(new BigNumber(estimatedResult))
-      })()
+        update && setAmountAfterBridgeFee(new BigNumber(estimatedResult))
+      }, 200)
+
+      return (): void => {
+        // cancel the subscription
+        interval && clearTimeout(interval)
+        update = false
+      }
     }
   }, [amount, toBlockChain, fromBlockChain, asset, toAsset, bridgeUsed])
 
   useEffect(() => {
+    let update = true
     if (bridgeUsed === BridgeType.thorswap) {
       ;(async (): Promise<void> => {
         const estimatedResult = await getThorOutboundFees(
           toBlockChain,
           toAsset?.thorId || ''
         )
-        console.log(estimatedResult)
-        setBridgeFeeAmount(new BigNumber(estimatedResult))
+        update && setBridgeFeeAmount(new BigNumber(estimatedResult))
       })()
+    }
+
+    return (): void => {
+      // cancel the subscription
+      update = false
     }
   }, [toBlockChain, asset, toAsset, bridgeUsed])
 

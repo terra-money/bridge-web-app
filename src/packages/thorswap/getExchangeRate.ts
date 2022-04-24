@@ -19,6 +19,10 @@ export default async function getExchangeRate(
   from: string,
   to: string
 ): Promise<number> {
+  if (!from || !to) {
+    // to or from pool not available
+    return 0
+  }
   const { data: fromData }: { data: Pool } = await axios.get(
     'https://midgard.thorchain.info/v2/pool/' + from
   )
