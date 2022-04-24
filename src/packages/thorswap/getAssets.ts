@@ -153,6 +153,5 @@ export async function getThorAssets(chain: string): Promise<ThorAssetType[]> {
     }
   })
 
-  console.log(assets)
   return assets
 }

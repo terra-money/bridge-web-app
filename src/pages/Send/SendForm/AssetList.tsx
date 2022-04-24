@@ -242,7 +242,7 @@ const AssetList = ({
         swap={!!swap}
         asset={selectedAsset}
         setShowModal={setShowModal}
-        multipleAssets={assetList.length > 1}
+        multipleAssets={to ? toAssetList.length > 1 : assetList.length > 1}
       />
       <DefaultModal
         {...{
