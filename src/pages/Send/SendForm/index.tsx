@@ -34,7 +34,6 @@ import swapArrowImg from '../../../images/swapArrow.svg'
 import SlippageInput from 'components/SlippageInput'
 import { getThorAssets } from 'packages/thorswap/getAssets'
 import { thorChainName, ThorBlockChains } from 'packages/thorswap/thorNames'
-import getSwapOutput from 'packages/thorswap/getOutput'
 import { getThorOutboundFees } from 'packages/thorswap/getFees'
 import getExchangeRate from 'packages/thorswap/getExchangeRate'
 
@@ -384,12 +383,6 @@ export const SwapForm = ({
 
   // Computed data from Send data
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
-  /* TODO: save swap fee as bridge Fee
-  const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
-  const setAmountAfterBridgeFee = useSetRecoilState(
-    SendStore.amountAfterBridgeFee
-  )*/
-
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const setBridgeFeeAmount = useSetRecoilState(SendStore.bridgeFee)
   const [amountAfterBridgeFee, setAmountAfterBridgeFee] = useRecoilState(
@@ -496,6 +489,7 @@ export const SwapForm = ({
     isTestnet,
   ])
 
+  // calculate swap result (thorswap)
   useEffect(() => {
     let update = true
     let interval: NodeJS.Timeout | null
@@ -504,19 +498,14 @@ export const SwapForm = ({
         thorChainName[fromBlockChain as ThorBlockChains]
       }.${asset?.symbol.toUpperCase()}`
 
-      interval = setTimeout((): void => {
-        getSwapOutput(
-          thorAsset,
-          toAsset?.thorId || '',
-          // TODO: use token decimals
-          parseInt(amount || '0') / 1e6
-        ).then((result): void => {
-          //update && setAmountAfterBridgeFee(new BigNumber(result))
-        })
+      if (!amount || parseFloat(amount) === 0) {
+        setAmountAfterBridgeFee(new BigNumber(0))
+        return
+      }
 
+      interval = setTimeout((): void => {
         getExchangeRate(thorAsset, toAsset?.thorId || '').then(
           (result): void => {
-            console.log(amount)
             update &&
               setAmountAfterBridgeFee(
                 new BigNumber(amount).multipliedBy(result)
@@ -533,6 +522,7 @@ export const SwapForm = ({
     }
   }, [amount, toBlockChain, fromBlockChain, asset, toAsset, bridgeUsed])
 
+  // calculate swap tx fee (thorswap)
   useEffect(() => {
     let update = true
     if (bridgeUsed === BridgeType.thorswap) {
@@ -552,7 +542,7 @@ export const SwapForm = ({
       // cancel the subscription
       update = false
     }
-  }, [toBlockChain, asset, toAsset, bridgeUsed])
+  }, [toBlockChain, toAsset, bridgeUsed])
 
   function formatSwapAmount(amount: BigNumber): string {
     return amount ? formatBalance(amount) : ''
@@ -633,7 +623,7 @@ export const SwapForm = ({
             <FormLabelInput
               inputProps={{
                 type: 'number',
-                value: formatSwapAmount(amountAfterBridgeFee),
+                value: amount && formatSwapAmount(amountAfterBridgeFee),
                 disabled: true,
                 style: {
                   textAlign: 'right',

@@ -10,7 +10,7 @@ import SendStore from 'store/SendStore'
 import {
   BlockChainType,
   isIbcNetwork,
-  ibcPrefix,
+  bechPrefix,
   IbcNetwork,
   BridgeType,
 } from 'types/network'
@@ -108,6 +108,7 @@ const useSendValidate = (): {
     }
 
     let validAddress = false
+    let addressMessage = 'Invalid address'
 
     if (toBlockChain === BlockChainType.terra) {
       if (toAddress.endsWith('.ust')) {
@@ -116,19 +117,27 @@ const useSendValidate = (): {
       } else {
         validAddress = AccAddress.validate(toAddress)
       }
-    } else if (isIbcNetwork(toBlockChain)) {
-      if (toAddress.startsWith(ibcPrefix[toBlockChain as IbcNetwork])) {
+    } else if (
+      isIbcNetwork(toBlockChain) ||
+      (bridgeUsed === BridgeType.thorswap &&
+        toBlockChain !== BlockChainType.ethereum)
+    ) {
+      if (toAddress.startsWith(bechPrefix[toBlockChain as IbcNetwork])) {
         try {
           Bech32Address.validate(toAddress)
           validAddress = true
         } catch (error) {}
+      } else {
+        addressMessage += `, it must start with ${
+          bechPrefix[toBlockChain as IbcNetwork]
+        }...`
       }
     } else {
       validAddress = ethers.utils.isAddress(toAddress)
     }
 
     if (false === validAddress) {
-      return { isValid: false, errorMessage: 'Invalid address' }
+      return { isValid: false, errorMessage: addressMessage }
     }
 
     return { isValid: true }

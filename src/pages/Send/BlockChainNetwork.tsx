@@ -180,17 +180,12 @@ const BlockChainNetwork = (): ReactElement => {
               bridgeUsed === BridgeType.thorswap
                 ? [
                     {
-                      label: NETWORK.blockChainName[BlockChainType.terra],
-                      value: BlockChainType.terra,
-                      isDisabled: toBlockChain === BlockChainType.terra,
-                    },
-                    {
                       label: NETWORK.blockChainName[BlockChainType.ethereum],
                       value: BlockChainType.ethereum,
                       isDisabled: toBlockChain === BlockChainType.ethereum,
                     },
                     {
-                      label: NETWORK.blockChainName[BlockChainType.bsc],
+                      label: 'BNB',
                       value: BlockChainType.bsc,
                       isDisabled: toBlockChain === BlockChainType.bsc,
                     },

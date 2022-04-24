@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { BlockChainType } from 'types'
+import { ThorBlockChains, thorChainName } from './thorNames'
 
 interface ChainProps {
   chain: string
@@ -13,9 +15,9 @@ interface StatusProps {
   isHalted: boolean
 }
 
-export default async function getDepositAddress(
-  from: string,
-  to: string
+export default async function getThorDepositAddress(
+  from: BlockChainType,
+  to: BlockChainType
 ): Promise<StatusProps> {
   const { data } = await axios.get(
     'https://midgard.thorswap.net/v2/thorchain/inbound_addresses'
@@ -28,10 +30,10 @@ export default async function getDepositAddress(
   }
 
   data.forEach((chain: ChainProps) => {
-    if (chain.chain === from) {
+    if (chain.chain === thorChainName[from as ThorBlockChains]) {
       status.from = chain.halted
       status.address = chain.address
-    } else if (chain.chain === to) {
+    } else if (chain.chain === thorChainName[to as ThorBlockChains]) {
       status.to = chain.halted
     }
   })

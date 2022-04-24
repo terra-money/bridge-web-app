@@ -1,3 +1,5 @@
+import { ThorBlockChains } from 'packages/thorswap/thorNames'
+
 export enum BlockChainType {
   terra = 'terra',
   ethereum = 'ethereum',
@@ -97,12 +99,17 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   //[BlockChainType.cro]: '',
 }
 
-export const ibcPrefix: Record<IbcNetwork, string> = {
+export const bechPrefix: Record<IbcNetwork | ThorBlockChains, string> = {
   [BlockChainType.osmo]: 'osmo1',
   [BlockChainType.scrt]: 'secret1',
   [BlockChainType.inj]: 'inj1',
   [BlockChainType.axelar]: 'axelar1',
   [BlockChainType.cosmos]: 'cosmos1',
+  [BlockChainType.bsc]: 'bnb1',
+  [BlockChainType.bitcoin]: 'bc1',
+  [BlockChainType.terra]: 'terra1',
+  // eth is EVM (ignore it)
+  [BlockChainType.ethereum]: '',
   //[BlockChainType.cro]: 'cro1',
 }
 

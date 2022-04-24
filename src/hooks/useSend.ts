@@ -54,6 +54,8 @@ import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
 import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDepositAddress'
 import useTns from 'packages/tns/useTns'
+import getThorDepositAddress from 'packages/thorswap/getDepositAddress'
+import useAsset from './useAsset'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -111,6 +113,7 @@ const useSend = (): UseSendType => {
 
   // Send Data
   const [asset, setAsset] = useRecoilState(SendStore.asset)
+  const toAsset = useRecoilValue(SendStore.toAsset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
   const [sendAmount, setSendAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
@@ -122,10 +125,13 @@ const useSend = (): UseSendType => {
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const bridgeFee = useRecoilValue(SendStore.bridgeFee)
+  const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
+  const slippageTolerance = useRecoilValue(SendStore.slippageTolerance)
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
   const { fromTokenAddress, toTokenAddress } = useNetwork()
+  const { getDecimals } = useAsset()
   const { getAddress } = useTns()
 
   const {
@@ -447,6 +453,20 @@ const useSend = (): UseSendType => {
                   }
                 ),
               ]
+        case BridgeType.thorswap:
+          const thorDeposit = await getThorDepositAddress(
+            fromBlockChain,
+            toBlockChain
+          )
+
+          if (thorDeposit.isHalted)
+            throw new Error('This Thorchain route is halted')
+
+          return [
+            new MsgSend(loginUser.address, thorDeposit.address, [
+              new Coin(asset.terraToken, sendAmount),
+            ]),
+          ]
         // terra -> terra
         case undefined:
           const recipient = (await getAddress(toAddress)) || toAddress
@@ -473,7 +493,14 @@ const useSend = (): UseSendType => {
   const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
     let errorMessage
     const memoOrToAddress =
-      toBlockChain === BlockChainType.terra
+      bridgeUsed === BridgeType.thorswap
+        ? `=:${toAsset?.thorId}:${toAddress}:${amountAfterBridgeFee
+            .minus(bridgeFee)
+            .multipliedBy(1 - slippageTolerance / 100)
+            .dividedBy(getDecimals())
+            .multipliedBy(1e8)
+            .toFixed(0)}`
+        : toBlockChain === BlockChainType.terra
         ? // only terra network can get user's memo
           memo
         : // if send to ether-base then memo must be to-address
@@ -696,7 +723,7 @@ const useSend = (): UseSendType => {
                 return { success: true, hash: receipt.transactionHash }
               // with thorswap
               case BridgeType.thorswap:
-              // TODO: implement thorswap swap
+              // TODO: implement thorswap swap from ETH
             }
           } catch (error) {
             return handleTxErrorFromEtherBase(error)
