@@ -79,7 +79,10 @@ const BlockChainNetwork = (): ReactElement => {
               setBlockchainStorage({
                 fromBlockChain: value,
                 toBlockChain: BlockChainType.terra,
-                bridgeUsed: getDefaultBridge(value, BlockChainType.terra),
+                bridgeUsed:
+                  bridgeUsed !== BridgeType.thorswap
+                    ? getDefaultBridge(value, BlockChainType.terra)
+                    : BridgeType.thorswap,
               })
             },
             optionList:
@@ -173,7 +176,10 @@ const BlockChainNetwork = (): ReactElement => {
               setBlockchainStorage({
                 fromBlockChain: BlockChainType.terra,
                 toBlockChain: b,
-                bridgeUsed: getDefaultBridge(BlockChainType.terra, b),
+                bridgeUsed:
+                  bridgeUsed !== BridgeType.thorswap
+                    ? getDefaultBridge(BlockChainType.terra, b)
+                    : BridgeType.thorswap,
               })
             },
             optionList:
