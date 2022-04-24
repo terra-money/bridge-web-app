@@ -171,8 +171,9 @@ const BlockChainNetwork = (): ReactElement => {
                 setFromBlockChain(BlockChainType.terra)
                 logout()
               }
-              bridgeUsed !== BridgeType.thorswap &&
+              if (bridgeUsed !== BridgeType.thorswap) {
                 setBridgeUsed(getDefaultBridge(BlockChainType.terra, b))
+              }
               setBlockchainStorage({
                 fromBlockChain: BlockChainType.terra,
                 toBlockChain: b,

@@ -21,7 +21,7 @@ export interface ThorAssetType extends AssetType {
   token?: string
 }
 
-const thorAssets: Record<string, ThorAssetType> = {
+export const thorAssets: Record<string, ThorAssetType> = {
   'BTC.BTC': {
     thorId: 'BTC.BTC',
     name: 'Bitcoin',
@@ -57,11 +57,60 @@ const thorAssets: Record<string, ThorAssetType> = {
     logoURI: 'https://assets.terra.money/icon/thorswap/WBTC.svg',
     terraToken: '',
   },
+  'ETH.AAVE-0X7FC66500C84A76AD7E9C93437BFC5AC33E2DDAE9': {
+    thorId: 'ETH.AAVE-0X7FC66500C84A76AD7E9C93437BFC5AC33E2DDAE9',
+    name: 'Aave',
+    symbol: 'AAVE',
+    logoURI: 'https://assets.terra.money/icon/thorswap/AAVE.svg',
+    terraToken: '',
+  },
+  'ETH.SNX-0XC011A73EE8576FB46F5E1C5751CA3B9FE0AF2A6F': {
+    thorId: 'ETH.SNX-0XC011A73EE8576FB46F5E1C5751CA3B9FE0AF2A6F',
+    name: 'Synthetix',
+    symbol: 'SNX',
+    logoURI: 'https://assets.terra.money/icon/thorswap/SNX.svg',
+    terraToken: '',
+  },
+  'ETH.USDC-0XA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48': {
+    thorId: 'ETH.USDC-0XA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48',
+    name: 'USD Coin',
+    symbol: 'USDC',
+    logoURI: 'https://assets.terra.money/icon/thorswap/USDC.svg',
+    terraToken: '',
+  },
+  'ETH.YFI-0X0BC529C00C6401AEF6D220BE8C6EA1667F6AD93E': {
+    thorId: 'ETH.YFI-0X0BC529C00C6401AEF6D220BE8C6EA1667F6AD93E',
+    name: 'yearn.finance',
+    symbol: 'YFI',
+    logoURI: 'https://assets.terra.money/icon/thorswap/YFI.svg',
+    terraToken: '',
+  },
   'BNB.BNB': {
     thorId: 'BNB.BNB',
     name: 'Binance Coin',
     symbol: 'BNB',
     logoURI: 'https://assets.terra.money/icon/thorswap/BNB.svg',
+    terraToken: '',
+  },
+  'BNB.BTCB-1DE': {
+    thorId: 'BNB.BTCB-1DE',
+    name: 'Bitcoin BEP2',
+    symbol: 'BTCB',
+    logoURI: 'https://assets.terra.money/icon/thorswap/BTC.svg',
+    terraToken: '',
+  },
+  'BNB.BUSD-BD1': {
+    thorId: 'BNB.BUSD-BD1',
+    name: 'Binance USD',
+    symbol: 'BUSD',
+    logoURI: 'https://assets.terra.money/icon/thorswap/BUSD.svg',
+    terraToken: '',
+  },
+  'BNB.ETH-1C9': {
+    thorId: 'BNB.ETH-1C9',
+    name: 'Ethereum BEP2',
+    symbol: 'ETH',
+    logoURI: 'https://assets.terra.money/icon/thorswap/ETH.svg',
     terraToken: '',
   },
   'TERRA.LUNA': {
@@ -96,5 +145,14 @@ export async function getThorAssets(chain: string): Promise<ThorAssetType[]> {
     thorAssets[asset] && assets.push(thorAssets[asset])
   })
 
+  // use native asset as default one
+  assets.forEach((item, i): void => {
+    if (item.thorId === `${chain}.${chain}`) {
+      assets.splice(i, 1)
+      assets.unshift(item)
+    }
+  })
+
+  console.log(assets)
   return assets
 }
