@@ -18,6 +18,7 @@ import useWhiteList from './useWhiteList'
 const useAsset = (): {
   getAssetList: () => Promise<void>
   formatBalance: (balance: string | BigNumber) => string
+  getDecimals: () => number
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
@@ -141,9 +142,22 @@ const useAsset = (): {
     return ''
   }
 
+  const getDecimals = (): number => {
+    if (
+      fromBlockChain === BlockChainType.terra ||
+      bridgeUsed === BridgeType.ibc ||
+      bridgeUsed === BridgeType.axelar ||
+      bridgeUsed === BridgeType.wormhole
+    )
+      return ASSET.TERRA_DECIMAL
+
+    return ASSET.ETHER_BASE_DECIMAL
+  }
+
   return {
     getAssetList,
     formatBalance,
+    getDecimals,
   }
 }
 

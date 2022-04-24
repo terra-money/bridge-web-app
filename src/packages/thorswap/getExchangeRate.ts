@@ -23,12 +23,12 @@ export default async function getExchangeRate(
     // to or from pool not available
     return 0
   }
-  const { data: fromData }: { data: Pool } = await axios.get(
-    'https://midgard.thorchain.info/v2/pool/' + from
-  )
-  const { data: toData }: { data: Pool } = await axios.get(
-    'https://midgard.thorchain.info/v2/pool/' + to
-  )
+  const [{ data: fromData }, { data: toData }]: {
+    data: Pool
+  }[] = await Promise.all([
+    axios.get('https://midgard.thorchain.info/v2/pool/' + from),
+    axios.get('https://midgard.thorchain.info/v2/pool/' + to),
+  ])
 
   if (!fromData.assetPriceUSD || !toData.assetPriceUSD) {
     // to or from pool not available

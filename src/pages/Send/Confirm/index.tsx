@@ -168,7 +168,7 @@ const Confirm = (): ReactElement => {
                 <StyledSecH>Gas Fee on {toBlockChain} (estimated)</StyledSecH>
                 <StyledSecD>
                   <StyledSecDText2>
-                    {`${bridgeFee.toFixed(6)} ${toAsset?.symbol}`}
+                    {`${formatBalance(bridgeFee)} ${toAsset?.symbol}`}
                   </StyledSecDText2>
                 </StyledSecD>
               </StyledSpaceBetween>
@@ -209,7 +209,11 @@ const Confirm = (): ReactElement => {
                     </StyledSecDText>
                   ) : (
                     <StyledSecDText isError={false}>
-                      {`${amountAfterBridgeFee} ${toAsset?.symbol}`}
+                      {`${formatBalance(
+                        amountAfterBridgeFee
+                          .minus(bridgeFee)
+                          .multipliedBy(1 - slippageTolerance / 100)
+                      )} ${toAsset?.symbol}`}
                     </StyledSecDText>
                   )}
                 </StyledSecD>

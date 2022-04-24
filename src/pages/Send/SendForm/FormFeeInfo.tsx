@@ -48,6 +48,7 @@ const FormFeeInfo = ({
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const slippageTolerance = useRecoilValue(SendStore.slippageTolerance)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
@@ -211,7 +212,7 @@ const FormFeeInfo = ({
                       <Text
                         style={{ justifyContent: 'flex-end', opacity: '0.8' }}
                       >
-                        {`${bridgeFee.toFixed(6)} ${toAsset?.symbol}`}
+                        {`${formatBalance(bridgeFee)} ${toAsset?.symbol}`}
                       </Text>
                     </View>
                   </Row>
@@ -225,7 +226,7 @@ const FormFeeInfo = ({
                   >
                     <View>
                       <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
-                        Amount after swap (estimated)
+                        Minimum received
                       </Text>
                     </View>
                     <View style={{ padding: 0, alignItems: 'flex-start' }}>
@@ -249,9 +250,11 @@ const FormFeeInfo = ({
                             color: COLOR.text,
                           }}
                         >
-                          {`${amountAfterBridgeFee
-                            .minus(bridgeFee)
-                            .toFixed(6)} ${toAsset?.symbol}`}
+                          {`${formatBalance(
+                            amountAfterBridgeFee
+                              .minus(bridgeFee)
+                              .multipliedBy(1 - slippageTolerance / 100)
+                          )} ${toAsset?.symbol}`}
                         </Text>
                       )}
                     </View>
