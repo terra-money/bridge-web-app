@@ -21,6 +21,8 @@ import { NETWORK } from 'consts'
 import ContractStore from 'store/ContractStore'
 import useTns from 'packages/tns/useTns'
 
+import { PublicKey } from '@solana/web3.js'
+
 const useSendValidate = (): {
   validateFee: () => ValidateItemResultType
   validateSendData: () => Promise<ValidateResultType>
@@ -123,6 +125,11 @@ const useSendValidate = (): {
           validAddress = true
         } catch (error) {}
       }
+    } else if (toBlockChain === BlockChainType.solana) {
+      try {
+        let pubkey = new PublicKey(toAddress)
+        validAddress = PublicKey.isOnCurve(pubkey.toBuffer())
+      } catch (error) {}
     } else {
       validAddress = ethers.utils.isAddress(toAddress)
     }
