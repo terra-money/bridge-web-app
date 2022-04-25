@@ -495,7 +495,7 @@ const useSend = (): UseSendType => {
     const memoOrToAddress =
       bridgeUsed === BridgeType.thorswap
         ? `=:${toAsset?.thorId}:${toAddress}:${amountAfterBridgeFee
-            .minus(bridgeFee)
+            //.minus(bridgeFee)
             .multipliedBy(1 - slippageTolerance / 100)
             .dividedBy(getDecimals())
             .multipliedBy(1e8)
