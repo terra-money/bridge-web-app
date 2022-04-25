@@ -221,6 +221,9 @@ const whitelist: Record<
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.bitcoin]: {},
+  [BlockChainType.bch]: {},
+  [BlockChainType.ltc]: {},
+  [BlockChainType.doge]: {},
   [BlockChainType.terra]: {},
 }
 
@@ -302,6 +305,9 @@ const testnetWhitelist: Record<
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.bitcoin]: {},
+  [BlockChainType.bch]: {},
+  [BlockChainType.ltc]: {},
+  [BlockChainType.doge]: {},
   [BlockChainType.terra]: {},
 }
 

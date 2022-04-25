@@ -29,6 +29,27 @@ export const thorAssets: Record<string, ThorAssetType> = {
     logoURI: 'https://assets.terra.money/icon/thorswap/BTC.svg',
     terraToken: '',
   },
+  'LTC.LTC': {
+    thorId: 'LTC.LTC',
+    name: 'Litecoin',
+    symbol: 'LTC',
+    logoURI: 'https://assets.terra.money/icon/thorswap/LTC.svg',
+    terraToken: '',
+  },
+  'BCH.BCH': {
+    thorId: 'BCH.BCH',
+    name: 'Bitcoin Cash',
+    symbol: 'BCH',
+    logoURI: 'https://assets.terra.money/icon/thorswap/BCH.svg',
+    terraToken: '',
+  },
+  'DOGE.DOGE': {
+    thorId: 'DOGE.DOGE',
+    name: 'Dogecoin',
+    symbol: 'DOGE',
+    logoURI: 'https://assets.terra.money/icon/thorswap/DOGE.svg',
+    terraToken: '',
+  },
   'ETH.ETH': {
     thorId: 'ETH.ETH',
     name: 'Ethereum',

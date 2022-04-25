@@ -15,6 +15,9 @@ export enum BlockChainType {
   polygon = 'polygon',
   moonbeam = 'moonbeam',
   bitcoin = 'bitcoin',
+  bch = 'bch',
+  ltc = 'ltc',
+  doge = 'doge',
   //cro = 'cronos',
 }
 
@@ -44,7 +47,11 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.polygon]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.moonbeam]: [BridgeType.axelar],
   [BlockChainType.terra]: [],
+  // thorswap only chains
   [BlockChainType.bitcoin]: [],
+  [BlockChainType.bch]: [],
+  [BlockChainType.ltc]: [],
+  [BlockChainType.doge]: [],
 }
 
 export function getDefaultBridge(
@@ -108,8 +115,11 @@ export const bechPrefix: Record<IbcNetwork | ThorBlockChains, string> = {
   [BlockChainType.bsc]: 'bnb1',
   [BlockChainType.bitcoin]: 'bc1',
   [BlockChainType.terra]: 'terra1',
-  // eth is EVM (ignore it)
+  [BlockChainType.ltc]: 'ltc1',
+  // chain which doesn't use bech32 (ignore them)
   [BlockChainType.ethereum]: '',
+  [BlockChainType.bch]: '',
+  [BlockChainType.doge]: '',
   //[BlockChainType.cro]: 'cro1',
 }
 

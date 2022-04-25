@@ -9,7 +9,6 @@ import SendStore from 'store/SendStore'
 
 import {
   BlockChainType,
-  isIbcNetwork,
   bechPrefix,
   IbcNetwork,
   BridgeType,
@@ -117,11 +116,17 @@ const useSendValidate = (): {
       } else {
         validAddress = AccAddress.validate(toAddress)
       }
-    } else if (
-      isIbcNetwork(toBlockChain) ||
-      (bridgeUsed === BridgeType.thorswap &&
-        toBlockChain !== BlockChainType.ethereum)
-    ) {
+    } else if (toBlockChain === BlockChainType.doge) {
+      // TODO: advanced validation with checksum
+      validAddress = new RegExp(
+        '(?:^D{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}$)'
+      ).test(toAddress)
+    } else if (toBlockChain === BlockChainType.bch) {
+      // TODO: advanced validation with checksum
+      validAddress = new RegExp(
+        '(?:^((bitcoincash|bchreg|bchtest):)?(q|p)[a-z0-9]{41}$)'
+      ).test(toAddress)
+    } else if (bechPrefix[toBlockChain as IbcNetwork]) {
       if (toAddress.startsWith(bechPrefix[toBlockChain as IbcNetwork])) {
         try {
           Bech32Address.validate(toAddress)

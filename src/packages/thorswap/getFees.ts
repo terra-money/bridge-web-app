@@ -34,6 +34,9 @@ export async function getThorOutboundFees(
   switch (blockchain) {
     case BlockChainType.bsc:
       return (gasRate / 1e7) * exchangeRate
+    case BlockChainType.ltc:
+    case BlockChainType.bch:
+    case BlockChainType.doge:
     case BlockChainType.bitcoin:
       return (gasRate / 1e8) * 250 * exchangeRate
     case BlockChainType.ethereum:

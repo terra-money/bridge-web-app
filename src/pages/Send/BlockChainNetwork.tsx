@@ -192,14 +192,29 @@ const BlockChainNetwork = (): ReactElement => {
                       isDisabled: toBlockChain === BlockChainType.ethereum,
                     },
                     {
+                      label: NETWORK.blockChainName[BlockChainType.bitcoin],
+                      value: BlockChainType.bitcoin,
+                      isDisabled: toBlockChain === BlockChainType.bitcoin,
+                    },
+                    {
                       label: 'BNB',
                       value: BlockChainType.bsc,
                       isDisabled: toBlockChain === BlockChainType.bsc,
                     },
                     {
-                      label: NETWORK.blockChainName[BlockChainType.bitcoin],
-                      value: BlockChainType.bitcoin,
-                      isDisabled: toBlockChain === BlockChainType.bitcoin,
+                      label: NETWORK.blockChainName[BlockChainType.bch],
+                      value: BlockChainType.bch,
+                      isDisabled: toBlockChain === BlockChainType.bch,
+                    },
+                    {
+                      label: NETWORK.blockChainName[BlockChainType.ltc],
+                      value: BlockChainType.ltc,
+                      isDisabled: toBlockChain === BlockChainType.ltc,
+                    },
+                    {
+                      label: NETWORK.blockChainName[BlockChainType.doge],
+                      value: BlockChainType.doge,
+                      isDisabled: toBlockChain === BlockChainType.doge,
                     },
                   ]
                 : [
