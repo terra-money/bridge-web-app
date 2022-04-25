@@ -211,8 +211,8 @@ const Confirm = (): ReactElement => {
                     <StyledSecDText isError={false}>
                       {`${formatBalance(
                         amountAfterBridgeFee
-                          .minus(bridgeFee)
                           .multipliedBy(1 - slippageTolerance / 100)
+                          .minus(bridgeFee)
                       )} ${toAsset?.symbol}`}
                     </StyledSecDText>
                   )}

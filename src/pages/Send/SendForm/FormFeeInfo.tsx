@@ -252,8 +252,8 @@ const FormFeeInfo = ({
                         >
                           {`${formatBalance(
                             amountAfterBridgeFee
-                              .minus(bridgeFee)
                               .multipliedBy(1 - slippageTolerance / 100)
+                              .minus(bridgeFee)
                           )} ${toAsset?.symbol}`}
                         </Text>
                       )}

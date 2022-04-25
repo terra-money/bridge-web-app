@@ -81,6 +81,7 @@ const Finish = (): ReactElement => {
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
+  const toAsset = useRecoilValue(SendStore.toAsset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
   const [amount, setAmount] = useRecoilState(SendStore.amount)
   const setMemo = useSetRecoilState(SendStore.memo)
@@ -95,6 +96,8 @@ const Finish = (): ReactElement => {
   )
 
   const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
+  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
+  const slippageTolerance = useRecoilValue(SendStore.slippageTolerance)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const { getScannerLink, toTokenAddress } = useNetwork()
@@ -168,6 +171,36 @@ const Finish = (): ReactElement => {
           >
             {formatBalance(displayAmount)} {asset?.symbol}
           </Text>
+          {bridgeUsed === BridgeType.thorswap && (
+            <>
+              <Text
+                style={{
+                  padding: '0 1rem',
+                  color: '#A5A5A5',
+                }}
+              >
+                to
+              </Text>
+              <FormImage src={toAsset?.logoURI || ''} size={24} />
+              <Text
+                style={{
+                  fontSize: 22,
+                  paddingLeft: 10,
+                  letterSpacing: -0.5,
+                  wordBreak: 'break-all',
+                }}
+              >
+                {formatBalance(
+                  formatBalance(
+                    amountAfterBridgeFee
+                      .multipliedBy(1 - slippageTolerance / 100)
+                      .minus(bridgeFee)
+                  )
+                )}{' '}
+                {toAsset?.symbol}
+              </Text>
+            </>
+          )}
         </div>
         {fromBlockChain === BlockChainType.terra &&
           (bridgeUsed === BridgeType.shuttle ||
