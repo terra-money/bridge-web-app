@@ -54,7 +54,7 @@ const StyledSwitchSelector = styled.div`
   border: 4px solid ${COLOR.darkGray3};
 `
 
-const StyledSwitchCheckbox = styled.div`
+const StyledSwitchCheckbox = styled.div<{ active: boolean }>`
   input {
     cursor: pointer;
     position: absolute;
@@ -77,6 +77,7 @@ const StyledSwitchCheckbox = styled.div`
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    color: ${({ active }): string => (active ? '#484848' : COLOR.white)};
   }
 
   :after {
@@ -90,6 +91,7 @@ const StyledSwitchCheckbox = styled.div`
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    color: ${({ active }): string => (active ? COLOR.white : '#484848')};
   }
 `
 
@@ -144,7 +146,7 @@ const FormTitle = ({
               transition: 'transform 300ms',
             }}
           ></StyledSwitchSelector>
-          <StyledSwitchCheckbox>
+          <StyledSwitchCheckbox active={checked}>
             <input
               className="input"
               type="checkbox"

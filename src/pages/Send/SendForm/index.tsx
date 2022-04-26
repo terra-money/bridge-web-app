@@ -36,6 +36,8 @@ import { getThorAssets } from 'packages/thorswap/getAssets'
 import { thorChainName, ThorBlockChains } from 'packages/thorswap/thorNames'
 import { getThorOutboundFees } from 'packages/thorswap/getFees'
 import getExchangeRate from 'packages/thorswap/getExchangeRate'
+import ExchangeRateInfo from './ExchangeRateInfo'
+import getSwapOutput from 'packages/thorswap/getOutput'
 
 const StyledContainer = styled.div``
 
@@ -75,7 +77,6 @@ const StyledRefreshButton = styled.div<{ refreshing: boolean }>`
 `
 
 const StyledSwitchSwapButton = styled.img`
-  cursor: pointer;
   display: block;
   margin: 0 auto;
 `
@@ -186,8 +187,14 @@ export const SendForm = ({
   }
 
   const onClickMaxButton = async (): Promise<void> => {
-    const assetAmount = new BigNumber(asset?.balance || 0)
-    onChangeAmount({ value: formatBalance(assetAmount) })
+    const assetAmount = new BigNumber(asset?.balance || 0).minus(
+      asset?.terraToken === 'uusd' && fromBlockChain === BlockChainType.terra
+        ? 300_000 // 0.3 UST for tx fee
+        : 0
+    )
+    onChangeAmount({
+      value: formatBalance(assetAmount.isLessThan(0) ? '0' : assetAmount),
+    })
   }
 
   const setBridgeFee = async (): Promise<void> => {
@@ -388,6 +395,7 @@ export const SwapForm = ({
   const [amountAfterBridgeFee, setAmountAfterBridgeFee] = useRecoilState(
     SendStore.amountAfterBridgeFee
   )
+  const setExchangeRate = useSetRecoilState(SendStore.exchangeRate)
 
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
@@ -431,12 +439,14 @@ export const SwapForm = ({
   }
 
   const onClickMaxButton = async (): Promise<void> => {
-    const assetAmount = new BigNumber(asset?.balance || 0)
-    onChangeAmount({ value: formatBalance(assetAmount) })
-  }
-
-  const setBridgeFee = async (): Promise<void> => {
-    // TODO: calculate swap fee
+    const assetAmount = new BigNumber(asset?.balance || 0).minus(
+      asset?.terraToken === 'uusd' && fromBlockChain === BlockChainType.terra
+        ? 300_000 // 0.3 UST for tx fee
+        : 0
+    )
+    onChangeAmount({
+      value: formatBalance(assetAmount.isLessThan(0) ? '0' : assetAmount),
+    })
   }
 
   // It's for Fee(gas) and ShuttleFee
@@ -454,8 +464,6 @@ export const SwapForm = ({
         const terraFeeList = await getTerraFeeList()
         setGasFeeList(terraFeeList)
       }
-
-      setBridgeFee()
     }
   }, 300)
 
@@ -498,20 +506,28 @@ export const SwapForm = ({
         thorChainName[fromBlockChain as ThorBlockChains]
       }.${asset?.symbol.toUpperCase()}`
 
-      if (!amount || parseFloat(amount) === 0) {
-        setAmountAfterBridgeFee(new BigNumber(0))
-        return
-      }
-
       interval = setTimeout((): void => {
         getExchangeRate(thorAsset, toAsset?.thorId || '').then(
           (result): void => {
-            update &&
-              setAmountAfterBridgeFee(
-                new BigNumber(amount).multipliedBy(result)
-              )
+            update && setExchangeRate(result)
           }
         )
+
+        if (!amount || parseFloat(amount) === 0) {
+          setAmountAfterBridgeFee(new BigNumber(0))
+          return
+        }
+
+        getSwapOutput(
+          thorAsset,
+          toAsset?.thorId || '',
+          Number(amount) / getDecimals()
+        ).then((result): void => {
+          update &&
+            setAmountAfterBridgeFee(
+              new BigNumber(result).multipliedBy(getDecimals())
+            )
+        })
       }, 200)
 
       return (): void => {
@@ -673,7 +689,7 @@ export const SwapForm = ({
             />
           </StyledFormSection>
         )}
-
+      <ExchangeRateInfo />
       <FormFeeInfo feeValidationResult={feeValidationResult} />
     </StyledContainer>
   )

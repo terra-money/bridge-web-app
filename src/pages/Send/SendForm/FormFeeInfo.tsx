@@ -149,7 +149,7 @@ const FormFeeInfo = ({
                 }}
               >
                 <View>
-                  <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                  <Text style={{ paddingRight: 10, color: '#737373' }}>
                     Gas Fee {bridgeUsed === BridgeType.thorswap && 'on Terra'}
                   </Text>
                 </View>
@@ -204,7 +204,7 @@ const FormFeeInfo = ({
                     }}
                   >
                     <View>
-                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                      <Text style={{ paddingRight: 10, color: '#737373' }}>
                         Gas Fee on {toBlockChain} (estimated)
                       </Text>
                     </View>
@@ -225,7 +225,7 @@ const FormFeeInfo = ({
                     }}
                   >
                     <View>
-                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                      <Text style={{ paddingRight: 10, color: '#737373' }}>
                         Minimum received
                       </Text>
                     </View>
@@ -275,7 +275,7 @@ const FormFeeInfo = ({
                     }}
                   >
                     <View>
-                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                      <Text style={{ paddingRight: 10, color: '#737373' }}>
                         {bridgeUsed.charAt(0).toUpperCase() +
                           bridgeUsed.slice(1)}{' '}
                         fee (estimated)
@@ -298,7 +298,7 @@ const FormFeeInfo = ({
                     }}
                   >
                     <View>
-                      <Text style={{ paddingRight: 10, color: COLOR.skyGray }}>
+                      <Text style={{ paddingRight: 10, color: '#737373' }}>
                         Amount after{' '}
                         {bridgeUsed.charAt(0).toUpperCase() +
                           bridgeUsed.slice(1)}{' '}

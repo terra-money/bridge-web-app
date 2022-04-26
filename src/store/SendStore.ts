@@ -77,6 +77,10 @@ const amountAfterBridgeFee = atom<BigNumber>({
   key: 'sendAmountAfterBridgeFee',
   default: new BigNumber(0),
 })
+const exchangeRate = atom<number>({
+  key: 'exchangeRate',
+  default: 1,
+})
 // Computed data from Send data End
 
 const validationResult = atom<ValidateResultType>({
@@ -122,4 +126,5 @@ export default {
   slippageTolerance,
   toAssetList,
   toAsset,
+  exchangeRate,
 }
