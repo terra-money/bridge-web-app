@@ -51,9 +51,11 @@ const StyledLable = styled.label`
 const FormLabelInput = ({
   inputProps,
   labelProps,
+  loading,
 }: {
   inputProps: InputHTMLAttributes<HTMLInputElement>
   labelProps: LabelHTMLAttributes<HTMLLabelElement>
+  loading?: boolean
 }): ReactElement => {
   return (
     <StyledContainer>

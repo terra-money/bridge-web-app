@@ -26,6 +26,7 @@ const ExchangeRateInfo = (): ReactElement => {
   // Computed data from Send data
   const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
   const exchangeRate = useRecoilValue(SendStore.exchangeRate)
+  const isLoading = useRecoilValue(SendStore.isLoadingRates)
   const amount = useRecoilValue(SendStore.amount)
 
   useEffect(() => {
@@ -111,12 +112,14 @@ const ExchangeRateInfo = (): ReactElement => {
                   style={{
                     justifyContent: 'flex-end',
                     opacity: '0.8',
-                    color: priceImpact.isGreaterThan(2.5)
+                    color: isLoading
+                      ? '#737373'
+                      : priceImpact.isGreaterThan(2.5)
                       ? COLOR.red
                       : COLOR.text,
                   }}
                 >
-                  {`${priceImpact.toFixed(1)} %`}
+                  {isLoading ? 'loading' : `${priceImpact.toFixed(1)} %`}
                 </Text>
               </View>
             </Row>

@@ -384,6 +384,9 @@ export const SwapForm = ({
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const [isLoadingRates, setLoadingRates] = useRecoilState(
+    SendStore.isLoadingRates
+  )
 
   const setToAssetList = useSetRecoilState(SendStore.toAssetList)
   const [toAsset, setToAsset] = useRecoilState(SendStore.toAsset)
@@ -502,32 +505,40 @@ export const SwapForm = ({
     let update = true
     let interval: NodeJS.Timeout | null
     if (bridgeUsed === BridgeType.thorswap) {
+      setLoadingRates(true)
       const thorAsset = `${
         thorChainName[fromBlockChain as ThorBlockChains]
       }.${asset?.symbol.toUpperCase()}`
 
       interval = setTimeout((): void => {
-        getExchangeRate(thorAsset, toAsset?.thorId || '').then(
-          (result): void => {
-            update && setExchangeRate(result)
-          }
-        )
-
         if (!amount || parseFloat(amount) === 0) {
-          setAmountAfterBridgeFee(new BigNumber(0))
-          return
+          getExchangeRate(thorAsset, toAsset?.thorId || '').then(
+            (result): void => {
+              if (update) {
+                setExchangeRate(result)
+                setLoadingRates(false)
+                setAmountAfterBridgeFee(new BigNumber(0))
+              }
+            }
+          )
+        } else {
+          Promise.all([
+            getExchangeRate(thorAsset, toAsset?.thorId || ''),
+            getSwapOutput(
+              thorAsset,
+              toAsset?.thorId || '',
+              Number(amount) / getDecimals()
+            ),
+          ]).then(([rates, output]): void => {
+            if (update) {
+              setExchangeRate(rates)
+              setAmountAfterBridgeFee(
+                new BigNumber(output).multipliedBy(getDecimals())
+              )
+              setLoadingRates(false)
+            }
+          })
         }
-
-        getSwapOutput(
-          thorAsset,
-          toAsset?.thorId || '',
-          Number(amount) / getDecimals()
-        ).then((result): void => {
-          update &&
-            setAmountAfterBridgeFee(
-              new BigNumber(result).multipliedBy(getDecimals())
-            )
-        })
       }, 200)
 
       return (): void => {
@@ -638,11 +649,13 @@ export const SwapForm = ({
           <div style={{ position: 'relative', width: '75%' }}>
             <FormLabelInput
               inputProps={{
-                type: 'number',
-                value: amount && formatSwapAmount(amountAfterBridgeFee),
+                value: isLoadingRates
+                  ? 'loading ...'
+                  : amount && formatSwapAmount(amountAfterBridgeFee),
                 disabled: true,
                 style: {
                   textAlign: 'right',
+                  color: isLoadingRates ? '#727272' : COLOR.white,
                 },
               }}
               labelProps={{ children: '' }}

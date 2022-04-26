@@ -77,10 +77,7 @@ const amountAfterBridgeFee = atom<BigNumber>({
   key: 'sendAmountAfterBridgeFee',
   default: new BigNumber(0),
 })
-const exchangeRate = atom<number>({
-  key: 'exchangeRate',
-  default: 1,
-})
+
 // Computed data from Send data End
 
 const validationResult = atom<ValidateResultType>({
@@ -101,6 +98,14 @@ const toAssetList = atom<ThorAssetType[]>({
 const toAsset = atom<ThorAssetType | undefined>({
   key: 'toAsset',
   default: undefined,
+})
+const exchangeRate = atom<number>({
+  key: 'exchangeRate',
+  default: 1,
+})
+const isLoadingRates = atom<boolean>({
+  key: 'isLoadingRates',
+  default: true,
 })
 
 export default {
@@ -127,4 +132,5 @@ export default {
   toAssetList,
   toAsset,
   exchangeRate,
+  isLoadingRates,
 }
