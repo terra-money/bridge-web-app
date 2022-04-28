@@ -41,6 +41,12 @@ const StyledDangerText = styled(Text)`
     cursor: pointer;
     text-decoration: underline;
   }
+
+  a {
+    font-weight: bold;
+    color: #d64c55;
+    text-decoration: underline;
+  }
 `
 
 const StyledWarning = styled.div`
@@ -91,6 +97,11 @@ const StyledInfoText = styled(Text)`
   line-height: 1.5;
   letter-spacing: normal;
   color: #a3a3a3;
+  a {
+    font-weight: bold;
+    color: #a3a3a3;
+    text-decoration: underline;
+  }
 `
 
 export const DangerElement = ({
@@ -195,6 +206,16 @@ export const WarningInfo = (): ReactElement => {
             </WarningElement>
           )}
         </>
+      )}
+      {bridgeUsed === BridgeType.axelar && (
+        <DangerElement>
+          The Axelar network is under maintenance, it should be up and running
+          again in a few hours. You can follow updates{' '}
+          <a href="https://twitter.com/Axl_Status" target="blank">
+            on their Twitter
+          </a>
+          .
+        </DangerElement>
       )}
     </div>
   )
