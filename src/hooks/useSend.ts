@@ -370,6 +370,10 @@ const useSend = (): UseSendType => {
             etherVaultTokenList[asset.terraToken] &&
             toBlockChain === BlockChainType.solana
           ) {
+            const solPubKey = Buffer.concat([
+              Buffer.alloc(12),
+              Buffer.from(toAddress.substring(2), 'hex'),
+            ])
             return [
               new MsgExecuteContract(
                 loginUser.address,
@@ -380,6 +384,31 @@ const useSend = (): UseSendType => {
                   deposit_tokens: {},
                 },
                 { [asset.terraToken]: sendAmount }
+              ),
+              new MsgExecuteContract(
+                loginUser.address,
+                NETWORK.wormholeContracts[BlockChainType.solana]?.[
+                  isTestnet ? 'testnet' : 'mainnet'
+                ]?.tokenBridge || '',
+                {
+                  initiate_transfer: {
+                    asset: {
+                      amount: sendAmount.toString(),
+                      info: {
+                        native_token: {
+                          denom: asset.terraToken,
+                        },
+                      },
+                    },
+                    recipient_chain:
+                      NETWORK.wormholeContracts[toBlockChain][
+                        isTestnet ? 'testnet' : 'mainnet'
+                      ]?.chainid || 0,
+                    recipient: solPubKey.toString('base64'),
+                    fee: bridgeFee.toString(),
+                    nonce: Math.round(Math.round(Math.random() * 100000)),
+                  },
+                }
               ),
             ]
           } else {
