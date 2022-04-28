@@ -37,25 +37,29 @@ export default async function getSwapOutput(
   to: string,
   amount: number
 ): Promise<number> {
-  if (!from || !to) {
-    // to or from pool not available
-    return 0
-  }
-  const [{ data: fromData }, { data: toData }]: {
-    data: Pool
-  }[] = await Promise.all([
-    axios.get('https://midgard.thorchain.info/v2/pool/' + from),
-    axios.get('https://midgard.thorchain.info/v2/pool/' + to),
-  ])
+  if (!from || !to) return 0
 
-  if (fromData.status !== 'available' || toData.status !== 'available') {
-    // to or from pool not available
+  const { data } = await axios.get('https://midgard.thorchain.info/v2/pools')
+
+  let fromData: Pool | undefined = undefined
+  let toData: Pool | undefined = undefined
+
+  data.forEach((d: Pool): void => {
+    if (d.asset === from) fromData = d
+    else if (d.asset === to) toData = d
+  })
+
+  if (
+    !fromData ||
+    // @ts-expect-error
+    fromData.status !== 'available' ||
+    !toData ||
+    // @ts-expect-error
+    toData.status !== 'available'
+  )
     return 0
-  }
 
   const runeAmount = calcSwapOutput(amount, fromData, true)
-
   const simulationResult = calcSwapOutput(runeAmount, toData, false)
-
   return simulationResult
 }

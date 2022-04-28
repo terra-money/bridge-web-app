@@ -18,6 +18,8 @@ interface Pool {
 export default async function getExchangeRateUsd(
   asset: string
 ): Promise<number> {
+  if (!asset || asset.includes('undefined')) return 0
+
   const {
     data,
   }: {
