@@ -221,7 +221,12 @@ const whitelist: Record<
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.terra]: {},
-  [BlockChainType.solana]: {},
+  [BlockChainType.solana]: {
+    [BridgeType.wormhole]: {
+      uluna: '7a4cXVvVT7kF6hS5q5LDqtzWfHfys4a9PoK6pf87RKwf',
+      uusd: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    },
+  },
 }
 
 const testnetWhitelist: Record<
