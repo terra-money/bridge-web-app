@@ -34,5 +34,5 @@ export default async function getExchangeRate(
   if (!fromData || !toData) return 0
 
   // @ts-expect-error
-  return parseFloat(fromData.assetPriceUSD) / parseFloat(toData.assetPriceUSD)
+  return parseFloat(fromData.assetPrice) / parseFloat(toData.assetPrice)
 }

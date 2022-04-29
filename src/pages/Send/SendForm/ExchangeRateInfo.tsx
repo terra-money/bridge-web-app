@@ -49,7 +49,7 @@ const ExchangeRateInfo = (): ReactElement => {
       : new BigNumber(amount)
           .multipliedBy(exchangeRate)
           .minus(amountAfterBridgeFee)
-          .div(amountAfterBridgeFee)
+          .div(new BigNumber(amount).multipliedBy(exchangeRate))
           .multipliedBy(100)
 
   return (
