@@ -207,16 +207,6 @@ export const WarningInfo = (): ReactElement => {
           )}
         </>
       )}
-      {bridgeUsed === BridgeType.axelar && (
-        <DangerElement>
-          The Axelar network is under maintenance, it should be up and running
-          again in a few hours. You can follow updates{' '}
-          <a href="https://twitter.com/Axl_Status" target="blank">
-            on their Twitter
-          </a>
-          .
-        </DangerElement>
-      )}
     </div>
   )
 }
