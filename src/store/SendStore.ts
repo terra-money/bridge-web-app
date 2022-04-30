@@ -103,6 +103,10 @@ const exchangeRate = atom<number>({
   key: 'exchangeRate',
   default: 1,
 })
+const ratesUsd = atom<{ from: number; to: number }>({
+  key: 'ratesUsd',
+  default: { from: 0, to: 0 },
+})
 const isLoadingRates = atom<boolean>({
   key: 'isLoadingRates',
   default: true,
@@ -133,4 +137,5 @@ export default {
   toAsset,
   exchangeRate,
   isLoadingRates,
+  ratesUsd,
 }

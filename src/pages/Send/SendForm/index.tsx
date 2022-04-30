@@ -35,9 +35,8 @@ import SlippageInput from 'components/SlippageInput'
 import { getThorAssets } from 'packages/thorswap/getAssets'
 import { thorChainName, ThorBlockChains } from 'packages/thorswap/thorNames'
 import { getThorOutboundFees } from 'packages/thorswap/getFees'
-import getExchangeRate from 'packages/thorswap/getExchangeRate'
 import ExchangeRateInfo from './ExchangeRateInfo'
-import getSwapOutput from 'packages/thorswap/getOutput'
+import getThorRate from 'packages/thorswap/getThorRate'
 
 const StyledContainer = styled.div``
 
@@ -399,6 +398,7 @@ export const SwapForm = ({
     SendStore.amountAfterBridgeFee
   )
   const setExchangeRate = useSetRecoilState(SendStore.exchangeRate)
+  const setRatesUsd = useSetRecoilState(SendStore.ratesUsd)
 
   const [validationResult, setValidationResult] = useRecoilState(
     SendStore.validationResult
@@ -502,71 +502,76 @@ export const SwapForm = ({
 
   // calculate swap result (thorswap)
   useEffect(() => {
-    let update = true
-    let interval: NodeJS.Timeout | null
-    if (bridgeUsed === BridgeType.thorswap) {
-      setLoadingRates(true)
-      const thorAsset = `${
-        thorChainName[fromBlockChain as ThorBlockChains]
-      }.${asset?.symbol.toUpperCase()}`
+    if (bridgeUsed !== BridgeType.thorswap) return
 
-      interval = setTimeout((): void => {
-        if (!amount || parseFloat(amount) === 0) {
-          getExchangeRate(thorAsset, toAsset?.thorId || '').then(
-            (result): void => {
-              if (update) {
-                setExchangeRate(result)
-                setLoadingRates(false)
-                setAmountAfterBridgeFee(new BigNumber(0))
-              }
-            }
-          )
-        } else {
-          Promise.all([
-            getExchangeRate(thorAsset, toAsset?.thorId || ''),
-            getSwapOutput(
-              thorAsset,
-              toAsset?.thorId || '',
-              Number(amount) / getDecimals()
-            ),
-          ]).then(([rates, output]): void => {
+    let update = true
+    setLoadingRates(true)
+    const thorAsset = `${
+      thorChainName[fromBlockChain as ThorBlockChains]
+    }.${asset?.symbol.toUpperCase()}`
+
+    const timeout = setTimeout((): void => {
+      if (!amount || parseFloat(amount) === 0) {
+        getThorRate(thorAsset, toAsset?.thorId || '').then(
+          ({ rate, fromRateUsd, toRateUsd }): void => {
             if (update) {
-              setExchangeRate(rates)
-              setAmountAfterBridgeFee(
-                new BigNumber(output).multipliedBy(getDecimals())
-              )
+              setExchangeRate(rate)
+              setAmountAfterBridgeFee(new BigNumber(0))
+              setRatesUsd({ from: fromRateUsd, to: toRateUsd })
               setLoadingRates(false)
             }
-          })
-        }
-      }, 200)
-
-      return (): void => {
-        // cancel the subscription
-        interval && clearTimeout(interval)
-        update = false
+          }
+        )
+      } else {
+        getThorRate(
+          thorAsset,
+          toAsset?.thorId || '',
+          Number(amount) / getDecimals()
+        ).then(({ rate, output, fromRateUsd, toRateUsd }): void => {
+          console.log('Priced rate', (parseFloat(amount) * rate) / 10e6)
+          console.log('Expected rate', output)
+          if (update) {
+            setExchangeRate(rate)
+            setAmountAfterBridgeFee(
+              new BigNumber(output || 0).multipliedBy(getDecimals())
+            )
+            setRatesUsd({ from: fromRateUsd, to: toRateUsd })
+            setLoadingRates(false)
+          }
+        })
       }
+    }, 300)
+
+    return (): void => {
+      // cancel the subscription
+      timeout && clearTimeout(timeout)
+      update = false
     }
   }, [amount, toBlockChain, fromBlockChain, asset, toAsset, bridgeUsed])
 
   // calculate swap tx fee (thorswap)
   useEffect(() => {
+    if (bridgeUsed !== BridgeType.thorswap) return
+
     let update = true
-    if (bridgeUsed === BridgeType.thorswap) {
-      ;(async (): Promise<void> => {
-        const estimatedResult = await getThorOutboundFees(
-          toBlockChain,
-          toAsset?.thorId || ''
-        )
-        update &&
-          setBridgeFeeAmount(
-            new BigNumber(estimatedResult).multipliedBy(getDecimals())
+    const timeout = setTimeout((): void => {
+      if (bridgeUsed === BridgeType.thorswap) {
+        ;(async (): Promise<void> => {
+          const estimatedResult = await getThorOutboundFees(
+            toBlockChain,
+            toAsset?.thorId || ''
           )
-      })()
-    }
+          update &&
+            setBridgeFeeAmount(
+              new BigNumber(estimatedResult).multipliedBy(getDecimals())
+            )
+        })()
+      }
+    })
 
     return (): void => {
       // cancel the subscription
+      timeout && clearTimeout(timeout)
       update = false
     }
   }, [toBlockChain, toAsset, bridgeUsed])

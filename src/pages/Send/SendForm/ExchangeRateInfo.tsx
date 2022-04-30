@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { ArrowRepeat } from 'react-bootstrap-icons'
 
@@ -9,37 +9,22 @@ import { Text, View, Row } from 'components'
 import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 import BigNumber from 'bignumber.js'
-import getExchangeRateUsd from 'packages/thorswap/getExchangeRateUsd'
-import { ThorBlockChains, thorChainName } from 'packages/thorswap/thorNames'
 
 const ExchangeRateInfo = (): ReactElement => {
   const [reversed, setReversed] = useState(false)
-  const [exRateUsd, setExRateUsd] = useState({ from: 0, to: 0 })
+  const exRateUsd = useRecoilValue(SendStore.ratesUsd)
 
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
   const toAsset = useRecoilValue(SendStore.toAsset)
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   // Computed data from Send data
   const amountAfterBridgeFee = useRecoilValue(SendStore.amountAfterBridgeFee)
   const exchangeRate = useRecoilValue(SendStore.exchangeRate)
   const isLoading = useRecoilValue(SendStore.isLoadingRates)
   const amount = useRecoilValue(SendStore.amount)
-
-  useEffect(() => {
-    const fromAsset = `${
-      thorChainName[fromBlockChain as ThorBlockChains]
-    }.${asset?.symbol.toUpperCase()}`
-    Promise.all([
-      getExchangeRateUsd(toAsset?.thorId || ''),
-      getExchangeRateUsd(fromAsset),
-    ]).then(([to, from]) => {
-      setExRateUsd({ to, from })
-    })
-  }, [toAsset, asset, exchangeRate, reversed])
 
   const priceImpact =
     amountAfterBridgeFee.isEqualTo(0) ||

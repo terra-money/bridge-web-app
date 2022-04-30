@@ -32,34 +32,54 @@ function calcSwapOutput(
   return result
 }
 
+interface ThorRateResult {
+  rate: number
+  fromRateUsd: number
+  toRateUsd: number
+  output?: number
+}
+
 export default async function getSwapOutput(
   from: string,
   to: string,
-  amount: number
-): Promise<number> {
-  if (!from || !to) return 0
-
+  amount?: number
+): Promise<ThorRateResult> {
+  if (!from || !to) {
+    return { rate: 0, fromRateUsd: 0, toRateUsd: 0 }
+  }
   const { data } = await axios.get('https://midgard.thorchain.info/v2/pools')
 
   let fromData: Pool | undefined = undefined
   let toData: Pool | undefined = undefined
 
   data.forEach((d: Pool): void => {
-    if (d.asset === from) fromData = d
-    else if (d.asset === to) toData = d
+    if (d.asset === from && d.status === 'available') fromData = d
+    else if (d.asset === to && d.status === 'available') toData = d
   })
 
-  if (
-    !fromData ||
-    // @ts-expect-error
-    fromData.status !== 'available' ||
-    !toData ||
-    // @ts-expect-error
-    toData.status !== 'available'
-  )
-    return 0
+  if (!fromData || !toData) {
+    return { rate: 0, fromRateUsd: 0, toRateUsd: 0 }
+  }
 
-  const runeAmount = calcSwapOutput(amount, fromData, true)
-  const simulationResult = calcSwapOutput(runeAmount, toData, false)
-  return simulationResult
+  const fromPool = fromData as Pool
+  const toPool = toData as Pool
+
+  const rate = parseFloat(fromPool.assetPrice) / parseFloat(toPool.assetPrice)
+
+  if (!amount)
+    return {
+      rate: 0,
+      fromRateUsd: parseFloat(fromPool.assetPriceUSD),
+      toRateUsd: parseFloat(toPool.assetPriceUSD),
+    }
+
+  const runeAmount = calcSwapOutput(amount, fromPool, true)
+  const output = calcSwapOutput(runeAmount, toPool, false)
+
+  return {
+    output,
+    rate,
+    fromRateUsd: parseFloat(fromPool.assetPriceUSD),
+    toRateUsd: parseFloat(toPool.assetPriceUSD),
+  }
 }
