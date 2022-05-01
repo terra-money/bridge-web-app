@@ -567,7 +567,7 @@ export const SwapForm = ({
             )
         })()
       }
-    })
+    }, 500)
 
     return (): void => {
       // cancel the subscription

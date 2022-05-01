@@ -10,7 +10,7 @@ import ContractStore from 'store/ContractStore'
 import { ExclamationCircle } from 'react-bootstrap-icons'
 
 const StyledBg = styled.div`
-  position: absolute;
+  position: fixed;
   z-index: 10;
   top: 0;
   background-color: #000000cc;

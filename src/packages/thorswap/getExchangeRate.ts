@@ -28,7 +28,7 @@ export default async function getExchangeRate(
 
   data.forEach((d: Pool): void => {
     if (d.asset === from) fromData = d
-    else if (d.asset === to) toData = d
+    if (d.asset === to) toData = d
   })
 
   if (!fromData || !toData) return 0

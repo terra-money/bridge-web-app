@@ -49,10 +49,11 @@ const FormFeeInfo = ({
   const validationResult = useRecoilValue(SendStore.validationResult)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const slippageTolerance = useRecoilValue(SendStore.slippageTolerance)
+  const ratesUsd = useRecoilValue(SendStore.ratesUsd)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
-  const { formatBalance } = useAsset()
+  const { formatBalance, getDecimals } = useAsset()
 
   const [optionList, setOptionList] = useState<
     {
@@ -212,7 +213,12 @@ const FormFeeInfo = ({
                       <Text
                         style={{ justifyContent: 'flex-end', opacity: '0.8' }}
                       >
-                        {`${formatBalance(bridgeFee)} ${toAsset?.symbol}`}
+                        {`${formatBalance(bridgeFee)} ${
+                          toAsset?.symbol
+                        } ($${bridgeFee
+                          .multipliedBy(ratesUsd.to)
+                          .div(getDecimals())
+                          .toFixed(2)})`}
                       </Text>
                     </View>
                   </Row>

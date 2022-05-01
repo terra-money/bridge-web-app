@@ -26,28 +26,31 @@ export async function getThorOutboundFees(
   const gasRate = parseInt(chainData.gas_rate)
 
   // get exchange rate
-  const exchangeRate = await getExchangeRate(
-    nativeThorAsset[blockchain as ThorBlockChains],
-    toAsset
-  )
+  const exchangeRate =
+    nativeThorAsset[blockchain as ThorBlockChains] === toAsset
+      ? 1
+      : await getExchangeRate(
+          nativeThorAsset[blockchain as ThorBlockChains],
+          toAsset
+        )
 
   switch (blockchain) {
     case BlockChainType.bsc:
-      return (gasRate / 1e7) * exchangeRate
+      return 3 * (gasRate / 1e7) * exchangeRate
     case BlockChainType.ltc:
     case BlockChainType.bch:
     case BlockChainType.doge:
     case BlockChainType.bitcoin:
-      return (gasRate / 1e8) * 250 * exchangeRate
+      return 3 * (gasRate / 1e8) * 250 * exchangeRate
     case BlockChainType.ethereum:
       if (toAsset === nativeThorAsset[blockchain as ThorBlockChains]) {
-        return (gasRate / 1e9) * 35000 * exchangeRate
+        return 3 * (gasRate / 1e9) * 35000 * exchangeRate
       } else {
         // ERC20 (need more gas)
-        return (gasRate / 1e9) * 70000 * exchangeRate
+        return 3 * (gasRate / 1e9) * 70000 * exchangeRate
       }
     case BlockChainType.terra:
-      return (gasRate / 1e8) * exchangeRate
+      return 3 * (gasRate / 1e8) * exchangeRate
   }
   return 0
 }

@@ -191,11 +191,9 @@ const Finish = (): ReactElement => {
                 }}
               >
                 {formatBalance(
-                  formatBalance(
-                    amountAfterBridgeFee
-                      .multipliedBy(1 - slippageTolerance / 100)
-                      .minus(bridgeFee)
-                  )
+                  amountAfterBridgeFee
+                    .multipliedBy(1 - slippageTolerance / 100)
+                    .minus(bridgeFee)
                 )}{' '}
                 {toAsset?.symbol}
               </Text>
