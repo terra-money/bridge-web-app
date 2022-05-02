@@ -33,6 +33,14 @@ const useEtherBaseBalance = (): {
     return ''
   }
 
+  const getNativeBalance = async ({
+    userAddress,
+  }: {
+    userAddress: string
+  }): Promise<string> => {
+    return (await loginUser.provider?.getBalance(userAddress))?.toString() || ''
+  }
+
   const getEtherBalances = async ({
     whiteList,
   }: {
@@ -49,6 +57,11 @@ const useEtherBaseBalance = (): {
         list[token] = balance
       })
     )
+    if (whiteList['ETH']) {
+      list['ETH'] = await getNativeBalance({ userAddress })
+      console.log(list['ETH'])
+    }
+
     return list
   }
   return {

@@ -6,7 +6,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR } from 'consts'
+import { COLOR } from 'consts'
 
 import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
@@ -152,7 +152,7 @@ export const SendForm = ({
   const [inputAmount, setInputAmount] = useState('')
 
   const { getTerraShuttleFee } = useShuttle()
-  const { formatBalance, getAssetList } = useAsset()
+  const { formatBalance, getAssetList, getDecimals } = useAsset()
   const { getTerraFeeList } = useSend()
   const { validateSendData } = useSendValidate()
 
@@ -169,14 +169,7 @@ export const SendForm = ({
 
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
-      const decimalSize = new BigNumber(
-        fromBlockChain === BlockChainType.terra ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar ||
-        bridgeUsed === BridgeType.wormhole
-          ? ASSET.TERRA_DECIMAL
-          : ASSET.ETHER_BASE_DECIMAL
-      )
+      const decimalSize = new BigNumber(getDecimals())
       setAmount(new BigNumber(value).times(decimalSize).toString(10))
     }
   }
@@ -377,7 +370,8 @@ export const SwapForm = ({
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
 
   // Send Data
-  const asset = useRecoilValue(SendStore.asset)
+  const [toAsset, setToAsset] = useRecoilState(SendStore.toAsset)
+  const [asset, setAsset] = useRecoilState(SendStore.asset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
   const [amount, setAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
@@ -387,8 +381,8 @@ export const SwapForm = ({
     SendStore.isLoadingRates
   )
 
+  const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
   const setToAssetList = useSetRecoilState(SendStore.toAssetList)
-  const [toAsset, setToAsset] = useRecoilState(SendStore.toAsset)
 
   // Computed data from Send data
   const setGasFeeList = useSetRecoilState(SendStore.gasFeeList)
@@ -408,7 +402,7 @@ export const SwapForm = ({
 
   const [inputAmount, setInputAmount] = useState('')
 
-  const { formatBalance, getAssetList, getDecimals } = useAsset()
+  const { formatBalance, getBalanceList, getDecimals } = useAsset()
   const { getTerraFeeList } = useSend()
   const { validateSendData } = useSendValidate()
 
@@ -425,14 +419,7 @@ export const SwapForm = ({
 
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
-      const decimalSize = new BigNumber(
-        fromBlockChain === BlockChainType.terra ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar ||
-        bridgeUsed === BridgeType.wormhole
-          ? ASSET.TERRA_DECIMAL
-          : ASSET.ETHER_BASE_DECIMAL
-      )
+      const decimalSize = new BigNumber(getDecimals())
       setAmount(new BigNumber(value).times(decimalSize).toString(10))
     }
   }
@@ -480,16 +467,19 @@ export const SwapForm = ({
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })
-    getAssetList().then((): void => {
-      dbcGetFeeInfoWithValidation.callback()
-    })
-
-    getThorAssets(thorChainName[toBlockChain as ThorBlockChains]).then(
-      (list): void => {
-        setToAssetList(list)
-        setToAsset(list[0])
-      }
-    )
+    ;(async (): Promise<void> => {
+      const { fromAssets, toAssets } = await getThorAssets(
+        thorChainName[fromBlockChain as ThorBlockChains],
+        thorChainName[toBlockChain as ThorBlockChains]
+      )
+      setAssetList(fromAssets)
+      setAsset(fromAssets[0])
+      setToAssetList(toAssets)
+      setToAsset(toAssets[0])
+      const balanceFromList = await getBalanceList(fromAssets)
+      setAssetList(balanceFromList)
+      setAsset(balanceFromList[0])
+    })()
   }, [
     // to check decimal length by network
     loginUser,
@@ -528,8 +518,6 @@ export const SwapForm = ({
           toAsset?.thorId || '',
           Number(amount) / getDecimals()
         ).then(({ rate, output, fromRateUsd, toRateUsd }): void => {
-          console.log('Priced rate', (parseFloat(amount) * rate) / 10e6)
-          console.log('Expected rate', output)
           if (update) {
             setExchangeRate(rate)
             setAmountAfterBridgeFee(

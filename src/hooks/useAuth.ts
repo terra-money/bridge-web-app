@@ -46,6 +46,7 @@ const useAuth = (): {
   const setLoginUser = useSetRecoilState(AuthStore.loginUser)
   const setEtherBaseExt = useSetRecoilState(NetworkStore.etherBaseExt)
   const setKeplrBaseExt = useSetRecoilState(NetworkStore.keplrExt)
+  const setXDefiExt = useSetRecoilState(NetworkStore.xDefiExt)
   const setTerraExt = useSetRecoilState(NetworkStore.terraExt)
   const setTerraLocal = useSetRecoilState(NetworkStore.terraLocal)
   const setIsVisibleNotSupportNetworkModal = useSetRecoilState(
@@ -118,6 +119,13 @@ const useAuth = (): {
           })
         return
       }
+    } else if (fromBlockChain === BlockChainType.bitcoin) {
+      setFromBlockChain(fromBlockChain)
+      setXDefiExt(fromBlockChain)
+      setLoginStorage({
+        blockChain: fromBlockChain,
+        walletType: user.walletType,
+      })
     }
     // ethereum, bsc, hmy are ethereum base blockchain
     else {

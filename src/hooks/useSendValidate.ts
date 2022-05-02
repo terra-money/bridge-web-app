@@ -7,16 +7,11 @@ import { Bech32Address } from '@keplr-wallet/cosmos'
 
 import SendStore from 'store/SendStore'
 
-import {
-  BlockChainType,
-  bechPrefix,
-  IbcNetwork,
-  BridgeType,
-} from 'types/network'
+import { BlockChainType, bechPrefix, IbcNetwork } from 'types/network'
 import { ValidateItemResultType, ValidateResultType } from 'types/send'
 
 import useAsset from './useAsset'
-import { NETWORK } from 'consts'
+import { ASSET, NETWORK } from 'consts'
 import ContractStore from 'store/ContractStore'
 import useTns from 'packages/tns/useTns'
 
@@ -34,7 +29,6 @@ const useSendValidate = (): {
   const memo = useRecoilValue(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
 
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
   const feeDenom = useRecoilValue(SendStore.feeDenom)
@@ -42,6 +36,7 @@ const useSendValidate = (): {
   const gasFee = useRecoilValue(SendStore.gasFee)
 
   const { getAddress } = useTns()
+  const { getDecimals } = useAsset()
 
   const validateFee = (): ValidateItemResultType => {
     if (fromBlockChain === BlockChainType.terra) {
@@ -159,13 +154,7 @@ const useSendValidate = (): {
       return { isValid: false, errorMessage: 'Amount must be greater than 0' }
     }
 
-    const rebalanceDecimal =
-      fromBlockChain === BlockChainType.terra ||
-      bridgeUsed === BridgeType.ibc ||
-      bridgeUsed === BridgeType.axelar ||
-      bridgeUsed === BridgeType.wormhole
-        ? 1
-        : 1e12
+    const rebalanceDecimal = getDecimals() / ASSET.TERRA_DECIMAL
 
     if (false === bnAmount.div(rebalanceDecimal).isInteger()) {
       return {

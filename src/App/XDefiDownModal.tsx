@@ -17,7 +17,7 @@ const StyledContainer = styled.div`
   padding: 0 30px 30px;
 `
 
-const KeplrExtensionDownModal = (): ReactElement => {
+const XDefiDownModal = (): ReactElement => {
   const handleInstalled = (): void => {
     window.location.reload()
   }
@@ -28,7 +28,7 @@ const KeplrExtensionDownModal = (): ReactElement => {
   return (
     <DefaultModal
       {...{
-        isOpen: isVisibleModalType === SelectWalletModalType.keplrInstall,
+        isOpen: isVisibleModalType === SelectWalletModalType.xDefiInstall,
         close: (): void => {
           setIsVisibleModalType(undefined)
         },
@@ -38,7 +38,7 @@ const KeplrExtensionDownModal = (): ReactElement => {
         {!navigator.userAgent.includes('Chrome') ? (
           <div style={{ textAlign: 'center' }}>
             <Text style={{ fontSize: 18 }}>
-              {'Bridge currently\nonly supports desktop Chrome'}
+              {'xDefi currently\nonly supports desktop Chrome'}
             </Text>
             <br />
             <ExtLink href={NETWORK.CHROME}>
@@ -57,9 +57,9 @@ const KeplrExtensionDownModal = (): ReactElement => {
         ) : (
           <>
             <div style={{ textAlign: 'center' }}>
-              <ExtLink href={NETWORK.KEPLR_EXTENSION}>
+              <ExtLink href={NETWORK.XDEFI_EXTENSION}>
                 <Text style={{ color: 'inherit', fontSize: 18 }}>
-                  Download Keplr Extension
+                  Download xDefi Extension
                 </Text>
               </ExtLink>
               <br />
@@ -74,4 +74,4 @@ const KeplrExtensionDownModal = (): ReactElement => {
   )
 }
 
-export default KeplrExtensionDownModal
+export default XDefiDownModal

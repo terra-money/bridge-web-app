@@ -12,11 +12,13 @@ import { BlockChainType, BridgeType, isIbcNetwork } from 'types/network'
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
 import useKeplrBalance from './useKeplrBalance'
+import useUtxoBalance from './useUtxoBalance'
 import ContractStore from 'store/ContractStore'
 import useWhiteList from './useWhiteList'
 
 const useAsset = (): {
   getAssetList: () => Promise<void>
+  getBalanceList: (list: AssetType[]) => Promise<AssetType[]>
   formatBalance: (balance: string | BigNumber) => string
   getDecimals: () => number
 } => {
@@ -35,6 +37,7 @@ const useAsset = (): {
   const { getTerraBalances } = useTerraBalance()
   const { getEtherBalances } = useEtherBaseBalance()
   const { getKeplrBalances } = useKeplrBalance()
+  const { getUtxoBalance } = useUtxoBalance()
 
   const setBalanceToAssetList = ({
     assetList,
@@ -82,6 +85,34 @@ const useAsset = (): {
     )
   }
 
+  const getBalanceList = async (list: AssetType[]): Promise<AssetType[]> => {
+    if (!isLoggedIn) return list
+
+    const whiteList: Record<string, string> = {}
+    list.forEach((c) => {
+      whiteList[c.terraToken] = c.terraToken
+    })
+
+    let balanceList: BalanceListType = {}
+
+    if (fromBlockChain === BlockChainType.terra) {
+      balanceList = await getTerraBalances([])
+    } else if (NETWORK.isEtherBaseBlockChain(fromBlockChain)) {
+      balanceList = await getEtherBalances({ whiteList })
+    } else if (fromBlockChain === BlockChainType.bitcoin) {
+      balanceList = { BTC: await getUtxoBalance('BTC') }
+    } else if (isIbcNetwork(fromBlockChain)) {
+      balanceList = await getKeplrBalances({ whiteList })
+    }
+
+    return list.map((c) => {
+      return {
+        ...c,
+        balance: balanceList[c.terraToken],
+      }
+    })
+  }
+
   const getAssetList = async (): Promise<void> => {
     let balanceList: BalanceListType = {}
     if (isLoggedIn && whiteList) {
@@ -126,17 +157,12 @@ const useAsset = (): {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
-      return fromBlockChain === BlockChainType.terra ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar ||
-        bridgeUsed === BridgeType.wormhole
-        ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
-        : bnBalance
-            .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .div(ASSET.TERRA_DECIMAL)
-            .dp(6)
-            .toString(10)
+      return bnBalance
+        .div(getDecimals() / ASSET.TERRA_DECIMAL)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .div(ASSET.TERRA_DECIMAL)
+        .dp(6)
+        .toString(10)
     }
 
     return ''
@@ -151,11 +177,19 @@ const useAsset = (): {
     )
       return ASSET.TERRA_DECIMAL
 
+    if (
+      bridgeUsed === BridgeType.thorswap &&
+      fromBlockChain !== BlockChainType.ethereum
+    ) {
+      return ASSET.UTXO_DECIMAL
+    }
+
     return ASSET.ETHER_BASE_DECIMAL
   }
 
   return {
     getAssetList,
+    getBalanceList,
     formatBalance,
     getDecimals,
   }

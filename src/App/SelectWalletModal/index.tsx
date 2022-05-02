@@ -25,6 +25,7 @@ import { BlockChainType, isIbcNetwork } from 'types/network'
 
 import WalletButton from './WalletButton'
 import { NETWORK } from 'consts'
+import xdefiService from 'services/xdefiService'
 
 const StyledContainer = styled.div`
   padding: 0 25px 40px;
@@ -51,6 +52,23 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       })
     } else {
       setIsVisibleModalType(SelectWalletModalType.terraExtInstall)
+    }
+  }
+
+  const onClickXDefi = async (): Promise<void> => {
+    const xDefiInstalled = xdefiService.checkInstalled()
+
+    if (xDefiInstalled) {
+      const result = await xdefiService.connect(fromBlockChain)
+
+      await login({
+        user: {
+          address: result,
+          walletType: WalletEnum.xDefi,
+        },
+      })
+    } else {
+      setIsVisibleModalType(SelectWalletModalType.xDefiInstall)
     }
   }
 
@@ -195,6 +213,9 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
       case WalletEnum.Keplr:
         onClickKeplr()
         break
+      case WalletEnum.xDefi:
+        onClickXDefi()
+        break
     }
   }
 
@@ -214,6 +235,8 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     buttons = [WalletEnum.MetaMask]
   } else if (isIbcNetwork(fromBlockChain)) {
     buttons = [WalletEnum.Keplr]
+  } else if (fromBlockChain === BlockChainType.bitcoin) {
+    buttons = [WalletEnum.xDefi]
   }
 
   useEffect(() => {

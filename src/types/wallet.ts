@@ -13,6 +13,7 @@ export enum WalletEnum {
   WalletConnect = 'WalletConnect',
   CoinbaseWallet = 'CoinbaseWallet',
   Keplr = 'Keplr',
+  xDefi = 'xDefi',
 }
 
 export const WalletTitle: Record<WalletEnum, string> = {
@@ -23,6 +24,7 @@ export const WalletTitle: Record<WalletEnum, string> = {
   WalletConnect: 'WalletConnect',
   CoinbaseWallet: 'Coinbase Wallet',
   Keplr: 'Keplr (Extension)',
+  xDefi: 'xDefi (Extension)',
 }
 
 export const WalletSupportBrowser: Record<
@@ -53,6 +55,10 @@ export const WalletSupportBrowser: Record<
     errorMessage: 'Available for desktop browsers.',
   },
   Keplr: {
+    isSupport: isBrowser && (isChrome || isEdgeChromium),
+    errorMessage: 'Available for desktop Chrome.',
+  },
+  xDefi: {
     isSupport: isBrowser && (isChrome || isEdgeChromium),
     errorMessage: 'Available for desktop Chrome.',
   },

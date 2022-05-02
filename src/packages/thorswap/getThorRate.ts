@@ -68,7 +68,7 @@ export default async function getSwapOutput(
 
   if (!amount)
     return {
-      rate: 0,
+      rate,
       fromRateUsd: parseFloat(fromPool.assetPriceUSD),
       toRateUsd: parseFloat(toPool.assetPriceUSD),
     }

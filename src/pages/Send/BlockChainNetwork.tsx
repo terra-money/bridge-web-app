@@ -73,17 +73,21 @@ const BlockChainNetwork = (): ReactElement => {
             setBlockChain: (value): void => {
               logout()
               setFromBlockChain(value)
-              setToBlockChain(BlockChainType.terra)
-              bridgeUsed !== BridgeType.thorswap &&
+              if (bridgeUsed !== BridgeType.thorswap) {
+                setToBlockChain(BlockChainType.terra)
                 setBridgeUsed(getDefaultBridge(value, BlockChainType.terra))
-              setBlockchainStorage({
-                fromBlockChain: value,
-                toBlockChain: BlockChainType.terra,
-                bridgeUsed:
-                  bridgeUsed !== BridgeType.thorswap
-                    ? getDefaultBridge(value, BlockChainType.terra)
-                    : BridgeType.thorswap,
-              })
+                setBlockchainStorage({
+                  fromBlockChain: value,
+                  toBlockChain: BlockChainType.terra,
+                  bridgeUsed: getDefaultBridge(value, BlockChainType.terra),
+                })
+              } else {
+                setBlockchainStorage({
+                  fromBlockChain: value,
+                  toBlockChain,
+                  bridgeUsed,
+                })
+              }
             },
             optionList:
               bridgeUsed === BridgeType.thorswap
@@ -92,6 +96,16 @@ const BlockChainNetwork = (): ReactElement => {
                       label: NETWORK.blockChainName[BlockChainType.terra],
                       value: BlockChainType.terra,
                       isDisabled: fromBlockChain === BlockChainType.terra,
+                    },
+                    {
+                      label: NETWORK.blockChainName[BlockChainType.ethereum],
+                      value: BlockChainType.ethereum,
+                      isDisabled: fromBlockChain === BlockChainType.ethereum,
+                    },
+                    {
+                      label: NETWORK.blockChainName[BlockChainType.bitcoin],
+                      value: BlockChainType.bitcoin,
+                      isDisabled: fromBlockChain === BlockChainType.bitcoin,
                     },
                   ]
                 : [
@@ -168,24 +182,32 @@ const BlockChainNetwork = (): ReactElement => {
             setBlockChain: (b): void => {
               setToBlockChain(b)
               if (fromBlockChain !== BlockChainType.terra) {
-                setFromBlockChain(BlockChainType.terra)
                 logout()
               }
               if (bridgeUsed !== BridgeType.thorswap) {
+                setFromBlockChain(BlockChainType.terra)
                 setBridgeUsed(getDefaultBridge(BlockChainType.terra, b))
+                setBlockchainStorage({
+                  fromBlockChain: BlockChainType.terra,
+                  toBlockChain: b,
+                  bridgeUsed: getDefaultBridge(BlockChainType.terra, b),
+                })
+              } else {
+                setBlockchainStorage({
+                  fromBlockChain,
+                  toBlockChain: b,
+                  bridgeUsed,
+                })
               }
-              setBlockchainStorage({
-                fromBlockChain: BlockChainType.terra,
-                toBlockChain: b,
-                bridgeUsed:
-                  bridgeUsed !== BridgeType.thorswap
-                    ? getDefaultBridge(BlockChainType.terra, b)
-                    : BridgeType.thorswap,
-              })
             },
             optionList:
               bridgeUsed === BridgeType.thorswap
                 ? [
+                    {
+                      label: NETWORK.blockChainName[BlockChainType.terra],
+                      value: BlockChainType.terra,
+                      isDisabled: toBlockChain === BlockChainType.terra,
+                    },
                     {
                       label: NETWORK.blockChainName[BlockChainType.ethereum],
                       value: BlockChainType.ethereum,

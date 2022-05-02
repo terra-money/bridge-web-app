@@ -32,6 +32,11 @@ const keplrExt = atom<{ chainID: string; name: string } | undefined>({
   default: undefined,
 })
 
+const xDefiExt = atom<BlockChainType | undefined>({
+  key: 'xDefiExt',
+  default: undefined,
+})
+
 const isTestnet = selector<boolean>({
   key: 'isTestnet',
   get: ({ get }) => {
@@ -88,6 +93,7 @@ export default {
   terraLocal,
   etherBaseExt,
   keplrExt,
+  xDefiExt,
   isTestnet,
   isVisibleNotSupportNetworkModal,
   triedNotSupportNetwork,

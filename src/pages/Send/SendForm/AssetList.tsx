@@ -181,11 +181,13 @@ const AssetList = ({
   onChangeAmount,
   swap,
   to,
+  from,
 }: {
   selectedAsset?: AssetType
   onChangeAmount?: ({ value }: { value: string }) => void
   swap?: boolean
   to?: boolean
+  from?: boolean
 }): ReactElement => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
