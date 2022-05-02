@@ -151,3 +151,8 @@ export enum TerraAssetsPathEnum {
 
   ibc_tokens = '/ibc/tokens.json',
 }
+
+export interface SolanaNetwork {
+  name: string
+  chainID: string
+}

@@ -48,6 +48,7 @@ const useAuth = (): {
   const setKeplrBaseExt = useSetRecoilState(NetworkStore.keplrExt)
   const setTerraExt = useSetRecoilState(NetworkStore.terraExt)
   const setTerraLocal = useSetRecoilState(NetworkStore.terraLocal)
+  const setSolanaExt = useSetRecoilState(NetworkStore.solanaExt)
   const setIsVisibleNotSupportNetworkModal = useSetRecoilState(
     NetworkStore.isVisibleNotSupportNetworkModal
   )
@@ -61,7 +62,13 @@ const useAuth = (): {
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
   const login = async ({ user }: { user: User }): Promise<void> => {
-    if (fromBlockChain === BlockChainType.terra) {
+    if (fromBlockChain === BlockChainType.solana) {
+      setLoginStorage({
+        blockChain: fromBlockChain,
+        walletType: user.walletType,
+      })
+      setSolanaExt({ name: 'mainnet', chainID: '101' })
+    } else if (fromBlockChain === BlockChainType.terra) {
       let localNetwork: LocalTerraNetwork | undefined
       let name = ''
       let chainId: string | number = ''

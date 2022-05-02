@@ -7,6 +7,7 @@ import {
   ExtTerraNetwork,
   LocalTerraNetwork,
   isIbcNetwork,
+  SolanaNetwork,
 } from 'types/network'
 import AuthStore from './AuthStore'
 import SendStore from './SendStore'
@@ -29,6 +30,11 @@ const etherBaseExt = atom<EtherNetwork | undefined>({
 
 const keplrExt = atom<{ chainID: string; name: string } | undefined>({
   key: 'keplrExt',
+  default: undefined,
+})
+
+const solanaExt = atom<SolanaNetwork | undefined>({
+  key: 'solanaExt',
   default: undefined,
 })
 
@@ -91,4 +97,5 @@ export default {
   isTestnet,
   isVisibleNotSupportNetworkModal,
   triedNotSupportNetwork,
+  solanaExt,
 }

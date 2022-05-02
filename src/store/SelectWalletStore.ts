@@ -5,6 +5,7 @@ export enum SelectWalletModalType {
   terraExtInstall,
   bscInstall,
   keplrInstall,
+  phantomInstall,
 }
 
 const isVisibleModalType = atom<SelectWalletModalType | undefined>({

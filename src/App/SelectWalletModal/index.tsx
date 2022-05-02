@@ -14,6 +14,7 @@ import coinBaseService from 'services/coinBaseService'
 import metaMaskService from 'services/metaMaskService'
 import bscService from 'services/bscService'
 import keplrService from 'services/keplrService'
+import phantomService from 'services/phantomService'
 
 import SelectWalletStore, {
   SelectWalletModalType,
@@ -121,6 +122,21 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     }
   }
 
+  const onClickPhantom = async (): Promise<void> => {
+    if (phantomService.checkInstalled()) {
+      const { address, provider } = await phantomService.connect()
+      await login({
+        user: {
+          address,
+          provider: provider,
+          walletType: WalletEnum.Phantom,
+        },
+      })
+    } else {
+      setIsVisibleModalType(SelectWalletModalType.phantomInstall)
+    }
+  }
+
   const onClickMetamask = async (): Promise<void> => {
     if (metaMaskService.checkInstalled()) {
       const { address, provider } = await metaMaskService.connect()
@@ -194,6 +210,9 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
         break
       case WalletEnum.Keplr:
         onClickKeplr()
+        break
+      case WalletEnum.Phantom:
+        onClickPhantom()
         break
     }
   }
