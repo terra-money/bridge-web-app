@@ -214,6 +214,8 @@ const SelectEtherBaseWalletModal = (): ReactElement => {
     buttons = [WalletEnum.MetaMask]
   } else if (isIbcNetwork(fromBlockChain)) {
     buttons = [WalletEnum.Keplr]
+  } else if (fromBlockChain === BlockChainType.solana) {
+    buttons = [WalletEnum.Phantom]
   }
 
   useEffect(() => {
