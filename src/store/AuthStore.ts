@@ -24,10 +24,17 @@ const isLoggedIn = selector({
     const etherBaseExt = get(NetworkStore.etherBaseExt)
     const terraExt = get(NetworkStore.terraExt)
     const keplrExt = get(NetworkStore.keplrExt)
+    const solanaExt = get(NetworkStore.solanaExt)
 
     return (
       _.some(user && user.address) &&
-      _.some(etherBaseExt || terraExt || user.terraWalletConnect || keplrExt)
+      _.some(
+        etherBaseExt ||
+          terraExt ||
+          user.terraWalletConnect ||
+          keplrExt ||
+          solanaExt
+      )
     )
   },
 })
