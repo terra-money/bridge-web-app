@@ -12,6 +12,7 @@ import { BlockChainType, BridgeType, isIbcNetwork } from 'types/network'
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
 import useKeplrBalance from './useKeplrBalance'
+import useSolanaBalance from './useSolanaBalance'
 import ContractStore from 'store/ContractStore'
 import useWhiteList from './useWhiteList'
 
@@ -34,6 +35,7 @@ const useAsset = (): {
   const { getTerraBalances } = useTerraBalance()
   const { getEtherBalances } = useEtherBaseBalance()
   const { getKeplrBalances } = useKeplrBalance()
+  const { getSolanaBalances } = useSolanaBalance()
 
   const setBalanceToAssetList = ({
     assetList,
@@ -99,6 +101,8 @@ const useAsset = (): {
         balanceList = await getEtherBalances({ whiteList })
       } else if (isIbcNetwork(fromBlockChain)) {
         balanceList = await getKeplrBalances({ whiteList })
+      } else if (fromBlockChain === BlockChainType.solana) {
+        balanceList = await getSolanaBalances({ whiteList })
       }
     }
 
