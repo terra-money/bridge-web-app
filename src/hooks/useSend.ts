@@ -56,6 +56,7 @@ import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDeposi
 import useTns from 'packages/tns/useTns'
 import getThorDepositAddress from 'packages/thorswap/getDepositAddress'
 import useAsset from './useAsset'
+import xdefiService from 'services/xdefiService'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -754,6 +755,50 @@ const useSend = (): UseSendType => {
     }
   }
 
+  // transfer with xDefi
+  const submitRequestTxFromXDefi = async (): Promise<RequestTxResultType> => {
+    if (
+      bridgeUsed === BridgeType.thorswap &&
+      fromBlockChain === BlockChainType.bitcoin
+    ) {
+      if (loginUser) {
+        try {
+          const destinationAddress =
+            (toBlockChain === BlockChainType.terra &&
+              (await getAddress(toAddress))) ||
+            toAddress
+
+          const { isHalted, address: thorDepositAddress } =
+            await getThorDepositAddress(fromBlockChain, toBlockChain)
+
+          if (isHalted) {
+            throw new Error('Thor halted')
+          }
+
+          const result = await xdefiService.send(
+            loginUser.address,
+            thorDepositAddress,
+            sendAmount,
+            `=:${toAsset?.thorId}:${destinationAddress}:${amountAfterBridgeFee
+              .multipliedBy(1 - slippageTolerance / 100)
+              .minus(bridgeFee)
+              .dividedBy(getDecimals())
+              .multipliedBy(1e8)
+              .toFixed(0)}`
+          )
+
+          return { success: !!result, hash: result }
+        } catch (error) {
+          console.error(error)
+          return handleTxErrorFromIbc(error)
+        }
+      }
+    }
+    return {
+      success: false,
+    }
+  }
+
   // IBC transfer with Keplr
   const submitRequestTxFromIbc = async (): Promise<RequestTxResultType> => {
     if (
@@ -825,6 +870,9 @@ const useSend = (): UseSendType => {
     }
     if (isIbcNetwork(fromBlockChain)) {
       return submitRequestTxFromIbc()
+    }
+    if (fromBlockChain === BlockChainType.bitcoin) {
+      return submitRequestTxFromXDefi()
     }
     return submitRequestTxFromEtherBase()
   }

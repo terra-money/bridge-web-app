@@ -50,7 +50,7 @@ export async function getThorOutboundFees(
         return 3 * (gasRate / 1e9) * 70000 * exchangeRate
       }
     case BlockChainType.terra:
-      return 3 * (gasRate / 1e8) * exchangeRate
+      return 6 * (gasRate / 1e8) * exchangeRate
   }
   return 0
 }

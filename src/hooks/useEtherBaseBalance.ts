@@ -59,7 +59,6 @@ const useEtherBaseBalance = (): {
     )
     if (whiteList['ETH']) {
       list['ETH'] = await getNativeBalance({ userAddress })
-      console.log(list['ETH'])
     }
 
     return list

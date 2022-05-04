@@ -125,213 +125,214 @@ const FormFeeInfo = ({
 
   return (
     <>
-      {isLoggedIn &&
-        fromBlockChain === BlockChainType.terra &&
-        validationResult.isValid && (
-          <StyledFormSection>
-            <FormLabel title={'TxFee'} />
+      {isLoggedIn && validationResult.isValid && (
+        <StyledFormSection>
+          <FormLabel title={'TxFee'} />
 
-            <View
-              style={{
-                marginTop: 12,
-                borderTop: 'dashed 1px #444',
+          <View
+            style={{
+              marginTop: 12,
+              borderTop: 'dashed 1px #444',
 
-                fontSize: 12,
-                paddingTop: 6,
-                paddingBottom: 6,
-              }}
-            >
-              <Row
-                style={{
-                  paddingTop: 6,
-                  paddingBottom: 6,
-                  margin: 0,
-                  justifyContent: 'space-between',
-                }}
-              >
-                <View>
-                  <Text style={{ paddingRight: 10, color: '#737373' }}>
-                    Gas Fee {bridgeUsed === BridgeType.thorswap && 'on Terra'}
-                  </Text>
-                </View>
-                <Row style={{ alignItems: 'center' }}>
-                  <Text
-                    style={{
-                      justifyContent: 'flex-end',
-                      paddingRight: 10,
-                      opacity: 0.8,
-                    }}
-                  >
-                    {formatBalance(gasFee)}
-                  </Text>
-                  <FormSelect
-                    selectedValue={feeDenom}
-                    size={'sm'}
-                    optionList={optionList}
-                    onSelect={(value: AssetNativeDenomEnum): void => {
-                      setFeeDenom(value)
-                    }}
-                    containerStyle={{
-                      width: 52,
-                      height: 26,
-                      borderRadius: 3,
-                      padding: '6px 5px 5px 8px',
-                    }}
-                    selectedTextStyle={{
-                      fontSize: 12,
-                      fontWeight: 'normal',
-                      letterSpacing: -0.19,
-                    }}
-                    menuContainerStyle={{
-                      borderRadius: 3,
-                    }}
-                  />
+              fontSize: 12,
+              paddingTop: 6,
+              paddingBottom: 6,
+            }}
+          >
+            {fromBlockChain === BlockChainType.terra && (
+              <>
+                {' '}
+                <Row
+                  style={{
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    margin: 0,
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View>
+                    <Text style={{ paddingRight: 10, color: '#737373' }}>
+                      Gas Fee {bridgeUsed === BridgeType.thorswap && 'on Terra'}
+                    </Text>
+                  </View>
+                  <Row style={{ alignItems: 'center' }}>
+                    <Text
+                      style={{
+                        justifyContent: 'flex-end',
+                        paddingRight: 10,
+                        opacity: 0.8,
+                      }}
+                    >
+                      {formatBalance(gasFee)}
+                    </Text>
+                    <FormSelect
+                      selectedValue={feeDenom}
+                      size={'sm'}
+                      optionList={optionList}
+                      onSelect={(value: AssetNativeDenomEnum): void => {
+                        setFeeDenom(value)
+                      }}
+                      containerStyle={{
+                        width: 52,
+                        height: 26,
+                        borderRadius: 3,
+                        padding: '6px 5px 5px 8px',
+                      }}
+                      selectedTextStyle={{
+                        fontSize: 12,
+                        fontWeight: 'normal',
+                        letterSpacing: -0.19,
+                      }}
+                      menuContainerStyle={{
+                        borderRadius: 3,
+                      }}
+                    />
+                  </Row>
                 </Row>
-              </Row>
-              <View style={{ justifyContent: 'flex-end' }}>
-                <FormErrorMessage
-                  errorMessage={feeValidationResult.errorMessage}
-                />
-              </View>
+                <View style={{ justifyContent: 'flex-end' }}>
+                  <FormErrorMessage
+                    errorMessage={feeValidationResult.errorMessage}
+                  />
+                </View>
+              </>
+            )}
 
-              {bridgeUsed === BridgeType.thorswap && (
-                <>
-                  <Row
-                    style={{
-                      paddingTop: 6,
-                      paddingBottom: 12,
-                      margin: 0,
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <View>
-                      <Text style={{ paddingRight: 10, color: '#737373' }}>
-                        Gas Fee on {toBlockChain} (estimated)
-                      </Text>
-                    </View>
-                    <View>
-                      <Text
-                        style={{ justifyContent: 'flex-end', opacity: '0.8' }}
-                      >
-                        {`${formatBalance(bridgeFee)} ${
-                          toAsset?.symbol
-                        } ($${bridgeFee
-                          .multipliedBy(ratesUsd.to)
-                          .div(getDecimals())
-                          .toFixed(2)})`}
-                      </Text>
-                    </View>
-                  </Row>
-                  <Row
-                    style={{
-                      paddingTop: 12,
-                      margin: 0,
-                      borderTop: 'solid 1px #2e2e2e',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <View>
-                      <Text style={{ paddingRight: 10, color: '#737373' }}>
-                        Minimum received
-                      </Text>
-                    </View>
-                    <View style={{ padding: 0, alignItems: 'flex-start' }}>
-                      {amountAfterBridgeFee
-                        .minus(bridgeFee)
-                        .isLessThanOrEqualTo(0) ? (
-                        <Text
-                          style={{
-                            justifyContent: 'flex-end',
-                            opacity: '0.8',
-                            color: COLOR.red,
-                          }}
-                        >
-                          {`0 ${toAsset?.symbol}`}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            justifyContent: 'flex-end',
-                            opacity: '0.8',
-                            color: COLOR.text,
-                          }}
-                        >
-                          {`${formatBalance(
-                            amountAfterBridgeFee
-                              .multipliedBy(1 - slippageTolerance / 100)
-                              .minus(bridgeFee)
-                          )} ${toAsset?.symbol}`}
-                        </Text>
-                      )}
-                    </View>
-                  </Row>
-                </>
-              )}
-
-              {(bridgeUsed === BridgeType.shuttle ||
-                bridgeUsed === BridgeType.axelar ||
-                bridgeUsed === BridgeType.wormhole) && (
-                <>
-                  <Row
-                    style={{
-                      paddingTop: 6,
-                      paddingBottom: 12,
-                      margin: 0,
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <View>
-                      <Text style={{ paddingRight: 10, color: '#737373' }}>
-                        {bridgeUsed.charAt(0).toUpperCase() +
-                          bridgeUsed.slice(1)}{' '}
-                        fee (estimated)
-                      </Text>
-                    </View>
-                    <View>
-                      <Text
-                        style={{ justifyContent: 'flex-end', opacity: '0.8' }}
-                      >
-                        {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
-                      </Text>
-                    </View>
-                  </Row>
-                  <Row
-                    style={{
-                      paddingTop: 12,
-                      margin: 0,
-                      borderTop: 'solid 1px #2e2e2e',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <View>
-                      <Text style={{ paddingRight: 10, color: '#737373' }}>
-                        Amount after{' '}
-                        {bridgeUsed.charAt(0).toUpperCase() +
-                          bridgeUsed.slice(1)}{' '}
-                        fee (estimated){' '}
-                      </Text>
-                    </View>
-                    <View style={{ padding: 0, alignItems: 'flex-start' }}>
+            {bridgeUsed === BridgeType.thorswap && (
+              <>
+                <Row
+                  style={{
+                    paddingTop: 6,
+                    paddingBottom: 12,
+                    margin: 0,
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View>
+                    <Text style={{ paddingRight: 10, color: '#737373' }}>
+                      Gas Fee on {toBlockChain} (estimated)
+                    </Text>
+                  </View>
+                  <View>
+                    <Text
+                      style={{ justifyContent: 'flex-end', opacity: '0.8' }}
+                    >
+                      {`${formatBalance(bridgeFee)} ${
+                        toAsset?.symbol
+                      } ($${bridgeFee
+                        .multipliedBy(ratesUsd.to)
+                        .div(getDecimals())
+                        .toFixed(2)})`}
+                    </Text>
+                  </View>
+                </Row>
+                <Row
+                  style={{
+                    paddingTop: 12,
+                    margin: 0,
+                    borderTop: 'solid 1px #2e2e2e',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View>
+                    <Text style={{ paddingRight: 10, color: '#737373' }}>
+                      Minimum received
+                    </Text>
+                  </View>
+                  <View style={{ padding: 0, alignItems: 'flex-start' }}>
+                    {amountAfterBridgeFee
+                      .minus(bridgeFee)
+                      .isLessThanOrEqualTo(0) ? (
                       <Text
                         style={{
                           justifyContent: 'flex-end',
                           opacity: '0.8',
-                          color: amountAfterBridgeFee.isLessThanOrEqualTo(0)
-                            ? COLOR.red
-                            : COLOR.text,
+                          color: COLOR.red,
                         }}
                       >
-                        {`${formatBalance(amountAfterBridgeFee)} ${
-                          asset?.symbol
-                        }`}
+                        {`0 ${toAsset?.symbol}`}
                       </Text>
-                    </View>
-                  </Row>
-                </>
-              )}
-            </View>
-          </StyledFormSection>
-        )}
+                    ) : (
+                      <Text
+                        style={{
+                          justifyContent: 'flex-end',
+                          opacity: '0.8',
+                          color: COLOR.text,
+                        }}
+                      >
+                        {`${formatBalance(
+                          amountAfterBridgeFee
+                            .multipliedBy(1 - slippageTolerance / 100)
+                            .minus(bridgeFee)
+                        )} ${toAsset?.symbol}`}
+                      </Text>
+                    )}
+                  </View>
+                </Row>
+              </>
+            )}
+
+            {(bridgeUsed === BridgeType.shuttle ||
+              bridgeUsed === BridgeType.axelar ||
+              bridgeUsed === BridgeType.wormhole) && (
+              <>
+                <Row
+                  style={{
+                    paddingTop: 6,
+                    paddingBottom: 12,
+                    margin: 0,
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View>
+                    <Text style={{ paddingRight: 10, color: '#737373' }}>
+                      {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)}{' '}
+                      fee (estimated)
+                    </Text>
+                  </View>
+                  <View>
+                    <Text
+                      style={{ justifyContent: 'flex-end', opacity: '0.8' }}
+                    >
+                      {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
+                    </Text>
+                  </View>
+                </Row>
+                <Row
+                  style={{
+                    paddingTop: 12,
+                    margin: 0,
+                    borderTop: 'solid 1px #2e2e2e',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View>
+                    <Text style={{ paddingRight: 10, color: '#737373' }}>
+                      Amount after{' '}
+                      {bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)}{' '}
+                      fee (estimated){' '}
+                    </Text>
+                  </View>
+                  <View style={{ padding: 0, alignItems: 'flex-start' }}>
+                    <Text
+                      style={{
+                        justifyContent: 'flex-end',
+                        opacity: '0.8',
+                        color: amountAfterBridgeFee.isLessThanOrEqualTo(0)
+                          ? COLOR.red
+                          : COLOR.text,
+                      }}
+                    >
+                      {`${formatBalance(amountAfterBridgeFee)} ${
+                        asset?.symbol
+                      }`}
+                    </Text>
+                  </View>
+                </Row>
+              </>
+            )}
+          </View>
+        </StyledFormSection>
+      )}
     </>
   )
 }
