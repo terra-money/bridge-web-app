@@ -237,7 +237,11 @@ const FormFeeInfo = ({
                     <Text
                       style={{
                         paddingRight: 10,
-                        color: COLOR.terraSky,
+                        color: amountAfterBridgeFee
+                          .minus(bridgeFee)
+                          .isLessThanOrEqualTo(0)
+                          ? COLOR.red
+                          : COLOR.terraSky,
                         fontSize: 13,
                       }}
                     >
