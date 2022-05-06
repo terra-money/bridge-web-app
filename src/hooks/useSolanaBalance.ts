@@ -42,9 +42,11 @@ const useSolanaBalance = (): {
       new PublicKey(userAddress)
     )
 
-    const balance = await connection.getTokenAccountBalance(assTokenKey)
+    const balance = assTokenKey
+      ? await connection.getTokenAccountBalance(assTokenKey)
+      : 0
 
-    const amount = balance.value.amount
+    const amount = balance != 0 && balance?.value?.amount
     return amount || '0'
   }
 
