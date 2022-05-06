@@ -223,8 +223,7 @@ const whitelist: Record<
   [BlockChainType.terra]: {},
   [BlockChainType.solana]: {
     [BridgeType.wormhole]: {
-      uluna: '7a4cXVvVT7kF6hS5q5LDqtzWfHfys4a9PoK6pf87RKwf',
-      uusd: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      uusd: '9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i',
     },
   },
 }
@@ -309,8 +308,7 @@ const testnetWhitelist: Record<
   [BlockChainType.terra]: {},
   [BlockChainType.solana]: {
     [BridgeType.wormhole]: {
-      uluna: '7a4cXVvVT7kF6hS5q5LDqtzWfHfys4a9PoK6pf87RKwf',
-      uusd: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      uusd: '9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i',
     },
   },
 }
