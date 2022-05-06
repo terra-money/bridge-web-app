@@ -112,6 +112,9 @@ const useSend = (): UseSendType => {
   // Send Data
   const [asset, setAsset] = useRecoilState(SendStore.asset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
+  const toAssociatedTokenAccountAddress = useRecoilValue(
+    SendStore.toAssociatedTokenAccountAddress
+  )
   const [sendAmount, setSendAmount] = useRecoilState(SendStore.amount)
   const [memo, setMemo] = useRecoilState(SendStore.memo)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
@@ -524,7 +527,9 @@ const useSend = (): UseSendType => {
         ? // only terra network can get user's memo
           memo
         : // if send to ether-base then memo must be to-address
-          toAddress
+        toBlockChain === BlockChainType.solana
+        ? toAssociatedTokenAccountAddress
+        : toAddress
     const msgs = await getTerraMsgs()
 
     const tx: CreateTxOptions = {

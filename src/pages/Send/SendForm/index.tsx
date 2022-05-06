@@ -214,8 +214,10 @@ const SendForm = ({
       const wormholeFee = new BigNumber(
         await getWormholeFees(toBlockChain, asset?.terraToken || '')
       )
+      console.log('wormholeFee', wormholeFee)
       setBridgeFeeAmount(wormholeFee)
       const computedAmount = new BigNumber(amount).minus(wormholeFee)
+      console.log('computedAmount', computedAmount)
       setAmountAfterBridgeFee(
         computedAmount.isGreaterThan(0) ? computedAmount : new BigNumber(0)
       )
