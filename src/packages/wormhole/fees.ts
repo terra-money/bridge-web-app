@@ -10,6 +10,7 @@ export default async function getWormholeFees(
   switch (toBlockChain) {
     case BlockChainType.bsc:
     case BlockChainType.avalanche:
+    case BlockChainType.solana:
     case BlockChainType.terra:
       feeUsd = 2
       break

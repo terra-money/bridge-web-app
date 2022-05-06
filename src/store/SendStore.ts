@@ -15,6 +15,10 @@ const toAddress = atom<string>({
   key: 'sendToAddress',
   default: '',
 })
+const toAssociatedTokenAccountAddress = atom<string>({
+  key: 'sendToAssociatedTokenAccountAddress',
+  default: '',
+})
 const amount = atom<string>({
   key: 'sendAmount',
   default: '',
@@ -88,6 +92,7 @@ const validationResult = atom<ValidateResultType>({
 export default {
   asset,
   toAddress,
+  toAssociatedTokenAccountAddress,
   amount,
   memo,
   fromBlockChain,

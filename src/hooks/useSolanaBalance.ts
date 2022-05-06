@@ -38,7 +38,7 @@ const useSolanaBalance = (): {
     const assTokenKey = await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
-      new PublicKey(`${token}`),
+      new PublicKey(token),
       new PublicKey(userAddress)
     )
 

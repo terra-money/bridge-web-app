@@ -33,6 +33,9 @@ const useSendValidate = (): {
   // Send Data
   const asset = useRecoilValue(SendStore.asset)
   const toAddress = useRecoilValue(SendStore.toAddress)
+  const toAssociatedTokenAccountAddress = useRecoilValue(
+    SendStore.toAssociatedTokenAccountAddress
+  )
   const amount = useRecoilValue(SendStore.amount)
   const memo = useRecoilValue(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
@@ -47,7 +50,9 @@ const useSendValidate = (): {
   const { getAddress } = useTns()
 
   const validateFee = (): ValidateItemResultType => {
-    if (fromBlockChain === BlockChainType.terra) {
+    if (toBlockChain === BlockChainType.solana) {
+      return { isValid: !!toAssociatedTokenAccountAddress }
+    } else if (fromBlockChain === BlockChainType.terra) {
       const sendAmount = new BigNumber(amount)
       const selectedAssetAmount = new BigNumber(
         assetList.find((x) => x.terraToken === asset?.terraToken)?.balance ||

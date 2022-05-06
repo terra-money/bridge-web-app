@@ -16,6 +16,7 @@ import { Text, Row } from 'components'
 import FormLabel from 'components/FormLabel'
 import FormErrorMessage from 'components/FormErrorMessage'
 import FormLabelInput from 'components/FormLabelInput'
+import CreateAssiciatedAccountButton from '../CreateAssiciatedAccountButton'
 
 import useSend from 'hooks/useSend'
 import useShuttle from 'hooks/useShuttle'
@@ -231,12 +232,13 @@ const SendForm = ({
     const sendDataResult = await validateSendData()
     setValidationResult(sendDataResult)
 
-    const ableToGetFeeInfo =
+    let ableToGetFeeInfo =
       isLoggedIn &&
       fromBlockChain === BlockChainType.terra &&
       amount &&
       feeDenom &&
       toAddress
+
     if (asset?.terraToken && ableToGetFeeInfo) {
       if (sendDataResult.isValid) {
         // get terra Send Fee Info
@@ -342,8 +344,16 @@ const SendForm = ({
           </StyledFormSection>
         )}
 
+      {toBlockChain === BlockChainType.solana && (
+        <StyledFormSection>
+          <CreateAssiciatedAccountButton />
+        </StyledFormSection>
+      )}
+
       {/* only if from terra */}
-      <FormFeeInfo feeValidationResult={feeValidationResult} />
+      {feeValidationResult.isValid && (
+        <FormFeeInfo feeValidationResult={feeValidationResult} />
+      )}
       <WarningInfo />
     </StyledContainer>
   )
