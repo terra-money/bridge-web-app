@@ -166,7 +166,11 @@ const Confirm = (): ReactElement => {
           <StyledSection>
             {bridgeUsed === BridgeType.thorswap ? (
               <StyledSpaceBetween>
-                <StyledSecH>Gas Fee on {toBlockChain} (estimated)</StyledSecH>
+                <StyledSecH>
+                  Gas Fee on{' '}
+                  {toBlockChain.charAt(0).toUpperCase() + toBlockChain.slice(1)}{' '}
+                  (estimated)
+                </StyledSecH>
                 <StyledSecD>
                   <StyledSecDText2>
                     {`${formatBalance(bridgeFee)} ${toAsset?.symbol}`}

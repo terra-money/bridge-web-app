@@ -209,7 +209,10 @@ const FormFeeInfo = ({
                 >
                   <View>
                     <Text style={{ paddingRight: 10, color: '#737373' }}>
-                      Gas Fee on {toBlockChain} (estimated)
+                      Gas Fee on{' '}
+                      {toBlockChain.charAt(0).toUpperCase() +
+                        toBlockChain.slice(1)}{' '}
+                      (estimated)
                     </Text>
                   </View>
                   <View>
