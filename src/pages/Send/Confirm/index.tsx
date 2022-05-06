@@ -50,10 +50,11 @@ const StyledSecD = styled.div`
   padding-left: 10px;
 `
 
-const StyledSecDText = styled(Text)<{ isError?: boolean }>`
-  color: ${(props): string => (props.isError ? COLOR.red : COLOR.text)};
-  font-size: 16px;
-  font-weight: 500;
+const StyledSecDText = styled(Text)<{ isError?: boolean; main?: boolean }>`
+  color: ${(props): string =>
+    props.isError ? COLOR.red : props.main ? COLOR.terraSky : COLOR.text};
+  font-size: ${(props): string => (props.main ? '17px' : '16px')};
+  font-weight: ${(props): string => (props.main ? '600' : '500')};
   font-stretch: normal;
   font-style: normal;
   line-height: 1.5;
@@ -109,7 +110,7 @@ const Confirm = (): ReactElement => {
           <FormImage
             src={asset?.logoURI || ''}
             size={18}
-            style={{ paddingRight: 5 }}
+            style={{ paddingRight: 10 }}
           />
           <StyledSecDText>{asset?.symbol}</StyledSecDText>
           {bridgeUsed === BridgeType.thorswap && (
@@ -118,7 +119,7 @@ const Confirm = (): ReactElement => {
               <FormImage
                 src={toAsset?.logoURI || ''}
                 size={18}
-                style={{ paddingRight: 5 }}
+                style={{ paddingRight: 10 }}
               />
               <StyledSecDText>{toAsset?.symbol}</StyledSecDText>
             </>
@@ -199,16 +200,20 @@ const Confirm = (): ReactElement => {
           <StyledSection>
             {bridgeUsed === BridgeType.thorswap ? (
               <StyledSpaceBetween>
-                <StyledSecH>Minimum received</StyledSecH>
+                <StyledSecH
+                  style={{ color: COLOR.terraSky, opacity: 1, fontSize: 14 }}
+                >
+                  Minimum received
+                </StyledSecH>
                 <StyledSecD>
                   {amountAfterBridgeFee
                     .minus(bridgeFee)
                     .isLessThanOrEqualTo(0) ? (
-                    <StyledSecDText isError={true}>
+                    <StyledSecDText isError={true} main>
                       {`0 ${toAsset?.symbol}`}
                     </StyledSecDText>
                   ) : (
-                    <StyledSecDText isError={false}>
+                    <StyledSecDText isError={false} main>
                       {`${formatBalance(
                         amountAfterBridgeFee
                           .multipliedBy(1 - slippageTolerance / 100)

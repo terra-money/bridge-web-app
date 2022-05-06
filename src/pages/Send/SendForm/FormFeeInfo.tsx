@@ -234,7 +234,13 @@ const FormFeeInfo = ({
                   }}
                 >
                   <View>
-                    <Text style={{ paddingRight: 10, color: '#737373' }}>
+                    <Text
+                      style={{
+                        paddingRight: 10,
+                        color: COLOR.terraSky,
+                        fontSize: 13,
+                      }}
+                    >
                       Minimum received
                     </Text>
                   </View>
@@ -245,8 +251,9 @@ const FormFeeInfo = ({
                       <Text
                         style={{
                           justifyContent: 'flex-end',
-                          opacity: '0.8',
                           color: COLOR.red,
+                          fontSize: 14,
+                          fontWeight: 'bold',
                         }}
                       >
                         {`0 ${toAsset?.symbol}`}
@@ -255,8 +262,9 @@ const FormFeeInfo = ({
                       <Text
                         style={{
                           justifyContent: 'flex-end',
-                          opacity: '0.8',
-                          color: COLOR.text,
+                          color: COLOR.terraSky,
+                          fontSize: 14,
+                          fontWeight: 'bold',
                         }}
                       >
                         {`${formatBalance(
