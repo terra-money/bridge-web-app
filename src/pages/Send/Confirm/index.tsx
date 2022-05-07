@@ -128,7 +128,8 @@ const Confirm = (): ReactElement => {
       </StyledSection>
 
       {fromBlockChain === BlockChainType.terra &&
-        toBlockChain === BlockChainType.terra && (
+        toBlockChain === BlockChainType.terra &&
+        bridgeUsed !== BridgeType.thorswap && (
           <StyledSection>
             <StyledSecH>Memo</StyledSecH>
             <StyledSecD>

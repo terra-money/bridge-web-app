@@ -376,7 +376,6 @@ export const SwapForm = ({
   const [asset, setAsset] = useRecoilState(SendStore.asset)
   const [toAddress, setToAddress] = useRecoilState(SendStore.toAddress)
   const [amount, setAmount] = useRecoilState(SendStore.amount)
-  const [memo, setMemo] = useRecoilState(SendStore.memo)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const [isLoadingRates, setLoadingRates] = useRecoilState(
@@ -426,10 +425,6 @@ export const SwapForm = ({
     }
   }
 
-  const onChangeMemo = ({ value }: { value: string }): void => {
-    setMemo(value)
-  }
-
   const onClickMaxButton = async (): Promise<void> => {
     const assetAmount = new BigNumber(asset?.balance || 0).minus(
       asset?.terraToken === 'uusd' && fromBlockChain === BlockChainType.terra
@@ -465,7 +460,7 @@ export const SwapForm = ({
     return (): void => {
       dbcGetFeeInfoWithValidation.cancel()
     }
-  }, [amount, toAddress, toBlockChain, fromBlockChain, memo, asset, bridgeUsed])
+  }, [amount, toAddress, toBlockChain, fromBlockChain, asset, bridgeUsed])
 
   useEffect(() => {
     onChangeAmount({ value: inputAmount })
@@ -705,24 +700,6 @@ export const SwapForm = ({
           </InfoElement>
         )}
       </StyledFormSection>
-
-      {fromBlockChain === BlockChainType.terra &&
-        toBlockChain === BlockChainType.terra && (
-          <StyledFormSection>
-            <FormLabelInput
-              inputProps={{
-                value: memo,
-                onChange: ({ target: { value } }): void => {
-                  onChangeMemo({ value })
-                },
-              }}
-              labelProps={{ children: 'Memo (optional)' }}
-            />
-            <FormErrorMessage
-              errorMessage={validationResult.errorMessage?.memo}
-            />
-          </StyledFormSection>
-        )}
       <ExchangeRateInfo />
       <FormFeeInfo feeValidationResult={feeValidationResult} />
     </StyledContainer>
