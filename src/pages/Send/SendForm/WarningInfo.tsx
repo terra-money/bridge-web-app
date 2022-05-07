@@ -91,6 +91,7 @@ const StyledInfoText = styled(Text)`
   line-height: 1.5;
   letter-spacing: normal;
   color: #a3a3a3;
+  display: inline;
 `
 
 export const DangerElement = ({

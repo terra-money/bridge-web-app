@@ -118,19 +118,13 @@ const useSendValidate = (): {
       ).test(toAddress)
     } else if (toBlockChain === BlockChainType.bch) {
       // TODO: advanced validation with checksum
-      validAddress = new RegExp(
-        '(?:^((bitcoincash|bchreg|bchtest):)?(q|p)[a-z0-9]{41}$)'
-      ).test(toAddress)
+      validAddress = new RegExp('(q|p)[a-z0-9]{41}$').test(toAddress)
     } else if (bechPrefix[toBlockChain as IbcNetwork]) {
       if (toAddress.startsWith(bechPrefix[toBlockChain as IbcNetwork])) {
         try {
           Bech32Address.validate(toAddress)
           validAddress = true
         } catch (error) {}
-      } else {
-        addressMessage += `, it must start with ${
-          bechPrefix[toBlockChain as IbcNetwork]
-        }...`
       }
     } else {
       validAddress = ethers.utils.isAddress(toAddress)

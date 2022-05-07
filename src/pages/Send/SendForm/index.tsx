@@ -8,7 +8,7 @@ import { ArrowClockwise } from 'react-bootstrap-icons'
 
 import { COLOR } from 'consts'
 
-import { BlockChainType, BridgeType } from 'types/network'
+import { bechPrefix, BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
 import { AxelarAPI } from 'packages/axelar/axelarAPI'
 import { Text, Row } from 'components'
@@ -37,6 +37,7 @@ import { thorChainName, ThorBlockChains } from 'packages/thorswap/thorNames'
 import { getThorOutboundFees } from 'packages/thorswap/getFees'
 import ExchangeRateInfo from './ExchangeRateInfo'
 import getThorRate from 'packages/thorswap/getThorRate'
+import { InfoElement } from './WarningInfo'
 
 const StyledContainer = styled.div``
 
@@ -677,6 +678,32 @@ export const SwapForm = ({
         <FormErrorMessage
           errorMessage={validationResult.errorMessage?.toAddress}
         />
+        {(validationResult.errorMessage?.toAddress || !toAddress) && (
+          <InfoElement
+            style={{ padding: '10px 20px', marginTop: 18, marginBottom: -10 }}
+          >
+            The address should start with{' '}
+            <b>
+              {bechPrefix[toBlockChain as ThorBlockChains] ||
+                ((): string => {
+                  switch (toBlockChain) {
+                    case BlockChainType.bch:
+                      return 'q'
+                    case BlockChainType.doge:
+                      return 'D'
+                    default:
+                      return '0x'
+                  }
+                })()}
+              ...
+            </b>
+            {toBlockChain === BlockChainType.terra && (
+              <>
+                or be a TNS domain (ends with <b>.ust</b>)
+              </>
+            )}
+          </InfoElement>
+        )}
       </StyledFormSection>
 
       {fromBlockChain === BlockChainType.terra &&
