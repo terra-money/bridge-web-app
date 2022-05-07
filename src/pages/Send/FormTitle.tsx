@@ -109,11 +109,12 @@ const FormTitle = ({
 }: {
   onClickGoBackToSendInputButton: () => void
 }): ReactElement => {
-  const { setBlockchainStorage } = useAuth()
-
+  const { setBlockchainStorage, logout } = useAuth()
   const status = useRecoilValue(SendProcessStore.sendProcessStatus)
   const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
-  const setFromBlockChain = useSetRecoilState(SendStore.fromBlockChain)
+  const [fromBlockChain, setFromBlockChain] = useRecoilState(
+    SendStore.fromBlockChain
+  )
   const setToBlockChain = useSetRecoilState(SendStore.toBlockChain)
 
   const [checked, setChecked] = useState(bridgeUsed === BridgeType.thorswap)
@@ -157,7 +158,10 @@ const FormTitle = ({
                   checked ? BridgeType.wormhole : BridgeType.thorswap
                 )
                 // TODO: check if current chains are supported
-                setFromBlockChain(BlockChainType.terra)
+                if (fromBlockChain !== BlockChainType.terra) {
+                  logout()
+                  setFromBlockChain(BlockChainType.terra)
+                }
                 setToBlockChain(BlockChainType.ethereum)
                 setBlockchainStorage({
                   fromBlockChain: BlockChainType.terra,
