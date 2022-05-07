@@ -86,6 +86,7 @@ const RefreshButton = (): ReactElement => {
   const [refreshing, setRefreshing] = useState(false)
   const dbcRefresh = useDebouncedCallback(() => {
     setRefreshing(true)
+    // TODO: handle thorswap refresh balance
     getAssetList().finally((): void => {
       setTimeout(() => {
         setRefreshing(false)

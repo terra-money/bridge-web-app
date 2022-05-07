@@ -18,6 +18,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import { ThorAssetType } from 'packages/thorswap/getAssets'
+import { InfoElement } from './WarningInfo'
 
 const StyledContainer = styled.div`
   padding: 0 25px 40px;
@@ -28,12 +29,28 @@ const StyledContainer = styled.div`
 `
 
 const StyledAssetItemBox = styled.div`
-  padding: 5px 0;
+  padding: 0;
   height: 500px;
   max-height: 60vh;
   overflow-y: scroll;
   background-color: ${COLOR.darkGray};
   border-radius: ${STYLE.css.borderRadius};
+
+  ::-webkit-scrollbar {
+    background-color: #202020;
+    width: 16px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: #202020;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #171717;
+    border-radius: 16px;
+    border: 4px solid #202020;
+  }
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
 `
 
 const StyledAssetItem = styled.div`
@@ -43,7 +60,7 @@ const StyledAssetItem = styled.div`
   line-height: 16px;
   cursor: pointer;
   :hover {
-    opacity: 0.8;
+    background-color: #171717;
   }
   :last-child {
     border-bottom: 0;
@@ -298,9 +315,16 @@ const AssetList = ({
               ))
             ) : (
               <Text style={{ padding: 20, fontSize: 14 }}>
-                {`"${inputFilter}" does not exist`}{' '}
+                {inputFilter
+                  ? `"${inputFilter}" does not exist`
+                  : 'AssetList is empty'}{' '}
               </Text>
             )}
+            <InfoElement
+              style={{ marginLeft: 16, marginTop: 26, padding: '10px 20px' }}
+            >
+              If you can't find your asset try to switch chain or bridge used
+            </InfoElement>
           </StyledAssetItemBox>
         </StyledContainer>
       </DefaultModal>

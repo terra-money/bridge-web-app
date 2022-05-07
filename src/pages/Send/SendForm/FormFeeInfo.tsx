@@ -127,7 +127,7 @@ const FormFeeInfo = ({
     <>
       {isLoggedIn && validationResult.isValid && (
         <StyledFormSection>
-          <FormLabel title={'TxFee'} />
+          <FormLabel title={'Tx Fee'} color="#CCCCCC" />
 
           <View
             style={{

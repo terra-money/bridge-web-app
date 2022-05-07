@@ -72,7 +72,7 @@ const ExchangeRateInfo = (): ReactElement => {
                   {asset?.symbol} (${exRateUsd.to.toFixed(2)})
                 </Text>
               ) : (
-                <Text style={{ paddingRight: 10, color: '#737373' }}>
+                <Text style={{ paddingRight: 10, color: '#CCCCCC' }}>
                   1 {asset?.symbol} = {exchangeRate.toFixed(6)}{' '}
                   {toAsset?.symbol} (${exRateUsd.from.toFixed(2)})
                 </Text>
@@ -88,7 +88,7 @@ const ExchangeRateInfo = (): ReactElement => {
               }}
             >
               <View>
-                <Text style={{ paddingRight: 10, color: '#737373' }}>
+                <Text style={{ paddingRight: 10, color: '#CCCCCC' }}>
                   Price Impact
                 </Text>
               </View>
