@@ -83,16 +83,26 @@ const StyledSwitchSwapButton = styled.img`
 
 const RefreshButton = (): ReactElement => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-  const { getAssetList } = useAsset()
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const [assetList, setAssetList] = useRecoilState(SendStore.loginUserAssetList)
+
+  const { getAssetList, getBalanceList } = useAsset()
   const [refreshing, setRefreshing] = useState(false)
   const dbcRefresh = useDebouncedCallback(() => {
     setRefreshing(true)
     // TODO: handle thorswap refresh balance
-    getAssetList().finally((): void => {
-      setTimeout(() => {
+    if (bridgeUsed === BridgeType.thorswap) {
+      getBalanceList(assetList).then((list): void => {
+        setAssetList(list)
         setRefreshing(false)
-      }, 500)
-    })
+      })
+    } else {
+      getAssetList().finally((): void => {
+        setTimeout(() => {
+          setRefreshing(false)
+        }, 500)
+      })
+    }
   }, 300)
 
   return (
@@ -694,6 +704,7 @@ export const SwapForm = ({
             </b>
             {toBlockChain === BlockChainType.terra && (
               <>
+                {' '}
                 or be a TNS domain (ends with <b>.ust</b>)
               </>
             )}
