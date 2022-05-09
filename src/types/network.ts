@@ -144,7 +144,6 @@ export enum TerraAssetsPathEnum {
 
   chains = '/chains.json',
 
-  cw20_pairs = '/cw20/pairs.json',
   cw20_tokens = '/cw20/tokens.json',
 
   ibc_tokens = '/ibc/tokens.json',

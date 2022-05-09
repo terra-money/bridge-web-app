@@ -43,8 +43,6 @@ const defaultList: AssetType[] = [
   },
 ]
 
-type ShuttlePairType = Record<'mainnet' | 'testnet', Record<string, string[]>>
-
 type TerraWhiteListType = Record<
   'mainnet' | 'testnet',
   Record<
@@ -78,7 +76,6 @@ const useApp = (): {
   initApp: () => Promise<void>
 } => {
   const setAssetList = useSetRecoilState(ContractStore.initOnlyAssetList)
-  const setShuttlePairs = useSetRecoilState(ContractStore.initOnlyShuttlePairs)
   const setTerraWhiteList = useSetRecoilState(
     ContractStore.initOnlyTerraWhiteList
   )
@@ -88,33 +85,6 @@ const useApp = (): {
 
   const getContractAddress = async (): Promise<void> => {
     try {
-      const fetchPairJson: ShuttlePairType = await fetchAssets(
-        TerraAssetsPathEnum.cw20_pairs
-      )
-      const formattedPairJson = _.reduce<
-        ShuttlePairType,
-        Record<string, Record<string, string>>
-      >(
-        fetchPairJson,
-        (result, pairs, network) => {
-          const val = _.reduce<
-            Record<string, string[]>,
-            Record<string, string>
-          >(
-            pairs,
-            (obj, arr, tokenAddress) => {
-              obj[arr[1]] = tokenAddress
-              return obj
-            },
-            {}
-          )
-          result[network] = val
-          return result
-        },
-        {}
-      )
-      setShuttlePairs(formattedPairJson)
-
       const terraListJson: TerraWhiteListType = await fetchAssets(
         TerraAssetsPathEnum.cw20_tokens
       )

@@ -69,7 +69,6 @@ const RefreshButton = ({ isOnline }: { isOnline: boolean }): ReactElement => (
 )
 
 const NetworkErrorScreen = (): ReactElement => {
-  const shuttlePairs = useRecoilValue(ContractStore.initOnlyShuttlePairs)
   const terraWhiteList = useRecoilValue(ContractStore.initOnlyTerraWhiteList)
 
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
@@ -95,10 +94,7 @@ const NetworkErrorScreen = (): ReactElement => {
   }> => {
     try {
       _.forEach(
-        [
-          { name: 'Shuttle Pairs Json', value: shuttlePairs },
-          { name: 'Terra Whitelist Json', value: terraWhiteList },
-        ],
+        [{ name: 'Terra Whitelist Json', value: terraWhiteList }],
         (item) => {
           if (_.isEmpty(item.value)) {
             throw new Error(`"${item.name}" data does not exist.`)
