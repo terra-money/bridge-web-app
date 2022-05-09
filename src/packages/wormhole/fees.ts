@@ -54,5 +54,5 @@ export default async function getWormholeFees(
     }
   })
   // TODO: decimals for non-terra tokens
-  return Math.round(feeUsd * exchangeRate * 1e6)
+  return Math.round(feeUsd * exchangeRate * 1e6 * 1.15)
 }
