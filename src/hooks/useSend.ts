@@ -365,18 +365,20 @@ const useSend = (): UseSendType => {
             ),
           ]
         case BridgeType.wormhole:
-          const pubKey = Buffer.concat([
-            Buffer.alloc(12),
-            Buffer.from(toAddress.substring(2), 'hex'),
-          ])
+          let pubKey
+          if (toBlockChain === BlockChainType.solana) {
+            pubKey = toAssociatedTokenAccountAddress
+          } else {
+            pubKey = Buffer.concat([
+              Buffer.alloc(12),
+              Buffer.from(toAddress.substring(2), 'hex'),
+            ])
+          }
           if (
             etherVaultTokenList[asset.terraToken] &&
             toBlockChain === BlockChainType.solana
           ) {
-            const solPubKey = Buffer.concat([
-              Buffer.alloc(12),
-              Buffer.from(toAddress.substring(2), 'hex'),
-            ])
+            const solPubKey = toAssociatedTokenAccountAddress
             return [
               new MsgExecuteContract(
                 loginUser.address,
@@ -407,7 +409,7 @@ const useSend = (): UseSendType => {
                       NETWORK.wormholeContracts[toBlockChain][
                         isTestnet ? 'testnet' : 'mainnet'
                       ]?.chainid || 0,
-                    recipient: solPubKey.toString('base64'),
+                    recipient: solPubKey.toString(),
                     fee: bridgeFee.toString(),
                     nonce: Math.round(Math.round(Math.random() * 100000)),
                   },
@@ -446,7 +448,10 @@ const useSend = (): UseSendType => {
                           NETWORK.wormholeContracts[toBlockChain][
                             isTestnet ? 'testnet' : 'mainnet'
                           ]?.chainid || 0,
-                        recipient: pubKey.toString('base64'),
+                        recipient:
+                          toBlockChain === BlockChainType.solana
+                            ? pubKey.toString()
+                            : pubKey.toString('base64'),
                         fee: bridgeFee.toString(),
                         nonce: Math.round(Math.round(Math.random() * 100000)),
                       },
@@ -489,7 +494,10 @@ const useSend = (): UseSendType => {
                           NETWORK.wormholeContracts[toBlockChain][
                             isTestnet ? 'testnet' : 'mainnet'
                           ]?.chainid || 0,
-                        recipient: pubKey.toString('base64'),
+                        recipient:
+                          toBlockChain === BlockChainType.solana
+                            ? pubKey.toString()
+                            : pubKey.toString('base64'),
                         fee: bridgeFee.toString(),
                         nonce: Math.round(Math.round(Math.random() * 100000)),
                       },
