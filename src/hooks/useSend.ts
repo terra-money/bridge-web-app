@@ -365,20 +365,14 @@ const useSend = (): UseSendType => {
             ),
           ]
         case BridgeType.wormhole:
-          let pubKey
-          if (toBlockChain === BlockChainType.solana) {
-            pubKey = toAssociatedTokenAccountAddress
-          } else {
-            pubKey = Buffer.concat([
-              Buffer.alloc(12),
-              Buffer.from(toAddress.substring(2), 'hex'),
-            ])
-          }
-          if (
-            etherVaultTokenList[asset.terraToken] &&
+          const pubKey =
             toBlockChain === BlockChainType.solana
-          ) {
-            const solPubKey = toAssociatedTokenAccountAddress
+              ? toAssociatedTokenAccountAddress
+              : Buffer.concat([
+                  Buffer.alloc(12),
+                  Buffer.from(toAddress.substring(2), 'hex'),
+                ])
+          if (etherVaultTokenList[asset.terraToken]) {
             return [
               new MsgExecuteContract(
                 loginUser.address,
@@ -409,7 +403,7 @@ const useSend = (): UseSendType => {
                       NETWORK.wormholeContracts[toBlockChain][
                         isTestnet ? 'testnet' : 'mainnet'
                       ]?.chainid || 0,
-                    recipient: solPubKey.toString(),
+                    recipient: pubKey.toString(),
                     fee: bridgeFee.toString(),
                     nonce: Math.round(Math.round(Math.random() * 100000)),
                   },
