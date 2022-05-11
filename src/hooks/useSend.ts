@@ -372,133 +372,46 @@ const useSend = (): UseSendType => {
                   Buffer.alloc(12),
                   Buffer.from(toAddress.substring(2), 'hex'),
                 ])
-          if (etherVaultTokenList[asset.terraToken]) {
-            return [
-              new MsgExecuteContract(
-                loginUser.address,
-                NETWORK.wormholeContracts[BlockChainType.solana][
-                  isTestnet ? 'testnet' : 'mainnet'
-                ]?.tokenBridge || '',
-                {
-                  deposit_tokens: {},
-                },
-                { [asset.terraToken]: sendAmount }
-              ),
-              new MsgExecuteContract(
-                loginUser.address,
-                NETWORK.wormholeContracts[BlockChainType.solana]?.[
-                  isTestnet ? 'testnet' : 'mainnet'
-                ]?.tokenBridge || '',
-                {
-                  initiate_transfer: {
-                    asset: {
-                      amount: sendAmount.toString(),
-                      info: {
-                        native_token: {
-                          denom: asset.terraToken,
-                        },
+          return [
+            new MsgExecuteContract(
+              loginUser.address,
+              NETWORK.wormholeContracts[BlockChainType.solana][
+                isTestnet ? 'testnet' : 'mainnet'
+              ]?.tokenBridge || '',
+              {
+                deposit_tokens: {},
+              },
+              { [asset.terraToken]: sendAmount }
+            ),
+            new MsgExecuteContract(
+              loginUser.address,
+              NETWORK.wormholeContracts[BlockChainType.solana]?.[
+                isTestnet ? 'testnet' : 'mainnet'
+              ]?.tokenBridge || '',
+              {
+                initiate_transfer: {
+                  asset: {
+                    amount: sendAmount.toString(),
+                    info: {
+                      native_token: {
+                        denom: asset.terraToken,
                       },
                     },
-                    recipient_chain:
-                      NETWORK.wormholeContracts[toBlockChain][
-                        isTestnet ? 'testnet' : 'mainnet'
-                      ]?.chainid || 0,
-                    recipient: pubKey.toString(),
-                    fee: bridgeFee.toString(),
-                    nonce: Math.round(Math.round(Math.random() * 100000)),
                   },
-                }
-              ),
-            ]
-          } else {
-            return UTIL.isNativeDenom(asset.terraToken)
-              ? [
-                  new MsgExecuteContract(
-                    loginUser.address,
-                    NETWORK.wormholeContracts[BlockChainType.terra][
+                  recipient_chain:
+                    NETWORK.wormholeContracts[toBlockChain][
                       isTestnet ? 'testnet' : 'mainnet'
-                    ]?.tokenBridge || '',
-                    {
-                      deposit_tokens: {},
-                    },
-                    { [asset.terraToken]: sendAmount }
-                  ),
-                  new MsgExecuteContract(
-                    loginUser.address,
-                    NETWORK.wormholeContracts[BlockChainType.terra]?.[
-                      isTestnet ? 'testnet' : 'mainnet'
-                    ]?.tokenBridge || '',
-                    {
-                      initiate_transfer: {
-                        asset: {
-                          amount: sendAmount.toString(),
-                          info: {
-                            native_token: {
-                              denom: asset.terraToken,
-                            },
-                          },
-                        },
-                        recipient_chain:
-                          NETWORK.wormholeContracts[toBlockChain][
-                            isTestnet ? 'testnet' : 'mainnet'
-                          ]?.chainid || 0,
-                        recipient:
-                          toBlockChain === BlockChainType.solana
-                            ? pubKey.toString()
-                            : pubKey.toString('base64'),
-                        fee: bridgeFee.toString(),
-                        nonce: Math.round(Math.round(Math.random() * 100000)),
-                      },
-                    }
-                  ),
-                ]
-              : [
-                  new MsgExecuteContract(
-                    loginUser.address,
-                    fromTokenAddress || '',
-                    {
-                      increase_allowance: {
-                        amount: sendAmount.toString(),
-                        expires: {
-                          never: {},
-                        },
-                        spender:
-                          NETWORK.wormholeContracts[BlockChainType.terra][
-                            isTestnet ? 'testnet' : 'mainnet'
-                          ]?.tokenBridge || '',
-                      },
-                    }
-                  ),
-                  new MsgExecuteContract(
-                    loginUser.address,
-                    NETWORK.wormholeContracts[BlockChainType.terra]?.[
-                      isTestnet ? 'testnet' : 'mainnet'
-                    ]?.tokenBridge || '',
-                    {
-                      initiate_transfer: {
-                        asset: {
-                          amount: sendAmount.toString(),
-                          info: {
-                            token: {
-                              contract_addr: fromTokenAddress || '',
-                            },
-                          },
-                        },
-                        recipient_chain:
-                          NETWORK.wormholeContracts[toBlockChain][
-                            isTestnet ? 'testnet' : 'mainnet'
-                          ]?.chainid || 0,
-                        recipient:
-                          toBlockChain === BlockChainType.solana
-                            ? pubKey.toString()
-                            : pubKey.toString('base64'),
-                        fee: bridgeFee.toString(),
-                        nonce: Math.round(Math.round(Math.random() * 100000)),
-                      },
-                    }
-                  ),
-                ]
-          }
+                    ]?.chainid || 0,
+                  recipient:
+                    toBlockChain === BlockChainType.solana
+                      ? pubKey.toString()
+                      : pubKey.toString('base64'),
+                  fee: bridgeFee.toString(),
+                  nonce: Math.round(Math.round(Math.random() * 100000)),
+                },
+              }
+            ),
+          ]
         // terra -> terra
         case undefined:
           const recipient = (await getAddress(toAddress)) || toAddress
