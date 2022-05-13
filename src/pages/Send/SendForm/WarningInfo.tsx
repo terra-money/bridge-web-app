@@ -160,12 +160,7 @@ export const WarningInfo = (): ReactElement => {
   const bridgesList = availableBridges[chain]
 
   function infoText(): string | undefined {
-    if (
-      bridgeUsed === BridgeType.wormhole &&
-      fromBlockChain === BlockChainType.terra
-    ) {
-      return 'Wormhole is temporarily suspended due to the recent network update, you can still use Shuttle.'
-    } else if (bridgeUsed === BridgeType.shuttle) {
+    if (bridgeUsed === BridgeType.shuttle) {
       return 'Shuttle is scheduled to be deprecated, and more details will be released once timeline is set. Shuttle is safe to use for the time being - but use at own risk'
     } else if (
       BlockChainType.terra === fromBlockChain &&
