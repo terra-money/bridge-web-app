@@ -7,6 +7,7 @@ import {
 
 export enum WalletEnum {
   TerraExtension = 'TerraExtension',
+  XDEFIExtension = 'XDEFIExtension',
   Binance = 'Binance',
   MetaMask = 'MetaMask',
   TerraWalletConnect = 'TerraWalletConnect',
@@ -17,6 +18,7 @@ export enum WalletEnum {
 
 export const WalletTitle: Record<WalletEnum, string> = {
   TerraExtension: 'Terra Station (Extension)',
+  XDEFIExtension: 'XDEFI Wallet (Extension)',
   TerraWalletConnect: 'Terra Station (Mobile)',
   Binance: 'Binance Chain Wallet',
   MetaMask: 'MetaMask',
@@ -32,6 +34,10 @@ export const WalletSupportBrowser: Record<
   TerraExtension: {
     isSupport: isBrowser && (isChrome || isEdgeChromium || isFirefox),
     errorMessage: 'Available for desktop Chrome and Firefox.',
+  },
+  XDEFIExtension: {
+    isSupport: isBrowser && (isChrome || isEdgeChromium),
+    errorMessage: 'Available for desktop Chrome.',
   },
   // support all browser
   TerraWalletConnect: {

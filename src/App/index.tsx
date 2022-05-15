@@ -11,6 +11,7 @@ import TerraExtensionDownModal from './TerraExtensionDownModal'
 import BscExtensionDownModal from './BscExtensionDownModal'
 import KeplrDownModal from './KeplrDownModal'
 import NotSupportNetworkModal from './NotSupportNetworkModal'
+import XDefiExtensionDownModal from './XDefiExtensionDownModal'
 import NetworkErrorScreen from './NetworkErrorScreen'
 import UnderMaintenance from './UnderMaintenance'
 
@@ -45,6 +46,7 @@ const App = (): ReactElement => {
             </StyledContainer>
             <SelectWalletModal />
             <TerraExtensionDownModal />
+            <XDefiExtensionDownModal />
             <BscExtensionDownModal />
             <KeplrDownModal />
             <NotSupportNetworkModal />

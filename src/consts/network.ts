@@ -198,6 +198,9 @@ const TERRA_EXTENSION =
 const TERRA_EXTENSION_FIREFOX =
   'https://addons.mozilla.org/en-US/firefox/addon/terra-station-wallet/'
 
+const XDEFI_EXTENSION =
+  'https://chrome.google.com/webstore/detail/xdefi-wallet/hmeobnfnfcmdkdcmlblgagmfpfboieaf'
+
 const BSC_EXTENSION =
   'https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp'
 const KEPLR_EXTENSION =
@@ -257,6 +260,7 @@ export default {
   TERRA_ASSETS_URL,
   TERRA_EXTENSION,
   TERRA_EXTENSION_FIREFOX,
+  XDEFI_EXTENSION,
   BSC_EXTENSION,
   KEPLR_EXTENSION,
   CHROME,
