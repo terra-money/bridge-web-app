@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import React, { ReactElement, useState } from 'react'
 import styled from 'styled-components'
 
 import maintenancePng from 'images/maintenance.png'
@@ -7,6 +7,10 @@ import { COLOR } from 'consts'
 
 import { Text, View } from 'components'
 
+import useTerraAssets from 'hooks/useTerraAssets'
+import { TerraAssetsPathEnum } from 'types'
+import { useRecoilValue } from 'recoil'
+import NetworkStore from 'store/NetworkStore'
 import FormImage from 'components/FormImage'
 
 const StyledBg = styled.div`
@@ -46,34 +50,47 @@ const StyledTitle = styled(Text)`
 const StyledDesc = styled(Text)`
   font-size: 16px;
   margin-bottom: 28px;
-  display: inline;
-
   @media (max-width: 575px) {
     margin-bottom: 20px;
   }
+`
 
-  a {
-    color: ${COLOR.terraSky};
-  }
+const StyledEnterAnyway = styled(Text)`
+  cursor: pointer;
+  color: ${COLOR.primary};
+  text-decoration: underline;
 `
 
 const UnderMaintenance = (): ReactElement => {
-  return (
-    <StyledBg>
-      <StyledContainer>
-        <View style={{ marginBottom: 20 }}>
-          <FormImage size={80} src={maintenancePng} />
-        </View>
-        <StyledTitle>Chain halted</StyledTitle>
-        <StyledDesc>
-          The Terra chain has been halted, more information on{' '}
-          <a href="https://twitter.com/terra_money" target="blank">
-            our Twitter
-          </a>
-        </StyledDesc>
-      </StyledContainer>
-    </StyledBg>
-  )
+  const terraLocal = useRecoilValue(NetworkStore.terraLocal)
+
+  const [hideMaintenance, setHideMaintenance] = useState(false)
+  const hide = (): void => setHideMaintenance(true)
+
+  const { data: maintenance } = useTerraAssets<{
+    mainnet: boolean
+    testnet: boolean
+  }>({
+    path: TerraAssetsPathEnum.station_maintenamce,
+  })
+
+  const isUnderMaintenance = maintenance?.[terraLocal.name]
+
+  if (isUnderMaintenance && false === hideMaintenance) {
+    return (
+      <StyledBg>
+        <StyledContainer>
+          <View style={{ marginBottom: 20 }}>
+            <FormImage size={80} src={maintenancePng} />
+          </View>
+          <StyledTitle>Under Maintenance</StyledTitle>
+          <StyledDesc>We will be back on Columbus-5 soon.</StyledDesc>
+          <StyledEnterAnyway onClick={hide}>Enter anyway</StyledEnterAnyway>
+        </StyledContainer>
+      </StyledBg>
+    )
+  }
+  return <View />
 }
 
 export default UnderMaintenance
