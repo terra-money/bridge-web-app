@@ -27,8 +27,7 @@ import useAuth from 'hooks/useAuth'
 import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
 import { BlockChainType, BridgeType } from 'types/network'
-import testnetSvg from '../../images/testnet.svg'
-import NetworkStore from 'store/NetworkStore'
+import classicSvg from '../../images/classic.svg'
 import { DangerElement, WarningInfo } from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
@@ -64,7 +63,7 @@ const StyledForm = styled.div`
   }
 `
 
-const TestnetImg = styled.img`
+const ClassicImg = styled.img`
   position: absolute;
   top: 0;
   right: 0;
@@ -82,7 +81,6 @@ const Send = (): ReactElement => {
     SendStore.fromBlockChain
   )
   const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const { validateFee } = useSendValidate()
   const feeValidationResult = validateFee()
@@ -180,7 +178,7 @@ const Send = (): ReactElement => {
   return (
     <StyledContainer>
       <StyledForm key={_.toString(isLoggedIn)}>
-        {isTestnet && <TestnetImg src={testnetSvg} />}
+        <ClassicImg src={classicSvg} />
 
         {/* FormTitle */}
         <FormTitle
