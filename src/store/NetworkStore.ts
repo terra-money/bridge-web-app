@@ -2,17 +2,12 @@ import { atom, selector } from 'recoil'
 import { Network as EtherNetwork } from '@ethersproject/networks'
 
 import { NETWORK } from 'consts'
-import {
-  BlockChainType,
-  ExtTerraNetwork,
-  LocalTerraNetwork,
-  isIbcNetwork,
-} from 'types/network'
+import { BlockChainType, LocalTerraNetwork, isIbcNetwork } from 'types/network'
 import AuthStore from './AuthStore'
 import SendStore from './SendStore'
 import { defaultTerraNetworks } from 'hooks/useTerraNetwork'
 
-const terraExt = atom<ExtTerraNetwork | undefined>({
+const terraExt = atom<LocalTerraNetwork | undefined>({
   key: 'terraExt',
   default: undefined,
 })
@@ -55,7 +50,6 @@ const isTestnet = selector<boolean>({
         return (
           !!_etherBaseExt?.chainId &&
           [
-            NETWORK.ETH_CHAINID.HMY_TEST,
             NETWORK.ETH_CHAINID.BSC_TEST,
             NETWORK.ETH_CHAINID.ETH_ROPSTEN,
           ].includes(_etherBaseExt.chainId)

@@ -17,7 +17,6 @@ import FormErrorMessage from 'components/FormErrorMessage'
 import FormLabelInput from 'components/FormLabelInput'
 
 import useSend from 'hooks/useSend'
-import useShuttle from 'hooks/useShuttle'
 import useSendValidate from 'hooks/useSendValidate'
 import useAsset from 'hooks/useAsset'
 
@@ -138,7 +137,6 @@ const SendForm = ({
 
   const [inputAmount, setInputAmount] = useState('')
 
-  const { getTerraShuttleFee } = useShuttle()
   const { formatBalance, getAssetList } = useAsset()
   const { getTerraFeeList } = useSend()
   const { validateSendData } = useSendValidate()
@@ -178,30 +176,7 @@ const SendForm = ({
   }
 
   const setBridgeFee = async (): Promise<void> => {
-    // shuttle fee
-    if (bridgeUsed === BridgeType.shuttle) {
-      const sendAmount = new BigNumber(amount)
-      if (sendAmount.isGreaterThan(0)) {
-        if (fromBlockChain === BlockChainType.terra) {
-          getTerraShuttleFee({
-            denom: asset?.terraToken || '',
-            amount: sendAmount,
-          }).then((shuttleFee) => {
-            setBridgeFeeAmount(shuttleFee)
-            const computedAmount = sendAmount.minus(shuttleFee)
-            setAmountAfterBridgeFee(
-              computedAmount.isGreaterThan(0)
-                ? computedAmount
-                : new BigNumber(0)
-            )
-          })
-        } else {
-          // no shuttle fee EVM -> terra
-          setBridgeFeeAmount(new BigNumber(0))
-          setAmountAfterBridgeFee(sendAmount)
-        }
-      }
-    } else if (bridgeUsed === BridgeType.axelar) {
+    if (bridgeUsed === BridgeType.axelar) {
       const api = new AxelarAPI('mainnet')
       const fee = await api.getTransferFee(
         fromBlockChain,

@@ -142,8 +142,7 @@ const Confirm = (): ReactElement => {
         </StyledSection>
       )}
 
-      {bridgeUsed === BridgeType.shuttle ||
-      bridgeUsed === BridgeType.axelar ||
+      {bridgeUsed === BridgeType.axelar ||
       bridgeUsed === BridgeType.wormhole ? (
         <>
           <StyledSection>

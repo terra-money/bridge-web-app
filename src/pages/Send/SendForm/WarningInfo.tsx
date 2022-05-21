@@ -162,8 +162,6 @@ export const WarningInfo = (): ReactElement => {
   function infoText(): string | undefined {
     if (bridgeUsed === BridgeType.ibc) {
       return 'IBC transfers are currently suspended.'
-    } else if (bridgeUsed === BridgeType.shuttle) {
-      return 'Shuttle is scheduled to be deprecated, and more details will be released once timeline is set. Shuttle is safe to use for the time being - but use at own risk'
     } else if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain

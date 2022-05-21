@@ -87,13 +87,6 @@ const switchNetwork = async (network: BlockChainType): Promise<void> => {
         ETH_CHAINID.BSC_TEST
       )
       return
-    case BlockChainType.hmy:
-      await addNetworkAndSwitch(
-        network,
-        ETH_CHAINID.HMY_MAIN,
-        ETH_CHAINID.HMY_TEST
-      )
-      return
     case BlockChainType.avalanche:
       await addNetworkAndSwitch(network, ETH_CHAINID.AVAX_MAIN)
       return

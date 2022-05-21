@@ -190,8 +190,7 @@ const FormFeeInfo = ({
                 />
               </View>
 
-              {(bridgeUsed === BridgeType.shuttle ||
-                bridgeUsed === BridgeType.axelar ||
+              {(bridgeUsed === BridgeType.axelar ||
                 bridgeUsed === BridgeType.wormhole) && (
                 <>
                   <Row

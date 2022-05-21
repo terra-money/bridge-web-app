@@ -2,7 +2,6 @@ export enum BlockChainType {
   terra = 'terra',
   ethereum = 'ethereum',
   bsc = 'bsc',
-  hmy = 'harmony',
   osmo = 'osmosis',
   scrt = 'secret',
   inj = 'injective',
@@ -16,7 +15,6 @@ export enum BlockChainType {
 }
 
 export enum BridgeType {
-  shuttle = 'shuttle',
   wormhole = 'wormhole',
   ibc = 'ibc',
   axelar = 'axelar',
@@ -28,13 +26,8 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.inj]: [BridgeType.ibc],
   [BlockChainType.axelar]: [BridgeType.ibc],
   [BlockChainType.cosmos]: [BridgeType.ibc],
-  [BlockChainType.ethereum]: [
-    BridgeType.wormhole,
-    BridgeType.shuttle,
-    BridgeType.axelar,
-  ],
-  [BlockChainType.bsc]: [BridgeType.wormhole, BridgeType.shuttle],
-  [BlockChainType.hmy]: [BridgeType.shuttle],
+  [BlockChainType.ethereum]: [BridgeType.wormhole, BridgeType.axelar],
+  [BlockChainType.bsc]: [BridgeType.wormhole],
   [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.fantom]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.polygon]: [BridgeType.wormhole, BridgeType.axelar],
@@ -49,11 +42,6 @@ export function getDefaultBridge(
   const chain = from === BlockChainType.terra ? to : from
   return availableBridges[chain][0]
 }
-
-export type ShuttleNetwork =
-  | BlockChainType.ethereum
-  | BlockChainType.bsc
-  | BlockChainType.hmy
 
 export type IbcNetwork =
   | BlockChainType.osmo
@@ -121,17 +109,13 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   //[BlockChainType.cro]: '',
 }
 
-export interface ExtTerraNetwork {
+export interface LocalTerraNetwork {
   name: TerraNetworkEnum
   chainID: string
   mantle: string
   lcd: string
   fcd: string
   walletconnectID: number
-}
-
-export interface LocalTerraNetwork extends ExtTerraNetwork {
-  shuttle: Record<ShuttleNetwork, string>
 }
 
 export enum TerraNetworkEnum {

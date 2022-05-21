@@ -2,7 +2,6 @@ import { BlockChainType } from 'types/network'
 import BinanceSvg from 'images/bsc.svg'
 import EthereumSvg from 'images/ethereum.svg'
 import TerraSvg from 'images/terra.svg'
-import HarmonySvg from 'images/harmony.svg'
 import OsmoSvg from 'images/osmo.svg'
 import AxelarSvg from 'images/axelar.svg'
 import InjectiveSvg from 'images/injective.svg'
@@ -20,7 +19,6 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.bsc]: BinanceSvg,
   [BlockChainType.ethereum]: EthereumSvg,
   [BlockChainType.terra]: TerraSvg,
-  [BlockChainType.hmy]: HarmonySvg,
   [BlockChainType.osmo]: OsmoSvg,
   [BlockChainType.scrt]: SecretSvg,
   [BlockChainType.inj]: InjectiveSvg,
@@ -37,7 +35,6 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.bsc]: 'BSC',
   [BlockChainType.ethereum]: 'Ethereum',
   [BlockChainType.terra]: 'Terra',
-  [BlockChainType.hmy]: 'Harmony',
   [BlockChainType.osmo]: 'Osmosis',
   [BlockChainType.scrt]: 'Secret',
   [BlockChainType.inj]: 'Injective',
@@ -63,11 +60,6 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
     'https://avalanche.public-rpc.com/',
   ],
   [BlockChainType.fantom]: ['https://rpc.ftm.tools/'],
-  [BlockChainType.hmy]: [
-    'https://api.harmony.one',
-    'https://s3.api.harmony.one',
-    'https://harmony.public-rpc.com',
-  ],
   [BlockChainType.polygon]: ['https://polygon-rpc.com/'],
   [BlockChainType.moonbeam]: ['https://rpc.api.moonbeam.network'],
   [BlockChainType.ethereum]: [],
@@ -156,7 +148,6 @@ const wormholeContracts: Record<BlockChainType, WormholeConsts> = {
   },
   [BlockChainType.moonbeam]: {},
   [BlockChainType.cosmos]: {},
-  [BlockChainType.hmy]: {},
   [BlockChainType.osmo]: {},
   [BlockChainType.scrt]: {},
   [BlockChainType.inj]: {},
@@ -167,7 +158,6 @@ const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {
   return [
     BlockChainType.ethereum,
     BlockChainType.bsc,
-    BlockChainType.hmy,
     BlockChainType.avalanche,
     BlockChainType.fantom,
     BlockChainType.polygon,
@@ -182,8 +172,6 @@ const ETH_CHAINID = {
   ETH_ROPSTEN: 3,
   BSC_MAIN: 56,
   BSC_TEST: 97,
-  HMY_MAIN: 1666600000,
-  HMY_TEST: 1666700000,
   AVAX_MAIN: 43114,
   FTM_MAIN: 250,
   POLY_MAIN: 137,

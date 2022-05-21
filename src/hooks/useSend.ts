@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import bech32 from 'bech32'
 import axios from 'axios'
 import {
   MsgSend,
@@ -36,7 +35,6 @@ import SendStore from 'store/SendStore'
 
 import {
   BlockChainType,
-  ShuttleNetwork,
   isIbcNetwork,
   terraIbcChannels,
   ibcChannels,
@@ -49,7 +47,6 @@ import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
 import { WalletEnum } from 'types/wallet'
 
 import useEtherBaseContract from './useEtherBaseContract'
-import ContractStore from 'store/ContractStore'
 import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
 import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDepositAddress'
@@ -87,23 +84,10 @@ type UseSendType = {
   approveTxFromEtherBase: () => Promise<RequestTxResultType>
 }
 
-/* bech32 */
-const decodeTerraAddressOnEtherBase = (address: string): string => {
-  try {
-    const { words } = bech32.decode(address)
-    const data = bech32.fromWords(words)
-    return '0x' + Buffer.from(data).toString('hex')
-  } catch (error) {
-    return ''
-  }
-}
-
 const useSend = (): UseSendType => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const terraExt = useRecoilValue(NetworkStore.terraExt)
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
-
-  const etherVaultTokenList = useRecoilValue(ContractStore.etherVaultTokenList)
 
   const [gasPricesFromServer, setGasPricesFromServer] = useRecoilState(
     SendStore.gasPrices
@@ -149,22 +133,7 @@ const useSend = (): UseSendType => {
         const contract = getEtherBaseContract({ token: fromTokenAddress })
 
         if (contract && loginUser.provider) {
-          if (bridgeUsed === BridgeType.shuttle) {
-            const signer = loginUser.provider.getSigner()
-            const withSigner = contract.connect(signer)
-            const etherVaultToken = etherVaultTokenList[asset.terraToken]
-            if (etherVaultToken) {
-              const res: BigNumber = await withSigner.allowance(
-                loginUser.address,
-                etherVaultToken.vault
-              )
-
-              return {
-                isNeedApprove: true,
-                allowance: UTIL.toBignumber(res.toString()),
-              }
-            }
-          } else if (bridgeUsed === BridgeType.wormhole) {
+          if (bridgeUsed === BridgeType.wormhole) {
             const signer = loginUser.provider.getSigner()
             const withSigner = contract.connect(signer)
             const wormholeBridge =
@@ -289,43 +258,6 @@ const useSend = (): UseSendType => {
   ): Promise<MsgSend[] | MsgExecuteContract[] | MsgTransfer[]> => {
     if (asset) {
       switch (bridgeUsed) {
-        case BridgeType.shuttle:
-          const shuttleAddress =
-            terraLocal.shuttle[toBlockChain as ShuttleNetwork]
-          if (
-            etherVaultTokenList[asset.terraToken] &&
-            toBlockChain === BlockChainType.ethereum
-          ) {
-            return [
-              new MsgExecuteContract(
-                loginUser.address,
-                asset.terraToken,
-                { burn: { amount: sendAmount } },
-                new Coins([])
-              ),
-            ]
-          } else {
-            return UTIL.isNativeDenom(asset.terraToken)
-              ? [
-                  new MsgSend(loginUser.address, shuttleAddress, [
-                    new Coin(asset.terraToken, sendAmount),
-                  ]),
-                ]
-              : [
-                  new MsgExecuteContract(
-                    loginUser.address,
-                    asset.terraToken,
-                    {
-                      transfer: {
-                        recipient: shuttleAddress,
-                        amount: sendAmount,
-                      },
-                    },
-                    new Coins([])
-                  ),
-                ]
-          }
-
         case BridgeType.ibc:
           return [
             new MsgTransfer(
@@ -576,16 +508,7 @@ const useSend = (): UseSendType => {
         const withSigner = contract.connect(signer)
 
         try {
-          if (bridgeUsed === BridgeType.shuttle) {
-            const etherVaultToken = etherVaultTokenList[asset.terraToken]
-            let { hash } = await withSigner.approve(
-              etherVaultToken.vault,
-              sendAmount
-            )
-            await waitForEtherBaseTransaction({ hash })
-            refetchAllowanceOfSelectedAsset()
-            return { success: true, hash }
-          } else if (bridgeUsed === BridgeType.wormhole) {
+          if (bridgeUsed === BridgeType.wormhole) {
             let { hash } = await withSigner.approve(
               NETWORK.wormholeContracts[fromBlockChain][
                 isTestnet ? 'testnet' : 'mainnet'
@@ -623,44 +546,12 @@ const useSend = (): UseSendType => {
         if (contract && loginUser.provider) {
           const signer = loginUser.provider.getSigner()
           const withSigner = contract.connect(signer)
-
-          const decoded = decodeTerraAddressOnEtherBase(terraAddress)
           try {
             switch (bridgeUsed) {
-              // with shuttle
-              case BridgeType.shuttle:
-                const etherVaultToken = etherVaultTokenList[asset.terraToken]
-
-                if (
-                  etherVaultToken &&
-                  fromBlockChain === BlockChainType.ethereum
-                ) {
-                  const vaultContract = getEtherBaseContract({
-                    token: etherVaultToken.vault,
-                  })!
-                  const vaultContractSigner = vaultContract.connect(signer)
-
-                  const tx = vaultContractSigner?.burn(
-                    sendAmount,
-                    decoded.padEnd(66, '0')
-                  )
-
-                  const { hash } = await tx
-                  return { success: true, hash }
-                } else {
-                  const tx = withSigner.burn(
-                    sendAmount,
-                    decoded.padEnd(66, '0')
-                  )
-
-                  const { hash } = await tx
-                  return { success: true, hash }
-                }
-
               // with axelar
               case BridgeType.axelar:
                 const axelarAddress = await getAxelarAddress(
-                  toAddress,
+                  terraAddress,
                   fromBlockChain,
                   toBlockChain,
                   toTokenAddress as string
@@ -685,7 +576,7 @@ const useSend = (): UseSendType => {
                   ]?.chainid || 3) as ChainId,
                   hexToUint8Array(
                     nativeToHexString(
-                      toAddress,
+                      terraAddress,
                       (NETWORK.wormholeContracts[toBlockChain][
                         isTestnet ? 'testnet' : 'mainnet'
                       ]?.chainid || 3) as ChainId

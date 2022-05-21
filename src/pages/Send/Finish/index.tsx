@@ -170,8 +170,7 @@ const Finish = (): ReactElement => {
           </Text>
         </div>
         {fromBlockChain === BlockChainType.terra &&
-          (bridgeUsed === BridgeType.shuttle ||
-            bridgeUsed === BridgeType.axelar ||
+          (bridgeUsed === BridgeType.axelar ||
             bridgeUsed === BridgeType.wormhole) && (
             <div
               style={{

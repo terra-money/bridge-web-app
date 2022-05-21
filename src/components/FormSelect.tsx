@@ -1,14 +1,12 @@
 import { ReactElement } from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
-import { Dropdown, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import { CaretDownFill } from 'react-bootstrap-icons'
 import NETWORK from '../consts/network'
 import { COLOR } from 'consts'
 import Text from './Text'
 import { BlockChainType } from 'types'
-import FormImage from 'components/FormImage'
-import warningSvg from 'images/warning.svg'
 
 type FormSelectProps<T> = {
   selectedValue: T
@@ -218,36 +216,6 @@ const FormSelect = <T,>({
                 >
                   {option.label}
                 </Text>
-
-                {option.warning && (
-                  <OverlayTrigger
-                    delay={{ hide: 150, show: 0 }}
-                    overlay={
-                      <Tooltip
-                        id="shuttle-warning"
-                        style={{
-                          color: '#e0a44d',
-                          backgroundColor: '#312a22',
-                          border: '1px solid #433626',
-                          padding: '10px',
-                          borderRadius: '5px',
-                          fontSize: '12px',
-                          maxWidth: '150px',
-                          marginLeft: '10px',
-                        }}
-                      >
-                        {option.warning}
-                      </Tooltip>
-                    }
-                    placement="right"
-                  >
-                    <FormImage
-                      src={warningSvg}
-                      size={18}
-                      style={{ marginLeft: '10px' }}
-                    />
-                  </OverlayTrigger>
-                )}
               </>
             </div>
           </StyledDropdownItem>

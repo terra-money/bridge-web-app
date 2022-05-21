@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
 import loading from 'images/loading.gif'
@@ -26,10 +26,10 @@ import AuthStore from 'store/AuthStore'
 import useAuth from 'hooks/useAuth'
 import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
-import { BlockChainType, BridgeType } from 'types/network'
+import { BlockChainType } from 'types/network'
 import testnetSvg from '../../images/testnet.svg'
 import NetworkStore from 'store/NetworkStore'
-import { DangerElement, WarningInfo } from './SendForm/WarningInfo'
+import { WarningInfo } from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -81,7 +81,7 @@ const Send = (): ReactElement => {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
-  const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
+  const setBridgeUsed = useSetRecoilState(SendStore.bridgeUsed)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const { validateFee } = useSendValidate()
@@ -198,25 +198,6 @@ const Send = (): ReactElement => {
           </>
         ) : (
           <>
-            {(toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc) &&
-              (status === ProcessStatus.Input ||
-                status === ProcessStatus.Confirm) &&
-              bridgeUsed === BridgeType.wormhole && (
-                <div style={{ marginTop: -40, marginBottom: 20 }}>
-                  <DangerElement>
-                    Do not use Wormhole transfer to send funds to exchanges
-                    (Coinbase, Gemini, etc.),{' '}
-                    <span
-                      onClick={(): void => setBridgeUsed(BridgeType.shuttle)}
-                    >
-                      use Shuttle
-                    </span>{' '}
-                    instead.
-                  </DangerElement>
-                </div>
-              )}
-
             <div
               ref={formScrollView}
               style={{ display: 'flex', overflowX: 'hidden' }}

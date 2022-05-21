@@ -141,12 +141,6 @@ const useAuth = (): {
           ) {
             reSelectFromBlockChain = BlockChainType.ethereum
           } else if (
-            [ETH_CHAINID.HMY_MAIN, ETH_CHAINID.HMY_TEST].includes(
-              network.chainId
-            )
-          ) {
-            reSelectFromBlockChain = BlockChainType.hmy
-          } else if (
             [ETH_CHAINID.BSC_MAIN, ETH_CHAINID.BSC_TEST].includes(
               network.chainId
             )

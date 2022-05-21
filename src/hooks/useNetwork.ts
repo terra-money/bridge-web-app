@@ -40,9 +40,6 @@ const useNetwork = (): {
       if (fromBlockChain === BlockChainType.bsc) {
         subdomain = isTestnet ? 'testnet.' : ''
         return `https://${subdomain}bscscan.com/${type}/${address}`
-      } else if (fromBlockChain === BlockChainType.hmy) {
-        subdomain = isTestnet ? 'testnet.' : ''
-        return `https://explorer.${subdomain}harmony.one/#/${type}/${address}`
       } else if (fromBlockChain === BlockChainType.osmo) {
         return type === 'tx'
           ? `https://www.mintscan.io/osmosis/txs/${address}`

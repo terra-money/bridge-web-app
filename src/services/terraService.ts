@@ -3,7 +3,7 @@ import {
   Extension,
   SyncTxBroadcastResult,
 } from '@terra-money/terra.js'
-import { ExtTerraNetwork } from 'types/network'
+import { LocalTerraNetwork } from 'types/network'
 
 const ext = new Extension()
 
@@ -21,7 +21,7 @@ export default {
     return ext.isAvailable
   },
 
-  async info(): Promise<ExtTerraNetwork> {
+  async info(): Promise<LocalTerraNetwork> {
     const res = await ext.request('info')
     return res.payload as any
   },
