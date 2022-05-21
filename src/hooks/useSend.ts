@@ -198,7 +198,7 @@ const useSend = (): UseSendType => {
     if (terraExt) {
       let gas = 200000
       try {
-        let feeDenoms = [AssetNativeDenomEnum.uusd]
+        let feeDenoms = [AssetNativeDenomEnum.uluna]
         const ownedAssetList = assetList.filter(
           (x) => _.toNumber(x.balance) > 0
         )

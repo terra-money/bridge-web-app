@@ -17,30 +17,6 @@ const defaultList: AssetType[] = [
     logoURI: 'https://assets.terra.money/icon/60/Luna.png',
     terraToken: AssetNativeDenomEnum.uluna,
   },
-  {
-    symbol: AssetSymbolEnum.UST,
-    name: 'Terra USD',
-    logoURI: 'https://assets.terra.money/icon/60/UST.png',
-    terraToken: AssetNativeDenomEnum.uusd,
-  },
-  {
-    symbol: AssetSymbolEnum.KRT,
-    name: 'Terra KRW',
-    logoURI: 'https://assets.terra.money/icon/60/KRT.png',
-    terraToken: AssetNativeDenomEnum.ukrw,
-  },
-  {
-    symbol: AssetSymbolEnum.SDT,
-    name: 'Terra SDR',
-    logoURI: 'https://assets.terra.money/icon/60/SDT.png',
-    terraToken: AssetNativeDenomEnum.usdr,
-  },
-  {
-    symbol: AssetSymbolEnum.MNT,
-    name: 'Terra MNT',
-    logoURI: 'https://assets.terra.money/icon/60/MNT.png',
-    terraToken: AssetNativeDenomEnum.umnt,
-  },
 ]
 
 type TerraWhiteListType = Record<
@@ -152,10 +128,6 @@ const useApp = (): {
             },
             {
               [AssetNativeDenomEnum.uluna]: AssetNativeDenomEnum.uluna,
-              [AssetNativeDenomEnum.uusd]: AssetNativeDenomEnum.uusd,
-              [AssetNativeDenomEnum.ukrw]: AssetNativeDenomEnum.ukrw,
-              [AssetNativeDenomEnum.usdr]: AssetNativeDenomEnum.usdr,
-              [AssetNativeDenomEnum.umnt]: AssetNativeDenomEnum.umnt,
             }
           )
           result[network] = val

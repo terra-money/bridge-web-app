@@ -1,18 +1,9 @@
 export enum AssetNativeDenomEnum {
-  ukrw = 'ukrw',
-  uusd = 'uusd',
   uluna = 'uluna',
-  usdr = 'usdr',
-  umnt = 'umnt',
 }
 
 export enum AssetSymbolEnum {
   Luna = 'Luna',
-  UST = 'UST',
-  KRT = 'KRT',
-  SDT = 'SDT',
-  MNT = 'MNT',
-  bETH = 'bETH',
 }
 
 export type AssetType = {

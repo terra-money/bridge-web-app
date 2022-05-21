@@ -40,7 +40,7 @@ export default async function getWormholeFees(
       feeUsd = ((280_000 * gas_price) / 1e18) * ethereum.usd
   }
 
-  // get transferred token exchange rate
+  // TODO: get LUNA price from CoinGecko after fork
   let exchangeRate = 1
   const { data } = await axios.get(
     'https://lcd.terra.dev/terra/oracle/v1beta1/denoms/exchange_rates'

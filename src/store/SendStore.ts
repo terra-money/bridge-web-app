@@ -53,7 +53,7 @@ const loginUserAssetList = atom<AssetType[]>({
 // Computed data from Send data Start
 const feeDenom = atom<AssetNativeDenomEnum>({
   key: 'sendFeeDenom',
-  default: AssetNativeDenomEnum.uusd,
+  default: AssetNativeDenomEnum.uluna,
 })
 const gasFeeList = atom<
   {
