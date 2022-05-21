@@ -135,12 +135,14 @@ export const WarningElement = ({
 }
 
 export const InfoElement = ({
+  style,
   children,
 }: {
+  style?: React.CSSProperties
   children: React.ReactNode
 }): ReactElement => {
   return (
-    <StyledInfo>
+    <StyledInfo style={style}>
       <div style={{ paddingRight: 12 }}>
         <FormImage src={infoSvg} size={18} />
       </div>
