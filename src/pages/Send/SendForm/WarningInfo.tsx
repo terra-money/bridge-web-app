@@ -34,7 +34,7 @@ const StyledDangerText = styled(Text)`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  color: #d64c55;
+  color: #d64c55 !important;
   display: inline;
 
   span {
@@ -68,7 +68,7 @@ const StyledWarningText = styled(Text)`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  color: #eca44d;
+  color: #eca44d !important;
   display: inline;
   a {
     font-weight: bold;
@@ -96,7 +96,7 @@ const StyledInfoText = styled(Text)`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  color: #a3a3a3;
+  color: #a3a3a3 !important;
   a {
     font-weight: bold;
     color: #a3a3a3;
