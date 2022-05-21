@@ -1,7 +1,7 @@
 import { BlockChainType } from 'types/network'
 import BinanceSvg from 'images/bsc.svg'
 import EthereumSvg from 'images/ethereum.svg'
-import TerraSvg from 'images/terra.svg'
+import TerraSvg from 'images/TerraClassic.svg'
 import HarmonySvg from 'images/harmony.svg'
 import OsmoSvg from 'images/osmo.svg'
 import AxelarSvg from 'images/axelar.svg'
@@ -36,7 +36,7 @@ const blockChainImage: Record<BlockChainType, string> = {
 const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.bsc]: 'BSC',
   [BlockChainType.ethereum]: 'Ethereum',
-  [BlockChainType.terra]: 'Terra',
+  [BlockChainType.terra]: 'TerraClassic',
   [BlockChainType.hmy]: 'Harmony',
   [BlockChainType.osmo]: 'Osmosis',
   [BlockChainType.scrt]: 'Secret',
