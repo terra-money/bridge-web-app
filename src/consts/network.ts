@@ -1,7 +1,7 @@
 import { BlockChainType } from 'types/network'
 import BinanceSvg from 'images/bsc.svg'
 import EthereumSvg from 'images/ethereum.svg'
-import TerraSvg from 'images/TerraClassic.svg'
+import TerraSvg from 'images/terra.svg'
 import HarmonySvg from 'images/harmony.svg'
 import OsmoSvg from 'images/osmo.svg'
 import AxelarSvg from 'images/axelar.svg'

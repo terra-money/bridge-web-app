@@ -2,8 +2,6 @@ import { NETWORK } from 'consts'
 import { useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
-import LuncSvg from '../images/LUNC.svg'
-
 import ContractStore from 'store/ContractStore'
 import {
   AssetNativeDenomEnum,
@@ -16,7 +14,7 @@ const defaultList: AssetType[] = [
   {
     symbol: 'LUNC',
     name: 'Luna Classic',
-    logoURI: LuncSvg,
+    logoURI: 'https://assets.terra.money/icon/svg/Luna.svg',
     terraToken: AssetNativeDenomEnum.uluna,
   },
   {
