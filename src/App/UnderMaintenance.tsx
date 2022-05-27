@@ -7,10 +7,6 @@ import { COLOR } from 'consts'
 
 import { Text, View } from 'components'
 
-import useTerraAssets from 'hooks/useTerraAssets'
-import { TerraAssetsPathEnum } from 'types'
-import { useRecoilValue } from 'recoil'
-import NetworkStore from 'store/NetworkStore'
 import FormImage from 'components/FormImage'
 
 const StyledBg = styled.div`
@@ -61,20 +57,23 @@ const StyledEnterAnyway = styled(Text)`
   text-decoration: underline;
 `
 
-const UnderMaintenance = (): ReactElement => {
-  const terraLocal = useRecoilValue(NetworkStore.terraLocal)
+const StyledClassicButton = styled.a`
+  cursor: pointer;
+  color: ${COLOR.primary};
+  text-decoration: underline;
+  cursor: pointer;
+  color: ${COLOR.white};
+  background-color: ${COLOR.primary};
+  text-decoration: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 1.5rem;
+`
 
+const UnderMaintenance = (): ReactElement => {
   const [hideMaintenance, setHideMaintenance] = useState(false)
   const hide = (): void => setHideMaintenance(true)
 
-  const { data: maintenance } = useTerraAssets<{
-    mainnet: boolean
-    testnet: boolean
-  }>({
-    path: TerraAssetsPathEnum.station_maintenamce,
-  })
-
-  const isUnderMaintenance = maintenance?.[terraLocal.name]
+  const isUnderMaintenance = true
 
   if (isUnderMaintenance && false === hideMaintenance) {
     return (
@@ -84,8 +83,14 @@ const UnderMaintenance = (): ReactElement => {
             <FormImage size={80} src={maintenancePng} />
           </View>
           <StyledTitle>Under Maintenance</StyledTitle>
-          <StyledDesc>We will be back on Columbus-5 soon.</StyledDesc>
-          <StyledEnterAnyway onClick={hide}>Enter anyway</StyledEnterAnyway>
+          <StyledDesc>We will be back on Phoenix-1 soon.</StyledDesc>
+
+          <StyledClassicButton href="https://classic-bridge.terra.money">
+            Use Bridge Classic
+          </StyledClassicButton>
+          <StyledEnterAnyway onClick={hide}>
+            Enter anyway [just for testing]
+          </StyledEnterAnyway>
         </StyledContainer>
       </StyledBg>
     )
