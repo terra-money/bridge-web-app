@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
 
 import loading from 'images/loading.gif'
@@ -26,9 +26,9 @@ import AuthStore from 'store/AuthStore'
 import useAuth from 'hooks/useAuth'
 import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
-import { BlockChainType, BridgeType } from 'types/network'
+import { BlockChainType } from 'types/network'
 import classicSvg from '../../images/classic.svg'
-import { DangerElement, WarningInfo } from './SendForm/WarningInfo'
+import { DangerElement, InfoElement, WarningInfo } from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -80,7 +80,7 @@ const Send = (): ReactElement => {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
-  const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
+  const setBridgeUsed = useSetRecoilState(SendStore.bridgeUsed)
 
   const { validateFee } = useSendValidate()
   const feeValidationResult = validateFee()
@@ -196,25 +196,11 @@ const Send = (): ReactElement => {
           </>
         ) : (
           <>
-            {(toBlockChain === BlockChainType.ethereum ||
-              toBlockChain === BlockChainType.bsc) &&
-              (status === ProcessStatus.Input ||
-                status === ProcessStatus.Confirm) &&
-              bridgeUsed === BridgeType.wormhole && (
-                <div style={{ marginTop: -40, marginBottom: 20 }}>
-                  <DangerElement>
-                    Do not use Wormhole transfer to send funds to exchanges
-                    (Coinbase, Gemini, etc.),{' '}
-                    <span
-                      onClick={(): void => setBridgeUsed(BridgeType.shuttle)}
-                    >
-                      use Shuttle
-                    </span>{' '}
-                    instead.
-                  </DangerElement>
-                </div>
-              )}
-
+            <InfoElement>
+              This is Bridge Classic, if you want to use bridge with Terra 2.0
+              please visit{' '}
+              <a href="https://bridge.terra.money">bridge.terra.money</a>
+            </InfoElement>
             <div
               ref={formScrollView}
               style={{ display: 'flex', overflowX: 'hidden' }}
@@ -226,6 +212,15 @@ const Send = (): ReactElement => {
                 <Confirm />
               </div>
             </div>
+            <DangerElement>
+              Axelar will be disabled on Terra Classic on{' '}
+              <b>
+                {new Date(1653955140000).toLocaleDateString()}{' '}
+                {new Date(1653955140000).toLocaleTimeString()}
+              </b>{' '}
+              [local time]. Bridge axUST and axLUNC back to Terra Classic before
+              the date.
+            </DangerElement>
             <WarningInfo />
 
             {[

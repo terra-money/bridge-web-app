@@ -48,6 +48,15 @@ const StyledLogo = styled(Text)`
   }
 `
 
+const StyledClassic = styled(Text)`
+  background-color: ${COLOR.darkGray};
+  padding: 0.4rem 0.8rem;
+  border-radius: 1rem;
+  font-size: small;
+  font-weight: bold;
+  margin-left: 0.4rem;
+`
+
 const StyledAddress = styled(Text)`
   font-size: 12px;
   font-weight: normal;
@@ -188,9 +197,13 @@ const Header = (): ReactElement => {
     <StyledContainer>
       <StyledNavContainer>
         <StyledNav>
-          <StyledLogo>
-            <img src={bridgeLogo} alt="" />
-          </StyledLogo>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <StyledLogo>
+              <img src={bridgeLogo} alt="" />
+            </StyledLogo>
+            <StyledClassic>Classic</StyledClassic>
+          </div>
+
           {isLoggedIn ? (
             <LoginUserInfo />
           ) : (

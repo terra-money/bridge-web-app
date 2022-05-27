@@ -97,6 +97,7 @@ const StyledInfoText = styled(Text)`
   line-height: 1.5;
   letter-spacing: normal;
   color: #a3a3a3 !important;
+  display: inline;
   a {
     font-weight: bold;
     color: #a3a3a3;
