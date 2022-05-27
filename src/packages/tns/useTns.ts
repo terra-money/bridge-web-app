@@ -11,7 +11,7 @@ export default function useTns(): {
   const tns = new TNS({
     network: isTestnet ? 'testnet' : 'mainnet',
     mantleUrl: isTestnet
-      ? 'https://bombay-mantle.terra.dev/'
+      ? 'https://pisco-mantle.terra.dev/'
       : 'https://columbus-mantle.terra.dev',
   })
 

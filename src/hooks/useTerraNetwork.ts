@@ -21,9 +21,9 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
     testnet: {
       name: TerraNetworkEnum.testnet,
       chainID: 'bombay-12',
-      lcd: 'https://bombay-lcd.terra.dev',
-      fcd: 'https://bombay-fcd.terra.dev',
-      mantle: 'https://bombay-mantle.terra.dev',
+      lcd: 'https://pisco-lcd.terra.dev',
+      fcd: 'https://pisco-fcd.terra.dev',
+      mantle: 'https://pisco-mantle.terra.dev',
       walletconnectID: 0,
       shuttle: {
         ethereum: 'terra1skc56hrrg92zj8xxj6lyjlt2l2m8q8sf832sqm',
