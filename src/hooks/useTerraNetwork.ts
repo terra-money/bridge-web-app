@@ -24,9 +24,7 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
   }
 
 const useTerraNetwork = (): {
-  getTerraNetworkByName: (
-    name: TerraNetworkEnum
-  ) => LocalTerraNetwork | undefined
+  getTerraNetworkByChainID: (chainID: string) => LocalTerraNetwork | undefined
   getTerraNetworkByWalletconnectID: (
     id: number
   ) => LocalTerraNetwork | undefined
@@ -46,10 +44,10 @@ const useTerraNetwork = (): {
     ]
   }, [data])
 
-  const getTerraNetworkByName = (
-    name: TerraNetworkEnum
+  const getTerraNetworkByChainID = (
+    chainID: string
   ): LocalTerraNetwork | undefined => {
-    return networkList.find((x) => x.name === name)
+    return networkList.find((x) => x.chainID === chainID)
   }
 
   const getTerraNetworkByWalletconnectID = (
@@ -59,7 +57,7 @@ const useTerraNetwork = (): {
   }
 
   return {
-    getTerraNetworkByName,
+    getTerraNetworkByChainID,
     getTerraNetworkByWalletconnectID,
   }
 }
