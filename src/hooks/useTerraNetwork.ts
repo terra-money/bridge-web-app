@@ -8,9 +8,9 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
     mainnet: {
       name: TerraNetworkEnum.mainnet,
       chainID: 'columbus-5',
-      lcd: 'https://lcd.terra.dev',
-      fcd: 'https://fcd.terra.dev',
-      mantle: 'https://mantle.terra.dev',
+      lcd: 'https://columbus-lcd.terra.dev',
+      fcd: 'https://columbus-fcd.terra.dev',
+      mantle: 'https://columbus-mantle.terra.dev',
       walletconnectID: 1,
       shuttle: {
         ethereum: 'terra13yxhrk08qvdf5zdc9ss5mwsg5sf7zva9xrgwgc',
