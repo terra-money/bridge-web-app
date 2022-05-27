@@ -29,7 +29,7 @@ import useSelectWallet from 'hooks/useSelectWallet'
 import { BlockChainType } from 'types/network'
 import testnetSvg from '../../images/testnet.svg'
 import NetworkStore from 'store/NetworkStore'
-import { WarningInfo } from './SendForm/WarningInfo'
+import { InfoElement, WarningInfo } from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -198,6 +198,16 @@ const Send = (): ReactElement => {
           </>
         ) : (
           <>
+            <div style={{ marginTop: -40 }}>
+              <InfoElement>
+                This is Bridge V2, if you want to use bridge with Terra Classic
+                please visit{' '}
+                <a href="https://classic-bridge.terra.money">
+                  classic-bridge.terra.money
+                </a>
+              </InfoElement>
+            </div>
+
             <div
               ref={formScrollView}
               style={{ display: 'flex', overflowX: 'hidden' }}
