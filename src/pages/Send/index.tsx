@@ -196,11 +196,14 @@ const Send = (): ReactElement => {
           </>
         ) : (
           <>
-            <InfoElement>
-              This is Bridge Classic, if you want to use bridge with Terra 2.0
-              please visit{' '}
-              <a href="https://bridge.terra.money">bridge.terra.money</a>
-            </InfoElement>
+            <div style={{ marginTop: -40 }}>
+              <InfoElement>
+                This is Bridge Classic, if you want to use bridge with Terra 2.0
+                please visit{' '}
+                <a href="https://bridge.terra.money">bridge.terra.money</a>
+              </InfoElement>
+            </div>
+
             <div
               ref={formScrollView}
               style={{ display: 'flex', overflowX: 'hidden' }}
