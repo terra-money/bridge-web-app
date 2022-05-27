@@ -55,6 +55,7 @@ const StyledEnterAnyway = styled(Text)`
   cursor: pointer;
   color: ${COLOR.primary};
   text-decoration: underline;
+  margin-top: 2rem;
 `
 
 const StyledClassicButton = styled.a`
@@ -88,9 +89,11 @@ const UnderMaintenance = (): ReactElement => {
           <StyledClassicButton href="https://classic-bridge.terra.money">
             Use Bridge Classic
           </StyledClassicButton>
-          <StyledEnterAnyway onClick={hide}>
-            Enter anyway [just for testing]
-          </StyledEnterAnyway>
+          {window.location.host !== 'bridge.terra.money' && (
+            <StyledEnterAnyway onClick={hide}>
+              Enter anyway [just for testing]
+            </StyledEnterAnyway>
+          )}
         </StyledContainer>
       </StyledBg>
     )
