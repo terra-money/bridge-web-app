@@ -12,7 +12,7 @@ export default function useTns(): {
     network: isTestnet ? 'testnet' : 'mainnet',
     mantleUrl: isTestnet
       ? 'https://bombay-mantle.terra.dev/'
-      : 'https://mantle.terra.dev',
+      : 'https://columbus-mantle.terra.dev',
   })
 
   async function getName(address: string): Promise<string | undefined> {
