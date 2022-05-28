@@ -40,7 +40,7 @@ const useAuth = (): {
     bridgeUsed: BridgeType | undefined
   }) => void
 } => {
-  const { getTerraNetworkByName, getTerraNetworkByWalletconnectID } =
+  const { getTerraNetworkByChainID, getTerraNetworkByWalletconnectID } =
     useTerraNetwork()
 
   const setLoginUser = useSetRecoilState(AuthStore.loginUser)
@@ -77,7 +77,7 @@ const useAuth = (): {
         name = extNet.name
         chainId = extNet.chainID
         setTerraExt(extNet)
-        localNetwork = getTerraNetworkByName(extNet.name)
+        localNetwork = getTerraNetworkByChainID(chainId)
       }
 
       if (!localNetwork) {

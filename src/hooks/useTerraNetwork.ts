@@ -10,7 +10,7 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
       lcd: 'https://columbus-lcd.terra.dev',
       fcd: 'https://columbus-fcd.terra.dev',
       mantle: 'https://columbus-mantle.terra.dev',
-      walletconnectID: 1,
+      walletconnectID: 2,
       shuttle: {
         ethereum: 'terra13yxhrk08qvdf5zdc9ss5mwsg5sf7zva9xrgwgc',
         bsc: 'terra1g6llg3zed35nd3mh9zx6n64tfw3z67w2c48tn2',
@@ -33,12 +33,10 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
   }
 
 const useTerraNetwork = (): {
-  getTerraNetworkByName: (
-    name: TerraNetworkEnum
-  ) => LocalTerraNetwork | undefined
   getTerraNetworkByWalletconnectID: (
     id: number
   ) => LocalTerraNetwork | undefined
+  getTerraNetworkByChainID: (id: string) => LocalTerraNetwork | undefined
 } => {
   const networkList: LocalTerraNetwork[] = useMemo(() => {
     const getOptions = (net: TerraNetworkEnum): LocalTerraNetwork => {
@@ -51,10 +49,10 @@ const useTerraNetwork = (): {
     ]
   }, [])
 
-  const getTerraNetworkByName = (
-    name: TerraNetworkEnum
+  const getTerraNetworkByChainID = (
+    id: string
   ): LocalTerraNetwork | undefined => {
-    return networkList.find((x) => x.name === name)
+    return networkList.find((x) => x.chainID === id)
   }
 
   const getTerraNetworkByWalletconnectID = (
@@ -64,7 +62,7 @@ const useTerraNetwork = (): {
   }
 
   return {
-    getTerraNetworkByName,
+    getTerraNetworkByChainID,
     getTerraNetworkByWalletconnectID,
   }
 }
