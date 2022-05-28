@@ -41,7 +41,7 @@ const isTestnet = selector<boolean>({
       if (fromBlockChain === BlockChainType.terra) {
         const _terraExt = get(terraExt)
 
-        return _terraExt?.name !== 'mainnet'
+        return _terraExt?.chainID !== 'columbus-5'
       }
 
       if (isIbcNetwork(fromBlockChain)) {
