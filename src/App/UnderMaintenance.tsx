@@ -9,8 +9,6 @@ import { Text, View } from 'components'
 
 import useTerraAssets from 'hooks/useTerraAssets'
 import { TerraAssetsPathEnum } from 'types'
-import { useRecoilValue } from 'recoil'
-import NetworkStore from 'store/NetworkStore'
 import FormImage from 'components/FormImage'
 
 const StyledBg = styled.div`
@@ -62,19 +60,16 @@ const StyledEnterAnyway = styled(Text)`
 `
 
 const UnderMaintenance = (): ReactElement => {
-  const terraLocal = useRecoilValue(NetworkStore.terraLocal)
-
   const [hideMaintenance, setHideMaintenance] = useState(false)
   const hide = (): void => setHideMaintenance(true)
 
   const { data: maintenance } = useTerraAssets<{
-    mainnet: boolean
-    testnet: boolean
+    classic: boolean
   }>({
     path: TerraAssetsPathEnum.station_maintenamce,
   })
 
-  const isUnderMaintenance = maintenance?.[terraLocal.name]
+  const isUnderMaintenance = maintenance?.classic
 
   if (isUnderMaintenance && false === hideMaintenance) {
     return (

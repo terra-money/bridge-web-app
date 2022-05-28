@@ -142,8 +142,6 @@ export enum TerraNetworkEnum {
 export enum TerraAssetsPathEnum {
   station_maintenamce = '/station/maintenance.json',
 
-  chains = '/chains.json',
-
   cw20_tokens = '/cw20/tokens.json',
 
   ibc_tokens = '/ibc/tokens.json',

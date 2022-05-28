@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { LocalTerraNetwork, TerraAssetsPathEnum, TerraNetworkEnum } from 'types'
-import useTerraAssets from './useTerraAssets'
+import { LocalTerraNetwork, TerraNetworkEnum } from 'types'
 
 export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
   {
@@ -41,20 +40,16 @@ const useTerraNetwork = (): {
     id: number
   ) => LocalTerraNetwork | undefined
 } => {
-  const { data } = useTerraAssets<Record<TerraNetworkEnum, LocalTerraNetwork>>({
-    path: TerraAssetsPathEnum.chains,
-  })
-
   const networkList: LocalTerraNetwork[] = useMemo(() => {
     const getOptions = (net: TerraNetworkEnum): LocalTerraNetwork => {
-      return { ...defaultTerraNetworks[net], ...data?.[net] }
+      return { ...defaultTerraNetworks[net] }
     }
 
     return [
       getOptions(TerraNetworkEnum.mainnet),
       getOptions(TerraNetworkEnum.testnet),
     ]
-  }, [data])
+  }, [])
 
   const getTerraNetworkByName = (
     name: TerraNetworkEnum
