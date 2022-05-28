@@ -85,12 +85,17 @@ const useApp = (): {
 
   const getContractAddress = async (): Promise<void> => {
     try {
-      const terraListJson: TerraWhiteListType = await fetchAssets(
-        TerraAssetsPathEnum.cw20_tokens
-      )
-      const ibcListJson: TerraIbcListType = await fetchAssets(
-        TerraAssetsPathEnum.ibc_tokens
-      )
+      const terraList: any = await fetchAssets(TerraAssetsPathEnum.cw20_tokens)
+      const ibcList: any = await fetchAssets(TerraAssetsPathEnum.ibc_tokens)
+
+      const terraListJson: TerraWhiteListType = {
+        mainnet: terraList.classic,
+        testnet: {},
+      }
+      const ibcListJson: TerraIbcListType = {
+        mainnet: ibcList.classic,
+        testnet: {},
+      }
 
       const tokenList = _.reduce<
         TerraWhiteListType,
