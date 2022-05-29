@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 import wormholeGif from 'images/wormhole.gif'
 import ibcGif from 'images/ibc.gif'
 import shuttleGif from 'images/shuttle.gif'
@@ -12,7 +12,6 @@ import { BlockChainType, BridgeType, getDefaultBridge } from 'types/network'
 import useAuth from 'hooks/useAuth'
 
 import SendStore from 'store/SendStore'
-import NetworkStore from 'store/NetworkStore'
 
 import SelectBlockChain from '../../components/SelectBlockChain'
 import SelectBridge from 'components/SelectBridge'
@@ -45,7 +44,6 @@ const BlockChainNetwork = (): ReactElement => {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
   const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
   useUpdateBridgeType()
   const { setBlockchainStorage } = useAuth()
@@ -108,14 +106,14 @@ const BlockChainNetwork = (): ReactElement => {
                 isDisabled: fromBlockChain === BlockChainType.scrt,
               },
               {
-                label: NETWORK.blockChainName[BlockChainType.inj],
-                value: BlockChainType.inj,
-                isDisabled: fromBlockChain === BlockChainType.inj,
-              },
-              {
                 label: NETWORK.blockChainName[BlockChainType.cosmos],
                 value: BlockChainType.cosmos,
                 isDisabled: fromBlockChain === BlockChainType.cosmos,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.juno],
+                value: BlockChainType.juno,
+                isDisabled: fromBlockChain === BlockChainType.juno,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.avalanche],
@@ -179,45 +177,42 @@ const BlockChainNetwork = (): ReactElement => {
               {
                 label: NETWORK.blockChainName[BlockChainType.osmo],
                 value: BlockChainType.osmo,
-                isDisabled: toBlockChain === BlockChainType.osmo || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.osmo,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.scrt],
                 value: BlockChainType.scrt,
-                isDisabled: toBlockChain === BlockChainType.scrt || isTestnet,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.inj],
-                value: BlockChainType.inj,
-                isDisabled: toBlockChain === BlockChainType.inj || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.scrt,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.cosmos],
                 value: BlockChainType.cosmos,
-                isDisabled: toBlockChain === BlockChainType.cosmos || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.cosmos,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.juno],
+                value: BlockChainType.juno,
+                isDisabled: toBlockChain === BlockChainType.juno,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.avalanche],
                 value: BlockChainType.avalanche,
-                isDisabled:
-                  toBlockChain === BlockChainType.avalanche || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.avalanche,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.fantom],
                 value: BlockChainType.fantom,
-                isDisabled: toBlockChain === BlockChainType.fantom || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.fantom,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.polygon],
                 value: BlockChainType.polygon,
-                isDisabled:
-                  toBlockChain === BlockChainType.polygon || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.polygon,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.moonbeam],
                 value: BlockChainType.moonbeam,
-                isDisabled:
-                  toBlockChain === BlockChainType.moonbeam || isTestnet,
+                isDisabled: toBlockChain === BlockChainType.moonbeam,
               },
             ],
             label: 'TO',

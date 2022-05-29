@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useEffect } from 'react'
 import styled from 'styled-components'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import _ from 'lodash'
@@ -11,7 +11,6 @@ import { AssetNativeDenomEnum, AssetSymbolEnum } from 'types/asset'
 
 import { Text, View, Row } from 'components'
 import FormLabel from 'components/FormLabel'
-import FormSelect from 'components/FormSelect'
 import FormErrorMessage from 'components/FormErrorMessage'
 
 import useAsset from 'hooks/useAsset'
@@ -50,14 +49,6 @@ const FormFeeInfo = ({
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
 
   const { formatBalance } = useAsset()
-
-  const [optionList, setOptionList] = useState<
-    {
-      label: AssetSymbolEnum
-      value: AssetNativeDenomEnum
-      isDisabled?: boolean
-    }[]
-  >([])
 
   const setStdFee = (props: { feeDenom: AssetNativeDenomEnum }): void => {
     const stdFee = gasFeeList.find((x) => x.denom === props.feeDenom)?.fee
@@ -105,8 +96,6 @@ const FormFeeInfo = ({
   useEffect(() => {
     if (assetList.length > 0) {
       const defaultOptionList = getDefaultOptionList()
-
-      setOptionList(defaultOptionList)
 
       const selected = defaultOptionList.find((x) => x.value === feeDenom)
       const selectable = defaultOptionList.find((x) => x.isDisabled === false)
@@ -160,28 +149,7 @@ const FormFeeInfo = ({
                   >
                     {formatBalance(gasFee)}
                   </Text>
-                  <FormSelect
-                    selectedValue={feeDenom}
-                    size={'sm'}
-                    optionList={optionList}
-                    onSelect={(value: AssetNativeDenomEnum): void => {
-                      setFeeDenom(value)
-                    }}
-                    containerStyle={{
-                      width: 52,
-                      height: 26,
-                      borderRadius: 3,
-                      padding: '6px 5px 5px 8px',
-                    }}
-                    selectedTextStyle={{
-                      fontSize: 12,
-                      fontWeight: 'normal',
-                      letterSpacing: -0.19,
-                    }}
-                    menuContainerStyle={{
-                      borderRadius: 3,
-                    }}
-                  />
+                  Luna
                 </Row>
               </Row>
               <View style={{ justifyContent: 'flex-end' }}>

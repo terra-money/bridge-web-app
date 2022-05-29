@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 //import styled from 'styled-components'
-
 import { COLOR } from 'consts'
 
 import { availableBridges, BlockChainType, BridgeType } from 'types/network'

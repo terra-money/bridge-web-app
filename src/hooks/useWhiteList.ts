@@ -37,32 +37,14 @@ const whitelist: Record<
   [BlockChainType.cosmos]: {
     [BridgeType.ibc]: {
       uluna:
-        'ibc/F871EFABE94BCF72D386F0FBCACE79A63000B7A9C19B00B65CD16EA229693F66',
+        'ibc/34CEF8B6A6424C45FE3CCC4A02C9DF9BB38BACC323E08DFFEFE9E4B18BB89AC4',
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2':
+        'uatom',
     },
   },
   [BlockChainType.ethereum]: {
     [BridgeType.wormhole]: {
       uluna: '0xbd31ea8212119f94a611fa969881cba3ea06fa3d',
-      /*
-      // wETH
-      terra14tl83xcwqjy0ken9peu4pjjuu755lrry2uy25r:
-        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      // DAI
-      terra1zmclyfepfmqvfqflu8r3lv6f75trmg05z7xq95:
-        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      // USDC
-      terra1pepwcav40nvj3kh60qqgrk8k07ydmc00xyat06:
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      // USDT
-      terra1ce06wkrdm4vl6t0hvc0g86rsy27pu8yadg3dva:
-        '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      // wBTC
-      terra1aa7upykmmqqc63l924l5qfap8mrmx5rfdm0v55:
-        '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-      // bETH
-      terra1u5szg038ur9kzuular3cae8hq6q5rk5u27tuvz:
-        '0x707f9118e33a9b8998bea41dd0d46f38bb963fc8',
-      */
     },
     [BridgeType.axelar]: {
       uluna: '0x31DAB3430f3081dfF3Ccd80F17AD98583437B213',
@@ -76,20 +58,31 @@ const whitelist: Record<
   },
   [BlockChainType.inj]: {
     [BridgeType.ibc]: {
-      uluna:
-        'ibc/B8AF5D92165F35AB31F3FC7C7B444B9D240760FA5D406C49D24862BD0284E395',
+      //uluna: 'ibc/B8AF5D92165F35AB31F3FC7C7B444B9D240760FA5D406C49D24862BD0284E395',
     },
   },
   [BlockChainType.osmo]: {
     [BridgeType.ibc]: {
       uluna:
-        'ibc/0EF15DF2F02480ADE0BB6E85D9EBB5DAEA2836D3860E9F97F9AADE4F57A31AA0',
+        'ibc/785AFEC6B3741100D15E7AF01374E3C4C36F24888E96479B1C33F5C71F364EF9',
+      'ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B':
+        'uosmo',
     },
   },
   [BlockChainType.scrt]: {
     [BridgeType.ibc]: {
       uluna:
-        'ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2',
+        'ibc/28DECFA7FB7E3AB58DC3B3AEA9B11C6C6B6E46356DCC26505205DAD3379984F5',
+      'ibc/10BD6ED30BA132AB96F146D71A23B46B2FC19E7D79F52707DC91F2F3A45040AD':
+        'uscrt',
+    },
+  },
+  [BlockChainType.juno]: {
+    [BridgeType.ibc]: {
+      uluna:
+        'ibc/107D152BB3176FAEBF4C2A84C5FFDEEA7C7CB4FE1BBDAB710F1FD25BCD055CBF',
+      'ibc/4CD525F166D32B0132C095F353F4C6F033B0FF5C49141470D1EFDA1D63303D04':
+        'ujuno',
     },
   },
   [BlockChainType.polygon]: {

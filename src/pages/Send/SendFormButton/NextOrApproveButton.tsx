@@ -5,7 +5,7 @@ import { CircularProgress } from '@material-ui/core'
 
 import { COLOR } from 'consts'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import { RequestTxResultType, ValidateItemResultType } from 'types/send'
 import useSend from 'hooks/useSend'
 
@@ -23,6 +23,8 @@ const NextOrApproveButton = ({
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const amount = useRecoilValue(SendStore.amount)
 
@@ -76,8 +78,20 @@ const NextOrApproveButton = ({
   }
 
   return (
-    <Button onClick={onClickSendNextButton} disabled={!ableButton}>
-      Next
+    <Button
+      onClick={onClickSendNextButton}
+      disabled={
+        !ableButton ||
+        bridgeUsed !== BridgeType.ibc ||
+        toBlockChain === BlockChainType.inj ||
+        fromBlockChain === BlockChainType.inj
+      }
+    >
+      {bridgeUsed !== BridgeType.ibc ||
+      toBlockChain === BlockChainType.inj ||
+      fromBlockChain === BlockChainType.inj
+        ? 'Temporary disabled'
+        : 'Next'}
     </Button>
   )
 }
