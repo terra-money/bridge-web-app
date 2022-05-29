@@ -163,16 +163,17 @@ export const WarningInfo = (): ReactElement => {
   const bridgesList = availableBridges[chain]
 
   function infoText(): string | undefined {
-    if (bridgeUsed === BridgeType.ibc) {
-      return 'IBC transfers are currently suspended.'
+    if (bridgeUsed !== BridgeType.ibc) {
+      return 'Only IBC is available at the moment, more bridges will be enabled soon.'
+    } else if (chain === BlockChainType.inj) {
+      return 'Injective is not yet relayed.'
     } else if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain
     ) {
       return 'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
     } else if (
-      BlockChainType.polygon === fromBlockChain &&
-      bridgeUsed === BridgeType.wormhole
+      BlockChainType.polygon === fromBlockChain // && bridgeUsed === BridgeType.wormhole
     ) {
       return '512 block confirmation is required for this transfer. It may take more than 15 minutes to receive funds in the destination wallet'
     } else if (fromBlockChain !== toBlockChain) {

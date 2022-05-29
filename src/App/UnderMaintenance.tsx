@@ -74,7 +74,7 @@ const UnderMaintenance = (): ReactElement => {
   const [hideMaintenance, setHideMaintenance] = useState(false)
   const hide = (): void => setHideMaintenance(true)
 
-  const isUnderMaintenance = true
+  const isUnderMaintenance = false
 
   if (isUnderMaintenance && false === hideMaintenance) {
     return (

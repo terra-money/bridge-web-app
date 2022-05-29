@@ -8,10 +8,10 @@ import InjectiveSvg from 'images/injective.svg'
 import AvalancheSvg from 'images/avalanche.svg'
 import FantomSvg from 'images/fantom.svg'
 import CosmosSvg from 'images/cosmos.svg'
-//import CronosSvg from 'images/cronos.svg'
 import SecretSvg from 'images/secret.svg'
 import PolygonSvg from 'images/polygon.svg'
 import MoonbeamSvg from 'images/moonbeam.svg'
+import JunoSvg from 'images/juno.svg'
 import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
@@ -28,7 +28,7 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.cosmos]: CosmosSvg,
   [BlockChainType.polygon]: PolygonSvg,
   [BlockChainType.moonbeam]: MoonbeamSvg,
-  //[BlockChainType.cro]: CronosSvg,
+  [BlockChainType.juno]: JunoSvg,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
@@ -44,6 +44,7 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.cosmos]: 'Cosmos',
   [BlockChainType.polygon]: 'Polygon',
   [BlockChainType.moonbeam]: 'Moonbeam',
+  [BlockChainType.juno]: 'Juno',
   //[BlockChainType.cro]: 'Cronos',
 }
 
@@ -70,7 +71,7 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
   [BlockChainType.axelar]: [],
   [BlockChainType.terra]: [],
   [BlockChainType.cosmos]: [],
-  //[BlockChainType.cro]: '[],
+  [BlockChainType.juno]: [],
 }
 
 interface WormholeConsts {
@@ -152,6 +153,7 @@ const wormholeContracts: Record<BlockChainType, WormholeConsts> = {
   [BlockChainType.scrt]: {},
   [BlockChainType.inj]: {},
   [BlockChainType.axelar]: {},
+  [BlockChainType.juno]: {},
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

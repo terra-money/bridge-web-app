@@ -7,6 +7,8 @@ import AuthStore from 'store/AuthStore'
 
 import useMantle from './useMantle'
 import { BalanceListType } from 'types/asset'
+import NetworkStore from 'store/NetworkStore'
+import axios from 'axios'
 
 interface Query {
   token: string
@@ -16,17 +18,6 @@ interface Query {
 
 const stringify = (msg: object): string =>
   JSON.stringify(msg).replace(/"/g, '\\"')
-
-const bankBalanceQuery = `
-  query($address: String) {
-    BankBalancesAddress(Address: $address) {
-      Result {
-        Amount
-        Denom
-      }
-    }
-  }
-`
 
 const alias = ({ token, contract, msg }: Query): string =>
   `${token}: WasmContractsContractAddressStore(
@@ -51,8 +42,10 @@ const useTerraBalance = (): {
   ) => Promise<BalanceListType>
 } => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
+  const localNetwork = useRecoilValue(NetworkStore.terraLocal)
   const { fetchQuery } = useMantle()
 
+  // TODO: fix CW20 query for hive
   const getTerraTokenBalances = async (
     terraWhiteList: { token: string }[]
   ): Promise<BalanceListType> => {
@@ -103,19 +96,16 @@ const useTerraBalance = (): {
   }
 
   const getTerraBankBalances = async (): Promise<BalanceListType> => {
-    const fetchResult = await fetchQuery({
-      query: bankBalanceQuery,
-      variables: JSON.stringify({ address: loginUser.address }),
-    })
-    const resultList: {
-      Amount: string
-      Denom: string
-    }[] = fetchResult?.BankBalancesAddress.Result || []
+    const {
+      data: { balances },
+    } = await axios.get(
+      `${localNetwork.lcd}/cosmos/bank/v1beta1/balances/${loginUser.address}`
+    )
 
-    if (_.some(resultList)) {
+    if (_.some(balances)) {
       const list: BalanceListType = {}
-      _.forEach(resultList, (x) => {
-        list[x.Denom] = x.Amount
+      _.forEach(balances, (x) => {
+        list[x.denom] = x.amount
       })
       return list
     } else {

@@ -8,9 +8,9 @@ export const defaultTerraNetworks: Record<TerraNetworkEnum, LocalTerraNetwork> =
     mainnet: {
       name: TerraNetworkEnum.mainnet,
       chainID: 'phoenix-1',
-      lcd: 'https://lcd.terra.dev',
-      fcd: 'https://fcd.terra.dev',
-      mantle: 'https://mantle.terra.dev',
+      lcd: 'https://phoenix-lcd.terra.dev',
+      fcd: 'https://phoenix-fcd.terra.dev',
+      mantle: 'https://phoenix-hive.terra.dev/graphql',
       walletconnectID: 1,
     },
     testnet: {

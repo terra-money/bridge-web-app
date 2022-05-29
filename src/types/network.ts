@@ -11,7 +11,7 @@ export enum BlockChainType {
   cosmos = 'cosmos',
   polygon = 'polygon',
   moonbeam = 'moonbeam',
-  //cro = 'cronos',
+  juno = 'juno',
 }
 
 export enum BridgeType {
@@ -26,6 +26,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.inj]: [BridgeType.ibc],
   [BlockChainType.axelar]: [BridgeType.ibc],
   [BlockChainType.cosmos]: [BridgeType.ibc],
+  [BlockChainType.juno]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.bsc]: [BridgeType.wormhole],
   [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
@@ -49,6 +50,7 @@ export type IbcNetwork =
   | BlockChainType.inj
   | BlockChainType.axelar
   | BlockChainType.cosmos
+  | BlockChainType.juno
 //| BlockChainType.cro
 
 export function isIbcNetwork(network: BlockChainType): boolean {
@@ -58,6 +60,7 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.inj,
     BlockChainType.axelar,
     BlockChainType.cosmos,
+    BlockChainType.juno,
     //  BlockChainType.cro,
   ].includes(network)
 }
@@ -65,21 +68,21 @@ export function isIbcNetwork(network: BlockChainType): boolean {
 // channels Terra -> IBC chain
 export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-1',
-  [BlockChainType.scrt]: 'channel-16',
-  [BlockChainType.inj]: 'channel-17',
-  [BlockChainType.axelar]: 'channel-19',
-  [BlockChainType.cosmos]: 'channel-41',
-  //[BlockChainType.cro]: 'channel-22',
+  [BlockChainType.scrt]: 'channel-3',
+  [BlockChainType.inj]: 'channel-', // TODO: update inj channel
+  [BlockChainType.axelar]: 'channel-', // TODO: update axelar channel
+  [BlockChainType.cosmos]: 'channel-0',
+  [BlockChainType.juno]: 'channel-2',
 }
 
 // channels IBC chain -> Terra
 export const ibcChannels: Record<IbcNetwork, string> = {
-  [BlockChainType.osmo]: 'channel-72',
-  [BlockChainType.scrt]: 'channel-2',
-  [BlockChainType.inj]: 'channel-4',
-  [BlockChainType.axelar]: 'channel-0',
-  [BlockChainType.cosmos]: 'channel-299',
-  //[BlockChainType.cro]: '',
+  [BlockChainType.osmo]: 'channel-251',
+  [BlockChainType.scrt]: 'channel-16',
+  [BlockChainType.inj]: 'channel-', // TODO: update inj channel
+  [BlockChainType.axelar]: 'channel-', // TODO: update axelar channel
+  [BlockChainType.cosmos]: 'channel-339',
+  [BlockChainType.juno]: 'channel-86',
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
@@ -88,7 +91,7 @@ export const ibcPrefix: Record<IbcNetwork, string> = {
   [BlockChainType.inj]: 'inj1',
   [BlockChainType.axelar]: 'axelar1',
   [BlockChainType.cosmos]: 'cosmos1',
-  //[BlockChainType.cro]: 'cro1',
+  [BlockChainType.juno]: 'juno1',
 }
 
 export const ibcChainId: Record<IbcNetwork, string> = {
@@ -97,7 +100,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
   [BlockChainType.inj]: 'injective-1',
   [BlockChainType.axelar]: 'axelar-dojo-1',
   [BlockChainType.cosmos]: 'cosmoshub-4',
-  //[BlockChainType.cro]: 'crypto-org-chain-mainnet-1',
+  [BlockChainType.juno]: 'juno-1',
 }
 
 export const ibcRpc: Record<IbcNetwork, string> = {
@@ -106,7 +109,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.inj]: 'https://tm.injective.network/',
   [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   [BlockChainType.cosmos]: 'https://cosmoshub.validator.network/',
-  //[BlockChainType.cro]: '',
+  [BlockChainType.juno]: 'https://rpc.juno.omniflix.co/',
 }
 
 export interface LocalTerraNetwork {
