@@ -23,7 +23,6 @@ const NextOrApproveButton = ({
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const amount = useRecoilValue(SendStore.amount)
@@ -80,16 +79,9 @@ const NextOrApproveButton = ({
   return (
     <Button
       onClick={onClickSendNextButton}
-      disabled={
-        !ableButton ||
-        bridgeUsed !== BridgeType.ibc ||
-        toBlockChain === BlockChainType.inj ||
-        fromBlockChain === BlockChainType.inj
-      }
+      disabled={!ableButton || (bridgeUsed && bridgeUsed !== BridgeType.ibc)}
     >
-      {bridgeUsed !== BridgeType.ibc ||
-      toBlockChain === BlockChainType.inj ||
-      fromBlockChain === BlockChainType.inj
+      {bridgeUsed && bridgeUsed !== BridgeType.ibc
         ? 'Temporary disabled'
         : 'Next'}
     </Button>

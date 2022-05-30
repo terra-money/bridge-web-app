@@ -86,16 +86,6 @@ const BlockChainNetwork = (): ReactElement => {
                 isDisabled: fromBlockChain === BlockChainType.terra,
               },
               {
-                label: NETWORK.blockChainName[BlockChainType.ethereum],
-                value: BlockChainType.ethereum,
-                isDisabled: fromBlockChain === BlockChainType.ethereum,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.bsc],
-                value: BlockChainType.bsc,
-                isDisabled: fromBlockChain === BlockChainType.bsc,
-              },
-              {
                 label: NETWORK.blockChainName[BlockChainType.osmo],
                 value: BlockChainType.osmo,
                 isDisabled: fromBlockChain === BlockChainType.osmo,
@@ -114,26 +104,6 @@ const BlockChainNetwork = (): ReactElement => {
                 label: NETWORK.blockChainName[BlockChainType.juno],
                 value: BlockChainType.juno,
                 isDisabled: fromBlockChain === BlockChainType.juno,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.avalanche],
-                value: BlockChainType.avalanche,
-                isDisabled: fromBlockChain === BlockChainType.avalanche,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.fantom],
-                value: BlockChainType.fantom,
-                isDisabled: fromBlockChain === BlockChainType.fantom,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.polygon],
-                value: BlockChainType.polygon,
-                isDisabled: fromBlockChain === BlockChainType.polygon,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.moonbeam],
-                value: BlockChainType.moonbeam,
-                isDisabled: fromBlockChain === BlockChainType.moonbeam,
               },
             ],
             label: 'FROM',
@@ -165,16 +135,6 @@ const BlockChainNetwork = (): ReactElement => {
                 isDisabled: toBlockChain === BlockChainType.terra,
               },
               {
-                label: NETWORK.blockChainName[BlockChainType.ethereum],
-                value: BlockChainType.ethereum,
-                isDisabled: toBlockChain === BlockChainType.ethereum,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.bsc],
-                value: BlockChainType.bsc,
-                isDisabled: toBlockChain === BlockChainType.bsc,
-              },
-              {
                 label: NETWORK.blockChainName[BlockChainType.osmo],
                 value: BlockChainType.osmo,
                 isDisabled: toBlockChain === BlockChainType.osmo,
@@ -193,26 +153,6 @@ const BlockChainNetwork = (): ReactElement => {
                 label: NETWORK.blockChainName[BlockChainType.juno],
                 value: BlockChainType.juno,
                 isDisabled: toBlockChain === BlockChainType.juno,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.avalanche],
-                value: BlockChainType.avalanche,
-                isDisabled: toBlockChain === BlockChainType.avalanche,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.fantom],
-                value: BlockChainType.fantom,
-                isDisabled: toBlockChain === BlockChainType.fantom,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.polygon],
-                value: BlockChainType.polygon,
-                isDisabled: toBlockChain === BlockChainType.polygon,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.moonbeam],
-                value: BlockChainType.moonbeam,
-                isDisabled: toBlockChain === BlockChainType.moonbeam,
               },
             ],
             label: 'TO',
