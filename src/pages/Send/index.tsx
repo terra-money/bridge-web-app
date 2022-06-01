@@ -26,7 +26,7 @@ import AuthStore from 'store/AuthStore'
 import useAuth from 'hooks/useAuth'
 import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
-import { BlockChainType } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import testnetSvg from '../../images/testnet.svg'
 import NetworkStore from 'store/NetworkStore'
 import { InfoElement, WarningInfo } from './SendForm/WarningInfo'
@@ -75,7 +75,7 @@ const Send = (): ReactElement => {
 
   const [status, setStatus] = useRecoilState(SendProcessStore.sendProcessStatus)
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
-  const { getLoginStorage } = useAuth()
+  const { getLoginStorage, logout } = useAuth()
   const [initPage, setInitPage] = useState(false)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
@@ -137,7 +137,13 @@ const Send = (): ReactElement => {
     const { lastFromBlockChain, lastToBlockChain, bridgeUsed } =
       getLoginStorage()
 
-    if (false === isLoggedIn && lastFromBlockChain) {
+    // TODO: remove after Axelar intagration
+    if (bridgeUsed !== BridgeType.ibc) {
+      logout()
+      setFromBlockChain(BlockChainType.terra)
+      setBridgeUsed(BridgeType.ibc)
+      setToBlockChain(BlockChainType.osmo)
+    } else if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
       if (lastFromBlockChain === BlockChainType.terra) {
         selectWallet.open()
