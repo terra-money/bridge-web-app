@@ -70,7 +70,7 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-1',
   [BlockChainType.scrt]: 'channel-3',
   [BlockChainType.inj]: 'channel-', // TODO: update inj channel
-  [BlockChainType.axelar]: 'channel-', // TODO: update axelar channel
+  [BlockChainType.axelar]: 'channel-6',
   [BlockChainType.cosmos]: 'channel-0',
   [BlockChainType.juno]: 'channel-2',
 }
@@ -80,7 +80,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.osmo]: 'channel-251',
   [BlockChainType.scrt]: 'channel-16',
   [BlockChainType.inj]: 'channel-', // TODO: update inj channel
-  [BlockChainType.axelar]: 'channel-', // TODO: update axelar channel
+  [BlockChainType.axelar]: 'channel-11',
   [BlockChainType.cosmos]: 'channel-339',
   [BlockChainType.juno]: 'channel-86',
 }
