@@ -139,7 +139,7 @@ const useAsset = (): {
 
       return fromBlockChain === BlockChainType.terra ||
         bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.wormhole
+        bridgeUsed === BridgeType.axelar
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
