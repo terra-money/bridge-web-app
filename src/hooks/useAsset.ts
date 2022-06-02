@@ -17,7 +17,7 @@ import useWhiteList from './useWhiteList'
 
 const useAsset = (): {
   getAssetList: () => Promise<void>
-  formatBalance: (balance: string | BigNumber) => string
+  formatBalance: (balance: string | BigNumber, coin?: string) => string
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
@@ -135,6 +135,14 @@ const useAsset = (): {
         'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD'
       ) {
         bnBalance.div(ASSET.BTC_DECIMAL).dp(6).toString(8)
+      }
+
+      // WETH: 18 decimals
+      if (
+        (coin || asset?.terraToken) ===
+        'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674'
+      ) {
+        bnBalance.div(ASSET.ETHER_BASE_DECIMAL).dp(6).toString(8)
       }
 
       return fromBlockChain === BlockChainType.terra ||

@@ -88,7 +88,7 @@ const BlockChainNetwork = (): ReactElement => {
               {
                 label: NETWORK.blockChainName[BlockChainType.ethereum],
                 value: BlockChainType.ethereum,
-                isDisabled: toBlockChain === BlockChainType.ethereum,
+                isDisabled: fromBlockChain === BlockChainType.ethereum,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.osmo],

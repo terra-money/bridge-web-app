@@ -14,6 +14,8 @@ const tokens: Record<string, string> = {
     'uusdt',
   'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD':
     'wbtc-satoshi',
+  'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674':
+    'weth-wei',
 }
 
 export async function getDepositAddress(

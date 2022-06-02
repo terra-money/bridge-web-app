@@ -124,7 +124,9 @@ const AssetItem = ({
         {isLoggedIn && (
           <View style={{ justifyContent: 'center' }}>
             <Text style={{ fontSize: 14 }}>
-              {asset.balance ? formatBalance(asset.balance) : '0'}{' '}
+              {asset.balance
+                ? formatBalance(asset.balance, asset.terraToken)
+                : '0'}{' '}
             </Text>
           </View>
         )}
@@ -169,7 +171,10 @@ const SelectAssetButton = ({
                   color: '#A3A3A3',
                 }}
               >
-                Available {asset.balance ? formatBalance(asset.balance) : '0'}
+                Available{' '}
+                {asset.balance
+                  ? formatBalance(asset.balance, asset.terraToken)
+                  : '0'}
               </Text>
             )}
             <CaretDownFill style={{ fontSize: 8, marginTop: -2 }} />

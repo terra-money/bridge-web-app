@@ -147,7 +147,7 @@ const FormFeeInfo = ({
                       opacity: 0.8,
                     }}
                   >
-                    {formatBalance(gasFee)}
+                    {formatBalance(gasFee, feeDenom)}
                   </Text>
                   Luna
                 </Row>

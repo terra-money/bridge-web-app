@@ -135,7 +135,9 @@ const Confirm = (): ReactElement => {
             <StyledSecH>GAS Fee</StyledSecH>
             <StyledSecD>
               <StyledSecDText2>
-                {`${formatBalance(gasFee)} ${ASSET.symbolOfDenom[feeDenom]}`}
+                {`${formatBalance(gasFee, feeDenom)} ${
+                  ASSET.symbolOfDenom[feeDenom]
+                }`}
               </StyledSecDText2>
             </StyledSecD>
           </StyledSpaceBetween>
