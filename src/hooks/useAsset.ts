@@ -23,6 +23,7 @@ const useAsset = (): {
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const asset = useRecoilValue(SendStore.asset)
 
   const assetList = useRecoilValue(ContractStore.assetList)
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
@@ -120,14 +121,24 @@ const useAsset = (): {
     setAssetList(pairList)
   }
 
-  const formatBalance = (balance: string | BigNumber): string => {
+  const formatBalance = (
+    balance: string | BigNumber,
+    coin?: string
+  ): string => {
     if (balance) {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
+      // WBTC: 8 decimals
+      if (
+        (coin || asset?.terraToken) ===
+        'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD'
+      ) {
+        bnBalance.div(ASSET.BTC_DECIMAL).dp(6).toString(8)
+      }
+
       return fromBlockChain === BlockChainType.terra ||
         bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar ||
         bridgeUsed === BridgeType.wormhole
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance

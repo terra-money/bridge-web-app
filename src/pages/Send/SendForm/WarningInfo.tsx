@@ -163,9 +163,7 @@ export const WarningInfo = (): ReactElement => {
   const bridgesList = availableBridges[chain]
 
   function infoText(): string | undefined {
-    if (bridgeUsed && bridgeUsed !== BridgeType.ibc) {
-      return 'Only IBC is available at the moment, more bridges will be enabled soon.'
-    } else if (chain === BlockChainType.inj) {
+    if (chain === BlockChainType.inj) {
       return 'Injective is not yet relayed.'
     } else if (
       BlockChainType.terra === fromBlockChain &&

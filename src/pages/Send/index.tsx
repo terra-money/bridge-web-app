@@ -138,11 +138,15 @@ const Send = (): ReactElement => {
       getLoginStorage()
 
     // TODO: remove after Axelar intagration
-    if (bridgeUsed !== BridgeType.ibc) {
+    if (
+      bridgeUsed !== BridgeType.ibc &&
+      (bridgeUsed !== BridgeType.axelar ||
+        toBlockChain !== BlockChainType.ethereum)
+    ) {
       logout()
       setFromBlockChain(BlockChainType.terra)
-      setBridgeUsed(BridgeType.ibc)
-      setToBlockChain(BlockChainType.osmo)
+      setBridgeUsed(BridgeType.axelar)
+      setToBlockChain(BlockChainType.ethereum)
     } else if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
       if (lastFromBlockChain === BlockChainType.terra) {
