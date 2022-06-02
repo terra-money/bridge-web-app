@@ -142,7 +142,7 @@ const useSendValidate = (): {
     const bnAmount = new BigNumber(amount)
 
     if (_.isNaN(bnAmount) || bnAmount.isNegative() || bnAmount.isZero()) {
-      //return { isValid: false, errorMessage: 'Amount must be greater than 0' }
+      return { isValid: false, errorMessage: 'Amount must be greater than 0' }
     }
 
     const rebalanceDecimal =
@@ -163,14 +163,12 @@ const useSendValidate = (): {
     const selectedAssetAmount = new BigNumber(
       assetList.find((x) => x.terraToken === asset?.terraToken)?.balance || '0'
     )
-    /*
     if (selectedAssetAmount.isLessThanOrEqualTo(0)) {
       return {
         isValid: false,
         errorMessage: 'Insufficient balance',
       }
     }
-    */
 
     if (bnAmount.isGreaterThan(selectedAssetAmount)) {
       return {
