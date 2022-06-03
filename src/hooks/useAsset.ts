@@ -134,7 +134,12 @@ const useAsset = (): {
         (coin || asset?.terraToken) ===
         'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD'
       ) {
-        bnBalance.div(ASSET.BTC_DECIMAL).dp(6).toString(8)
+        return bnBalance
+          .div(ASSET.BTC_DECIMAL / ASSET.TERRA_DECIMAL)
+          .integerValue(BigNumber.ROUND_DOWN)
+          .div(ASSET.TERRA_DECIMAL)
+          .dp(6)
+          .toString(10)
       }
 
       // WETH: 18 decimals
@@ -142,7 +147,12 @@ const useAsset = (): {
         (coin || asset?.terraToken) ===
         'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674'
       ) {
-        bnBalance.div(ASSET.ETHER_BASE_DECIMAL).dp(6).toString(8)
+        return bnBalance
+          .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
+          .integerValue(BigNumber.ROUND_DOWN)
+          .div(ASSET.TERRA_DECIMAL)
+          .dp(6)
+          .toString(10)
       }
 
       return fromBlockChain === BlockChainType.terra ||

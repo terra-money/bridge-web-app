@@ -155,7 +155,9 @@ const Confirm = (): ReactElement => {
               </StyledSecH>
               <StyledSecD>
                 <StyledSecDText2>
-                  {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
+                  {`${formatBalance(bridgeFee, asset?.terraToken)} ${
+                    asset?.symbol
+                  }`}
                 </StyledSecDText2>
               </StyledSecD>
             </StyledSpaceBetween>
@@ -170,7 +172,9 @@ const Confirm = (): ReactElement => {
                 <StyledSecDText
                   isError={amountAfterBridgeFee.isLessThanOrEqualTo(0)}
                 >
-                  {`${formatBalance(amountAfterBridgeFee)} ${asset?.symbol}`}
+                  {`${formatBalance(amountAfterBridgeFee, asset?.terraToken)} ${
+                    asset?.symbol
+                  }`}
                 </StyledSecDText>
               </StyledSecD>
             </StyledSpaceBetween>

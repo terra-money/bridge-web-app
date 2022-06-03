@@ -39,6 +39,8 @@ export async function getAxelarFee(
 ): Promise<number> {
   if (tokens[coin] === 'uusdt' || tokens[coin] === 'uusdc') {
     return 20.5 * 1e6
+  } else if (tokens[coin] === 'weth-wei') {
+    return 0.0102 * 1e18
   } else {
     // WBTC
     return 0.00072 * 1e8
