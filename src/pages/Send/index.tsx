@@ -235,7 +235,7 @@ const Send = (): ReactElement => {
                 <Confirm />
                 <div style={{ marginTop: -40 }}>
                   {bridgeUsed === BridgeType.axelar && (
-                    <div style={{ marginTop: 60, marginBottom: -60 }}>
+                    <div style={{ marginTop: 60 }}>
                       <WarningElement>
                         The{' '}
                         {fromBlockChain === BlockChainType.terra
