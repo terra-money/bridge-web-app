@@ -166,7 +166,7 @@ const Finish = (): ReactElement => {
               wordBreak: 'break-all',
             }}
           >
-            {formatBalance(displayAmount)} {asset?.symbol}
+            {formatBalance(displayAmount, asset?.terraToken)} {asset?.symbol}
           </Text>
         </div>
         {fromBlockChain === BlockChainType.terra &&
@@ -185,9 +185,10 @@ const Finish = (): ReactElement => {
               >
                 {`After ${
                   bridgeUsed.charAt(0).toUpperCase() + bridgeUsed.slice(1)
-                } Fee : (estimated) ${formatBalance(amountAfterBridgeFee)} ${
-                  asset?.symbol
-                }`}
+                } Fee : (estimated) ${formatBalance(
+                  amountAfterBridgeFee,
+                  asset?.terraToken
+                )} ${asset?.symbol}`}
               </StyledAmountText>
             </div>
           )}

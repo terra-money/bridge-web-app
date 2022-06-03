@@ -86,6 +86,11 @@ const BlockChainNetwork = (): ReactElement => {
                 isDisabled: fromBlockChain === BlockChainType.terra,
               },
               {
+                label: NETWORK.blockChainName[BlockChainType.ethereum],
+                value: BlockChainType.ethereum,
+                isDisabled: fromBlockChain === BlockChainType.ethereum,
+              },
+              {
                 label: NETWORK.blockChainName[BlockChainType.osmo],
                 value: BlockChainType.osmo,
                 isDisabled: fromBlockChain === BlockChainType.osmo,
@@ -133,6 +138,11 @@ const BlockChainNetwork = (): ReactElement => {
                 label: NETWORK.blockChainName[BlockChainType.terra],
                 value: BlockChainType.terra,
                 isDisabled: toBlockChain === BlockChainType.terra,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.ethereum],
+                value: BlockChainType.ethereum,
+                isDisabled: toBlockChain === BlockChainType.ethereum,
               },
               {
                 label: NETWORK.blockChainName[BlockChainType.osmo],

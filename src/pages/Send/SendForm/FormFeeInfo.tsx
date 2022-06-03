@@ -147,7 +147,7 @@ const FormFeeInfo = ({
                       opacity: 0.8,
                     }}
                   >
-                    {formatBalance(gasFee)}
+                    {formatBalance(gasFee, feeDenom)}
                   </Text>
                   Luna
                 </Row>
@@ -180,7 +180,9 @@ const FormFeeInfo = ({
                       <Text
                         style={{ justifyContent: 'flex-end', opacity: '0.8' }}
                       >
-                        {`${formatBalance(bridgeFee)} ${asset?.symbol}`}
+                        {`${formatBalance(bridgeFee, asset?.terraToken)} ${
+                          asset?.symbol
+                        }`}
                       </Text>
                     </View>
                   </Row>
@@ -210,9 +212,10 @@ const FormFeeInfo = ({
                             : COLOR.text,
                         }}
                       >
-                        {`${formatBalance(amountAfterBridgeFee)} ${
-                          asset?.symbol
-                        }`}
+                        {`${formatBalance(
+                          amountAfterBridgeFee,
+                          asset?.terraToken
+                        )} ${asset?.symbol}`}
                       </Text>
                     </View>
                   </Row>

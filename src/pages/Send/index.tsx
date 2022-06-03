@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
 import loading from 'images/loading.gif'
@@ -29,7 +29,11 @@ import useSelectWallet from 'hooks/useSelectWallet'
 import { BlockChainType, BridgeType } from 'types/network'
 import testnetSvg from '../../images/testnet.svg'
 import NetworkStore from 'store/NetworkStore'
-import { InfoElement, WarningInfo } from './SendForm/WarningInfo'
+import {
+  InfoElement,
+  WarningElement,
+  WarningInfo,
+} from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -81,7 +85,7 @@ const Send = (): ReactElement => {
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
     SendStore.fromBlockChain
   )
-  const setBridgeUsed = useSetRecoilState(SendStore.bridgeUsed)
+  const [bridgeUsed, setBridgeUsed] = useRecoilState(SendStore.bridgeUsed)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
   const { validateFee } = useSendValidate()
@@ -138,11 +142,15 @@ const Send = (): ReactElement => {
       getLoginStorage()
 
     // TODO: remove after Axelar intagration
-    if (bridgeUsed !== BridgeType.ibc) {
+    if (
+      bridgeUsed !== BridgeType.ibc &&
+      (bridgeUsed !== BridgeType.axelar ||
+        toBlockChain !== BlockChainType.ethereum)
+    ) {
       logout()
       setFromBlockChain(BlockChainType.terra)
-      setBridgeUsed(BridgeType.ibc)
-      setToBlockChain(BlockChainType.osmo)
+      setBridgeUsed(BridgeType.axelar)
+      setToBlockChain(BlockChainType.ethereum)
     } else if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
       if (lastFromBlockChain === BlockChainType.terra) {
@@ -205,13 +213,15 @@ const Send = (): ReactElement => {
         ) : (
           <>
             <div style={{ marginTop: -40 }}>
-              <InfoElement>
-                This is Bridge V2, if you want to use bridge with Terra Classic
-                please visit{' '}
-                <a href="https://classic-bridge.terra.money">
-                  classic-bridge.terra.money
-                </a>
-              </InfoElement>
+              <div style={{ marginTop: -40 }}>
+                <InfoElement>
+                  This is Bridge V2, if you want to use bridge with Terra
+                  Classic please visit{' '}
+                  <a href="https://classic-bridge.terra.money">
+                    classic-bridge.terra.money
+                  </a>
+                </InfoElement>
+              </div>
             </div>
 
             <div
@@ -223,6 +233,20 @@ const Send = (): ReactElement => {
               </div>
               <div style={{ minWidth: '100%' }}>
                 <Confirm />
+                <div style={{ marginTop: -40 }}>
+                  {bridgeUsed === BridgeType.axelar && (
+                    <div style={{ marginTop: 60 }}>
+                      <WarningElement>
+                        The{' '}
+                        {fromBlockChain === BlockChainType.terra
+                          ? 'Station'
+                          : 'MetaMask'}{' '}
+                        popup may take a few seconds to open. Please don't
+                        refresh or close this page in the meantime.
+                      </WarningElement>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <WarningInfo />

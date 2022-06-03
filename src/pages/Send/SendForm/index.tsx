@@ -10,7 +10,6 @@ import { ASSET, COLOR } from 'consts'
 
 import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
-import { AxelarAPI } from 'packages/axelar/axelarAPI'
 import { Text, Row } from 'components'
 import FormLabel from 'components/FormLabel'
 import FormErrorMessage from 'components/FormErrorMessage'
@@ -28,6 +27,7 @@ import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
+import { getAxelarFee } from 'packages/axelar/getDepositAddress'
 
 const StyledContainer = styled.div``
 
@@ -177,8 +177,7 @@ const SendForm = ({
 
   const setBridgeFee = async (): Promise<void> => {
     if (bridgeUsed === BridgeType.axelar) {
-      const api = new AxelarAPI('mainnet')
-      const fee = await api.getTransferFee(
+      const fee = await getAxelarFee(
         fromBlockChain,
         toBlockChain,
         asset?.terraToken || ''

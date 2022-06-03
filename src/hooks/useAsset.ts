@@ -17,12 +17,13 @@ import useWhiteList from './useWhiteList'
 
 const useAsset = (): {
   getAssetList: () => Promise<void>
-  formatBalance: (balance: string | BigNumber) => string
+  formatBalance: (balance: string | BigNumber, coin?: string) => string
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
+  const asset = useRecoilValue(SendStore.asset)
 
   const assetList = useRecoilValue(ContractStore.assetList)
   const terraWhiteList = useRecoilValue(ContractStore.terraWhiteList)
@@ -120,15 +121,43 @@ const useAsset = (): {
     setAssetList(pairList)
   }
 
-  const formatBalance = (balance: string | BigNumber): string => {
+  const formatBalance = (
+    balance: string | BigNumber,
+    coin?: string
+  ): string => {
     if (balance) {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
+      // WBTC: 8 decimals
+      if (
+        (coin || asset?.terraToken) ===
+        'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD'
+      ) {
+        return bnBalance
+          .div(ASSET.BTC_DECIMAL / ASSET.TERRA_DECIMAL)
+          .integerValue(BigNumber.ROUND_DOWN)
+          .div(ASSET.TERRA_DECIMAL)
+          .dp(6)
+          .toString(10)
+      }
+
+      // WETH: 18 decimals
+      if (
+        (coin || asset?.terraToken) ===
+        'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674'
+      ) {
+        return bnBalance
+          .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
+          .integerValue(BigNumber.ROUND_DOWN)
+          .div(ASSET.TERRA_DECIMAL)
+          .dp(6)
+          .toString(10)
+      }
+
       return fromBlockChain === BlockChainType.terra ||
         bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar ||
-        bridgeUsed === BridgeType.wormhole
+        bridgeUsed === BridgeType.axelar
         ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
         : bnBalance
             .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
