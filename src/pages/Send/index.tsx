@@ -144,13 +144,13 @@ const Send = (): ReactElement => {
     // TODO: remove after Axelar intagration
     if (
       bridgeUsed !== BridgeType.ibc &&
-      (bridgeUsed !== BridgeType.axelar ||
-        toBlockChain !== BlockChainType.ethereum)
+      bridgeUsed !== BridgeType.axelar &&
+      fromBlockChain !== BlockChainType.ethereum
     ) {
       logout()
-      setFromBlockChain(BlockChainType.terra)
+      setToBlockChain(BlockChainType.terra)
       setBridgeUsed(BridgeType.axelar)
-      setToBlockChain(BlockChainType.ethereum)
+      setFromBlockChain(BlockChainType.ethereum)
     } else if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
       if (lastFromBlockChain === BlockChainType.terra) {
