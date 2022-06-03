@@ -272,9 +272,9 @@ const useSend = (): UseSendType => {
           ]
 
         case BridgeType.axelar:
-          // in the fee simulation use the user address
+          // in the fee simulation use a null address
           const axelarAddress = isSimulation
-            ? loginUser.address
+            ? 'axelar1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhdkhvu'
             : await getAxelarAddress(
                 toAddress,
                 fromBlockChain,
@@ -404,19 +404,14 @@ const useSend = (): UseSendType => {
   // sign Terra tx
   const submitRequestTxFromTerra = async (): Promise<RequestTxResultType> => {
     let errorMessage
-    const memoOrToAddress =
-      toBlockChain === BlockChainType.terra
-        ? // only terra network can get user's memo
-          memo
-        : // if send to ether-base then memo must be to-address
-          toAddress
+
     const msgs = await getTerraMsgs()
 
     const tx: CreateTxOptions = {
       gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
       msgs,
       fee,
-      memo: memoOrToAddress,
+      memo: toBlockChain === BlockChainType.terra ? memo : '',
     }
     const connector = loginUser.terraWalletConnect
     if (connector) {
