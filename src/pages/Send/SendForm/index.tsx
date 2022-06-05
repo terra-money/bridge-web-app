@@ -27,7 +27,7 @@ import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
-import { getAxelarFee } from 'packages/axelar/getDepositAddress'
+import { getAxelarFee } from 'packages/axelar'
 
 const StyledContainer = styled.div``
 
@@ -173,7 +173,8 @@ const SendForm = ({
       const fee = await getAxelarFee(
         fromBlockChain,
         toBlockChain,
-        asset?.terraToken || ''
+        asset?.terraToken || '',
+        new BigNumber(amount).toNumber()
       )
       setBridgeFeeAmount(new BigNumber(fee))
       const computedAmount = new BigNumber(amount).minus(fee)

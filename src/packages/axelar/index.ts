@@ -1,4 +1,8 @@
-import { AxelarAssetTransfer, Environment } from '@axelar-network/axelarjs-sdk'
+import {
+  AxelarAssetTransfer,
+  Environment,
+  AxelarQueryAPI,
+} from '@axelar-network/axelarjs-sdk'
 
 import { BlockChainType } from 'types'
 
@@ -35,14 +39,20 @@ export async function getDepositAddress(
 export async function getAxelarFee(
   fromBlockChain: BlockChainType,
   toBlockChain: BlockChainType,
-  coin: string
-): Promise<number> {
-  if (tokens[coin] === 'uusdt' || tokens[coin] === 'uusdc') {
-    return 20.5 * 1e6
-  } else if (tokens[coin] === 'weth-wei') {
-    return 0.0102 * 1e18
-  } else {
-    // WBTC
-    return 0.00072 * 1e8
-  }
+  coin: string,
+  amount: number
+): Promise<string> {
+  const api = new AxelarQueryAPI({ environment: Environment.MAINNET })
+
+  const fee = (
+    await api.getTransferFee(
+      fromBlockChain === BlockChainType.terra ? 'terra-2' : fromBlockChain,
+      toBlockChain === BlockChainType.terra ? 'terra-2' : toBlockChain,
+      tokens[coin],
+      amount
+    )
+  ).fee.amount
+
+  console.log(fee)
+  return fee
 }

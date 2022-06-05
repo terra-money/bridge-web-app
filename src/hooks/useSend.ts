@@ -49,7 +49,7 @@ import { WalletEnum } from 'types/wallet'
 import useEtherBaseContract from './useEtherBaseContract'
 import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
-import { getDepositAddress as getAxelarAddress } from 'packages/axelar/getDepositAddress'
+import { getDepositAddress as getAxelarAddress } from 'packages/axelar'
 import useTns from 'packages/tns/useTns'
 
 export type TerraSendFeeInfo = {
