@@ -21,13 +21,6 @@ import { useDebouncedCallback } from 'use-debounce/lib'
 
 import { UTIL, NETWORK } from 'consts'
 
-import {
-  ChainId,
-  hexToUint8Array,
-  nativeToHexString,
-  transferFromEth,
-} from '@certusone/wormhole-sdk'
-
 import terraService from 'services/terraService'
 import AuthStore from 'store/AuthStore'
 import NetworkStore from 'store/NetworkStore'
@@ -104,8 +97,6 @@ const useSend = (): UseSendType => {
   const feeDenom = useRecoilValue<AssetNativeDenomEnum>(SendStore.feeDenom)
   const [fee, setFee] = useRecoilState(SendStore.fee)
   const assetList = useRecoilValue(SendStore.loginUserAssetList)
-  const isTestnet = useRecoilValue(NetworkStore.isTestnet)
-  const bridgeFee = useRecoilValue(SendStore.bridgeFee)
 
   const { getEtherBaseContract } = useEtherBaseContract()
 
@@ -116,7 +107,6 @@ const useSend = (): UseSendType => {
     data: allowanceOfSelectedAsset = {
       isNeedApprove: false,
     },
-    refetch: refetchAllowanceOfSelectedAsset,
   } = useQuery<AllowanceOfSelectedAssetType>(
     [
       QueryKeysEnum.allowanceOfSelectedAsset,
@@ -134,24 +124,7 @@ const useSend = (): UseSendType => {
 
         if (contract && loginUser.provider) {
           if (bridgeUsed === BridgeType.wormhole) {
-            const signer = loginUser.provider.getSigner()
-            const withSigner = contract.connect(signer)
-            const wormholeBridge =
-              NETWORK.wormholeContracts[fromBlockChain][
-                isTestnet ? 'testnet' : 'mainnet'
-              ]?.tokenBridge
-
-            if (wormholeBridge) {
-              const res: BigNumber = await withSigner.allowance(
-                loginUser.address,
-                wormholeBridge
-              )
-
-              return {
-                isNeedApprove: true,
-                allowance: UTIL.toBignumber(res.toString()),
-              }
-            }
+            // not supported on Terra2
           }
         }
       }
@@ -294,91 +267,8 @@ const useSend = (): UseSendType => {
             ),
           ]
         case BridgeType.wormhole:
-          const pubKey = Buffer.concat([
-            Buffer.alloc(12),
-            Buffer.from(toAddress.substring(2), 'hex'),
-          ])
-          return UTIL.isNativeDenom(asset.terraToken)
-            ? [
-                new MsgExecuteContract(
-                  loginUser.address,
-                  NETWORK.wormholeContracts[BlockChainType.terra][
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  {
-                    deposit_tokens: {},
-                  },
-                  { [asset.terraToken]: sendAmount }
-                ),
-                new MsgExecuteContract(
-                  loginUser.address,
-                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  {
-                    initiate_transfer: {
-                      asset: {
-                        amount: sendAmount.toString(),
-                        info: {
-                          native_token: {
-                            denom: asset.terraToken,
-                          },
-                        },
-                      },
-                      recipient_chain:
-                        NETWORK.wormholeContracts[toBlockChain][
-                          isTestnet ? 'testnet' : 'mainnet'
-                        ]?.chainid || 0,
-                      recipient: pubKey.toString('base64'),
-                      fee: bridgeFee.toString(),
-                      nonce: Math.round(Math.round(Math.random() * 100000)),
-                    },
-                  }
-                ),
-              ]
-            : [
-                new MsgExecuteContract(
-                  loginUser.address,
-                  fromTokenAddress || '',
-                  {
-                    increase_allowance: {
-                      amount: sendAmount.toString(),
-                      expires: {
-                        never: {},
-                      },
-                      spender:
-                        NETWORK.wormholeContracts[BlockChainType.terra][
-                          isTestnet ? 'testnet' : 'mainnet'
-                        ]?.tokenBridge || '',
-                    },
-                  }
-                ),
-                new MsgExecuteContract(
-                  loginUser.address,
-                  NETWORK.wormholeContracts[BlockChainType.terra]?.[
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  {
-                    initiate_transfer: {
-                      asset: {
-                        amount: sendAmount.toString(),
-                        info: {
-                          token: {
-                            contract_addr: fromTokenAddress || '',
-                          },
-                        },
-                      },
-                      recipient_chain:
-                        NETWORK.wormholeContracts[toBlockChain][
-                          isTestnet ? 'testnet' : 'mainnet'
-                        ]?.chainid || 0,
-                      recipient: pubKey.toString('base64'),
-                      fee: bridgeFee.toString(),
-                      nonce: Math.round(Math.round(Math.random() * 100000)),
-                    },
-                  }
-                ),
-              ]
+          // not supported on Terra2
+          return []
         // terra -> terra
         case undefined:
           const recipient = (await getAddress(toAddress)) || toAddress
@@ -500,32 +390,7 @@ const useSend = (): UseSendType => {
 
   // increase allowance
   const approveTxFromEtherBase = async (): Promise<RequestTxResultType> => {
-    if (fromBlockChain !== BlockChainType.terra && asset && fromTokenAddress) {
-      const contract = getEtherBaseContract({ token: fromTokenAddress })
-
-      if (contract && loginUser.provider) {
-        const signer = loginUser.provider.getSigner()
-        const withSigner = contract.connect(signer)
-
-        try {
-          if (bridgeUsed === BridgeType.wormhole) {
-            let { hash } = await withSigner.approve(
-              NETWORK.wormholeContracts[fromBlockChain][
-                isTestnet ? 'testnet' : 'mainnet'
-              ]?.tokenBridge || '',
-              sendAmount
-            )
-            await waitForEtherBaseTransaction({ hash })
-            refetchAllowanceOfSelectedAsset()
-            return { success: true, hash }
-          } else {
-            return { success: false }
-          }
-        } catch (error) {
-          return handleTxErrorFromEtherBase(error)
-        }
-      }
-    }
+    // only for wormhole (not supported on Terra2)
 
     return {
       success: false,
@@ -564,27 +429,7 @@ const useSend = (): UseSendType => {
 
               // with wormhole
               case BridgeType.wormhole:
-                const receipt = await transferFromEth(
-                  NETWORK.wormholeContracts[fromBlockChain][
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.tokenBridge || '',
-                  signer,
-                  fromTokenAddress,
-                  sendAmount,
-                  (NETWORK.wormholeContracts[toBlockChain][
-                    isTestnet ? 'testnet' : 'mainnet'
-                  ]?.chainid || 3) as ChainId,
-                  hexToUint8Array(
-                    nativeToHexString(
-                      terraAddress,
-                      (NETWORK.wormholeContracts[toBlockChain][
-                        isTestnet ? 'testnet' : 'mainnet'
-                      ]?.chainid || 3) as ChainId
-                    ) || ''
-                  ),
-                  BigInt(bridgeFee.toNumber())
-                )
-                return { success: true, hash: receipt.transactionHash }
+              // not supported on Terra2
             }
           } catch (error) {
             return handleTxErrorFromEtherBase(error)

@@ -12,6 +12,7 @@ export enum BlockChainType {
   polygon = 'polygon',
   moonbeam = 'moonbeam',
   juno = 'juno',
+  crescent = 'crescent',
 }
 
 export enum BridgeType {
@@ -27,6 +28,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.axelar]: [BridgeType.ibc],
   [BlockChainType.cosmos]: [BridgeType.ibc],
   [BlockChainType.juno]: [BridgeType.ibc],
+  [BlockChainType.crescent]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.axelar],
 
   // disabled
@@ -53,7 +55,7 @@ export type IbcNetwork =
   | BlockChainType.axelar
   | BlockChainType.cosmos
   | BlockChainType.juno
-//| BlockChainType.cro
+  | BlockChainType.crescent
 
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
@@ -63,7 +65,7 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.axelar,
     BlockChainType.cosmos,
     BlockChainType.juno,
-    //  BlockChainType.cro,
+    BlockChainType.crescent,
   ].includes(network)
 }
 
@@ -75,6 +77,7 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.axelar]: 'channel-6',
   [BlockChainType.cosmos]: 'channel-0',
   [BlockChainType.juno]: 'channel-2',
+  [BlockChainType.crescent]: 'channel-7',
 }
 
 // channels IBC chain -> Terra
@@ -85,6 +88,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.axelar]: 'channel-11',
   [BlockChainType.cosmos]: 'channel-339',
   [BlockChainType.juno]: 'channel-86',
+  [BlockChainType.crescent]: 'channel-8',
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
@@ -94,6 +98,7 @@ export const ibcPrefix: Record<IbcNetwork, string> = {
   [BlockChainType.axelar]: 'axelar1',
   [BlockChainType.cosmos]: 'cosmos1',
   [BlockChainType.juno]: 'juno1',
+  [BlockChainType.crescent]: 'cre1',
 }
 
 export const ibcChainId: Record<IbcNetwork, string> = {
@@ -103,6 +108,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
   [BlockChainType.axelar]: 'axelar-dojo-1',
   [BlockChainType.cosmos]: 'cosmoshub-4',
   [BlockChainType.juno]: 'juno-1',
+  [BlockChainType.crescent]: 'crescent-1',
 }
 
 export const ibcRpc: Record<IbcNetwork, string> = {
@@ -112,6 +118,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
   [BlockChainType.cosmos]: 'https://cosmoshub.validator.network/',
   [BlockChainType.juno]: 'https://rpc.juno.omniflix.co/',
+  [BlockChainType.crescent]: 'https://mainnet.crescent.network:26657/',
 }
 
 export interface LocalTerraNetwork {
@@ -130,10 +137,8 @@ export enum TerraNetworkEnum {
 
 export enum TerraAssetsPathEnum {
   station_maintenamce = '/station/maintenance.json',
-
   chains = '/chains.json',
 
   cw20_tokens = '/cw20/tokens.json',
-
   ibc_tokens = '/ibc/tokens.json',
 }

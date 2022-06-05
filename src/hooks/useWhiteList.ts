@@ -8,31 +8,13 @@ const whitelist: Record<
   Record<string, Record<string, string>>
 > = {
   [BlockChainType.avalanche]: {
-    [BridgeType.wormhole]: {
-      uluna: '0x70928E5B188def72817b7775F0BF6325968e563B',
-    },
+    [BridgeType.wormhole]: {},
     [BridgeType.axelar]: {
       uluna: '0x120AD3e5A7c796349e591F1570D9f7980F4eA9cb',
     },
   },
   [BlockChainType.bsc]: {
-    [BridgeType.wormhole]: {
-      uluna: '0x156ab3346823B651294766e23e6Cf87254d68962',
-      /*
-      // aUST
-      terra1hzh9vpxhsk8253se0vv5jj6etdvxu3nv8z07zu:
-        '0x8b04E56A8cd5f4D465b784ccf564899F30Aaf88C',
-      // wBNB
-      terra1cetg5wruw2wsdjp7j46rj44xdel00z006e9yg8:
-        '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-      // BUSD
-      terra1skjr69exm6v8zellgjpaa2emhwutrk5a6dz7dd:
-        '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-      // USDT
-      terra1vlqeghv5mt5udh96kt5zxlh2wkh8q4kewkr0dd:
-        '0x55d398326f99059fF775485246999027B3197955',
-      */
-    },
+    [BridgeType.wormhole]: {},
   },
   [BlockChainType.cosmos]: {
     [BridgeType.ibc]: {
@@ -61,9 +43,7 @@ const whitelist: Record<
     },
   },
   [BlockChainType.inj]: {
-    [BridgeType.ibc]: {
-      //uluna: 'ibc/B8AF5D92165F35AB31F3FC7C7B444B9D240760FA5D406C49D24862BD0284E395',
-    },
+    [BridgeType.ibc]: {},
   },
   [BlockChainType.osmo]: {
     [BridgeType.ibc]: {
@@ -89,18 +69,20 @@ const whitelist: Record<
         'ujuno',
     },
   },
-  [BlockChainType.polygon]: {
-    [BridgeType.wormhole]: {
-      uluna: '0x9cd6746665D9557e1B9a775819625711d0693439',
-    },
-    [BridgeType.axelar]: {
-      uluna: '0xa17927fB75E9faEA10C08259902d0468b3DEad88',
+  [BlockChainType.crescent]: {
+    [BridgeType.ibc]: {
+      uluna:
+        'ibc/177904239844D7D0E59D04F864D1278C07A80688EA67BCFA940E954FFA4CF699',
+      'ibc/B090DC21658BD57698522880590CA53947B8B09355764131AA94EC75517D46A5':
+        'ucre',
     },
   },
+  [BlockChainType.polygon]: {
+    [BridgeType.wormhole]: {},
+    [BridgeType.axelar]: {},
+  },
   [BlockChainType.moonbeam]: {
-    [BridgeType.axelar]: {
-      uluna: '0x31DAB3430f3081dfF3Ccd80F17AD98583437B213',
-    },
+    [BridgeType.axelar]: {},
   },
   // other chains
   [BlockChainType.axelar]: {},
