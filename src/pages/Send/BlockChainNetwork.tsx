@@ -137,11 +137,6 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.polygon,
                 isDisabled: fromBlockChain === BlockChainType.polygon,
               },
-              {
-                label: NETWORK.blockChainName[BlockChainType.moonbeam],
-                value: BlockChainType.moonbeam,
-                isDisabled: fromBlockChain === BlockChainType.moonbeam,
-              },
             ],
             label: 'FROM',
           }}
@@ -222,12 +217,6 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.polygon,
                 isDisabled:
                   toBlockChain === BlockChainType.polygon || isTestnet,
-              },
-              {
-                label: NETWORK.blockChainName[BlockChainType.moonbeam],
-                value: BlockChainType.moonbeam,
-                isDisabled:
-                  toBlockChain === BlockChainType.moonbeam || isTestnet,
               },
             ],
             label: 'TO',
