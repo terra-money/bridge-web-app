@@ -163,7 +163,13 @@ export const WarningInfo = (): ReactElement => {
   const bridgesList = availableBridges[chain]
 
   function infoText(): string | undefined {
-    if (chain === BlockChainType.inj) {
+    if (bridgeUsed === BridgeType.axelar && Date.now() >= 1654691400000) {
+      return 'Axelar is currently under maintenace, it will be active again in a few hours.'
+    } else if (bridgeUsed === BridgeType.axelar) {
+      return `The Axelar network will be going through a scheduled upgrade starting on ${new Date(
+        1654691400000
+      ).toLocaleString()} (local time) and will last for a few hours.`
+    } else if (chain === BlockChainType.inj) {
       return 'Injective is not yet relayed.'
     } else if (
       BlockChainType.terra === fromBlockChain &&
