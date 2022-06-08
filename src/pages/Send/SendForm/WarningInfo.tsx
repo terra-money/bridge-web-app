@@ -169,6 +169,11 @@ export const WarningInfo = (): ReactElement => {
       return `The Axelar network will be going through a scheduled upgrade starting on ${new Date(
         1654691400000
       ).toLocaleString()} (local time) and will last for a few hours.`
+    } else if (
+      toBlockChain === BlockChainType.osmo ||
+      fromBlockChain === BlockChainType.osmo
+    ) {
+      return 'Osmosis is currently halted, we will reopen the bridge when the chain starts.'
     } else if (chain === BlockChainType.inj) {
       return 'Injective is not yet relayed.'
     } else if (

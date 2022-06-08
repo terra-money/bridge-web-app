@@ -23,6 +23,7 @@ const NextOrApproveButton = ({
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const amount = useRecoilValue(SendStore.amount)
@@ -81,7 +82,9 @@ const NextOrApproveButton = ({
       onClick={onClickSendNextButton}
       disabled={
         !ableButton ||
-        (bridgeUsed === BridgeType.axelar && Date.now() >= 1654691400000)
+        (bridgeUsed === BridgeType.axelar && Date.now() >= 1654691400000) ||
+        toBlockChain === BlockChainType.osmo ||
+        fromBlockChain === BlockChainType.osmo
       }
     >
       Next
