@@ -163,9 +163,7 @@ export const WarningInfo = (): ReactElement => {
   const bridgesList = availableBridges[chain]
 
   function infoText(): string | undefined {
-    if (chain === BlockChainType.osmo) {
-      return 'Osmosis is currently halted, we will reopen the bridge when the chain starts.'
-    } else if (chain === BlockChainType.inj) {
+    if (chain === BlockChainType.inj) {
       return 'Injective is not yet relayed.'
     } else if (
       BlockChainType.terra === fromBlockChain &&
