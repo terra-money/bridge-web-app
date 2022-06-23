@@ -116,7 +116,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.scrt]: 'https://lcd-secret.scrtlabs.com/rpc/',
   [BlockChainType.inj]: 'https://tm.injective.network/',
   [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
-  [BlockChainType.cosmos]: 'https://cosmoshub.validator.network/',
+  [BlockChainType.cosmos]: 'https://rpc-cosmoshub.blockapsis.com/',
   [BlockChainType.juno]: 'https://rpc.juno.omniflix.co/',
   [BlockChainType.crescent]: 'https://mainnet.crescent.network:26657/',
 }
