@@ -36,7 +36,7 @@ const Footer = (): ReactElement => {
       title: 'DOCS',
     },
     {
-      href: `https://discord.gg/EuKCeGFb93`,
+      href: `https://terra.sc/discord`,
       title: 'Discord',
     },
     {

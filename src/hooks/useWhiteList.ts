@@ -51,6 +51,14 @@ const whitelist: Record<
         'ujuno',
     },
   },
+  [BlockChainType.crescent]: {
+    [BridgeType.ibc]: {
+      uluna:
+        'ibc/177904239844D7D0E59D04F864D1278C07A80688EA67BCFA940E954FFA4CF699',
+      'ibc/B090DC21658BD57698522880590CA53947B8B09355764131AA94EC75517D46A5':
+        'ucre',
+    },
+  },
   // not yet supported on terra2
   [BlockChainType.avalanche]: {},
   [BlockChainType.bsc]: {},
