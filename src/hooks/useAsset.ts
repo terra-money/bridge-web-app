@@ -7,7 +7,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import { AssetType, WhiteListType, BalanceListType } from 'types/asset'
-import { BlockChainType, BridgeType, isIbcNetwork } from 'types/network'
+import { BlockChainType, isIbcNetwork } from 'types/network'
 
 import useTerraBalance from './useTerraBalance'
 import useEtherBaseBalance from './useEtherBaseBalance'
@@ -18,11 +18,11 @@ import useWhiteList from './useWhiteList'
 const useAsset = (): {
   getAssetList: () => Promise<void>
   formatBalance: (balance: string | BigNumber, coin?: string) => string
+  getDecimals: (coin?: string) => number
 } => {
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
-  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const asset = useRecoilValue(SendStore.asset)
 
   const assetList = useRecoilValue(ContractStore.assetList)
@@ -121,6 +121,27 @@ const useAsset = (): {
     setAssetList(pairList)
   }
 
+  const getDecimals = (coin?: string): number => {
+    // WBTC: 8 decimals
+    if (
+      (coin || asset?.terraToken) ===
+      'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD'
+    ) {
+      return ASSET.BTC_DECIMAL
+    }
+
+    // WETH: 18 decimals
+    if (
+      (coin || asset?.terraToken) ===
+      'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674'
+    ) {
+      return ASSET.ETHER_BASE_DECIMAL
+    }
+
+    // default
+    return ASSET.TERRA_DECIMAL
+  }
+
   const formatBalance = (
     balance: string | BigNumber,
     coin?: string
@@ -129,42 +150,12 @@ const useAsset = (): {
       const bnBalance =
         typeof balance === 'string' ? new BigNumber(balance) : balance
 
-      // WBTC: 8 decimals
-      if (
-        (coin || asset?.terraToken) ===
-        'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD'
-      ) {
-        return bnBalance
-          .div(ASSET.BTC_DECIMAL / ASSET.TERRA_DECIMAL)
-          .integerValue(BigNumber.ROUND_DOWN)
-          .div(ASSET.TERRA_DECIMAL)
-          .dp(6)
-          .toString(10)
-      }
-
-      // WETH: 18 decimals
-      if (
-        (coin || asset?.terraToken) ===
-        'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674'
-      ) {
-        return bnBalance
-          .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
-          .integerValue(BigNumber.ROUND_DOWN)
-          .div(ASSET.TERRA_DECIMAL)
-          .dp(6)
-          .toString(10)
-      }
-
-      return fromBlockChain === BlockChainType.terra ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar
-        ? bnBalance.div(ASSET.TERRA_DECIMAL).dp(6).toString(10)
-        : bnBalance
-            .div(ASSET.ETHER_BASE_DECIMAL / ASSET.TERRA_DECIMAL)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .div(ASSET.TERRA_DECIMAL)
-            .dp(6)
-            .toString(10)
+      return bnBalance
+        .div(getDecimals(coin) / ASSET.TERRA_DECIMAL)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .div(ASSET.TERRA_DECIMAL)
+        .dp(6)
+        .toString(10)
     }
 
     return ''
@@ -173,6 +164,7 @@ const useAsset = (): {
   return {
     getAssetList,
     formatBalance,
+    getDecimals,
   }
 }
 

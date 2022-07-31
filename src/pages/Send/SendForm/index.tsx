@@ -6,7 +6,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import BigNumber from 'bignumber.js'
 import { ArrowClockwise } from 'react-bootstrap-icons'
 
-import { ASSET, COLOR } from 'consts'
+import { COLOR } from 'consts'
 
 import { BlockChainType, BridgeType } from 'types/network'
 import { ValidateItemResultType } from 'types/send'
@@ -27,7 +27,7 @@ import CopyTokenAddress from './CopyTokenAddress'
 import FormFeeInfo from './FormFeeInfo'
 import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
-import { getAxelarFee } from 'packages/axelar/getDepositAddress'
+import { getAxelarFee } from 'packages/axelar'
 
 const StyledContainer = styled.div``
 
@@ -137,7 +137,7 @@ const SendForm = ({
 
   const [inputAmount, setInputAmount] = useState('')
 
-  const { formatBalance, getAssetList } = useAsset()
+  const { formatBalance, getAssetList, getDecimals } = useAsset()
   const { getTerraFeeList } = useSend()
   const { validateSendData } = useSendValidate()
 
@@ -154,14 +154,7 @@ const SendForm = ({
 
     if (false === _.isNaN(_.toNumber(value))) {
       setInputAmount(value)
-      const decimalSize = new BigNumber(
-        fromBlockChain === BlockChainType.terra ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.axelar ||
-        bridgeUsed === BridgeType.wormhole
-          ? ASSET.TERRA_DECIMAL
-          : ASSET.ETHER_BASE_DECIMAL
-      )
+      const decimalSize = new BigNumber(getDecimals())
       setAmount(new BigNumber(value).times(decimalSize).toString(10))
     }
   }
@@ -180,7 +173,8 @@ const SendForm = ({
       const fee = await getAxelarFee(
         fromBlockChain,
         toBlockChain,
-        asset?.terraToken || ''
+        asset?.terraToken || '',
+        new BigNumber(amount).toNumber()
       )
       setBridgeFeeAmount(new BigNumber(fee))
       const computedAmount = new BigNumber(amount).minus(fee)

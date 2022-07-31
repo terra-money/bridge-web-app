@@ -7,15 +7,6 @@ const whitelist: Record<
   BlockChainType,
   Record<string, Record<string, string>>
 > = {
-  [BlockChainType.avalanche]: {
-    [BridgeType.wormhole]: {},
-    [BridgeType.axelar]: {
-      uluna: '0x120AD3e5A7c796349e591F1570D9f7980F4eA9cb',
-    },
-  },
-  [BlockChainType.bsc]: {
-    [BridgeType.wormhole]: {},
-  },
   [BlockChainType.cosmos]: {
     [BridgeType.ibc]: {
       uluna:
@@ -30,20 +21,11 @@ const whitelist: Record<
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       'ibc/CBF67A2BCF6CAE343FDF251E510C8E18C361FC02B23430C121116E0811835DEF':
         '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      //'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD':
-      //  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-      //'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674':
-      //  '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      'ibc/05D299885B07905B6886F554B39346EA6761246076A1120B1950049B92B922DD':
+        '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+      'ibc/BC8A77AFBD872FDC32A348D3FB10CC09277C266CFE52081DE341C7EC6752E674':
+        '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     },
-  },
-  [BlockChainType.fantom]: {
-    [BridgeType.wormhole]: {},
-    [BridgeType.axelar]: {
-      uluna: '0x5e3C572A97D898Fe359a2Cea31c7D46ba5386895',
-    },
-  },
-  [BlockChainType.inj]: {
-    [BridgeType.ibc]: {},
   },
   [BlockChainType.osmo]: {
     [BridgeType.ibc]: {
@@ -77,13 +59,13 @@ const whitelist: Record<
         'ucre',
     },
   },
-  [BlockChainType.polygon]: {
-    [BridgeType.wormhole]: {},
-    [BridgeType.axelar]: {},
-  },
-  [BlockChainType.moonbeam]: {
-    [BridgeType.axelar]: {},
-  },
+  // not yet supported on terra2
+  [BlockChainType.avalanche]: {},
+  [BlockChainType.bsc]: {},
+  [BlockChainType.fantom]: {},
+  [BlockChainType.inj]: {},
+  [BlockChainType.polygon]: {},
+  [BlockChainType.moonbeam]: {},
   // other chains
   [BlockChainType.axelar]: {},
   [BlockChainType.terra]: {},

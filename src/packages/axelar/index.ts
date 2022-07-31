@@ -1,4 +1,5 @@
 import { AxelarAssetTransfer, Environment } from '@axelar-network/axelarjs-sdk'
+import axios from 'axios'
 
 import { BlockChainType } from 'types'
 
@@ -18,6 +19,11 @@ const tokens: Record<string, string> = {
     'weth-wei',
 }
 
+const networks: Record<string, string> = {
+  [BlockChainType.terra]: 'terra-2',
+  [BlockChainType.ethereum]: 'ethereum',
+}
+
 export async function getDepositAddress(
   destinationAddress: string,
   fromBlockChain: BlockChainType,
@@ -35,14 +41,12 @@ export async function getDepositAddress(
 export async function getAxelarFee(
   fromBlockChain: BlockChainType,
   toBlockChain: BlockChainType,
-  coin: string
-): Promise<number> {
-  if (tokens[coin] === 'uusdt' || tokens[coin] === 'uusdc') {
-    return 20.5 * 1e6
-  } else if (tokens[coin] === 'weth-wei') {
-    return 0.0102 * 1e18
-  } else {
-    // WBTC
-    return 0.00072 * 1e8
-  }
+  coin: string,
+  amount: number
+): Promise<string> {
+  const result = await axios.get(
+    `https://api-1.axelar.nodes.guru/axelar/nexus/v1beta1/transfer_fee?source_chain=${networks[fromBlockChain]}&destination_chain=${networks[toBlockChain]}&amount=${amount}${tokens[coin]}`
+  )
+
+  return result.data.fee.amount
 }
