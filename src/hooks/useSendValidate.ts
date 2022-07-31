@@ -163,6 +163,7 @@ const useSendValidate = (): {
     const selectedAssetAmount = new BigNumber(
       assetList.find((x) => x.terraToken === asset?.terraToken)?.balance || '0'
     )
+
     if (selectedAssetAmount.isLessThanOrEqualTo(0)) {
       return {
         isValid: false,
