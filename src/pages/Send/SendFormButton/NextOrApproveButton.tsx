@@ -23,6 +23,7 @@ const NextOrApproveButton = ({
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
+  const toBlockChain = useRecoilValue(SendStore.toBlockChain)
   const validationResult = useRecoilValue(SendStore.validationResult)
   const amount = useRecoilValue(SendStore.amount)
 
@@ -76,7 +77,14 @@ const NextOrApproveButton = ({
   }
 
   return (
-    <Button onClick={onClickSendNextButton} disabled={!ableButton}>
+    <Button
+      onClick={onClickSendNextButton}
+      disabled={
+        !ableButton ||
+        toBlockChain === BlockChainType.scrt ||
+        fromBlockChain === BlockChainType.scrt
+      }
+    >
       Next
     </Button>
   )
