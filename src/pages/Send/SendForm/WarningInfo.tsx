@@ -193,11 +193,6 @@ export const WarningInfo = (): ReactElement => {
           {infoText() && <WarningElement>{infoText()}</WarningElement>}
         </>
       )}
-      {chain === BlockChainType.scrt && (
-        <DangerElement>
-          IBC transfers to Secrect are temporarily disabled
-        </DangerElement>
-      )}
       {(status === ProcessStatus.Submit ||
         status === ProcessStatus.Confirm ||
         status === ProcessStatus.Done) && (
