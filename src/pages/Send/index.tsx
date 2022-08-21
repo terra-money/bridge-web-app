@@ -28,7 +28,7 @@ import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
 import { BlockChainType } from 'types/network'
 import classicSvg from '../../images/classic.svg'
-import { DangerElement, InfoElement, WarningInfo } from './SendForm/WarningInfo'
+import { InfoElement, WarningInfo } from './SendForm/WarningInfo'
 
 const StyledProcessCircle = styled.div`
   height: 128px;
@@ -215,15 +215,6 @@ const Send = (): ReactElement => {
                 <Confirm />
               </div>
             </div>
-            <DangerElement>
-              Axelar will be disabled on Terra Classic on{' '}
-              <b>
-                {new Date(1653955140000).toLocaleDateString()}{' '}
-                {new Date(1653955140000).toLocaleTimeString()}
-              </b>{' '}
-              [local time]. Bridge axUST and axLUNC back to Terra Classic before
-              the date.
-            </DangerElement>
             <WarningInfo />
 
             {[

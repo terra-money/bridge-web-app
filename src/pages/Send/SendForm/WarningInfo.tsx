@@ -166,7 +166,7 @@ export const WarningInfo = (): ReactElement => {
     if (bridgeUsed === BridgeType.ibc) {
       return 'IBC transfers are currently suspended.'
     } else if (bridgeUsed === BridgeType.shuttle) {
-      return 'Shuttle is scheduled to be deprecated, and more details will be released once timeline is set. Shuttle is safe to use for the time being - but use at own risk'
+      return 'Shuttle transfers from Terra Classic have been disabled.\nIf you own LUNC, UST, or other assets bridged with shuttle on ETH, BSC or Harmony we recommend to them back to Terra Classic.\nThis does NOT affect assetd bridged with Wormhole.'
     } else if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain
