@@ -173,10 +173,9 @@ export const WarningInfo = (): ReactElement => {
     ) {
       return 'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
     } else if (
-      BlockChainType.polygon === fromBlockChain &&
       bridgeUsed === BridgeType.wormhole
     ) {
-      return '512 block confirmation is required for this transfer. It may take more than 15 minutes to receive funds in the destination wallet'
+      return 'Wormhole is currently not available on Terra Classic'
     } else if (fromBlockChain !== toBlockChain) {
       return "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
     }
