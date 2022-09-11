@@ -40,6 +40,8 @@ export default function MetamaskButton({
   token,
   decimals,
 }: MetamaskTokenProps): ReactElement {
+  const fixedName = name.startsWith('axl') ? name.slice(3) : name
+
   return (
     <StyledButton
       onClick={(): void => {
@@ -49,7 +51,7 @@ export default function MetamaskButton({
             type: 'ERC20',
             options: {
               address: token,
-              symbol: name,
+              symbol: fixedName,
               decimals,
               image: imgUrl,
             },
@@ -58,7 +60,7 @@ export default function MetamaskButton({
       }}
     >
       <StyledIcon src={MetamaskImg} alt="Metamask logo" />
-      Add {name} to Metamask
+      Add {fixedName} to Metamask
     </StyledButton>
   )
 }
