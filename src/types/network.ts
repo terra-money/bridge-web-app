@@ -30,10 +30,10 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.juno]: [BridgeType.ibc],
   [BlockChainType.crescent]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.axelar],
+  [BlockChainType.avalanche]: [BridgeType.axelar],
 
   // disabled
   [BlockChainType.bsc]: [],
-  [BlockChainType.avalanche]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.fantom]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.polygon]: [BridgeType.wormhole, BridgeType.axelar],
   [BlockChainType.moonbeam]: [BridgeType.axelar],

@@ -5,7 +5,7 @@ import { BlockChainType } from 'types'
 
 const sdk = new AxelarAssetTransfer({
   environment: Environment.MAINNET,
-  auth: 'local',
+  //auth: 'local',
 })
 
 const tokens: Record<string, string> = {
@@ -22,6 +22,7 @@ const tokens: Record<string, string> = {
 const networks: Record<string, string> = {
   [BlockChainType.terra]: 'terra-2',
   [BlockChainType.ethereum]: 'ethereum',
+  [BlockChainType.avalanche]: 'avalanche',
 }
 
 export async function getDepositAddress(

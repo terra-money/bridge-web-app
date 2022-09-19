@@ -148,9 +148,9 @@ const Send = (): ReactElement => {
       fromBlockChain !== BlockChainType.ethereum
     ) {
       logout()
-      setToBlockChain(BlockChainType.terra)
-      setBridgeUsed(BridgeType.axelar)
-      setFromBlockChain(BlockChainType.ethereum)
+      //setToBlockChain(BlockChainType.terra)
+      //setBridgeUsed(BridgeType.axelar)
+      //setFromBlockChain(BlockChainType.ethereum)
     } else if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
       if (lastFromBlockChain === BlockChainType.terra) {
@@ -221,6 +221,20 @@ const Send = (): ReactElement => {
                     classic-bridge.terra.money
                   </a>
                 </InfoElement>
+                {bridgeUsed === BridgeType.axelar &&
+                  fromBlockChain === BlockChainType.avalanche && (
+                    <WarningElement>
+                      You must swap USDC to axlUSDC{' '}
+                      <a
+                        href="https://avax.curve.fi/factory/82"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        on Curve
+                      </a>{' '}
+                      before bridging them to Terra with Axelar.
+                    </WarningElement>
+                  )}
               </div>
             </div>
 

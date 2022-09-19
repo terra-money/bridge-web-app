@@ -416,6 +416,7 @@ const useSend = (): UseSendType => {
                   toBlockChain,
                   toTokenAddress as string
                 )
+                console.log(axelarAddress)
                 const result = await withSigner.transfer(
                   axelarAddress,
                   sendAmount
