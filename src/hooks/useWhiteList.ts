@@ -27,6 +27,12 @@ const whitelist: Record<
         '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     },
   },
+  [BlockChainType.avalanche]: {
+    [BridgeType.axelar]: {
+      'ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4':
+        '0xfaB550568C688d5D8A52C7d794cb93Edc26eC0eC',
+    },
+  },
   [BlockChainType.osmo]: {
     [BridgeType.ibc]: {
       uluna:
@@ -60,7 +66,6 @@ const whitelist: Record<
     },
   },
   // not yet supported on terra2
-  [BlockChainType.avalanche]: {},
   [BlockChainType.bsc]: {},
   [BlockChainType.fantom]: {},
   [BlockChainType.inj]: {},
@@ -81,6 +86,8 @@ export default function useWhiteList(): Record<string, string> {
     fromBlockChain === BlockChainType.terra ? toBlockChain : fromBlockChain
 
   if (!bridgeUsed || chain === BlockChainType.terra) return {}
+
+  console.log(whitelist[chain]?.[bridgeUsed])
 
   return whitelist[chain]?.[bridgeUsed] || {}
 }

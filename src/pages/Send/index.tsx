@@ -148,9 +148,9 @@ const Send = (): ReactElement => {
       fromBlockChain !== BlockChainType.ethereum
     ) {
       logout()
-      setToBlockChain(BlockChainType.terra)
-      setBridgeUsed(BridgeType.axelar)
-      setFromBlockChain(BlockChainType.ethereum)
+      //setToBlockChain(BlockChainType.terra)
+      //setBridgeUsed(BridgeType.axelar)
+      //setFromBlockChain(BlockChainType.ethereum)
     } else if (false === isLoggedIn && lastFromBlockChain) {
       // default network is terra
       if (lastFromBlockChain === BlockChainType.terra) {

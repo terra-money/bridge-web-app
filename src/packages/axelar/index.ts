@@ -22,6 +22,7 @@ const tokens: Record<string, string> = {
 const networks: Record<string, string> = {
   [BlockChainType.terra]: 'terra-2',
   [BlockChainType.ethereum]: 'ethereum',
+  [BlockChainType.axelar]: 'axelar',
 }
 
 export async function getDepositAddress(

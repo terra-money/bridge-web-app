@@ -30,6 +30,8 @@ const useAsset = (): {
 
   const whiteList = useWhiteList()
 
+  console.log('assetList', whiteList)
+
   const setAssetList = useSetRecoilState(SendStore.loginUserAssetList)
 
   const { getTerraBalances } = useTerraBalance()
