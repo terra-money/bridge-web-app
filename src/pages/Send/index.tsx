@@ -221,6 +221,20 @@ const Send = (): ReactElement => {
                     classic-bridge.terra.money
                   </a>
                 </InfoElement>
+                {bridgeUsed === BridgeType.axelar &&
+                  fromBlockChain === BlockChainType.avalanche && (
+                    <WarningElement>
+                      You must swap USDC to axlUSDC{' '}
+                      <a
+                        href="https://avax.curve.fi/factory/82"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        on Curve
+                      </a>{' '}
+                      before bridging them to Terra with Axelar.
+                    </WarningElement>
+                  )}
               </div>
             </div>
 

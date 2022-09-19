@@ -87,7 +87,5 @@ export default function useWhiteList(): Record<string, string> {
 
   if (!bridgeUsed || chain === BlockChainType.terra) return {}
 
-  console.log(whitelist[chain]?.[bridgeUsed])
-
   return whitelist[chain]?.[bridgeUsed] || {}
 }
