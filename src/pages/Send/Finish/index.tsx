@@ -126,6 +126,7 @@ const Finish = (): ReactElement => {
               toTokenAddress && toTokenAddress.startsWith('0x') && (
                 <MetamaskButton
                   name={asset?.symbol || ''}
+                  chain={toBlockChain}
                   token={toTokenAddress}
                   imgUrl={asset?.logoURI || ''}
                   decimals={

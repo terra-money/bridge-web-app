@@ -2,6 +2,7 @@ import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { COLOR } from 'consts'
 import MetamaskImg from '../../../images/metamask.svg'
+import { BlockChainType } from 'types'
 
 const StyledButton = styled.button`
   border: 0;
@@ -29,6 +30,7 @@ const StyledIcon = styled.img`
 
 interface MetamaskTokenProps {
   name: string
+  chain: BlockChainType
   imgUrl: string
   token: string
   decimals: number
@@ -36,6 +38,7 @@ interface MetamaskTokenProps {
 
 export default function MetamaskButton({
   name,
+  chain,
   imgUrl,
   token,
   decimals,
@@ -60,7 +63,7 @@ export default function MetamaskButton({
       }}
     >
       <StyledIcon src={MetamaskImg} alt="Metamask logo" />
-      Add {fixedName} to Metamask
+      Add {chain === BlockChainType.ethereum ? fixedName : name} to Metamask
     </StyledButton>
   )
 }
