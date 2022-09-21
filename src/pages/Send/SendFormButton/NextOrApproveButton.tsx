@@ -5,7 +5,6 @@ import { CircularProgress } from '@material-ui/core'
 
 import { COLOR } from 'consts'
 
-import { BlockChainType, BridgeType } from 'types/network'
 import { RequestTxResultType, ValidateItemResultType } from 'types/send'
 import useSend from 'hooks/useSend'
 
@@ -22,19 +21,11 @@ const NextOrApproveButton = ({
 }): ReactElement => {
   const setStatus = useSetRecoilState(SendProcessStore.sendProcessStatus)
 
-  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
-  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
-  const validationResult = useRecoilValue(SendStore.validationResult)
   const amount = useRecoilValue(SendStore.amount)
 
   const [waitingForApprove, setWaitingForApprove] = useState(false)
   const [approveResult, setApproveResult] = useState<RequestTxResultType>()
   const { allowanceOfSelectedAsset, approveTxFromEtherBase } = useSend()
-
-  const ableButton =
-    fromBlockChain === BlockChainType.terra
-      ? validationResult.isValid && feeValidationResult.isValid
-      : validationResult.isValid
 
   const onClickApproveTxFromEtherBase = async (): Promise<void> => {
     setWaitingForApprove(true)
@@ -77,22 +68,8 @@ const NextOrApproveButton = ({
   }
 
   return (
-    <Button
-      onClick={onClickSendNextButton}
-      disabled={
-        !ableButton ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.wormhole ||
-        (bridgeUsed === BridgeType.shuttle &&
-          fromBlockChain === BlockChainType.terra)
-      }
-    >
-      {bridgeUsed === BridgeType.ibc ||
-      bridgeUsed === BridgeType.wormhole ||
-      (bridgeUsed === BridgeType.shuttle &&
-        fromBlockChain === BlockChainType.terra)
-        ? 'Not available'
-        : 'Next'}
+    <Button onClick={onClickSendNextButton} disabled={true}>
+      Not available
     </Button>
   )
 }
