@@ -28,6 +28,7 @@ import FormFeeInfo from './FormFeeInfo'
 import NetworkStore from 'store/NetworkStore'
 import getWormholeFees from 'packages/wormhole/fees'
 import { getAxelarFee } from 'packages/axelar'
+import AutoFillButton from './AutoFillButton'
 
 const StyledContainer = styled.div``
 
@@ -278,15 +279,18 @@ const SendForm = ({
       </StyledFormSection>
 
       <StyledFormSection>
-        <FormLabelInput
-          inputProps={{
-            value: toAddress,
-            onChange: ({ target: { value } }): void => {
-              onChangeToAddress({ value })
-            },
-          }}
-          labelProps={{ children: 'Destination Address' }}
-        />
+        <div style={{ position: 'relative' }}>
+          <FormLabelInput
+            inputProps={{
+              value: toAddress,
+              onChange: ({ target: { value } }): void => {
+                onChangeToAddress({ value })
+              },
+            }}
+            labelProps={{ children: 'Destination Address' }}
+          />
+          <AutoFillButton />
+        </div>
         <FormErrorMessage
           errorMessage={validationResult.errorMessage?.toAddress}
         />
