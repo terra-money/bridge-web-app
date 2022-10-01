@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import wormholeGif from 'images/wormhole.gif'
 import ibcGif from 'images/ibc.gif'
 import shuttleGif from 'images/shuttle.gif'
@@ -17,6 +17,7 @@ import SendStore from 'store/SendStore'
 import SelectBlockChain from '../../components/SelectBlockChain'
 import SelectBridge from 'components/SelectBridge'
 import useUpdateBridgeType from 'hooks/useUpdateBridgeType'
+import SendProcessStore, { ProcessStatus } from 'store/SendProcessStore'
 
 const StyledNetworkBox = styled.div`
   position: relative;
@@ -74,6 +75,7 @@ const SwitchButton = styled.button`
 
 const BlockChainNetwork = (): ReactElement => {
   const { logout } = useAuth()
+  const status = useRecoilValue(SendProcessStore.sendProcessStatus)
   const [toBlockChain, setToBlockChain] = useRecoilState(SendStore.toBlockChain)
 
   const [fromBlockChain, setFromBlockChain] = useRecoilState(
@@ -166,15 +168,17 @@ const BlockChainNetwork = (): ReactElement => {
         />
         <div style={{ height: '100%', display: 'flex', alignItems: 'start' }}>
           <SelectBridge />
-          <SwitchButton
-            onClick={(): void => {
-              setToBlockChain(fromBlockChain)
-              setFromBlockChain(toBlockChain)
-              logout()
-            }}
-          >
-            <img src={switchSvg} alt="switch" />
-          </SwitchButton>
+          {status === ProcessStatus.Input && (
+            <SwitchButton
+              onClick={(): void => {
+                setToBlockChain(fromBlockChain)
+                setFromBlockChain(toBlockChain)
+                logout()
+              }}
+            >
+              <img src={switchSvg} alt="switch" />
+            </SwitchButton>
+          )}
         </div>
         <SelectBlockChain
           {...{
