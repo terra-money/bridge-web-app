@@ -65,6 +65,14 @@ const whitelist: Record<
         'ucre',
     },
   },
+  [BlockChainType.kujira]: {
+    [BridgeType.ibc]: {
+      uluna:
+        'ibc/DA59C009A0B3B95E0549E6BF7B075C8239285989FF457A8EDDBB56F10B2A6986',
+      'ibc/B22B4DD21586965DAEF42A7600BA371EA77C02E90FC8A7F2330BF9F9DE129B07':
+        'ukuji',
+    },
+  },
   // not yet supported on terra2
   [BlockChainType.bsc]: {},
   [BlockChainType.fantom]: {},

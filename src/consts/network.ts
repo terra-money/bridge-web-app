@@ -13,6 +13,7 @@ import PolygonSvg from 'images/polygon.svg'
 import MoonbeamSvg from 'images/moonbeam.svg'
 import CrescentSvg from 'images/crescent.svg'
 import JunoSvg from 'images/juno.svg'
+import KujiPng from 'images/kuji.png'
 import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
@@ -31,6 +32,7 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.moonbeam]: MoonbeamSvg,
   [BlockChainType.juno]: JunoSvg,
   [BlockChainType.crescent]: CrescentSvg,
+  [BlockChainType.kujira]: KujiPng,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
@@ -48,6 +50,7 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.moonbeam]: 'Moonbeam',
   [BlockChainType.juno]: 'Juno',
   [BlockChainType.crescent]: 'Crescent',
+  [BlockChainType.kujira]: 'Kujira',
 }
 
 const metamaskRpc: Record<BlockChainType, string[]> = {
@@ -75,6 +78,7 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
   [BlockChainType.cosmos]: [],
   [BlockChainType.juno]: [],
   [BlockChainType.crescent]: [],
+  [BlockChainType.kujira]: [],
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

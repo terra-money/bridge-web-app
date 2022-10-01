@@ -120,6 +120,11 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.crescent,
                 isDisabled: fromBlockChain === BlockChainType.crescent,
               },
+              {
+                label: NETWORK.blockChainName[BlockChainType.kujira],
+                value: BlockChainType.kujira,
+                isDisabled: fromBlockChain === BlockChainType.kujira,
+              },
             ],
             label: 'FROM',
           }}
@@ -183,6 +188,11 @@ const BlockChainNetwork = (): ReactElement => {
                 label: NETWORK.blockChainName[BlockChainType.crescent],
                 value: BlockChainType.crescent,
                 isDisabled: toBlockChain === BlockChainType.crescent,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.kujira],
+                value: BlockChainType.kujira,
+                isDisabled: fromBlockChain === BlockChainType.kujira,
               },
             ],
             label: 'TO',

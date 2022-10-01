@@ -50,6 +50,42 @@ const connect = async (
     } catch (error) {
       console.error(error)
     }
+  } else if (
+    chain === BlockChainType.kujira &&
+    keplr.experimentalSuggestChain
+  ) {
+    try {
+      await keplr.experimentalSuggestChain({
+        chainId: CHAIN_ID,
+        chainName: NETWORK.blockChainName[chain],
+        rpc: ibcRpc[chain],
+        rest: 'https://lcd.kaiyo.kujira.setten.io/',
+        bip44: { coinType: 118 },
+        coinType: 118,
+        stakeCurrency: {
+          coinDenom: 'KUJI',
+          coinMinimalDenom: 'ukuji',
+          coinDecimals: 6,
+        },
+        bech32Config: {
+          bech32PrefixAccAddr: 'kujira',
+          bech32PrefixAccPub: 'kujirapub',
+          bech32PrefixValAddr: 'kujiravaloper',
+          bech32PrefixValPub: 'kujiravaloperpub',
+          bech32PrefixConsAddr: 'kujiravalcons',
+          bech32PrefixConsPub: 'kujiravalconspub',
+        },
+        currencies: [
+          { coinDenom: 'KUJI', coinMinimalDenom: 'ukuji', coinDecimals: 6 },
+        ],
+        feeCurrencies: [
+          { coinDenom: 'KUJI', coinMinimalDenom: 'ukuji', coinDecimals: 6 },
+        ],
+        gasPriceStep: { low: 0.01, average: 0.025, high: 0.03 },
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   keplr.enable(CHAIN_ID)
