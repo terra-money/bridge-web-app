@@ -34,6 +34,7 @@ import {
   IbcNetwork,
   ibcChainId,
   BridgeType,
+  axelarIbcChannels,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -456,15 +457,16 @@ const useSend = (): UseSendType => {
     }
   }
 
-  // IBC transfer with Keplr
+  // IBC and axelar transfer with Keplr
   const submitRequestTxFromIbc = async (): Promise<RequestTxResultType> => {
     if (
       isIbcNetwork(fromBlockChain) &&
       asset &&
       fromTokenAddress &&
-      toBlockChain === BlockChainType.terra
+      toBlockChain === BlockChainType.terra &&
+      loginUser.signer
     ) {
-      if (loginUser.signer) {
+      if (bridgeUsed === BridgeType.ibc) {
         try {
           const terraAddress = (await getAddress(toAddress)) || toAddress
 
@@ -477,6 +479,60 @@ const useSend = (): UseSendType => {
               sourceChannel: ibcChannels[fromBlockChain as IbcNetwork],
               sender: loginUser.address,
               receiver: terraAddress,
+              token: { denom: fromTokenAddress, amount: sendAmount },
+              timeoutHeight: undefined,
+              timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
+            },
+          }
+
+          let account
+          if (fromBlockChain === BlockChainType.inj) {
+            account = await getInjectiveSequence(loginUser.address)
+          } else {
+            account = await loginUser.signer.getSequence(loginUser.address)
+          }
+
+          const tx = await loginUser.signer.sign(
+            loginUser.address,
+            [transferMsg],
+            {
+              amount: [],
+              gas: '150000',
+            },
+            '', // memo
+            {
+              chainId: ibcChainId[fromBlockChain as IbcNetwork],
+              accountNumber: account.accountNumber,
+              sequence: account.sequence,
+            }
+          )
+
+          const { code, transactionHash } = await loginUser.signer.broadcastTx(
+            TxRaw.encode(tx).finish()
+          )
+          return { success: code === 0, hash: transactionHash }
+        } catch (error) {
+          console.error(error)
+          return handleTxErrorFromIbc(error)
+        }
+      } else if (bridgeUsed === BridgeType.axelar) {
+        try {
+          const terraAddress = (await getAddress(toAddress)) || toAddress
+
+          await window.keplr.enable(ibcChainId[fromBlockChain as IbcNetwork])
+
+          const transferMsg = {
+            typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+            value: {
+              sourcePort: 'transfer',
+              sourceChannel: axelarIbcChannels[fromBlockChain],
+              sender: loginUser.address,
+              receiver: await getAxelarAddress(
+                terraAddress,
+                fromBlockChain,
+                toBlockChain,
+                toTokenAddress as string
+              ),
               token: { denom: fromTokenAddress, amount: sendAmount },
               timeoutHeight: undefined,
               timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,

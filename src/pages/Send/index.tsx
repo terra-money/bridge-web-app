@@ -26,7 +26,7 @@ import AuthStore from 'store/AuthStore'
 import useAuth from 'hooks/useAuth'
 import SendStore from 'store/SendStore'
 import useSelectWallet from 'hooks/useSelectWallet'
-import { BlockChainType, BridgeType } from 'types/network'
+import { BlockChainType, BridgeType, isIbcNetwork } from 'types/network'
 import testnetSvg from '../../images/testnet.svg'
 import NetworkStore from 'store/NetworkStore'
 import {
@@ -254,6 +254,8 @@ const Send = (): ReactElement => {
                         The{' '}
                         {fromBlockChain === BlockChainType.terra
                           ? 'Station'
+                          : isIbcNetwork(fromBlockChain)
+                          ? 'Keplr'
                           : 'MetaMask'}{' '}
                         popup may take a few seconds to open. Please don't
                         refresh or close this page in the meantime.

@@ -23,6 +23,7 @@ const networks: Record<string, string> = {
   [BlockChainType.terra]: 'terra-2',
   [BlockChainType.ethereum]: 'ethereum',
   [BlockChainType.avalanche]: 'avalanche',
+  [BlockChainType.kujira]: 'kujira',
 }
 
 export async function getDepositAddress(
@@ -48,6 +49,8 @@ export async function getAxelarFee(
   const result = await axios.get(
     `https://api-1.axelar.nodes.guru/axelar/nexus/v1beta1/transfer_fee?source_chain=${networks[fromBlockChain]}&destination_chain=${networks[toBlockChain]}&amount=${amount}${tokens[coin]}`
   )
+
+  console.log(result.data)
 
   return result.data.fee.amount
 }

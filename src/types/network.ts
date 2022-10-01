@@ -29,7 +29,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.axelar]: [BridgeType.ibc],
   [BlockChainType.cosmos]: [BridgeType.ibc],
   [BlockChainType.juno]: [BridgeType.ibc],
-  [BlockChainType.kujira]: [BridgeType.ibc],
+  [BlockChainType.kujira]: [BridgeType.ibc, BridgeType.axelar],
   [BlockChainType.crescent]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.axelar],
   [BlockChainType.avalanche]: [BridgeType.axelar],
@@ -83,6 +83,11 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'channel-2',
   [BlockChainType.crescent]: 'channel-7',
   [BlockChainType.kujira]: 'channel-10',
+}
+
+// channels IBC chain -> Axelar
+export const axelarIbcChannels: Record<string, string> = {
+  [BlockChainType.kujira]: 'channel-9',
 }
 
 // channels IBC chain -> Terra
