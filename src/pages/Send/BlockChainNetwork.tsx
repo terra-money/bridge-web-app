@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil'
 import wormholeGif from 'images/wormhole.gif'
 import ibcGif from 'images/ibc.gif'
 import shuttleGif from 'images/shuttle.gif'
+import switchSvg from 'images/switch.svg'
 
 import { NETWORK } from 'consts'
 
@@ -18,6 +19,7 @@ import SelectBridge from 'components/SelectBridge'
 import useUpdateBridgeType from 'hooks/useUpdateBridgeType'
 
 const StyledNetworkBox = styled.div`
+  position: relative;
   display: flex;
   padding: 0 40px;
 
@@ -35,6 +37,39 @@ const BackgroundImg = styled.div`
   background-repeat: no-repeat;
   background-size: 40% 60%;
   background-position: 50% 50%;
+`
+
+const SwitchButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+  background: transparent;
+  border: 0;
+
+  :hover {
+    cursor: pointer;
+  }
+
+  img {
+    filter: invert(94%) sepia(0%) saturate(711%) hue-rotate(223deg)
+      brightness(69%) contrast(90%);
+    width: 27px;
+    transition: all 0.3s ease-in-out;
+
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+
+    :hover {
+      -webkit-transform: rotate(-180deg);
+      -moz-transform: rotate(-180deg);
+      -o-transform: rotate(-180deg);
+      -ms-transform: rotate(-180deg);
+      transform: rotate(-180deg);
+    }
+  }
 `
 
 const BlockChainNetwork = (): ReactElement => {
@@ -131,6 +166,15 @@ const BlockChainNetwork = (): ReactElement => {
         />
         <div style={{ height: '100%', display: 'flex', alignItems: 'start' }}>
           <SelectBridge />
+          <SwitchButton
+            onClick={(): void => {
+              setToBlockChain(fromBlockChain)
+              setFromBlockChain(toBlockChain)
+              logout()
+            }}
+          >
+            <img src={switchSvg} alt="switch" />
+          </SwitchButton>
         </div>
         <SelectBlockChain
           {...{
