@@ -5,7 +5,7 @@ import ContractStore from 'store/ContractStore'
 import NetworkStore from 'store/NetworkStore'
 import SendStore from 'store/SendStore'
 
-import { BlockChainType } from 'types/network'
+import { BlockChainType, BridgeType } from 'types/network'
 import useWhiteList from './useWhiteList'
 
 const useNetwork = (): {
@@ -16,6 +16,7 @@ const useNetwork = (): {
   const asset = useRecoilValue(SendStore.asset)
   const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
   const toBlockChain = useRecoilValue(SendStore.toBlockChain)
+  const bridgeUsed = useRecoilValue(SendStore.bridgeUsed)
   const etherBaseExt = useRecoilValue(NetworkStore.etherBaseExt)
   const isTestnet = useRecoilValue(NetworkStore.isTestnet)
 
@@ -30,7 +31,9 @@ const useNetwork = (): {
     address: string
     type: 'tx' | 'address'
   }): string => {
-    if (fromBlockChain === BlockChainType.terra) {
+    if (bridgeUsed === BridgeType.axelar && type === 'tx') {
+      return `https://axelarscan.io/transfer/${address}`
+    } else if (fromBlockChain === BlockChainType.terra) {
       return `https://terrasco.pe/${
         isTestnet ? 'testnet' : 'mainnet'
       }/${type}/${address}`
