@@ -33,8 +33,8 @@ export async function getDepositAddress(
   coin: string
 ): Promise<string | undefined> {
   return await sdk.getDepositAddress(
-    fromBlockChain,
-    toBlockChain,
+    networks[fromBlockChain],
+    networks[toBlockChain],
     destinationAddress,
     tokens[coin]
   )
