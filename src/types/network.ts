@@ -85,6 +85,11 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'channel-10',
 }
 
+export type IcsNetwork =
+  | BlockChainType.osmo
+  | BlockChainType.juno
+  | BlockChainType.kujira
+
 // channels IBC chain -> Axelar
 export const axelarIbcChannels: Record<string, string> = {
   [BlockChainType.kujira]: 'channel-9',
@@ -100,6 +105,45 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'channel-86',
   [BlockChainType.crescent]: 'channel-8',
   [BlockChainType.kujira]: 'channel-5',
+}
+
+// channels Terra -> IBC chain
+export const terraIcsChannels: Record<
+  IcsNetwork,
+  { contract?: string; channel: string }
+> = {
+  [BlockChainType.osmo]: {
+    channel: 'channel-26',
+    contract:
+      'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
+  },
+  [BlockChainType.kujira]: {
+    channel: 'channel-28',
+    contract:
+      'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
+  },
+  [BlockChainType.juno]: {
+    channel: 'channel-32',
+    contract:
+      'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
+  },
+}
+
+// channels IBC chain -> Terra
+export const icsChannels: Record<
+  IcsNetwork,
+  { contract?: string; channel: string }
+> = {
+  [BlockChainType.osmo]: {
+    channel: 'channel-341',
+  },
+  [BlockChainType.kujira]: {
+    channel: 'channel-36',
+  },
+  [BlockChainType.juno]: {
+    channel: 'channel-153',
+    contract: 'juno1v4887y83d6g28puzvt8cl0f3cdhd3y6y9mpysnsp3k8krdm7l6jqgm0rkn',
+  },
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {

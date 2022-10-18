@@ -1,8 +1,6 @@
 import { useRecoilValue } from 'recoil'
 import _ from 'lodash'
 
-import { UTIL } from 'consts'
-
 import AuthStore from 'store/AuthStore'
 
 import useMantle from './useMantle'
@@ -13,24 +11,22 @@ import axios from 'axios'
 interface Query {
   token: string
   contract: string
-  msg: object
+  address: string
 }
 
-const stringify = (msg: object): string =>
-  JSON.stringify(msg).replace(/"/g, '\\"')
-
-const alias = ({ token, contract, msg }: Query): string =>
-  `${token}: WasmContractsContractAddressStore(
-      ContractAddress: "${contract}"
-      QueryMsg: "${stringify(msg)}"
-    ) {
-      Height
-      Result
-    }`
+const alias = ({ token, contract, address }: Query): string =>
+  `${token}: contractQuery(
+  contractAddress: "${contract}"
+  query: {
+    balance: { address: "${address}" }
+  }
+)`
 
 const getTokenBalanceQuery = (queries: Query[]): string => `
-query {
-  ${queries.map(alias)}
+{
+  wasm {
+    ${queries.map(alias)}
+  }
 }
 `
 
@@ -63,16 +59,16 @@ const useTerraBalance = (): {
           Object.values(whitelist).map(({ token }) => ({
             token,
             contract: token,
-            msg: { balance: { address: loginUser.address } },
+            address: loginUser.address,
           }))
         )
 
-        const fetchResult: Record<string, { Height: string; Result: string }> =
+        const fetchResult: { wasm: Record<string, { balance: string }> } =
           await fetchQuery({
             query: aliasResult,
           })
 
-        return fetchResult
+        return fetchResult.wasm
       })
     )
 
@@ -84,10 +80,7 @@ const useTerraBalance = (): {
     if (_.some(fetchResultFlattened)) {
       const list: BalanceListType = {}
       _.forEach(fetchResultFlattened, (x, key) => {
-        if (x) {
-          const res = UTIL.jsonTryParse<{ balance: string }>(x.Result)
-          if (res) list[key] = res.balance
-        }
+        if (x) list[key] = x.balance
       })
       return list
     } else {
