@@ -264,7 +264,8 @@ const useSend = (): UseSendType => {
                             terraIcsChannels[toBlockChain as IcsNetwork]
                               .channel,
                           remote_address: toAddress,
-                          timeout: 120,
+                          // 10 minutes
+                          timeout: 10 * 60,
                         })
                       ).toString('base64'),
                     },
@@ -545,12 +546,13 @@ const useSend = (): UseSendType => {
                 typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
                 value: {
                   sourcePort: 'transfer',
-                  sourceChannel: icsChannels[fromBlockChain as IcsNetwork],
+                  sourceChannel:
+                    icsChannels[fromBlockChain as IcsNetwork].channel,
                   sender: loginUser.address,
                   receiver: terraAddress,
                   token: { denom: fromTokenAddress, amount: sendAmount },
                   timeoutHeight: undefined,
-                  timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
+                  timeoutTimestamp: (Date.now() + 10 * 60 * 1000) * 1e6,
                 },
               }
             } else {
@@ -567,7 +569,7 @@ const useSend = (): UseSendType => {
                 receiver: terraAddress,
                 token: { denom: fromTokenAddress, amount: sendAmount },
                 timeoutHeight: undefined,
-                timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
+                timeoutTimestamp: (Date.now() + 10 * 60 * 1000) * 1e6,
               },
             }
           }
