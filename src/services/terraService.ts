@@ -31,8 +31,11 @@ export default {
     return res.payload as any
   },
 
-  async post(options: CreateTxOptions): Promise<PostResponse> {
-    const res = await ext.request('post', JSON.parse(JSON.stringify(options)))
+  async post(
+    options: Omit<CreateTxOptions, 'msgs'> & { msgs: string[] }
+  ): Promise<PostResponse> {
+    const data = JSON.parse(JSON.stringify(options))
+    const res = await ext.request('post', data)
 
     return res.payload as any
   },

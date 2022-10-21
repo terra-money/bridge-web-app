@@ -35,6 +35,10 @@ import {
   ibcChainId,
   BridgeType,
   axelarIbcChannels,
+  ibcPrefix,
+  terraIcsChannels,
+  IcsNetwork,
+  icsChannels,
 } from 'types/network'
 import { AssetNativeDenomEnum } from 'types/asset'
 import { RequestTxResultType, EtherBaseReceiptResultType } from 'types/send'
@@ -45,6 +49,7 @@ import useNetwork from './useNetwork'
 import QueryKeysEnum from 'types/queryKeys'
 import { getDepositAddress as getAxelarAddress } from 'packages/axelar'
 import useTns from 'packages/tns/useTns'
+import useWhiteList from './useWhiteList'
 
 export type TerraSendFeeInfo = {
   gasPrices: Record<string, string>
@@ -82,6 +87,7 @@ const useSend = (): UseSendType => {
   const loginUser = useRecoilValue(AuthStore.loginUser)
   const terraExt = useRecoilValue(NetworkStore.terraExt)
   const terraLocal = useRecoilValue(NetworkStore.terraLocal)
+  const whitelist = useWhiteList()
 
   const [gasPricesFromServer, setGasPricesFromServer] = useRecoilState(
     SendStore.gasPrices
@@ -233,17 +239,68 @@ const useSend = (): UseSendType => {
     if (asset) {
       switch (bridgeUsed) {
         case BridgeType.ibc:
-          return [
-            new MsgTransfer(
-              'transfer',
-              terraIbcChannels[toBlockChain as IbcNetwork],
-              new Coin(asset.terraToken, sendAmount),
-              loginUser.address,
-              toAddress,
-              undefined,
-              (Date.now() + 120 * 1000) * 1e6
-            ),
-          ]
+          if (
+            asset.terraToken.startsWith('terra1') ||
+            whitelist[asset.terraToken].startsWith(
+              ibcPrefix[toBlockChain as IbcNetwork]
+            )
+          ) {
+            // ics transfer
+            if (asset.terraToken.startsWith('terra1')) {
+              // cw20 transfer
+
+              return [
+                new MsgExecuteContract(
+                  loginUser.address,
+                  asset.terraToken,
+                  {
+                    send: {
+                      contract:
+                        terraIcsChannels[toBlockChain as IcsNetwork].contract,
+                      amount: sendAmount,
+                      msg: Buffer.from(
+                        JSON.stringify({
+                          channel:
+                            terraIcsChannels[toBlockChain as IcsNetwork]
+                              .channel,
+                          remote_address: toAddress,
+                          // 10 minutes
+                          timeout: 10 * 60,
+                        })
+                      ).toString('base64'),
+                    },
+                  },
+                  undefined
+                ),
+              ]
+            } else {
+              // ibc transfer
+              return [
+                new MsgTransfer(
+                  'transfer',
+                  terraIcsChannels[toBlockChain as IcsNetwork].channel,
+                  new Coin(asset.terraToken, sendAmount),
+                  loginUser.address,
+                  toAddress,
+                  undefined,
+                  (Date.now() + 120 * 1000) * 1e6
+                ),
+              ]
+            }
+          } else {
+            // standard ibc transfer
+            return [
+              new MsgTransfer(
+                'transfer',
+                terraIbcChannels[toBlockChain as IbcNetwork],
+                new Coin(asset.terraToken, sendAmount),
+                loginUser.address,
+                toAddress,
+                undefined,
+                (Date.now() + 120 * 1000) * 1e6
+              ),
+            ]
+          }
 
         case BridgeType.axelar:
           // in the fee simulation use a null address
@@ -298,17 +355,18 @@ const useSend = (): UseSendType => {
 
     const msgs = await getTerraMsgs()
 
-    const tx: CreateTxOptions = {
+    const tx: Omit<CreateTxOptions, 'msgs'> & { msgs: string[] } = {
       gasPrices: [new Coin(feeDenom, gasPricesFromServer[feeDenom])],
-      msgs,
+      msgs: msgs.map((msg) => msg.toJSON(false)),
       fee,
       memo: toBlockChain === BlockChainType.terra ? memo : '',
     }
+
     const connector = loginUser.terraWalletConnect
     if (connector) {
       const sendId = Date.now()
       const serializedTxOptions = {
-        msgs: tx.msgs.map((msg) => msg.toJSON()),
+        msgs: tx.msgs,
         fee: tx.fee?.toJSON(),
         memo: tx.memo,
         gasPrices: tx.gasPrices?.toString(),
@@ -417,7 +475,6 @@ const useSend = (): UseSendType => {
                   toBlockChain,
                   toTokenAddress as string
                 )
-                console.log(axelarAddress)
                 const result = await withSigner.transfer(
                   axelarAddress,
                   sendAmount
@@ -472,17 +529,49 @@ const useSend = (): UseSendType => {
 
           await window.keplr.enable(ibcChainId[fromBlockChain as IbcNetwork])
 
-          const transferMsg = {
-            typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
-            value: {
-              sourcePort: 'transfer',
-              sourceChannel: ibcChannels[fromBlockChain as IbcNetwork],
-              sender: loginUser.address,
-              receiver: terraAddress,
-              token: { denom: fromTokenAddress, amount: sendAmount },
-              timeoutHeight: undefined,
-              timeoutTimestamp: (Date.now() + 120 * 1000) * 1e6,
-            },
+          let transferMsg = {
+            typeUrl: '',
+            value: {},
+          }
+
+          if (
+            asset.terraToken.startsWith('terra1') ||
+            whitelist[asset.terraToken].startsWith(
+              ibcPrefix[fromBlockChain as IbcNetwork]
+            )
+          ) {
+            if (asset.terraToken.startsWith('terra1')) {
+              // standard ibc transfer
+              transferMsg = {
+                typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+                value: {
+                  sourcePort: 'transfer',
+                  sourceChannel:
+                    icsChannels[fromBlockChain as IcsNetwork].channel,
+                  sender: loginUser.address,
+                  receiver: terraAddress,
+                  token: { denom: fromTokenAddress, amount: sendAmount },
+                  timeoutHeight: undefined,
+                  timeoutTimestamp: (Date.now() + 10 * 60 * 1000) * 1e6,
+                },
+              }
+            } else {
+              // CW20 transfer
+              // TODO: implement CW20 transfer
+            }
+          } else {
+            transferMsg = {
+              typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+              value: {
+                sourcePort: 'transfer',
+                sourceChannel: ibcChannels[fromBlockChain as IbcNetwork],
+                sender: loginUser.address,
+                receiver: terraAddress,
+                token: { denom: fromTokenAddress, amount: sendAmount },
+                timeoutHeight: undefined,
+                timeoutTimestamp: (Date.now() + 10 * 60 * 1000) * 1e6,
+              },
+            }
           }
 
           let account
