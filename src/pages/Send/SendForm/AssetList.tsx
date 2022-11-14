@@ -18,6 +18,7 @@ import AuthStore from 'store/AuthStore'
 import SendStore from 'store/SendStore'
 
 import { InfoElement } from './WarningInfo'
+import { BlockChainType } from 'types'
 
 const StyledContainer = styled.div`
   padding: 0 25px 40px;
@@ -94,6 +95,7 @@ const AssetItem = ({
 }): ReactElement => {
   const [oriAsset, setAsset] = useRecoilState(SendStore.asset)
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   const { formatBalance } = useAsset()
 
@@ -114,10 +116,14 @@ const AssetItem = ({
           </StyledIconBox>
           <View>
             <Text style={{ fontSize: 14, fontWeight: 500 }}>
-              {asset.symbol}
+              {fromBlockChain === BlockChainType.ethereum
+                ? asset.symbol.replace('axl', '')
+                : asset.symbol}
             </Text>
             <Text style={{ color: COLOR.blueGray, fontSize: 12 }}>
-              {asset.name}
+              {fromBlockChain === BlockChainType.ethereum
+                ? asset.name.replace('Axelar ', '')
+                : asset.name}
             </Text>
           </View>
         </Row>
@@ -144,6 +150,7 @@ const SelectAssetButton = ({
 }): ReactElement => {
   const { formatBalance } = useAsset()
   const isLoggedIn = useRecoilValue(AuthStore.isLoggedIn)
+  const fromBlockChain = useRecoilValue(SendStore.fromBlockChain)
 
   return (
     <StyledSelectAssetButton
@@ -159,7 +166,11 @@ const SelectAssetButton = ({
               size={18}
               style={{ marginTop: -2 }}
             />
-            <Text style={{ marginLeft: 10, fontSize: 16 }}>{asset.symbol}</Text>
+            <Text style={{ marginLeft: 10, fontSize: 16 }}>
+              {fromBlockChain === BlockChainType.ethereum
+                ? asset.symbol.replace('axl', '')
+                : asset.symbol}
+            </Text>
           </Row>
           <Row style={{ alignItems: 'center' }}>
             {isLoggedIn && (
