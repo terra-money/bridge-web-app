@@ -586,7 +586,7 @@ const useSend = (): UseSendType => {
             [transferMsg],
             {
               amount: [],
-              gas: '150000',
+              gas: '280000',
             },
             '', // memo
             {
