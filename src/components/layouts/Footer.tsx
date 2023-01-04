@@ -32,12 +32,16 @@ const StyledText = styled(Text)`
 const Footer = (): ReactElement => {
   const community = [
     {
-      href: `https://docs.mirror.finance/user-guide/terra-bridge`,
-      title: 'DOCS',
+      href: `https://docs.terra.money`,
+      title: 'Docs',
     },
     {
       href: `https://terra.sc/discord`,
       title: 'Discord',
+    },
+    {
+      href: `https://t.me/TerraNetworkLobby`,
+      title: 'Telegram',
     },
     {
       href: `https://github.com/terra-project/bridge-web-app`,
