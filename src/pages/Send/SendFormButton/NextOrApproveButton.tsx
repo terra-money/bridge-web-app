@@ -83,14 +83,12 @@ const NextOrApproveButton = ({
         !ableButton ||
         bridgeUsed === BridgeType.ibc ||
         bridgeUsed === BridgeType.wormhole ||
-        (bridgeUsed === BridgeType.shuttle &&
-          fromBlockChain === BlockChainType.terra)
+        bridgeUsed === BridgeType.shuttle
       }
     >
       {bridgeUsed === BridgeType.ibc ||
       bridgeUsed === BridgeType.wormhole ||
-      (bridgeUsed === BridgeType.shuttle &&
-        fromBlockChain === BlockChainType.terra)
+      bridgeUsed === BridgeType.shuttle
         ? 'Not available'
         : 'Next'}
     </Button>

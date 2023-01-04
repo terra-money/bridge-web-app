@@ -166,15 +166,13 @@ export const WarningInfo = (): ReactElement => {
     if (bridgeUsed === BridgeType.ibc) {
       return 'IBC transfers are currently suspended.'
     } else if (bridgeUsed === BridgeType.shuttle) {
-      return 'Shuttle transfers from Terra Classic have been disabled.\nIf you own LUNC, UST, or other assets bridged with shuttle on ETH, BSC or Harmony we recommend to them back to Terra Classic.\nThis does NOT affect assets bridged with Wormhole or Axelar.'
+      return 'Shuttle transfers from Terra Classic have been disabled.'
     } else if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain
     ) {
       return 'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
-    } else if (
-      bridgeUsed === BridgeType.wormhole
-    ) {
+    } else if (bridgeUsed === BridgeType.wormhole) {
       return 'Wormhole is currently not available on Terra Classic'
     } else if (fromBlockChain !== toBlockChain) {
       return "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
