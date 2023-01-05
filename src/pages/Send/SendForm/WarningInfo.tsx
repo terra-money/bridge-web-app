@@ -166,7 +166,11 @@ export const WarningInfo = (): ReactElement => {
     if (bridgeUsed === BridgeType.ibc) {
       return 'IBC transfers are currently suspended.'
     } else if (bridgeUsed === BridgeType.shuttle) {
-      return 'Shuttle transfers from Terra Classic have been disabled.'
+      return Date.now() >= 1675123200000
+        ? 'Shuttle transfers from Terra Classic have been disabled.'
+        : `If you own LUNC, UST, or other assets bridged with shuttle on ETH, BSC or Harmony you must send them back to Terra Classic before ${new Date(
+            1675123200000
+          ).toLocaleString()}.`
     } else if (
       BlockChainType.terra === fromBlockChain &&
       fromBlockChain === toBlockChain

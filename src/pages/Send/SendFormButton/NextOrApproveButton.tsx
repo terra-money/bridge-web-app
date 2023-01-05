@@ -83,12 +83,16 @@ const NextOrApproveButton = ({
         !ableButton ||
         bridgeUsed === BridgeType.ibc ||
         bridgeUsed === BridgeType.wormhole ||
-        bridgeUsed === BridgeType.shuttle
+        (bridgeUsed === BridgeType.shuttle &&
+          (Date.now() >= 1675123200000 ||
+            fromBlockChain === BlockChainType.terra))
       }
     >
       {bridgeUsed === BridgeType.ibc ||
       bridgeUsed === BridgeType.wormhole ||
-      bridgeUsed === BridgeType.shuttle
+      (bridgeUsed === BridgeType.shuttle &&
+        (Date.now() >= 1675123200000 ||
+          fromBlockChain === BlockChainType.terra))
         ? 'Not available'
         : 'Next'}
     </Button>
