@@ -14,6 +14,7 @@ export enum BlockChainType {
   juno = 'juno',
   crescent = 'crescent',
   kujira = 'kujira',
+  carbon = 'carbon',
 }
 
 export enum BridgeType {
@@ -31,6 +32,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.juno]: [BridgeType.ibc],
   [BlockChainType.kujira]: [BridgeType.ibc, BridgeType.axelar],
   [BlockChainType.crescent]: [BridgeType.ibc],
+  [BlockChainType.carbon]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.axelar],
   [BlockChainType.avalanche]: [BridgeType.axelar],
 
@@ -59,6 +61,7 @@ export type IbcNetwork =
   | BlockChainType.juno
   | BlockChainType.crescent
   | BlockChainType.kujira
+  | BlockChainType.carbon
 
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
@@ -70,6 +73,7 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.juno,
     BlockChainType.crescent,
     BlockChainType.kujira,
+    BlockChainType.carbon,
   ].includes(network)
 }
 
@@ -83,12 +87,14 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'channel-2',
   [BlockChainType.crescent]: 'channel-7',
   [BlockChainType.kujira]: 'channel-10',
+  [BlockChainType.carbon]: 'channel-36',
 }
 
 export type IcsNetwork =
   | BlockChainType.osmo
   | BlockChainType.juno
   | BlockChainType.kujira
+  | BlockChainType.carbon
 
 // channels IBC chain -> Axelar
 export const axelarIbcChannels: Record<string, string> = {
@@ -105,6 +111,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'channel-86',
   [BlockChainType.crescent]: 'channel-8',
   [BlockChainType.kujira]: 'channel-5',
+  [BlockChainType.carbon]: 'channel-12', // TODO: update carbon channel
 }
 
 // channels Terra -> IBC chain
@@ -127,6 +134,11 @@ export const terraIcsChannels: Record<
     contract:
       'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
   },
+  [BlockChainType.carbon]: {
+    channel: 'channel-41',
+    contract:
+      'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
+  },
 }
 
 // channels IBC chain -> Terra
@@ -144,6 +156,9 @@ export const icsChannels: Record<
     channel: 'channel-153',
     contract: 'juno1v4887y83d6g28puzvt8cl0f3cdhd3y6y9mpysnsp3k8krdm7l6jqgm0rkn',
   },
+  [BlockChainType.carbon]: {
+    channel: 'channel-16',
+  },
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
@@ -155,6 +170,7 @@ export const ibcPrefix: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'juno1',
   [BlockChainType.crescent]: 'cre1',
   [BlockChainType.kujira]: 'kujira1',
+  [BlockChainType.carbon]: 'swth1',
 }
 
 export const ibcChainId: Record<IbcNetwork, string> = {
@@ -166,6 +182,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'juno-1',
   [BlockChainType.crescent]: 'crescent-1',
   [BlockChainType.kujira]: 'kaiyo-1',
+  [BlockChainType.carbon]: 'carbon-1',
 }
 
 export const ibcRpc: Record<IbcNetwork, string> = {
@@ -177,6 +194,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'https://rpc.juno.omniflix.co/',
   [BlockChainType.crescent]: 'https://mainnet.crescent.network:26657/',
   [BlockChainType.kujira]: 'https://rpc.kaiyo.kujira.setten.io/',
+  [BlockChainType.carbon]: 'https://tm-api.carbon.network/',
 }
 
 export interface LocalTerraNetwork {
