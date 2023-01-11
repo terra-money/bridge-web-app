@@ -111,7 +111,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.juno]: 'channel-86',
   [BlockChainType.crescent]: 'channel-8',
   [BlockChainType.kujira]: 'channel-5',
-  [BlockChainType.carbon]: 'channel-12', // TODO: update carbon channel
+  [BlockChainType.carbon]: 'channel-12',
 }
 
 // channels Terra -> IBC chain
