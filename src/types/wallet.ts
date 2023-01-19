@@ -43,8 +43,8 @@ export const WalletSupportBrowser: Record<
     errorMessage: 'Available for desktop Chrome.',
   },
   MetaMask: {
-    isSupport: isBrowser && (isChrome || isEdgeChromium),
-    errorMessage: 'Available for desktop Chrome.',
+    isSupport: isBrowser && (isChrome || isEdgeChromium || isFirefox),
+    errorMessage: 'Available for desktop Chrome and Firefox.',
   },
   // support all browser
   WalletConnect: { isSupport: true, errorMessage: '' },
