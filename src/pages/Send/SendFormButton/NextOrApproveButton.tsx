@@ -81,15 +81,13 @@ const NextOrApproveButton = ({
       onClick={onClickSendNextButton}
       disabled={
         !ableButton ||
-        bridgeUsed === BridgeType.ibc ||
         bridgeUsed === BridgeType.wormhole ||
         (bridgeUsed === BridgeType.shuttle &&
           (Date.now() >= 1675123200000 ||
             fromBlockChain === BlockChainType.terra))
       }
     >
-      {bridgeUsed === BridgeType.ibc ||
-      bridgeUsed === BridgeType.wormhole ||
+      {bridgeUsed === BridgeType.wormhole ||
       (bridgeUsed === BridgeType.shuttle &&
         (Date.now() >= 1675123200000 ||
           fromBlockChain === BlockChainType.terra))
