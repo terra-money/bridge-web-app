@@ -18,6 +18,7 @@ import BigNumber from 'bignumber.js'
 import { isMobile } from 'react-device-detect'
 import { useQuery } from 'react-query'
 import { useDebouncedCallback } from 'use-debounce/lib'
+import { Coin as AminoCoin } from '@cosmjs/amino'
 
 import { UTIL, NETWORK } from 'consts'
 
@@ -581,11 +582,21 @@ const useSend = (): UseSendType => {
             account = await loginUser.signer.getSequence(loginUser.address)
           }
 
+          let amount: AminoCoin[] = []
+          if (fromBlockChain === BlockChainType.carbon) {
+            amount = [{ denom: 'swth', amount: (1e8).toFixed() }]
+            window.keplr.defaultOptions = {
+              sign: {
+                preferNoSetFee: true,
+              },
+            }
+          }
+
           const tx = await loginUser.signer.sign(
             loginUser.address,
             [transferMsg],
             {
-              amount: [],
+              amount,
               gas: '280000',
             },
             '', // memo
@@ -595,6 +606,14 @@ const useSend = (): UseSendType => {
               sequence: account.sequence,
             }
           )
+
+          if (fromBlockChain === BlockChainType.carbon) {
+            window.keplr.defaultOptions = {
+              sign: {
+                preferNoSetFee: false,
+              },
+            }
+          }
 
           const { code, transactionHash } = await loginUser.signer.broadcastTx(
             TxRaw.encode(tx).finish()

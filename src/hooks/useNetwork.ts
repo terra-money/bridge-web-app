@@ -57,6 +57,10 @@ const useNetwork = (): {
       return type === 'tx'
         ? `https://www.mintscan.io/cosmos/txs/${address}`
         : `https://www.mintscan.io/cosmos/account/${address}`
+    } else if (fromBlockChain === BlockChainType.carbon) {
+      return type === 'tx'
+        ? `https://scan.carbon.network/transaction/${address}`
+        : `https://scan.carbon.network/account/${address}`
     } else if (etherBaseExt) {
       let subdomain = ''
 

@@ -85,6 +85,14 @@ const whitelist: Record<
         'ibc/F2331645B9683116188EF36FC04A809C28BD36B54555E8705A37146D0182F045',
     },
   },
+  [BlockChainType.carbon]: {
+    [BridgeType.ibc]: {
+      uluna:
+        'ibc/2B58B8C147E8718EECCB3713271DF46DEE8A3A00A27242628604E31C2F370EF5',
+      terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct:
+        'ibc/62A3870B9804FC3A92EAAA1F0F3F07E089DBF76CC521466CA33F5AAA8AD42290',
+    },
+  },
   // not yet supported on terra2
   [BlockChainType.bsc]: {},
   [BlockChainType.fantom]: {},
