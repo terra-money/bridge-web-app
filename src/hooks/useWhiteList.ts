@@ -93,6 +93,16 @@ const whitelist: Record<
         'ibc/62A3870B9804FC3A92EAAA1F0F3F07E089DBF76CC521466CA33F5AAA8AD42290',
     },
   },
+  [BlockChainType.stride]: {
+    [BridgeType.ibc]: {
+      'ibc/08095CEDEA29977C9DD0CE9A48329FDA622C183359D5F90CF04CC4FF80CBE431':
+        'stuluna',
+      'ibc/0EFC7B44625187BFB60AF09FF28A25FA49B68B959A505CC5313DF0498D8CF528':
+        'ustrd',
+      uluna:
+        'ibc/E61BCB1126F42A2ED73B4CEA2221C9635BC2102F0417543C38071779F991942E',
+    },
+  },
   // not yet supported on terra2
   [BlockChainType.bsc]: {},
   [BlockChainType.fantom]: {},

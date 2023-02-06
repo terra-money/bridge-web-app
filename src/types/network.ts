@@ -15,6 +15,7 @@ export enum BlockChainType {
   crescent = 'crescent',
   kujira = 'kujira',
   carbon = 'carbon',
+  stride = 'stride',
 }
 
 export enum BridgeType {
@@ -33,6 +34,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.kujira]: [BridgeType.ibc, BridgeType.axelar],
   [BlockChainType.crescent]: [BridgeType.ibc],
   [BlockChainType.carbon]: [BridgeType.ibc],
+  [BlockChainType.stride]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.axelar],
   [BlockChainType.avalanche]: [BridgeType.axelar],
 
@@ -62,6 +64,7 @@ export type IbcNetwork =
   | BlockChainType.crescent
   | BlockChainType.kujira
   | BlockChainType.carbon
+  | BlockChainType.stride
 
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
@@ -74,6 +77,7 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.crescent,
     BlockChainType.kujira,
     BlockChainType.carbon,
+    BlockChainType.stride,
   ].includes(network)
 }
 
@@ -88,6 +92,7 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.crescent]: 'channel-37',
   [BlockChainType.kujira]: 'channel-10',
   [BlockChainType.carbon]: 'channel-36',
+  [BlockChainType.stride]: 'channel-46',
 }
 
 export type IcsNetwork =
@@ -112,6 +117,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.crescent]: 'channel-27',
   [BlockChainType.kujira]: 'channel-5',
   [BlockChainType.carbon]: 'channel-12',
+  [BlockChainType.stride]: 'channel-52',
 }
 
 // channels Terra -> IBC chain
@@ -171,6 +177,7 @@ export const ibcPrefix: Record<IbcNetwork, string> = {
   [BlockChainType.crescent]: 'cre1',
   [BlockChainType.kujira]: 'kujira1',
   [BlockChainType.carbon]: 'swth1',
+  [BlockChainType.stride]: 'stride1',
 }
 
 export const ibcChainId: Record<IbcNetwork, string> = {
@@ -183,6 +190,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
   [BlockChainType.crescent]: 'crescent-1',
   [BlockChainType.kujira]: 'kaiyo-1',
   [BlockChainType.carbon]: 'carbon-1',
+  [BlockChainType.stride]: 'stride-1',
 }
 
 export const ibcRpc: Record<IbcNetwork, string> = {
@@ -195,6 +203,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.crescent]: 'https://mainnet.crescent.network:26657/',
   [BlockChainType.kujira]: 'https://rpc.kaiyo.kujira.setten.io/',
   [BlockChainType.carbon]: 'https://tm-api.carbon.network/',
+  [BlockChainType.stride]: 'https://stride-fleet.main.stridenet.co/',
 }
 
 export interface LocalTerraNetwork {
