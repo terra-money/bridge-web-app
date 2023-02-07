@@ -16,8 +16,8 @@ export enum WalletEnum {
 }
 
 export const WalletTitle: Record<WalletEnum, string> = {
-  TerraExtension: 'Terra Station (Extension)',
-  TerraWalletConnect: 'Terra Station (Mobile)',
+  TerraExtension: 'Station wallet (Extension)',
+  TerraWalletConnect: 'Station wallet (Mobile)',
   Binance: 'Binance Chain Wallet',
   MetaMask: 'MetaMask',
   WalletConnect: 'WalletConnect',

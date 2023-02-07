@@ -71,7 +71,7 @@ const TerraExtensionDownModal = (): ReactElement => {
                 }
               >
                 <Text style={{ color: 'inherit', fontSize: 18 }}>
-                  Download Terra Station Extension
+                  Download Station Extension
                 </Text>
               </ExtLink>
               <br />
