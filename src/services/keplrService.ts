@@ -86,6 +86,42 @@ const connect = async (
     } catch (error) {
       console.error(error)
     }
+  } else if (
+    chain === BlockChainType.migaloo &&
+    keplr.experimentalSuggestChain
+  ) {
+    try {
+      await keplr.experimentalSuggestChain({
+        chainId: CHAIN_ID,
+        chainName: NETWORK.blockChainName[chain],
+        rpc: ibcRpc[chain],
+        rest: 'https://whitewhale-api.polkachu.com/',
+        bip44: { coinType: 118 },
+        coinType: 118,
+        stakeCurrency: {
+          coinDenom: 'WHALE',
+          coinMinimalDenom: 'uwhale',
+          coinDecimals: 6,
+        },
+        bech32Config: {
+          bech32PrefixAccAddr: 'migaloo',
+          bech32PrefixAccPub: 'migaloopub',
+          bech32PrefixValAddr: 'migaloovaloper',
+          bech32PrefixValPub: 'migaloovaloperpub',
+          bech32PrefixConsAddr: 'migaloovalcons',
+          bech32PrefixConsPub: 'migaloovalconspub',
+        },
+        currencies: [
+          { coinDenom: 'WHALE', coinMinimalDenom: 'uwhale', coinDecimals: 6 },
+        ],
+        feeCurrencies: [
+          { coinDenom: 'WHALE', coinMinimalDenom: 'uwhale', coinDecimals: 6 },
+        ],
+        gasPriceStep: { low: 0, average: 0.025, high: 0.03 },
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   keplr.enable(CHAIN_ID)

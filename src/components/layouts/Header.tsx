@@ -147,8 +147,12 @@ const LoginUserInfo = (): ReactElement => {
     }
 
     ;(async (): Promise<void> => {
-      const name = await getName(loginUser.address)
-      setTnsName(name)
+      try {
+        const name = await getName(loginUser.address)
+        setTnsName(name)
+      } catch (error) {
+        setTnsName(undefined)
+      }
     })()
   }, [loginUser.address])
 

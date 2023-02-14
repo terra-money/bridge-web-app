@@ -61,6 +61,10 @@ const useNetwork = (): {
       return type === 'tx'
         ? `https://scan.carbon.network/transaction/${address}`
         : `https://scan.carbon.network/account/${address}`
+    } else if (fromBlockChain === BlockChainType.migaloo) {
+      return type === 'tx'
+        ? `https://explorer.silknodes.io/whitewhale/tx/${address}`
+        : `https://explorer.silknodes.io/whitewhale/account/${address}`
     } else if (etherBaseExt) {
       let subdomain = ''
 

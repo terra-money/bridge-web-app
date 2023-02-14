@@ -16,6 +16,7 @@ export enum BlockChainType {
   kujira = 'kujira',
   carbon = 'carbon',
   stride = 'stride',
+  migaloo = 'migaloo',
 }
 
 export enum BridgeType {
@@ -35,6 +36,7 @@ export const availableBridges: Record<BlockChainType, BridgeType[]> = {
   [BlockChainType.crescent]: [BridgeType.ibc],
   [BlockChainType.carbon]: [BridgeType.ibc],
   [BlockChainType.stride]: [BridgeType.ibc],
+  [BlockChainType.migaloo]: [BridgeType.ibc],
   [BlockChainType.ethereum]: [BridgeType.axelar],
   [BlockChainType.avalanche]: [BridgeType.axelar],
 
@@ -65,6 +67,7 @@ export type IbcNetwork =
   | BlockChainType.kujira
   | BlockChainType.carbon
   | BlockChainType.stride
+  | BlockChainType.migaloo
 
 export function isIbcNetwork(network: BlockChainType): boolean {
   return [
@@ -78,6 +81,7 @@ export function isIbcNetwork(network: BlockChainType): boolean {
     BlockChainType.kujira,
     BlockChainType.carbon,
     BlockChainType.stride,
+    BlockChainType.migaloo,
   ].includes(network)
 }
 
@@ -93,6 +97,7 @@ export const terraIbcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'channel-10',
   [BlockChainType.carbon]: 'channel-36',
   [BlockChainType.stride]: 'channel-46',
+  [BlockChainType.migaloo]: 'channel-86',
 }
 
 export type IcsNetwork =
@@ -100,6 +105,7 @@ export type IcsNetwork =
   | BlockChainType.juno
   | BlockChainType.kujira
   | BlockChainType.carbon
+  | BlockChainType.migaloo
 
 // channels IBC chain -> Axelar
 export const axelarIbcChannels: Record<string, string> = {
@@ -118,6 +124,7 @@ export const ibcChannels: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'channel-5',
   [BlockChainType.carbon]: 'channel-12',
   [BlockChainType.stride]: 'channel-52',
+  [BlockChainType.migaloo]: 'channel-0',
 }
 
 // channels Terra -> IBC chain
@@ -145,6 +152,11 @@ export const terraIcsChannels: Record<
     contract:
       'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
   },
+  [BlockChainType.migaloo]: {
+    channel: 'channel-87',
+    contract:
+      'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au',
+  },
 }
 
 // channels IBC chain -> Terra
@@ -165,6 +177,9 @@ export const icsChannels: Record<
   [BlockChainType.carbon]: {
     channel: 'channel-16',
   },
+  [BlockChainType.migaloo]: {
+    channel: 'channel-2',
+  },
 }
 
 export const ibcPrefix: Record<IbcNetwork, string> = {
@@ -178,6 +193,7 @@ export const ibcPrefix: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'kujira1',
   [BlockChainType.carbon]: 'swth1',
   [BlockChainType.stride]: 'stride1',
+  [BlockChainType.migaloo]: 'migaloo1',
 }
 
 export const ibcChainId: Record<IbcNetwork, string> = {
@@ -191,6 +207,7 @@ export const ibcChainId: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'kaiyo-1',
   [BlockChainType.carbon]: 'carbon-1',
   [BlockChainType.stride]: 'stride-1',
+  [BlockChainType.migaloo]: 'migaloo-1',
 }
 
 export const ibcRpc: Record<IbcNetwork, string> = {
@@ -204,6 +221,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'https://rpc.kaiyo.kujira.setten.io/',
   [BlockChainType.carbon]: 'https://tm-api.carbon.network/',
   [BlockChainType.stride]: 'https://stride-fleet.main.stridenet.co/',
+  [BlockChainType.migaloo]: 'https://whitewhale-rpc.polkachu.com/',
 }
 
 export interface LocalTerraNetwork {
