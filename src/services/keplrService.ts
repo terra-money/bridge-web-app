@@ -95,7 +95,7 @@ const connect = async (
         chainId: CHAIN_ID,
         chainName: NETWORK.blockChainName[chain],
         rpc: ibcRpc[chain],
-        rest: 'https://whitewhale-api.polkachu.com/',
+        rest: 'https://migaloo-api.polkachu.com/',
         bip44: { coinType: 118 },
         coinType: 118,
         stakeCurrency: {

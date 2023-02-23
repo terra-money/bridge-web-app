@@ -221,7 +221,7 @@ export const ibcRpc: Record<IbcNetwork, string> = {
   [BlockChainType.kujira]: 'https://rpc.kaiyo.kujira.setten.io/',
   [BlockChainType.carbon]: 'https://tm-api.carbon.network/',
   [BlockChainType.stride]: 'https://stride-fleet.main.stridenet.co/',
-  [BlockChainType.migaloo]: 'https://whitewhale-rpc.polkachu.com/',
+  [BlockChainType.migaloo]: 'https://migaloo-rpc.polkachu.com/',
 }
 
 export interface LocalTerraNetwork {
