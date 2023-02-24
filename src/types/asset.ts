@@ -8,10 +8,10 @@ export enum AssetNativeDenomEnum {
 
 export enum AssetSymbolEnum {
   Luna = 'Luna',
-  UST = 'UST',
-  KRT = 'KRT',
-  SDT = 'SDT',
-  MNT = 'MNT',
+  UST = 'USTC',
+  KRT = 'KRTC',
+  SDT = 'SDTC',
+  MNT = 'MNTC',
   bETH = 'bETH',
 }
 
