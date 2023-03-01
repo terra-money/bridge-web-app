@@ -172,6 +172,11 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.stride,
                 isDisabled: fromBlockChain === BlockChainType.stride,
               },
+              {
+                label: NETWORK.blockChainName[BlockChainType.migaloo],
+                value: BlockChainType.migaloo,
+                isDisabled: fromBlockChain === BlockChainType.migaloo,
+              },
             ],
             label: 'FROM',
           }}
@@ -261,6 +266,11 @@ const BlockChainNetwork = (): ReactElement => {
                 label: NETWORK.blockChainName[BlockChainType.stride],
                 value: BlockChainType.stride,
                 isDisabled: fromBlockChain === BlockChainType.stride,
+              },
+              {
+                label: NETWORK.blockChainName[BlockChainType.migaloo],
+                value: BlockChainType.migaloo,
+                isDisabled: fromBlockChain === BlockChainType.migaloo,
               },
             ],
             label: 'TO',
