@@ -168,6 +168,17 @@ const BlockChainNetwork = (): ReactElement => {
                 isDisabled: fromBlockChain === BlockChainType.carbon,
               },
               {
+                label: NETWORK.blockChainName[BlockChainType.chihuahua],
+                value: BlockChainType.chihuahua,
+                isDisabled: fromBlockChain === BlockChainType.chihuahua,
+              },
+              /* TODO: add Injective signing capability
+            {
+                label: NETWORK.blockChainName[BlockChainType.inj],
+                value: BlockChainType.inj,
+                isDisabled: fromBlockChain === BlockChainType.inj,
+            },*/
+              {
                 label: NETWORK.blockChainName[BlockChainType.stride],
                 value: BlockChainType.stride,
                 isDisabled: fromBlockChain === BlockChainType.stride,
@@ -262,6 +273,18 @@ const BlockChainNetwork = (): ReactElement => {
                 value: BlockChainType.carbon,
                 isDisabled: fromBlockChain === BlockChainType.carbon,
               },
+              {
+                label: NETWORK.blockChainName[BlockChainType.chihuahua],
+                value: BlockChainType.chihuahua,
+                isDisabled: fromBlockChain === BlockChainType.chihuahua,
+              },
+              /* TODO: add Injective signing capability
+              {
+                label: NETWORK.blockChainName[BlockChainType.inj],
+                value: BlockChainType.inj,
+                isDisabled: fromBlockChain === BlockChainType.inj,
+              },
+               */
               {
                 label: NETWORK.blockChainName[BlockChainType.stride],
                 value: BlockChainType.stride,

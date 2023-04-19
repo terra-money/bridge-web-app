@@ -217,6 +217,7 @@ const AssetList = ({
           x.symbol.toLowerCase().includes(inputFilterLower)
       : true
   })
+  // console.log('assetlist',assetList);
 
   useEffect(() => {
     if (showModal) {
