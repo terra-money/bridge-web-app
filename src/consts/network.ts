@@ -17,6 +17,7 @@ import KujiPng from 'images/kuji.png'
 import CarbonSvg from 'images/carbon.svg'
 import StrideSvg from 'images/stride.svg'
 import MigalooSvg from 'images/migaloo.svg'
+import HuaHuaSvg from 'images/huahua.svg'
 import BigNumber from 'bignumber.js'
 import { UTIL } from 'consts'
 
@@ -39,6 +40,7 @@ const blockChainImage: Record<BlockChainType, string> = {
   [BlockChainType.carbon]: CarbonSvg,
   [BlockChainType.stride]: StrideSvg,
   [BlockChainType.migaloo]: MigalooSvg,
+  [BlockChainType.chihuahua]: HuaHuaSvg,
 }
 
 const blockChainName: Record<BlockChainType, string> = {
@@ -60,6 +62,7 @@ const blockChainName: Record<BlockChainType, string> = {
   [BlockChainType.carbon]: 'Carbon',
   [BlockChainType.stride]: 'Stride',
   [BlockChainType.migaloo]: 'Migaloo',
+  [BlockChainType.chihuahua]: 'Chihuahua',
 }
 
 const metamaskRpc: Record<BlockChainType, string[]> = {
@@ -91,6 +94,7 @@ const metamaskRpc: Record<BlockChainType, string[]> = {
   [BlockChainType.carbon]: [],
   [BlockChainType.stride]: [],
   [BlockChainType.migaloo]: [],
+  [BlockChainType.chihuahua]: [],
 }
 
 const isEtherBaseBlockChain = (bc: BlockChainType): boolean => {

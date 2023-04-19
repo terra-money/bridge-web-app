@@ -115,10 +115,22 @@ const whitelist: Record<
         'ibc/40C29143BF4153B365089E40E437B7AA819672646C45BB0A5F1E10915A0B6708',
     },
   },
+  [BlockChainType.inj]: {
+    [BridgeType.ibc]: {
+      terra1lxx40s29qvkrcj8fsa3yzyehy7w50umdvvnls2r830rys6lu2zns63eelv:
+        'ibc/E6CFB0AC1D339A8CBA3353DF0D7E080B4B14D026D1C90F63F666C223B04D548C',
+    },
+  },
+  [BlockChainType.chihuahua]: {
+    [BridgeType.ibc]: {
+      terra1lxx40s29qvkrcj8fsa3yzyehy7w50umdvvnls2r830rys6lu2zns63eelv:
+        'ibc/6BB4ADB45B1903AE497710FBC24E73C2C578A79D25EF923BD2E784A7FD0FC59F',
+    },
+  },
   // not yet supported on terra2
   [BlockChainType.bsc]: {},
   [BlockChainType.fantom]: {},
-  [BlockChainType.inj]: {},
+
   [BlockChainType.polygon]: {},
   [BlockChainType.moonbeam]: {},
   // other chains
