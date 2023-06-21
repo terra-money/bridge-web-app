@@ -41,6 +41,10 @@ const whitelist: Record<
         'uosmo',
       terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct:
         'ibc/3CB43B244957F7CB0A8C0C7F81ADEA524A2AC57E48716B6F8F781286D96830D2',
+      terra1lalvk0r6nhruel7fvzdppk3tup3mh5j4d4eadrqzfhle4zrf52as58hh9t:
+        'ibc/6F18EFEBF1688AA77F7EAC17065609494DC1BA12AFC78E9AEC832AF70A11BEF3',
+      terra1gwrz9xzhqsygyr5asrgyq3pu0ewpn00mv2zenu86yvx2nlwpe8lqppv584:
+        'ibc/DA961FE314B009C38595FFE3AF41225D8894D663B8C3F6650DCB5B6F8435592E',
     },
   },
   [BlockChainType.scrt]: {
@@ -59,6 +63,10 @@ const whitelist: Record<
         'ujuno',
       terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct:
         'ibc/EC324F1CEEA2587DC6D6A3D2ABDE04B37F2EDC3945553FF7B3F8D03FA5E5576D',
+      terra1lalvk0r6nhruel7fvzdppk3tup3mh5j4d4eadrqzfhle4zrf52as58hh9t:
+        'ibc/AEC6690629B7EAF808D1A0B3EEF7C9B9229315F175FE8900AD5C4F7B6FD62E29',
+      terra1gwrz9xzhqsygyr5asrgyq3pu0ewpn00mv2zenu86yvx2nlwpe8lqppv584:
+        'ibc/738D8F365F1CA9CA6B5851E77EEB878FC6FCC784EE687A10A933F0D1FAC960C0',
     },
   },
   [BlockChainType.crescent]: {
