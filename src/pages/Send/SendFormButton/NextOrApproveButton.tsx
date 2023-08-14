@@ -76,23 +76,20 @@ const NextOrApproveButton = ({
     )
   }
 
+  const isDisabled =
+    bridgeUsed === BridgeType.ibc ||
+    bridgeUsed === BridgeType.wormhole ||
+    (bridgeUsed === BridgeType.shuttle &&
+      (Date.now() >= 1692104400000
+        ? fromBlockChain !== BlockChainType.hmy
+        : fromBlockChain === BlockChainType.terra))
+
   return (
     <Button
       onClick={onClickSendNextButton}
-      disabled={
-        !ableButton ||
-        bridgeUsed === BridgeType.ibc ||
-        bridgeUsed === BridgeType.wormhole ||
-        (bridgeUsed === BridgeType.shuttle &&
-          fromBlockChain === BlockChainType.terra)
-      }
+      disabled={!ableButton || isDisabled}
     >
-      {bridgeUsed === BridgeType.ibc ||
-      bridgeUsed === BridgeType.wormhole ||
-      (bridgeUsed === BridgeType.shuttle &&
-        fromBlockChain === BlockChainType.terra)
-        ? 'Not available'
-        : 'Next'}
+      {isDisabled ? 'Not available' : 'Next'}
     </Button>
   )
 }
