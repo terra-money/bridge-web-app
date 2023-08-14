@@ -172,6 +172,12 @@ export const WarningInfo = (): ReactElement => {
       return 'For Terra to Terra transfers, if the Terra address at the receiving end is an exchange address, the transaction will require a “memo”'
     } else if (bridgeUsed === BridgeType.wormhole) {
       return 'Wormhole is currently not available on Terra Classic'
+    } else if (
+      Date.now() >= 1692104400000 &&
+      bridgeUsed === BridgeType.shuttle &&
+      fromBlockChain !== BlockChainType.hmy
+    ) {
+      return 'Shuttle has been deprecated for ETH and BSC.'
     } else if (fromBlockChain !== toBlockChain) {
       return "Don't use exchange addresses for cross-chain transfers. Make sure that the token type is correct before making transfers to the exchanges."
     }
