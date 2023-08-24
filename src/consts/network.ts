@@ -131,7 +131,7 @@ const KEPLR_EXTENSION =
   'https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap'
 const CHROME = 'https://google.com/chrome'
 
-const TERRA_ASSETS_URL = 'https://assets.terra.money'
+const TERRA_ASSETS_URL = 'https://assets.terra.dev'
 
 const getEtherPricePerUst = async (): Promise<BigNumber> => {
   try {

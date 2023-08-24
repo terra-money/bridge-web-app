@@ -86,10 +86,10 @@ const UnderMaintenance = (): ReactElement => {
           <StyledTitle>Under Maintenance</StyledTitle>
           <StyledDesc>We will be back on Phoenix-1 soon.</StyledDesc>
 
-          <StyledClassicButton href="https://classic-bridge.terra.money">
+          <StyledClassicButton href="https://classic-bridge.station.money">
             Use Bridge Classic
           </StyledClassicButton>
-          {window.location.host !== 'bridge.terra.money' && (
+          {window.location.host !== 'bridge.station.money' && (
             <StyledEnterAnyway onClick={hide}>
               Enter anyway [just for testing]
             </StyledEnterAnyway>

@@ -217,8 +217,8 @@ const Send = (): ReactElement => {
                 <InfoElement>
                   This is Bridge V2, if you want to use bridge with Terra
                   Classic please visit{' '}
-                  <a href="https://classic-bridge.terra.money">
-                    classic-bridge.terra.money
+                  <a href="https://classic-bridge.station.money">
+                    classic-bridge.station.money
                   </a>
                 </InfoElement>
                 {bridgeUsed === BridgeType.axelar &&

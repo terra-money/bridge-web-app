@@ -43,7 +43,7 @@ const NotSupportNetworkModal = (): ReactElement => {
           Your extension is connected to <b>{network?.chainId}</b>, please
           switch to Terra 2.0 or use the{' '}
           <a
-            href="https://classic-bridge.terra.money"
+            href="https://classic-bridge.station.money"
             style={{
               color: COLOR.terraSky,
               textDecoration: 'underline',

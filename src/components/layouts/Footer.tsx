@@ -32,7 +32,7 @@ const StyledText = styled(Text)`
 const Footer = (): ReactElement => {
   const community = [
     {
-      href: `https://docs.terra.money`,
+      href: `https://docs-terra.pages.dev/`,
       title: 'Docs',
     },
     {

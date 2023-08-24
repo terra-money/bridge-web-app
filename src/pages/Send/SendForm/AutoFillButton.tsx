@@ -78,7 +78,7 @@ export default function AutoFillButton(): ReactElement {
     } else if (!terraService.checkInstalled()) {
       return (
         <StyledAutoCompleteLink
-          href="https://setup-station.terra.money/"
+          href="https://setup.station.money/"
           target="_blank"
           rel="noreferrer"
         >
