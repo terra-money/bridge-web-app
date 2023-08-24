@@ -14,31 +14,31 @@ const defaultList: AssetType[] = [
   {
     symbol: 'LUNC',
     name: 'Luna Classic',
-    logoURI: 'https://assets.terra.money/icon/svg/Luna.svg',
+    logoURI: `${NETWORK.TERRA_ASSETS_URL}/icon/svg/Luna.svg`,
     terraToken: AssetNativeDenomEnum.uluna,
   },
   {
     symbol: AssetSymbolEnum.UST,
     name: 'Terra Classic USD',
-    logoURI: 'https://assets.terra.money/icon/60/UST.png',
+    logoURI: `${NETWORK.TERRA_ASSETS_URL}/icon/60/UST.png`,
     terraToken: AssetNativeDenomEnum.uusd,
   },
   {
     symbol: AssetSymbolEnum.KRT,
     name: 'Terra Classic KRW',
-    logoURI: 'https://assets.terra.money/icon/60/KRT.png',
+    logoURI: `${NETWORK.TERRA_ASSETS_URL}/icon/60/KRT.png`,
     terraToken: AssetNativeDenomEnum.ukrw,
   },
   {
     symbol: AssetSymbolEnum.SDT,
     name: 'Terra Classic SDR',
-    logoURI: 'https://assets.terra.money/icon/60/SDT.png',
+    logoURI: `${NETWORK.TERRA_ASSETS_URL}/icon/60/SDT.png`,
     terraToken: AssetNativeDenomEnum.usdr,
   },
   {
     symbol: AssetSymbolEnum.MNT,
     name: 'Terra Classic MNT',
-    logoURI: 'https://assets.terra.money/icon/60/MNT.png',
+    logoURI: `${NETWORK.TERRA_ASSETS_URL}/icon/60/MNT.png`,
     terraToken: AssetNativeDenomEnum.umnt,
   },
 ]
@@ -80,7 +80,7 @@ const useApp = (): {
     ContractStore.initOnlyTerraWhiteList
   )
   const fetchAssets = async (path: TerraAssetsPathEnum): Promise<any> => {
-    return (await fetch(`${NETWORK.TERRA_ASSETS_URL}${path}`)).json()
+    return (await fetch(`${NETWORK.TERRA_ASSETS_URL}/${path}`)).json()
   }
 
   const getContractAddress = async (): Promise<void> => {
