@@ -211,17 +211,17 @@ export const ibcChainId: Record<IbcNetwork, string> = {
 }
 
 export const ibcRpc: Record<IbcNetwork, string> = {
-  [BlockChainType.osmo]: 'https://rpc.osmosis.zone/',
+  [BlockChainType.osmo]: 'https://rpc-osmosis.tfl.foundation/',
   [BlockChainType.scrt]: 'https://lcd-secret.scrtlabs.com/rpc/',
-  [BlockChainType.inj]: 'https://tm.injective.network/',
-  [BlockChainType.axelar]: 'https://axelar-rpc.quickapi.com/',
-  [BlockChainType.cosmos]: 'https://rpc-cosmoshub.blockapsis.com/',
-  [BlockChainType.juno]: 'https://rpc.juno.omniflix.co/',
-  [BlockChainType.crescent]: 'https://mainnet.crescent.network:26657/',
-  [BlockChainType.kujira]: 'https://rpc.kaiyo.kujira.setten.io/',
-  [BlockChainType.carbon]: 'https://tm-api.carbon.network/',
-  [BlockChainType.stride]: 'https://stride-fleet.main.stridenet.co/',
-  [BlockChainType.migaloo]: 'https://migaloo-rpc.polkachu.com/',
+  [BlockChainType.inj]: 'https://rpc-injective.tfl.foundation/',
+  [BlockChainType.axelar]: 'https://rpc-axelar.tfl.foundation/',
+  [BlockChainType.cosmos]: 'https://rpc-cosmoshub.tfl.foundation/',
+  [BlockChainType.juno]: 'https://rpc-juno.tfl.foundation/',
+  [BlockChainType.crescent]: 'https://rpc-crescent.tfl.foundation/',
+  [BlockChainType.kujira]: 'https://rpc-kujira.tfl.foundation/',
+  [BlockChainType.carbon]: 'https://rpc-carbon.tfl.foundation/',
+  [BlockChainType.stride]: 'https://rpc-stride.tfl.foundation/',
+  [BlockChainType.migaloo]: 'https://rpc-migaloo.tfl.foundation/',
 }
 
 export interface LocalTerraNetwork {
