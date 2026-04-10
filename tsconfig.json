@@ -26,7 +26,9 @@
       "pages/*": ["pages/*"],
       "services/*": ["services/*"],
       "store/*": ["store/*"],
-      "types/*": ["types/*"]
+      "types/*": ["types/*"],
+      "ics20/*": ["ics20/*"],
+      "chain-configs/*": ["chain-configs/*"]
     }
   },
   "include": ["src", "vite-env.d.ts"]

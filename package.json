@@ -8,7 +8,7 @@
   "dependencies": {
     "@cosmjs/amino": "^0.32.4",
     "@cosmjs/proto-signing": "^0.38.1",
-    "@cosmjs/stargate": "^0.32.4",
+    "@cosmjs/stargate": "^0.38.1",
     "@effect/experimental": "^0.60.0",
     "@effect/platform": "^0.96.0",
     "@keplr-wallet/cosmos": "^0.11.64",

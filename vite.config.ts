@@ -25,6 +25,8 @@ export default defineConfig({
       services: path.resolve(__dirname, 'src/services'),
       store: path.resolve(__dirname, 'src/store'),
       types: path.resolve(__dirname, 'src/types'),
+      ics20: path.resolve(__dirname, 'src/ics20'),
+      'chain-configs': path.resolve(__dirname, 'src/chain-configs'),
     },
   },
 })

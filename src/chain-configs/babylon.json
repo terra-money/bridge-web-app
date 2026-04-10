@@ -1,0 +1,36 @@
+{
+  "rpc": "https://babylon-rpc.publicnode.com",
+  "rest": "https://lcd-babylon.keplr.app",
+  "chainId": "bbn-1",
+  "chainName": "Babylon",
+  "bip44": {
+    "coinType": 118
+  },
+  "bech32Config": {
+    "bech32PrefixAccAddr": "bbn",
+    "bech32PrefixAccPub": "bbnpub",
+    "bech32PrefixValAddr": "bbnvaloper",
+    "bech32PrefixValPub": "bbnvaloperpub",
+    "bech32PrefixConsAddr": "bbnvalcons",
+    "bech32PrefixConsPub": "bbnvalconspub"
+  },
+  "currencies": [
+    {
+      "coinDenom": "BBN",
+      "coinMinimalDenom": "ubbn",
+      "coinDecimals": 6
+    }
+  ],
+  "stakeCurrency": {
+    "coinDenom": "BBN",
+    "coinMinimalDenom": "ubbn",
+    "coinDecimals": 6
+  },
+  "feeCurrencies": [
+    {
+      "coinDenom": "BBN",
+      "coinMinimalDenom": "ubbn",
+      "coinDecimals": 6
+    }
+  ]
+}
